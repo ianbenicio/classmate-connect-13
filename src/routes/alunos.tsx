@@ -237,7 +237,11 @@ function AlunosPage() {
                   const curso = cursoMap.get(a.cursoId);
                   const turma = turmaMap.get(a.turmaId);
                   return (
-                    <TableRow key={a.id}>
+                    <TableRow
+                      key={a.id}
+                      className="cursor-pointer"
+                      onClick={() => setDetalhe(a)}
+                    >
                       <TableCell>
                         <div className="font-medium">{a.nome}</div>
                         {a.idade != null && (
@@ -272,7 +276,10 @@ function AlunosPage() {
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                         {a.responsavel || "—"}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell
+                        className="text-right"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="inline-flex gap-1">
                           <Button
                             size="icon"
