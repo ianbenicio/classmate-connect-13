@@ -185,7 +185,12 @@ export function AgendarAtividadeDialog({
 
     const slot = turmaSelecionada.horarios[Number(slotIdx)];
     const dataIso = format(date, "yyyy-MM-dd");
-    const professor = turmaSelecionada.professor;
+    // Professor vem da(s) atividade(s) selecionada(s) — turma não tem professor.
+    const ativsSelPrev = atividades.filter((a) => atividadeIds.includes(a.id));
+    const professoresUnicos = Array.from(
+      new Set(ativsSelPrev.map((a) => a.professor).filter(Boolean)),
+    ) as string[];
+    const professor = professoresUnicos.join(" / ") || undefined;
 
     agendamentosStore.add({
       id: crypto.randomUUID(),

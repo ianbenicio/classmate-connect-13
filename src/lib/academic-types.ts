@@ -62,7 +62,6 @@ export interface Turma {
   data: string; // ISO date — referência da turma
   horarios: HorarioSlot[]; // encontros semanais
   alunosIds: string[];
-  professor?: string; // nome do professor responsável
   descricao?: string;
 }
 
@@ -106,6 +105,7 @@ export interface Atividade {
   objetivoResultados: string;
   prazo: string; // ISO date (referência didática)
   criadoPor: string;
+  professor: string; // professor responsável pela atividade
   habilidadeIds: string[];
 
   // Aula-only
