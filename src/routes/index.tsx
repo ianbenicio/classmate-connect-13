@@ -7,8 +7,8 @@ import {
   GraduationCap,
   ClipboardList,
   Users,
-  ArrowRight,
   CalendarClock,
+  CalendarDays,
 } from "lucide-react";
 import {
   SEED_ALUNOS,
@@ -16,6 +16,8 @@ import {
   SEED_CURSOS,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
+import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,6 +44,7 @@ function DashboardPage() {
   const turmas = SEED_TURMAS;
   const atividades = SEED_ATIVIDADES;
   const alunos = SEED_ALUNOS;
+  const agendamentos = useAgendamentos();
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
@@ -108,6 +111,21 @@ function DashboardPage() {
               <div key={s.label}>{card}</div>
             );
           })}
+        </section>
+
+        {/* Calendário */}
+        <section className="mb-10">
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-xl font-semibold tracking-tight inline-flex items-center gap-2">
+              <CalendarDays className="h-5 w-5" />
+              Calendário
+            </h2>
+          </div>
+          <ScheduleCalendar
+            turmas={turmas}
+            cursos={cursos}
+            agendamentos={agendamentos}
+          />
         </section>
 
         {/* Cursos */}
