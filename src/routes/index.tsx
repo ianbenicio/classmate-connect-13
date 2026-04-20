@@ -246,6 +246,19 @@ function DashboardPage() {
           )}
         </section>
       </div>
+
+      {agendarCtx && (
+        <AgendarAtividadeDialog
+          open
+          onOpenChange={(o) => !o && setAgendarCtx(null)}
+          curso={agendarCtx.curso}
+          turmas={turmas.filter((t) => t.cursoId === agendarCtx.curso.id)}
+          atividades={atividades}
+          defaultTurmaId={agendarCtx.turma.id}
+          defaultData={agendarCtx.data}
+          defaultSlot={agendarCtx.slot}
+        />
+      )}
     </div>
   );
 }
