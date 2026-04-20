@@ -16,7 +16,13 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { Users } from "lucide-react";
-import type { Atividade, Curso, Habilidade, Turma } from "@/lib/academic-types";
+import {
+  formatHorarios,
+  type Atividade,
+  type Curso,
+  type Habilidade,
+  type Turma,
+} from "@/lib/academic-types";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
@@ -162,7 +168,7 @@ export function CourseDetailDialog({
                     className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5 w-full text-left"
                   >
                     <span>📅 {t.data}</span>
-                    <span>🕐 {t.horario}</span>
+                    <span>🕐 {formatHorarios(t.horarios)}</span>
                     <span>👥 {t.alunosIds.length} alunos</span>
                   </button>
                 </div>
