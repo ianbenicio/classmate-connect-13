@@ -92,6 +92,7 @@ export function ActivityFormDialog({
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
       setHabilidadeIds(editing.habilidadeIds);
+      setTurmaIds(editing.turmaIds ?? []);
     } else {
       setTipo(defaultTipo);
       setNome("");
