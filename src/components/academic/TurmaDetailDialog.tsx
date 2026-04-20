@@ -15,9 +15,12 @@ import {
   ClipboardList,
   CalendarCheck,
   RotateCcw,
+  BookOpen,
+  User as UserIcon,
 } from "lucide-react";
 import {
   formatHorarioSlot,
+  type Agendamento,
   type Aluno,
   type Atividade,
   type Curso,
@@ -58,6 +61,20 @@ export function TurmaDetailDialog({
   const concluidas = agendaDaTurma.filter((a) => a.status === "concluido");
 
   const ativPorId = new Map(atividades.map((a) => [a.id, a]));
+
+  // Aulas Realizadas = agendamentos concluídos cujo conteúdo inclui ao menos
+  // uma atividade do tipo Aula (tipo 0). Ordenadas mais recentes primeiro.
+  const aulasRealizadas = concluidas
+    .map((ag) => {
+      const aulas = ag.atividadeIds
+        .map((id) => ativPorId.get(id))
+        .filter((a): a is Atividade => !!a && a.tipo === 0);
+      return aulas.length ? { ag, aulas } : null;
+    })
+    .filter((x): x is { ag: Agendamento; aulas: Atividade[] } => !!x)
+    .sort((a, b) =>
+      (b.ag.data + b.ag.inicio).localeCompare(a.ag.data + a.ag.inicio),
+    );
 
   return (
     <Dialog open={!!turma} onOpenChange={onOpenChange}>
@@ -148,6 +165,58 @@ export function TurmaDetailDialog({
                 muted
               />
             </div>
+          )}
+        </section>
+
+
+        <section className="mt-4">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
+            <BookOpen className="h-3.5 w-3.5" />
+            Aulas Realizadas ({aulasRealizadas.length})
+          </h3>
+
+          {aulasRealizadas.length === 0 ? (
+            <p className="text-sm text-muted-foreground border rounded-md p-6 text-center">
+              Nenhuma aula realizada ainda. As aulas aparecem aqui quando o
+              professor registra o relatório.
+            </p>
+          ) : (
+            <ul className="border rounded-lg divide-y">
+              {aulasRealizadas.map(({ ag, aulas }) => (
+                <li key={ag.id} className="p-3">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {ag.data} · {ag.inicio}–{ag.fim}
+                      </div>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {aulas.map((a) => (
+                          <Badge
+                            key={a.id}
+                            variant="outline"
+                            className="inline-flex items-center gap-1"
+                          >
+                            <GraduationCap className="h-3 w-3" />
+                            {a.nome}
+                          </Badge>
+                        ))}
+                      </div>
+                      {ag.professor && (
+                        <div className="mt-1.5 text-xs text-muted-foreground inline-flex items-center gap-1">
+                          <UserIcon className="h-3 w-3" />
+                          {ag.professor}
+                        </div>
+                      )}
+                    </div>
+                    <Badge variant="secondary" className="text-[10px]">
+                      <CalendarCheck className="h-3 w-3 mr-1" />
+                      Concluída
+                    </Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
 
