@@ -76,6 +76,7 @@ export function ActivityFormDialog({
   const [sugestoesPais, setSugestoesPais] = useState("");
   const [instrucoes, setInstrucoes] = useState("");
   const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
+  const [turmaIds, setTurmaIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!open) return;
