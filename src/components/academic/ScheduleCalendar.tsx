@@ -332,11 +332,11 @@ function WeekView({
   }, [turmas]);
 
   const agByKey = useMemo(() => {
-    const set = new Set<string>();
+    const map = new Map<string, Agendamento>();
     for (const a of agendamentos) {
-      set.add(`${a.data}|${a.inicio}`);
+      map.set(`${a.turmaId}|${a.data}|${a.inicio}`, a);
     }
-    return set;
+    return map;
   }, [agendamentos]);
 
   return (
@@ -416,10 +416,11 @@ function FragmentRow({
   weekDates: Date[];
   byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
   cursoMap: Map<string, Curso>;
-  agByKey: Set<string>;
+  agByKey: Map<string, Agendamento>;
   onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
+  const today = startOfDay(new Date());
   return (
     <>
       <div className="border-b border-r px-1.5 py-1 text-[10px] text-muted-foreground bg-muted/20 text-right">
@@ -428,6 +429,7 @@ function FragmentRow({
       {WEEK_DAYS.map((d, i) => {
         const date = weekDates[i];
         const dayKey = format(date, "yyyy-MM-dd");
+        const isPast = startOfDay(date) < today;
         const items = (byDay.get(d.value) ?? []).filter((it) => {
           const ih = parseInt(it.inicio.split(":")[0], 10);
           return ih === hour;
@@ -438,32 +440,45 @@ function FragmentRow({
             className="border-b border-r p-1 min-h-[44px] space-y-1"
           >
             {items.map((it, idx) => {
-              const hasAg = agByKey.has(`${dayKey}|${it.inicio}`);
+              const ag = agByKey.get(`${it.turma.id}|${dayKey}|${it.inicio}`);
+              const ativa = ag ? isAgendamentoAtivo(ag) : false;
               return (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() =>
+                  disabled={isPast}
+                  onClick={() => {
+                    if (isPast) return;
                     onSlotClick?.({
                       turma: it.turma,
                       date,
                       inicio: it.inicio,
                       fim: it.fim,
                       diaSemana: d.value,
-                    })
-                  }
+                    });
+                  }}
                   className={cn(
                     "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative w-full text-left hover:brightness-110 cursor-pointer",
                     cursoChipClass(it.turma.cursoId),
+                    isPast && "opacity-40 cursor-not-allowed hover:brightness-100",
+                    ativa && "ring-1 ring-primary",
                   )}
-                  title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
+                  title={
+                    isPast
+                      ? `${it.turma.cod} · ${it.inicio}–${it.fim} — data passada`
+                      : ativa
+                        ? `${it.turma.cod} · ${it.inicio}–${it.fim} — atividade agendada`
+                        : `${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`
+                  }
                 >
                   <span className="font-semibold">{it.turma.cod}</span>
                   <span className="opacity-70 ml-1">
                     {it.inicio}–{it.fim}
                   </span>
-                  {hasAg && (
-                    <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-primary" />
+                  {ativa && (
+                    <span className="absolute top-0.5 right-0.5 text-[8px] font-bold text-primary">
+                      ●
+                    </span>
                   )}
                 </button>
               );
