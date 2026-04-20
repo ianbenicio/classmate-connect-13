@@ -24,13 +24,13 @@ export const SEED_CURSOS: Curso[] = [
 // ====================================================================
 export const SEED_TURMAS: Turma[] = [
   // ----- MP -----
-  { id: "t-mp-1", cursoId: "c-mp", nome: "MP_T1", cod: "MP_T1", data: "2026-02-02", horarios: [{ diaSemana: "seg", inicio: "14:00", fim: "15:00" }], alunosIds: [] },
-  { id: "t-mp-2", cursoId: "c-mp", nome: "MP_T2", cod: "MP_T2", data: "2026-02-06", horarios: [{ diaSemana: "sex", inicio: "09:00", fim: "10:00" }], alunosIds: [] },
-  { id: "t-mp-3", cursoId: "c-mp", nome: "MP_T3", cod: "MP_T3", data: "2026-02-06", horarios: [{ diaSemana: "sex", inicio: "14:00", fim: "15:00" }], alunosIds: [] },
-  { id: "t-mp-4", cursoId: "c-mp", nome: "MP_T4", cod: "MP_T4", data: "2026-02-07", horarios: [{ diaSemana: "sab", inicio: "07:30", fim: "08:30" }], alunosIds: [] },
-  { id: "t-mp-5", cursoId: "c-mp", nome: "MP_T5", cod: "MP_T5", data: "2026-02-08", horarios: [{ diaSemana: "dom", inicio: "10:00", fim: "11:00" }], alunosIds: [] },
-  { id: "t-mp-6", cursoId: "c-mp", nome: "MP_T6", cod: "MP_T6", data: "2026-02-03", horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }], alunosIds: [] },
-  { id: "t-mp-7", cursoId: "c-mp", nome: "MP_T7", cod: "MP_T7", data: "2026-02-03", horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }], alunosIds: [] },
+  { id: "t-mp-1", cursoId: "c-mp", nome: "MP_T1", cod: "MP_T1", data: "2026-02-02", horarios: [{ diaSemana: "seg", inicio: "14:00", fim: "15:00" }], alunosIds: ["al-mp-001-ana-carolina-ramos-da-silva","al-mp-002-antonio-gabriel","al-mp-003-arthur-luis-miranda-lima-de-ca","al-mp-004-heitor-luis-miranda-lima-de-ca","al-mp-005-lukas-kaue-de-sousa-abreu","al-mp-006-maria-cecilia-pereira-da-silva","al-mp-007-maria-helena-lemos-oliveira","al-mp-008-maria-sophia-cabral-freitas","al-mp-009-maria-sophia-dos-santos-rodrig","al-mp-010-mario-aquiles-lacerda-carvalho","al-mp-011-matheus-victor-barbosa-silva","al-mp-012-pedro-felipe-vieira-de-araujo","al-mp-013-ravena-rodrigues-da-silva","al-mp-014-thiago-wallace-lima"] },
+  { id: "t-mp-2", cursoId: "c-mp", nome: "MP_T2", cod: "MP_T2", data: "2026-01-23", horarios: [{ diaSemana: "sex", inicio: "09:00", fim: "10:00" }], alunosIds: ["al-mp-015-gustavo-henrique-sousa-rodrigu","al-mp-016-agata-edite-guimaraes-lopes","al-mp-017-islan-kildery-rocha-meneses"] },
+  { id: "t-mp-3", cursoId: "c-mp", nome: "MP_T3", cod: "MP_T3", data: "2026-01-23", horarios: [{ diaSemana: "sex", inicio: "14:00", fim: "15:00" }], alunosIds: ["al-mp-018-anna-victoria-de-sousa-santos","al-mp-019-carlos-emanuel-silva-feitosa","al-mp-020-carlos-gabriel-s-j","al-mp-021-elias-ezequiel-da-silva-de-jes","al-mp-022-enzo-gabriel-sousa-de-oliveira","al-mp-023-esdras-emanoel-medeiros-silva","al-mp-024-italo-candido-de-oliveira","al-mp-025-lucas-daniel-dos-santos-silva","al-mp-026-lucas-oliveira-reis","al-mp-027-maria-cecilia-silva-campos","al-mp-028-noah-kalel-mineiro-sousa","al-mp-029-paulo-wanderson-de-araujo","al-mp-030-pedro-felipe-vieira-de-araujo","al-mp-031-thiago-walter-lima-de-almeida"] },
+  { id: "t-mp-4", cursoId: "c-mp", nome: "MP_T4", cod: "MP_T4", data: "2026-01-24", horarios: [{ diaSemana: "sab", inicio: "07:30", fim: "08:30" }], alunosIds: ["al-mp-032-ana-beatriz-marques-do-nascime","al-mp-033-ana-beatriz-nunes-barbosa","al-mp-034-camila-chaves-diniz","al-mp-035-david-kaua-da-silva-aguiar","al-mp-036-eduardo-porfirio-alves-de-arau","al-mp-037-eduardo-santos-freitas","al-mp-038-jose-henrique-alves-silva","al-mp-039-marcos-antonio-bezerra-sousa","al-mp-040-marcio-emanuel-pinto-da-silva-","al-mp-041-marcus-vinicius-pinto-da-silva","al-mp-042-maria-cecilia-sousa-vidal","al-mp-043-matheus-dias-de-sousa","al-mp-044-nicollas-riquelme-de-sousa-men","al-mp-045-nicolly-lauranda-de-sousa-mend","al-mp-046-ruan-augusthus-costa-dos-santo","al-mp-047-ruan-matheus-dias-de-sousa","al-mp-048-samuel-yuri-damasceno-araujo"] },
+  { id: "t-mp-5", cursoId: "c-mp", nome: "MP_T5", cod: "MP_T5", data: "2026-01-25", horarios: [{ diaSemana: "dom", inicio: "10:00", fim: "11:00" }], alunosIds: ["al-mp-049-adriel-de-sousa-rosa-galvao","al-mp-050-andressa-vitoria-andrade-ferre","al-mp-051-arthur-lima-de-carvalho-silva","al-mp-052-carlos-eduardo-de-lima","al-mp-053-clara-sofia-paes-landim-lopes","al-mp-054-guana-suellem-andrade-morais","al-mp-055-gustavo-barreto","al-mp-056-izaquiel-barreto-lopes","al-mp-057-jose-carlos-madeira-santana-ne","al-mp-058-jose-silva","al-mp-059-kerven-renan-de-oliveira-costa","al-mp-060-luara-maria-regina-aragao","al-mp-061-matheus-rodrigues-soares-da-si","al-mp-062-pedro-misael-alves-miranda","al-mp-063-ruan-augusto","al-mp-064-werick-kauan","al-mp-065-wilker-carvalho-vieira"] },
+  { id: "t-mp-6", cursoId: "c-mp", nome: "MP_T6", cod: "MP_T6", data: "2026-03-17", horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }], alunosIds: ["al-mp-066-enzo-ravy-do-monte-resende-cam","al-mp-067-fabrinne-emanuelle-dos-santos-","al-mp-068-flavio-anderson-passos-silva","al-mp-069-francisco-kaua-da-silva-reis","al-mp-070-francisco-lucas-gama-da-silva","al-mp-071-francislany-ribeiro-de-abreu","al-mp-072-gabriela-lorrany-de-brandao-co","al-mp-073-iarley-henrique-santos-ferreir","al-mp-074-luis-henrique-da-silva-barros","al-mp-075-maria-helena-pereira-lima-da-s","al-mp-076-saulo-emanuel-oliveira-lopes","al-mp-077-vivian-emanuelly-da-costa-oliv"] },
+  { id: "t-mp-7", cursoId: "c-mp", nome: "MP_T7", cod: "MP_T7", data: "2026-03-10", horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }], alunosIds: ["al-mp-078-adriely-emilly-rodrigues-de-ba","al-mp-079-fabrinne-emanuelle-dos-santos-","al-mp-080-francisco-kaue-machado-da-silv","al-mp-081-gabriela-lorrany-de-brandao-co","al-mp-082-iara-santos-sousa-vieira","al-mp-083-isaac-gabriel-carvalho-de-sena","al-mp-084-luis-henrique-da-silva-barros","al-mp-085-maria-helena-pereira-lima-da-s","al-mp-086-maria-paula-padua-brandao","al-mp-087-pedro-raniere-silva-lopes","al-mp-088-vitoria-sousa-campos","al-mp-089-william-matheus-lopes-da-silva"] },
 
   // ----- GP -----
   { id: "t-gp-2006-1", cursoId: "c-gp", nome: "GP_T2006-1", cod: "GP_T2006-1", data: "2026-02-02", horarios: [{ diaSemana: "seg", inicio: "14:00", fim: "15:00" }], alunosIds: [] },
@@ -64,8 +64,8 @@ export const SEED_HABILIDADES: Habilidade[] = [
 // ====================================================================
 export const SEED_GRUPOS: Record<string, Grupo[]> = {
   "c-mp": [
-    { cod: "CR", nome: "Criativo" },
-    { cod: "PP", nome: "Proplayer" },
+    { cod: "C", nome: "Criativo" },
+    { cod: "P", nome: "Pro-Player" },
     { cod: "EV", nome: "Evento" },
   ],
   "c-gp": [
@@ -131,20 +131,20 @@ function mkAula(
 
 export const SEED_ATIVIDADES: Atividade[] = [
   // ====================================================================
-  // MP — ModeloPreca (12 aulas: CR=6, PP=5, EV=1)
+  // MP — ModeloPreca (12 aulas: C=6, P=5, EV=1)
   // ====================================================================
-  mkAula("c-mp", "MP", "CR", 1, "Introdução ao Design e Branding para Games", "Introdução ao Design e Branding para Games."),
-  mkAula("c-mp", "MP", "CR", 2, "Ferramentas Grátis (Canva, Photoshop)", "Visão geral de ferramentas gratuitas: Canva e Photoshop."),
-  mkAula("c-mp", "MP", "CR", 3, "Identidade Visual e Paleta para Streamers", "Construção de identidade visual e paleta de cores para streamers."),
-  mkAula("c-mp", "MP", "CR", 4, "Elementos Gráficos: Logos, Banners, e Sobreposições", "Criação de logos, banners e sobreposições (overlays)."),
-  mkAula("c-mp", "MP", "CR", 5, "Branding Pessoal: Aplicação para Streamers e YouTubers", "Branding pessoal aplicado a streamers e YouTubers."),
-  mkAula("c-mp", "MP", "CR", 6, "Criação de Portifólio", "Montagem de portfólio criativo do aluno."),
+  mkAula("c-mp", "MP", "C", 1, "Introdução ao Design e Branding para Games", "Introdução ao Design e Branding para Games."),
+  mkAula("c-mp", "MP", "C", 2, "Ferramentas Grátis (Canva, Photoshop)", "Visão geral de ferramentas gratuitas: Canva e Photoshop."),
+  mkAula("c-mp", "MP", "C", 3, "Identidade Visual e Paleta para Streamers", "Construção de identidade visual e paleta de cores para streamers."),
+  mkAula("c-mp", "MP", "C", 4, "Elementos Gráficos: Logos, Banners, e Sobreposições", "Criação de logos, banners e sobreposições (overlays)."),
+  mkAula("c-mp", "MP", "C", 5, "Branding Pessoal: Aplicação para Streamers e YouTubers", "Branding pessoal aplicado a streamers e YouTubers."),
+  mkAula("c-mp", "MP", "C", 6, "Criação de Portifólio", "Montagem de portfólio criativo do aluno."),
 
-  mkAula("c-mp", "MP", "PP", 1, "Introdução ao Mundo Pro Player", "Introdução ao mundo Pro Player."),
-  mkAula("c-mp", "MP", "PP", 2, "Mecânicas Avançadas (Aim, Movimentação)", "Mecânicas avançadas: aim e movimentação."),
-  mkAula("c-mp", "MP", "PP", 3, "Estratégia e Análise de Jogo (VODs)", "Estratégia e análise de jogo a partir de VODs."),
-  mkAula("c-mp", "MP", "PP", 4, "Psicologia Competitiva (Mindset, Tilting)", "Psicologia competitiva: mindset e controle de tilt."),
-  mkAula("c-mp", "MP", "PP", 5, "Comunicação, Callouts e Treinamento em Grupo", "Comunicação, callouts e treinamento em grupo."),
+  mkAula("c-mp", "MP", "P", 1, "Introdução ao Mundo Pro Player", "Introdução ao mundo Pro Player."),
+  mkAula("c-mp", "MP", "P", 2, "Mecânicas Avançadas (Aim, Movimentação)", "Mecânicas avançadas: aim e movimentação."),
+  mkAula("c-mp", "MP", "P", 3, "Estratégia e Análise de Jogo (VODs)", "Estratégia e análise de jogo a partir de VODs."),
+  mkAula("c-mp", "MP", "P", 4, "Psicologia Competitiva (Mindset, Tilting)", "Psicologia competitiva: mindset e controle de tilt."),
+  mkAula("c-mp", "MP", "P", 5, "Comunicação, Callouts e Treinamento em Grupo", "Comunicação, callouts e treinamento em grupo."),
 
   mkAula("c-mp", "MP", "EV", 1, "Torneio entre alunos + Feira Criativa", "Encerramento: torneio entre alunos + feira criativa."),
 
