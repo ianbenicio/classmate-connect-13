@@ -29,9 +29,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { GraduationCap, Pencil, Plus, Search, Trash2, X } from "lucide-react";
-import { SEED_CURSOS, SEED_TURMAS } from "@/lib/academic-seed";
+import { SEED_ATIVIDADES, SEED_CURSOS, SEED_TURMAS } from "@/lib/academic-seed";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { AlunoFormDialog } from "@/components/academic/AlunoFormDialog";
+import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
 import type { Aluno } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -67,6 +68,7 @@ function AlunosPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Aluno | undefined>();
   const [confirmDelete, setConfirmDelete] = useState<Aluno | null>(null);
+  const [detalhe, setDetalhe] = useState<Aluno | null>(null);
 
   const cursoMap = useMemo(
     () => new Map(cursos.map((c) => [c.id, c])),
@@ -235,7 +237,11 @@ function AlunosPage() {
                   const curso = cursoMap.get(a.cursoId);
                   const turma = turmaMap.get(a.turmaId);
                   return (
-                    <TableRow key={a.id}>
+                    <TableRow
+                      key={a.id}
+                      className="cursor-pointer"
+                      onClick={() => setDetalhe(a)}
+                    >
                       <TableCell>
                         <div className="font-medium">{a.nome}</div>
                         {a.idade != null && (
@@ -270,7 +276,10 @@ function AlunosPage() {
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                         {a.responsavel || "—"}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell
+                        className="text-right"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="inline-flex gap-1">
                           <Button
                             size="icon"
@@ -309,6 +318,14 @@ function AlunosPage() {
         cursos={cursos}
         turmas={turmas}
         onSave={handleSave}
+      />
+
+      <AlunoDetailDialog
+        aluno={detalhe}
+        curso={detalhe ? cursoMap.get(detalhe.cursoId) : undefined}
+        turma={detalhe ? turmaMap.get(detalhe.turmaId) : undefined}
+        atividades={SEED_ATIVIDADES}
+        onOpenChange={(o) => !o && setDetalhe(null)}
       />
 
       <AlertDialog
