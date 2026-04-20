@@ -1,4 +1,11 @@
-import type { Atividade, Curso, Habilidade } from "./academic-types";
+import type { Atividade, Curso, Habilidade, Turma } from "./academic-types";
+
+export const SEED_TURMAS: Turma[] = [
+  { id: "t-dsg-2026a", cursoId: "c-dsg", nome: "Design 2026/A", descricao: "Turma matutina" },
+  { id: "t-dsg-2026b", cursoId: "c-dsg", nome: "Design 2026/B", descricao: "Turma vespertina" },
+  { id: "t-inf-2026a", cursoId: "c-inf", nome: "Informática 2026/A" },
+  { id: "t-gam-2026a", cursoId: "c-gam", nome: "Games 2026/A" },
+];
 
 export const SEED_CURSOS: Curso[] = [
   {
