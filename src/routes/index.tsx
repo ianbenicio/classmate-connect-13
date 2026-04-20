@@ -89,7 +89,12 @@ function DashboardPage() {
       to: "/cursos" as const,
     },
     { label: "Turmas", value: turmas.length, icon: Users },
-    { label: "Alunos", value: alunos.length, icon: GraduationCap },
+    {
+      label: "Alunos",
+      value: alunos.length,
+      icon: GraduationCap,
+      to: "/alunos" as const,
+    },
     {
       label: "Aulas / Tarefas",
       value: `${aulasCount} / ${tarefasCount}`,
