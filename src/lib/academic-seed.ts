@@ -7,117 +7,215 @@ import type {
   Turma,
 } from "./academic-types";
 
-export const SEED_ALUNOS: Aluno[] = [
-  {
-    id: "al-001",
-    nome: "Maria Silva",
-    contato: "maria.silva@email.com",
-    cursoId: "c-dsg",
-    turmaId: "t-dsg-2026a",
-    habilidadeIds: ["h-cri-02", "h-com-01"],
-    aulas: [{ atividadeId: "a-001", presente: true }],
-    trabalhos: [{ atividadeId: "a-002", entregue: true, nota: 8.5 }],
-    observacao: "Demonstra forte interesse por tipografia.",
-  },
-  {
-    id: "al-002",
-    nome: "João Pereira",
-    contato: "joao.pereira@email.com",
-    cursoId: "c-dsg",
-    turmaId: "t-dsg-2026a",
-    habilidadeIds: ["h-tec-04"],
-    aulas: [{ atividadeId: "a-001", presente: false, observacao: "Atestado médico" }],
-    trabalhos: [],
-  },
-  {
-    id: "al-003",
-    nome: "Ana Costa",
-    contato: "ana.costa@email.com",
-    cursoId: "c-inf",
-    turmaId: "t-inf-2026a",
-    habilidadeIds: ["h-col-03"],
-    aulas: [{ atividadeId: "a-003", presente: true }],
-    trabalhos: [],
-  },
-];
-
-export const SEED_TURMAS: Turma[] = [
-  {
-    id: "t-dsg-2026a",
-    cursoId: "c-dsg",
-    nome: "Design 2026/A",
-    cod: "DSG-26A",
-    data: "2026-02-03",
-    horarios: [
-      { diaSemana: "seg", inicio: "08:00", fim: "10:00" },
-      { diaSemana: "qua", inicio: "08:00", fim: "10:00" },
-    ],
-    alunosIds: ["al-001", "al-002"],
-    descricao: "Turma matutina",
-  },
-  {
-    id: "t-dsg-2026b",
-    cursoId: "c-dsg",
-    nome: "Design 2026/B",
-    cod: "DSG-26B",
-    data: "2026-02-03",
-    horarios: [
-      { diaSemana: "ter", inicio: "14:00", fim: "16:00" },
-      { diaSemana: "qui", inicio: "14:00", fim: "16:00" },
-    ],
-    alunosIds: [],
-    descricao: "Turma vespertina",
-  },
-  {
-    id: "t-inf-2026a",
-    cursoId: "c-inf",
-    nome: "Informática 2026/A",
-    cod: "INF-26A",
-    data: "2026-02-04",
-    horarios: [{ diaSemana: "qua", inicio: "10:00", fim: "12:00" }],
-    alunosIds: ["al-003"],
-  },
-  {
-    id: "t-gam-2026a",
-    cursoId: "c-gam",
-    nome: "Games 2026/A",
-    cod: "GAM-26A",
-    data: "2026-02-05",
-    horarios: [{ diaSemana: "sex", inicio: "19:00", fim: "21:00" }],
-    alunosIds: [],
-  },
-];
-
+// ====================================================================
+// CURSOS (siglas extraídas da planilha Turmas_e_Horários.xlsx)
+// Os nomes completos são placeholders — edite no app quando souber.
+// ====================================================================
 export const SEED_CURSOS: Curso[] = [
   {
-    id: "c-dsg",
-    cod: "DSG",
-    nome: "Design",
-    descricao:
-      "Curso voltado à formação de competências em design visual, identidade de marca e interfaces digitais.",
+    id: "c-mp",
+    cod: "MP",
+    nome: "Curso MP",
+    descricao: "Nome do curso a ser definido.",
   },
   {
-    id: "c-inf",
-    cod: "INF",
-    nome: "Informática",
-    descricao:
-      "Fundamentos de computação, lógica de programação e uso produtivo de ferramentas digitais.",
+    id: "c-gp",
+    cod: "GP",
+    nome: "Curso GP",
+    descricao: "Nome do curso a ser definido.",
   },
   {
-    id: "c-gam",
-    cod: "GAM",
-    nome: "Games",
-    descricao:
-      "Universo dos jogos eletrônicos: e-sports, design de jogos e cultura gamer aplicada à educação.",
+    id: "c-ad",
+    cod: "AD",
+    nome: "Curso AD",
+    descricao: "Nome do curso a ser definido.",
+  },
+  {
+    id: "c-rb",
+    cod: "RB",
+    nome: "Curso RB",
+    descricao: "Nome do curso a ser definido.",
   },
 ];
 
-export const SEED_GRUPOS: Record<string, string[]> = {
-  "c-dsg": ["Design UI", "Identidade Visual"],
-  "c-inf": ["Informática Básica", "Lógica de Programação"],
-  "c-gam": ["E-sports", "Game Design"],
-};
+// ====================================================================
+// TURMAS — extraídas da planilha (slots de 1h, duração padrão)
+// Slots compartilhados foram replicados em cada turma envolvida.
+// ====================================================================
+export const SEED_TURMAS: Turma[] = [
+  // ----- MP -----
+  {
+    id: "t-mp-1",
+    cursoId: "c-mp",
+    nome: "MP_T1",
+    cod: "MP_T1",
+    data: "2026-02-02",
+    horarios: [{ diaSemana: "seg", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-2",
+    cursoId: "c-mp",
+    nome: "MP_T2",
+    cod: "MP_T2",
+    data: "2026-02-06",
+    horarios: [{ diaSemana: "sex", inicio: "09:00", fim: "10:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-3",
+    cursoId: "c-mp",
+    nome: "MP_T3",
+    cod: "MP_T3",
+    data: "2026-02-06",
+    horarios: [{ diaSemana: "sex", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-4",
+    cursoId: "c-mp",
+    nome: "MP_T4",
+    cod: "MP_T4",
+    data: "2026-02-07",
+    horarios: [{ diaSemana: "sab", inicio: "07:30", fim: "08:30" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-5",
+    cursoId: "c-mp",
+    nome: "MP_T5",
+    cod: "MP_T5",
+    data: "2026-02-08",
+    horarios: [{ diaSemana: "dom", inicio: "10:00", fim: "11:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-6",
+    cursoId: "c-mp",
+    nome: "MP_T6",
+    cod: "MP_T6",
+    data: "2026-02-03",
+    horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-mp-7",
+    cursoId: "c-mp",
+    nome: "MP_T7",
+    cod: "MP_T7",
+    data: "2026-02-03",
+    horarios: [{ diaSemana: "ter", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
 
+  // ----- GP -----
+  {
+    id: "t-gp-2006-1",
+    cursoId: "c-gp",
+    nome: "GP_T2006-1",
+    cod: "GP_T2006-1",
+    data: "2026-02-02",
+    horarios: [{ diaSemana: "seg", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-gp-4003-1",
+    cursoId: "c-gp",
+    nome: "GP_T4003-1",
+    cod: "GP_T4003-1",
+    data: "2026-02-04",
+    horarios: [{ diaSemana: "qua", inicio: "14:00", fim: "15:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-gp-7003-2",
+    cursoId: "c-gp",
+    nome: "GP_T7003-2",
+    cod: "GP_T7003-2",
+    data: "2026-02-07",
+    horarios: [{ diaSemana: "sab", inicio: "13:30", fim: "14:30" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-gp-7004-1",
+    cursoId: "c-gp",
+    nome: "GP_T7004-1",
+    cod: "GP_T7004-1",
+    data: "2026-02-07",
+    horarios: [{ diaSemana: "sab", inicio: "13:30", fim: "14:30" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-gp-8003-2",
+    cursoId: "c-gp",
+    nome: "GP_T8003-2",
+    cod: "GP_T8003-2",
+    data: "2026-02-08",
+    horarios: [{ diaSemana: "dom", inicio: "12:30", fim: "13:30" }],
+    alunosIds: [],
+  },
+
+  // ----- AD -----
+  {
+    id: "t-ad-1",
+    cursoId: "c-ad",
+    nome: "AD_T1",
+    cod: "AD_T1",
+    data: "2026-02-03",
+    horarios: [
+      { diaSemana: "ter", inicio: "16:30", fim: "17:30" },
+      { diaSemana: "qui", inicio: "16:30", fim: "17:30" },
+    ],
+    alunosIds: [],
+  },
+  {
+    id: "t-ad-2",
+    cursoId: "c-ad",
+    nome: "AD_T2",
+    cod: "AD_T2",
+    data: "2026-02-08",
+    horarios: [{ diaSemana: "dom", inicio: "15:00", fim: "16:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-ad-3",
+    cursoId: "c-ad",
+    nome: "AD_T3",
+    cod: "AD_T3",
+    data: "2026-02-07",
+    horarios: [{ diaSemana: "sab", inicio: "10:00", fim: "11:00" }],
+    alunosIds: [],
+  },
+  {
+    id: "t-ad-4",
+    cursoId: "c-ad",
+    nome: "AD_T4",
+    cod: "AD_T4",
+    data: "2026-02-07",
+    horarios: [{ diaSemana: "sab", inicio: "15:00", fim: "16:00" }],
+    alunosIds: [],
+  },
+
+  // ----- RB -----
+  {
+    id: "t-rb-1",
+    cursoId: "c-rb",
+    nome: "RB_T1",
+    cod: "RB_T1",
+    data: "2026-02-04",
+    horarios: [{ diaSemana: "qua", inicio: "19:00", fim: "20:00" }],
+    alunosIds: [],
+  },
+];
+
+// ====================================================================
+// ALUNOS (mantidos como demo — sem vínculo com as novas turmas)
+// ====================================================================
+export const SEED_ALUNOS: Aluno[] = [];
+
+// ====================================================================
+// HABILIDADES (genéricas)
+// ====================================================================
 export const SEED_HABILIDADES: Habilidade[] = [
   {
     id: "h-com-01",
@@ -146,75 +244,22 @@ export const SEED_HABILIDADES: Habilidade[] = [
   },
 ];
 
-export const SEED_ATIVIDADES: Atividade[] = [
-  {
-    id: "a-001",
-    tipo: 0,
-    nome: "Introdução ao Photoshop",
-    codigo: "DSG-UI-001",
-    cursoId: "c-dsg",
-    grupo: "Design UI",
-    descricao: "Primeira aula sobre ferramentas de imagem.",
-    objetivoResultados: "Aluno deve reconhecer a interface e camadas.",
-    prazo: "2026-05-10",
-    criadoPor: "Prof. Ana",
-    habilidadeIds: ["h-tec-04", "h-cri-02"],
-    descricaoConteudo: "Camadas, máscaras, atalhos básicos.",
-    sugestoesPais: "Incentivar prática em casa por 15 min/dia.",
-  },
-  {
-    id: "a-002",
-    tipo: 1,
-    nome: "Cartaz temático",
-    codigo: "DSG-UI-002",
-    cursoId: "c-dsg",
-    grupo: "Design UI",
-    descricao: "Tarefa prática de composição visual.",
-    objetivoResultados: "Entregar cartaz aplicando hierarquia tipográfica.",
-    prazo: "2026-05-20",
-    criadoPor: "Prof. Ana",
-    habilidadeIds: ["h-cri-02", "h-com-01"],
-    instrucoes: "Tamanho A3, mínimo 3 elementos hierárquicos, entregar em PDF.",
-  },
-  {
-    id: "a-003",
-    tipo: 0,
-    nome: "Lógica com fluxogramas",
-    codigo: "INF-LP-001",
-    cursoId: "c-inf",
-    grupo: "Lógica de Programação",
-    descricao: "Aula introdutória sobre raciocínio algorítmico.",
-    objetivoResultados: "Construir fluxogramas simples para problemas do cotidiano.",
-    prazo: "2026-05-12",
-    criadoPor: "Prof. Bruno",
-    habilidadeIds: ["h-com-01", "h-col-03"],
-    descricaoConteudo: "Estruturas sequenciais, condicionais e repetição.",
-    sugestoesPais: "Propor pequenos desafios lógicos em casa.",
-  },
-];
+// ====================================================================
+// GRUPOS por curso (placeholders — edite conforme necessário)
+// ====================================================================
+export const SEED_GRUPOS: Record<string, string[]> = {
+  "c-mp": ["Geral"],
+  "c-gp": ["Geral"],
+  "c-ad": ["Geral"],
+  "c-rb": ["Geral"],
+};
 
-export const SEED_AGENDAMENTOS: Agendamento[] = [
-  {
-    id: "ag-001",
-    turmaId: "t-dsg-2026a",
-    data: "2026-02-09",
-    diaSemana: "seg",
-    inicio: "08:00",
-    fim: "10:00",
-    atividadeIds: ["a-001"],
-    status: "pendente",
-    criadoEm: "2026-02-01T10:00:00.000Z",
-  },
-  {
-    id: "ag-002",
-    turmaId: "t-dsg-2026a",
-    data: "2026-02-11",
-    diaSemana: "qua",
-    inicio: "08:00",
-    fim: "10:00",
-    atividadeIds: ["a-002"],
-    status: "concluido",
-    criadoEm: "2026-02-01T10:00:00.000Z",
-    concluidoEm: "2026-02-11T10:05:00.000Z",
-  },
-];
+// ====================================================================
+// ATIVIDADES (vazio — serão criadas pelos professores)
+// ====================================================================
+export const SEED_ATIVIDADES: Atividade[] = [];
+
+// ====================================================================
+// AGENDAMENTOS (vazio)
+// ====================================================================
+export const SEED_AGENDAMENTOS: Agendamento[] = [];
