@@ -149,6 +149,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-10",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-tec-04", "h-cri-02"],
+    turmaIds: ["t-dsg-2026a"],
     descricaoConteudo: "Camadas, máscaras, atalhos básicos.",
     sugestoesPais: "Incentivar prática em casa por 15 min/dia.",
   },
@@ -164,6 +165,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-20",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-cri-02", "h-com-01"],
+    turmaIds: ["t-dsg-2026a", "t-dsg-2026b"],
     instrucoes: "Tamanho A3, mínimo 3 elementos hierárquicos, entregar em PDF.",
   },
   {
@@ -178,6 +180,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-12",
     criadoPor: "Prof. Bruno",
     habilidadeIds: ["h-com-01", "h-col-03"],
+    turmaIds: ["t-inf-2026a"],
     descricaoConteudo: "Estruturas sequenciais, condicionais e repetição.",
     sugestoesPais: "Propor pequenos desafios lógicos em casa.",
   },

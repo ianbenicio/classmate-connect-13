@@ -20,6 +20,7 @@ import {
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
+  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import type { Atividade } from "@/lib/academic-types";
@@ -207,6 +208,7 @@ function AtividadesPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={cursos}
+        turmas={SEED_TURMAS}
         grupos={SEED_GRUPOS}
         habilidades={SEED_HABILIDADES}
         onSave={handleSave}

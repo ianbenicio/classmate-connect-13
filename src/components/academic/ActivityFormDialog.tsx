@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -24,12 +26,14 @@ import type {
   AtividadeTipo,
   Curso,
   Habilidade,
+  Turma,
 } from "@/lib/academic-types";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cursos: Curso[];
+  turmas: Turma[];
   grupos: Record<string, string[]>;
   habilidades: Habilidade[];
   /** undefined => criação; com valor => edição */
@@ -52,6 +56,7 @@ export function ActivityFormDialog({
   open,
   onOpenChange,
   cursos,
+  turmas,
   grupos,
   habilidades,
   editing,
@@ -71,6 +76,7 @@ export function ActivityFormDialog({
   const [sugestoesPais, setSugestoesPais] = useState("");
   const [instrucoes, setInstrucoes] = useState("");
   const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
+  const [turmaIds, setTurmaIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!open) return;
@@ -86,6 +92,7 @@ export function ActivityFormDialog({
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
       setHabilidadeIds(editing.habilidadeIds);
+      setTurmaIds(editing.turmaIds ?? []);
     } else {
       setTipo(defaultTipo);
       setNome("");
@@ -98,11 +105,19 @@ export function ActivityFormDialog({
       setSugestoesPais("");
       setInstrucoes("");
       setHabilidadeIds([]);
+      setTurmaIds([]);
     }
   }, [open, editing, defaultTipo, cursos]);
 
   const cursoSelecionado = cursos.find((c) => c.id === cursoId);
   const gruposDisponiveis = grupos[cursoId] ?? [];
+  const turmasDoCurso = turmas.filter((t) => t.cursoId === cursoId);
+
+  const toggleTurma = (id: string) => {
+    setTurmaIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +137,7 @@ export function ActivityFormDialog({
           descricao,
           objetivoResultados,
           habilidadeIds,
+          turmaIds,
           descricaoConteudo: editing!.tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: editing!.tipo === 0 ? sugestoesPais : undefined,
           instrucoes: editing!.tipo === 1 ? instrucoes : undefined,
@@ -142,6 +158,7 @@ export function ActivityFormDialog({
           prazo,
           criadoPor: "Prof. Logado",
           habilidadeIds,
+          turmaIds,
           descricaoConteudo: tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: tipo === 0 ? sugestoesPais : undefined,
           instrucoes: tipo === 1 ? instrucoes : undefined,
@@ -198,6 +215,7 @@ export function ActivityFormDialog({
                 onValueChange={(v) => {
                   setCursoId(v);
                   setGrupo("");
+                  setTurmaIds([]);
                 }}
                 disabled={isEdit}
               >
@@ -310,6 +328,50 @@ export function ActivityFormDialog({
               </div>
             </div>
           )}
+
+          <div className="space-y-2">
+            <Label>Turmas do curso</Label>
+            {!cursoId ? (
+              <p className="text-xs text-muted-foreground">
+                Selecione um curso para listar as turmas.
+              </p>
+            ) : turmasDoCurso.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Este curso ainda não possui turmas cadastradas.
+              </p>
+            ) : (
+              <div className="rounded-md border p-3 space-y-2">
+                {turmasDoCurso.map((t) => {
+                  const checked = turmaIds.includes(t.id);
+                  return (
+                    <label
+                      key={t.id}
+                      className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={() => toggleTurma(t.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm truncate">
+                            {t.nome}
+                          </span>
+                          <Badge variant="outline" className="text-[10px]">
+                            {t.cod}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {t.horario} · {t.alunosIds.length} alunos
+                        </div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           <div className="space-y-2">
             <Label>Habilidades Relacionadas</Label>

@@ -189,6 +189,7 @@ function CursoAtividadesPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={[curso]}
+        turmas={turmasDoCurso}
         grupos={SEED_GRUPOS}
         habilidades={SEED_HABILIDADES}
         editing={editing}
