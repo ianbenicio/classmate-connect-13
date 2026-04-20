@@ -7,24 +7,23 @@ import {
   format,
   isSameDay,
   isSameMonth,
-  startOfDay,
   startOfMonth,
   startOfWeek,
   subMonths,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
+  computeSlotEstado,
   diaSemanaFromDate,
-  isAgendamentoAtivo,
+  type Agendamento,
   type Curso,
-  type Turma,
   type DiaSemana,
+  type SlotEstado,
+  type Turma,
 } from "@/lib/academic-types";
-import type { Agendamento } from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {
@@ -33,6 +32,8 @@ interface SlotClickPayload {
   inicio: string;
   fim: string;
   diaSemana: DiaSemana;
+  estado: SlotEstado;
+  agendamento?: Agendamento;
 }
 
 interface Props {
@@ -42,7 +43,6 @@ interface Props {
   onSlotClick?: (payload: SlotClickPayload) => void;
 }
 
-// Gera ocorrências semanais (dia da semana + slot) para uma data
 function turmasNoDia(turmas: Turma[], date: Date) {
   const ds = diaSemanaFromDate(date);
   const items: { turma: Turma; inicio: string; fim: string }[] = [];
@@ -114,11 +114,13 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick }: 
           onSlotClick={onSlotClick}
         />
       </TabsContent>
+
+      <Legend />
     </Tabs>
   );
 }
 
-// ---------- Cores por curso ----------
+// ---------- Cores por curso (usado só na legenda) ----------
 const CURSO_COLORS: Record<string, string> = {
   "c-mp": "bg-blue-500/15 text-blue-700 border-blue-500/30 dark:text-blue-300",
   "c-gp":
@@ -129,9 +131,95 @@ const CURSO_COLORS: Record<string, string> = {
     "bg-fuchsia-500/15 text-fuchsia-700 border-fuchsia-500/30 dark:text-fuchsia-300",
 };
 function cursoChipClass(cursoId: string) {
+  return CURSO_COLORS[cursoId] || "bg-muted text-foreground border-border";
+}
+
+// ---------- Estados visuais por estado de slot ----------
+const ESTADO_LABEL: Record<SlotEstado, string> = {
+  vazio_futuro: "Pronta para receber atividade",
+  vazio_passado: "Slot passado — não pode mais agendar",
+  agendado: "Atividade agendada",
+  atrasado: "Relatório atrasado (24h)",
+  expirado: "Prazo expirado — sem relatório",
+  concluido: "Relatório registrado",
+};
+
+function StateBadge({ estado }: { estado: SlotEstado }) {
+  switch (estado) {
+    case "vazio_futuro":
+      return <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" aria-label="Pronta" />;
+    case "vazio_passado":
+      return <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/50" aria-label="Indisponível" />;
+    case "agendado":
+      return <FileText className="h-3 w-3 text-primary" aria-label="Agendada" />;
+    case "concluido":
+      return <FileText className="h-3 w-3 text-emerald-600" aria-label="Relatório registrado" />;
+    case "atrasado":
+      return <span className="inline-block w-2 h-2 rounded-full bg-amber-500" aria-label="Atrasada" />;
+    case "expirado":
+      return <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/40" aria-label="Expirada" />;
+  }
+}
+
+function slotChipClasses(estado: SlotEstado, cursoId: string) {
+  switch (estado) {
+    case "agendado":
+      return "border-primary/50 bg-primary/10 text-foreground";
+    case "concluido":
+      return "border-emerald-500/40 bg-emerald-500/10 text-foreground";
+    case "atrasado":
+      return "border-amber-500/50 bg-amber-500/10 text-foreground";
+    case "expirado":
+      return "border-muted-foreground/30 bg-muted/40 text-muted-foreground";
+    case "vazio_passado":
+      return "border-muted bg-muted/30 text-muted-foreground";
+    case "vazio_futuro":
+    default:
+      return cursoChipClass(cursoId);
+  }
+}
+
+function isClickable(estado: SlotEstado) {
+  // expirado e vazio_passado são desabilitados
+  return estado !== "expirado" && estado !== "vazio_passado";
+}
+
+function Legend() {
   return (
-    CURSO_COLORS[cursoId] ||
-    "bg-muted text-foreground border-border"
+    <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
+      <span className="inline-flex items-center gap-1.5">
+        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+        Pronta
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <FileText className="h-3 w-3 text-primary" />
+        Agendada
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <span className="inline-block w-2 h-2 rounded-full bg-amber-500" />
+        Relatório atrasado
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/40" />
+        Expirada / indisponível
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <FileText className="h-3 w-3 text-emerald-600" />
+        Relatório registrado
+      </span>
+    </div>
+  );
+}
+
+// helper pra achar agendamento exato do slot
+function findAg(
+  ags: Agendamento[],
+  turmaId: string,
+  dataKey: string,
+  inicio: string,
+) {
+  return ags.find(
+    (a) => a.turmaId === turmaId && a.data === dataKey && a.inicio === inicio,
   );
 }
 
@@ -166,6 +254,7 @@ function MonthView({
   }
 
   const weekdayLabels = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+  const now = new Date();
 
   return (
     <div className="bg-card border rounded-lg overflow-hidden">
@@ -187,7 +276,6 @@ function MonthView({
           const isCurMonth = isSameMonth(d, refDate);
           const isToday = isSameDay(d, new Date());
           const dayKey = format(d, "yyyy-MM-dd");
-          const ags = agendamentos.filter((a) => a.data === dayKey);
           return (
             <button
               key={d.toISOString()}
@@ -207,50 +295,41 @@ function MonthView({
                 >
                   {format(d, "d")}
                 </span>
-                {ags.length > 0 && (
-                  <span className="text-[10px] text-primary font-semibold">
-                    ●
-                  </span>
-                )}
               </div>
               <div className="space-y-0.5 overflow-hidden">
                 {items.slice(0, 3).map((it, i) => {
-                  const dayKey = format(d, "yyyy-MM-dd");
-                  const ag = ags.find(
-                    (a) => a.turmaId === it.turma.id && a.inicio === it.inicio,
-                  );
-                  const ativa = ag ? isAgendamentoAtivo(ag) : false;
-                  const isPast = startOfDay(d) < startOfDay(new Date());
+                  const ag = findAg(agendamentos, it.turma.id, dayKey, it.inicio);
+                  const estado = computeSlotEstado(dayKey, it.fim, ag, now);
+                  const clickable = isClickable(estado);
                   return (
                     <button
                       key={i}
                       type="button"
-                      disabled={isPast}
+                      disabled={!clickable}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (isPast) return;
+                        if (!clickable) return;
                         onSlotClick?.({
                           turma: it.turma,
                           date: d,
                           inicio: it.inicio,
                           fim: it.fim,
                           diaSemana: diaSemanaFromDate(d),
+                          estado,
+                          agendamento: ag,
                         });
                       }}
                       className={cn(
-                        "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left hover:brightness-110",
-                        cursoChipClass(it.turma.cursoId),
-                        isPast && "opacity-40 cursor-not-allowed hover:brightness-100",
-                        ativa && "ring-1 ring-primary",
+                        "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left flex items-center gap-1 hover:brightness-110",
+                        slotChipClasses(estado, it.turma.cursoId),
+                        !clickable && "opacity-60 cursor-not-allowed hover:brightness-100",
                       )}
-                      title={
-                        isPast
-                          ? `${it.turma.cod} · ${it.inicio}–${it.fim} — data passada`
-                          : `${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`
-                      }
+                      title={`${it.turma.cod} · ${it.inicio}–${it.fim} — ${ESTADO_LABEL[estado]}`}
                     >
-                      {ativa && "● "}
-                      {it.inicio} {it.turma.cod}
+                      <StateBadge estado={estado} />
+                      <span className="truncate">
+                        {it.inicio} {it.turma.cod}
+                      </span>
                     </button>
                   );
                 })}
@@ -297,7 +376,6 @@ function WeekView({
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
 
-  // calcula faixa de horas a exibir a partir das turmas
   const { startHour, endHour } = useMemo(() => {
     let min = 24,
       max = 0;
@@ -319,7 +397,6 @@ function WeekView({
   const hours: number[] = [];
   for (let h = startHour; h <= endHour; h++) hours.push(h);
 
-  // Index turmas por dia da semana
   const byDay = useMemo(() => {
     const map = new Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>();
     for (const d of WEEK_DAYS) map.set(d.value, []);
@@ -348,7 +425,6 @@ function WeekView({
       </div>
       <div className="overflow-x-auto">
         <div className="grid min-w-[720px]" style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}>
-          {/* cabeçalho */}
           <div className="border-b border-r bg-muted/30" />
           {WEEK_DAYS.map((d, i) => {
             const date = weekDates[i];
@@ -369,36 +445,17 @@ function WeekView({
             );
           })}
 
-          {/* linhas de horas */}
           {hours.map((h) => (
             <FragmentRow
               key={h}
               hour={h}
               weekDates={weekDates}
               byDay={byDay}
-              cursoMap={cursoMap}
               agByKey={agByKey}
               onSlotClick={onSlotClick}
             />
           ))}
         </div>
-      </div>
-      <div className="px-4 py-2 border-t flex flex-wrap gap-3 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-primary" />
-          Slot com agendamento
-        </span>
-        {[...cursoMap.values()].map((c) => (
-          <span key={c.id} className="inline-flex items-center gap-1">
-            <span
-              className={cn(
-                "inline-block w-2.5 h-2.5 rounded border",
-                cursoChipClass(c.id),
-              )}
-            />
-            {c.cod}
-          </span>
-        ))}
       </div>
     </div>
   );
@@ -408,19 +465,17 @@ function FragmentRow({
   hour,
   weekDates,
   byDay,
-  cursoMap,
   agByKey,
   onSlotClick,
 }: {
   hour: number;
   weekDates: Date[];
   byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
-  cursoMap: Map<string, Curso>;
   agByKey: Map<string, Agendamento>;
   onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
-  const today = startOfDay(new Date());
+  const now = new Date();
   return (
     <>
       <div className="border-b border-r px-1.5 py-1 text-[10px] text-muted-foreground bg-muted/20 text-right">
@@ -429,7 +484,6 @@ function FragmentRow({
       {WEEK_DAYS.map((d, i) => {
         const date = weekDates[i];
         const dayKey = format(date, "yyyy-MM-dd");
-        const isPast = startOfDay(date) < today;
         const items = (byDay.get(d.value) ?? []).filter((it) => {
           const ih = parseInt(it.inicio.split(":")[0], 10);
           return ih === hour;
@@ -441,45 +495,37 @@ function FragmentRow({
           >
             {items.map((it, idx) => {
               const ag = agByKey.get(`${it.turma.id}|${dayKey}|${it.inicio}`);
-              const ativa = ag ? isAgendamentoAtivo(ag) : false;
+              const estado = computeSlotEstado(dayKey, it.fim, ag, now);
+              const clickable = isClickable(estado);
               return (
                 <button
                   key={idx}
                   type="button"
-                  disabled={isPast}
+                  disabled={!clickable}
                   onClick={() => {
-                    if (isPast) return;
+                    if (!clickable) return;
                     onSlotClick?.({
                       turma: it.turma,
                       date,
                       inicio: it.inicio,
                       fim: it.fim,
                       diaSemana: d.value,
+                      estado,
+                      agendamento: ag,
                     });
                   }}
                   className={cn(
-                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative w-full text-left hover:brightness-110 cursor-pointer",
-                    cursoChipClass(it.turma.cursoId),
-                    isPast && "opacity-40 cursor-not-allowed hover:brightness-100",
-                    ativa && "ring-1 ring-primary",
+                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate w-full text-left flex items-center gap-1 hover:brightness-110 cursor-pointer",
+                    slotChipClasses(estado, it.turma.cursoId),
+                    !clickable && "opacity-60 cursor-not-allowed hover:brightness-100",
                   )}
-                  title={
-                    isPast
-                      ? `${it.turma.cod} · ${it.inicio}–${it.fim} — data passada`
-                      : ativa
-                        ? `${it.turma.cod} · ${it.inicio}–${it.fim} — atividade agendada`
-                        : `${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`
-                  }
+                  title={`${it.turma.cod} · ${it.inicio}–${it.fim} — ${ESTADO_LABEL[estado]}`}
                 >
-                  <span className="font-semibold">{it.turma.cod}</span>
-                  <span className="opacity-70 ml-1">
-                    {it.inicio}–{it.fim}
+                  <StateBadge estado={estado} />
+                  <span className="font-semibold truncate">{it.turma.cod}</span>
+                  <span className="opacity-70 ml-auto shrink-0">
+                    {it.inicio}
                   </span>
-                  {ativa && (
-                    <span className="absolute top-0.5 right-0.5 text-[8px] font-bold text-primary">
-                      ●
-                    </span>
-                  )}
                 </button>
               );
             })}
