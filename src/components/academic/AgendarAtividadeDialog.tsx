@@ -295,44 +295,84 @@ export function AgendarAtividadeDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Atividades *</Label>
+            <Label>Grupo *</Label>
             {ativsDoCurso.length === 0 ? (
               <p className="text-xs text-muted-foreground border rounded-md p-3">
                 Nenhuma atividade cadastrada neste curso ainda.
               </p>
+            ) : grupos.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Nenhum grupo disponível.
+              </p>
             ) : (
-              <div className="rounded-md border p-2 space-y-1 max-h-56 overflow-y-auto">
-                {ativsDoCurso.map((a) => {
-                  const checked = atividadeIds.includes(a.id);
-                  return (
-                    <label
-                      key={a.id}
-                      className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50"
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={() => toggleAtividade(a.id)}
-                        className="mt-0.5"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline" className="text-[10px]">
-                            {a.tipo === 0 ? "Aula" : "Tarefa"}
-                          </Badge>
-                          <span className="font-medium text-sm truncate">
-                            {a.nome}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {a.codigo} · {a.grupo}
-                        </div>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
+              <Select value={grupo} onValueChange={setGrupo}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o grupo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {grupos.map((g) => (
+                    <SelectItem key={g} value={g}>
+                      {g}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
+
+          {grupo && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Aula</Label>
+                <Select
+                  value={aulaId || "__none__"}
+                  onValueChange={(v) => setAula(v === "__none__" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sem aula" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
+                    {aulasDoGrupo.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.codigo} · {a.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {aulasDoGrupo.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sem aulas neste grupo.
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Tarefa</Label>
+                <Select
+                  value={tarefaId || "__none__"}
+                  onValueChange={(v) => setTarefa(v === "__none__" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sem tarefa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
+                    {tarefasDoGrupo.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.codigo} · {a.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {tarefasDoGrupo.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sem tarefas neste grupo.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Observação</Label>
