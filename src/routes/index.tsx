@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +12,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { GraduationCap, ClipboardList } from "lucide-react";
+import { GraduationCap, ClipboardList, Plus } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
+import { CourseFormDialog } from "@/components/academic/CourseFormDialog";
 import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import {
@@ -20,6 +22,7 @@ import {
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
+  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import type {
   Atividade,
