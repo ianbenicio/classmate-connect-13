@@ -191,6 +191,12 @@ function AtividadesPage() {
         onOpenChange={(open) => !open && setHabilidadeDetalhe(null)}
       />
 
+      <CourseFormDialog
+        open={cursoFormOpen}
+        onOpenChange={setCursoFormOpen}
+        onSave={handleSaveCurso}
+      />
+
       <AlertDialog
         open={!!confirmDelete}
         onOpenChange={(open) => !open && setConfirmDelete(null)}
