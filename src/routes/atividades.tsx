@@ -58,8 +58,8 @@ function AtividadesPage() {
     });
   }, [cursos, atividades]);
 
-  const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas, 0);
-  const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas, 0);
+  const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas.length, 0);
+  const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas.length, 0);
 
   const handleSave = (atividade: Atividade) => {
     setAtividades((prev) => {
