@@ -72,6 +72,30 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <>
+      <header className="border-b bg-card sticky top-0 z-40">
+        <div className="container mx-auto max-w-6xl px-4 h-14 flex items-center gap-6">
+          <Link to="/" className="font-bold tracking-tight">
+            🎓 Acadêmico
+          </Link>
+          <nav className="flex items-center gap-4 text-sm">
+            <Link
+              to="/"
+              activeOptions={{ exact: true }}
+              activeProps={{ className: "text-foreground font-medium" }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Painel
+            </Link>
+            <Link
+              to="/cursos"
+              activeProps={{ className: "text-foreground font-medium" }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Cursos
+            </Link>
+          </nav>
+        </div>
+      </header>
       <Outlet />
       <Toaster />
     </>
