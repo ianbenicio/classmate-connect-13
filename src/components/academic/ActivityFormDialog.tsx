@@ -215,6 +215,7 @@ export function ActivityFormDialog({
                 onValueChange={(v) => {
                   setCursoId(v);
                   setGrupo("");
+                  setTurmaIds([]);
                 }}
                 disabled={isEdit}
               >
