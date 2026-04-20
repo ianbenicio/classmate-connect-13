@@ -85,6 +85,7 @@ export function CourseActivitiesDialog({
             title="Aulas"
             icon={<GraduationCap className="h-4 w-4" />}
             items={aulas}
+            grupos={gruposCurso}
             emptyText="Nenhuma aula cadastrada."
             onAdd={() => onNew(0)}
             onEdit={onEdit}
@@ -94,6 +95,7 @@ export function CourseActivitiesDialog({
             title="Tarefas"
             icon={<ClipboardList className="h-4 w-4" />}
             items={tarefas}
+            grupos={gruposCurso}
             emptyText="Nenhuma tarefa cadastrada."
             onAdd={() => onNew(1)}
             onEdit={onEdit}
