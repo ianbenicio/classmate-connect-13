@@ -19,33 +19,26 @@ import {
 } from "@/components/ui/select";
 import { SkillSelector } from "./SkillSelector";
 import { toast } from "sonner";
-import type {
-  Atividade,
-  AtividadeTipo,
-  Curso,
-  Habilidade,
+import {
+  formatCodigoAtividade,
+  type Atividade,
+  type AtividadeTipo,
+  type Curso,
+  type Grupo,
+  type Habilidade,
 } from "@/lib/academic-types";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cursos: Curso[];
-  grupos: Record<string, string[]>;
+  grupos: Record<string, Grupo[]>;
   habilidades: Habilidade[];
   /** undefined => criação; com valor => edição */
   editing?: Atividade;
   /** tipo padrão na criação */
   defaultTipo?: AtividadeTipo;
   onSave: (atividade: Atividade) => void;
-}
-
-function gerarCodigo(cursoSigla: string, grupo: string, seq: number) {
-  const grupoSigla = grupo
-    .split(" ")
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("")
-    .slice(0, 3);
-  return `${cursoSigla}-${grupoSigla}-${String(seq).padStart(3, "0")}`;
 }
 
 export function ActivityFormDialog({
@@ -132,10 +125,10 @@ export function ActivityFormDialog({
           id: crypto.randomUUID(),
           tipo,
           nome,
-          codigo: gerarCodigo(
+          codigo: formatCodigoAtividade(
             cursoSelecionado?.cod ?? "XXX",
             grupo,
-            Math.floor(Math.random() * 900) + 100,
+            Math.floor(Math.random() * 90) + 10,
           ),
           cursoId,
           grupo,
@@ -229,8 +222,9 @@ export function ActivityFormDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {gruposDisponiveis.map((g) => (
-                    <SelectItem key={g} value={g}>
-                      {g}
+                    <SelectItem key={g.cod} value={g.cod}>
+                      <span className="font-mono text-xs mr-2">{g.cod}</span>
+                      {g.nome}
                     </SelectItem>
                   ))}
                 </SelectContent>

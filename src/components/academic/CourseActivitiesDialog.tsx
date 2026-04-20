@@ -17,11 +17,14 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import type {
-  Atividade,
-  AtividadeTipo,
-  Curso,
+import {
+  getGrupoNome,
+  type Atividade,
+  type AtividadeTipo,
+  type Curso,
+  type Grupo,
 } from "@/lib/academic-types";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
 
 interface Props {
   curso: Curso | null;
@@ -144,7 +147,7 @@ function Column({
               <div className="min-w-0">
                 <div className="text-sm font-medium truncate">{a.nome}</div>
                 <div className="text-[11px] text-muted-foreground truncate">
-                  {a.codigo} · {a.grupo}
+                  {a.codigo} · {getGrupoNome(SEED_GRUPOS, a.cursoId, a.grupo)}
                 </div>
               </div>
               <div className="flex gap-0.5 shrink-0">

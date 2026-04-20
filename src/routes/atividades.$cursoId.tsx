@@ -29,7 +29,11 @@ import {
   SEED_HABILIDADES,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
-import type { Atividade, AtividadeTipo } from "@/lib/academic-types";
+import {
+  getGrupoNome,
+  type Atividade,
+  type AtividadeTipo,
+} from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades/$cursoId")({
@@ -264,10 +268,10 @@ function ActivityColumn({
               key={a.id}
               className="flex items-center justify-between gap-2 rounded-md border bg-background p-3 hover:border-primary/40 transition-colors"
             >
-              <div className="min-w-0">
+                <div className="min-w-0">
                 <div className="font-medium truncate">{a.nome}</div>
                 <div className="text-xs text-muted-foreground truncate">
-                  {a.codigo} · {a.grupo}
+                  {a.codigo} · {getGrupoNome(SEED_GRUPOS, a.cursoId, a.grupo)}
                 </div>
               </div>
               <div className="flex gap-1 shrink-0">
