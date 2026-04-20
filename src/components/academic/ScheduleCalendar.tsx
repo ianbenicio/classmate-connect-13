@@ -267,11 +267,13 @@ function WeekView({
   turmas,
   cursoMap,
   agendamentos,
+  onSlotClick,
 }: {
   refDate: Date;
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
