@@ -223,6 +223,10 @@ function CursosPage() {
         }}
         onDelete={(a) => setConfirmDelete(a)}
         onSkillClick={(h) => setHabilidadeDetalhe(h)}
+        onEditCurso={(c) => {
+          setEditingCurso(c);
+          setCursoFormOpen(true);
+        }}
         onNewTurma={() => {
           setEditingTurma(undefined);
           setTurmaFormOpen(true);
