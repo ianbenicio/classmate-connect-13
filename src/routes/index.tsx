@@ -12,11 +12,11 @@ import {
   CalendarDays,
 } from "lucide-react";
 import {
-  SEED_ALUNOS,
   SEED_ATIVIDADES,
   SEED_CURSOS,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
+import { useAlunos } from "@/lib/alunos-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
