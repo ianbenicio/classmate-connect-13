@@ -111,6 +111,7 @@ function Column({
   title,
   icon,
   items,
+  grupos,
   emptyText,
   onAdd,
   onEdit,
@@ -119,11 +120,38 @@ function Column({
   title: string;
   icon: React.ReactNode;
   items: Atividade[];
+  grupos: Grupo[];
   emptyText: string;
   onAdd: () => void;
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
 }) {
+  // Group items by grupo cod, preserving grupos order
+  const grouped = useMemo(() => {
+    const map = new Map<string, Atividade[]>();
+    for (const a of items) {
+      const list = map.get(a.grupo) ?? [];
+      list.push(a);
+      map.set(a.grupo, list);
+    }
+    // Order by grupos definition, then any remaining
+    const result: { cod: string; nome: string; items: Atividade[] }[] = [];
+    for (const g of grupos) {
+      const list = map.get(g.cod);
+      if (list?.length) {
+        result.push({ cod: g.cod, nome: g.nome, items: list });
+        map.delete(g.cod);
+      }
+    }
+    // Any remaining not in grupos definition
+    for (const [cod, list] of map) {
+      result.push({ cod, nome: cod, items: list });
+    }
+    return result;
+  }, [items, grupos]);
+
+  const showGroupHeaders = grouped.length > 1;
+
   return (
     <section className="rounded-md border bg-muted/30 flex flex-col">
       <header className="flex items-center gap-2 px-3 py-2 border-b">
@@ -136,42 +164,61 @@ function Column({
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </header>
-      <div className="p-2 space-y-1.5">
+      <div className="p-2 space-y-1">
         {items.length === 0 ? (
           <p className="text-xs text-muted-foreground text-center py-4">
             {emptyText}
           </p>
         ) : (
-          items.map((a) => (
-            <div
-              key={a.id}
-              className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 transition-colors"
-            >
-              <div className="min-w-0">
-                <div className="text-sm font-medium truncate">{a.nome}</div>
-                <div className="text-[11px] text-muted-foreground truncate">
-                  {a.codigo} · {getGrupoNome(SEED_GRUPOS, a.cursoId, a.grupo)}
+          grouped.map((group) => (
+            <div key={group.cod}>
+              {showGroupHeaders && (
+                <div className="flex items-center gap-2 px-2 pt-2 pb-1">
+                  <Badge variant="outline" className="text-[10px] font-mono">
+                    {group.cod}
+                  </Badge>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {group.nome}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground ml-auto">
+                    {group.items.length}
+                  </span>
                 </div>
-              </div>
-              <div className="flex gap-0.5 shrink-0">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7"
-                  onClick={() => onEdit(a)}
-                  aria-label={`Editar ${a.nome}`}
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7"
-                  onClick={() => onDelete(a)}
-                  aria-label={`Remover ${a.nome}`}
-                >
-                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                </Button>
+              )}
+              <div className="space-y-1">
+                {group.items.map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium truncate">{a.nome}</div>
+                      <div className="text-[11px] text-muted-foreground truncate">
+                        {a.codigo}
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5 shrink-0">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => onEdit(a)}
+                        aria-label={`Editar ${a.nome}`}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-7 w-7"
+                        onClick={() => onDelete(a)}
+                        aria-label={`Remover ${a.nome}`}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))
