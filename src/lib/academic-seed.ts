@@ -149,6 +149,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-10",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-tec-04", "h-cri-02"],
+    turmaIds: ["t-dsg-2026a"],
     descricaoConteudo: "Camadas, máscaras, atalhos básicos.",
     sugestoesPais: "Incentivar prática em casa por 15 min/dia.",
   },
