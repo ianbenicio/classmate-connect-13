@@ -165,6 +165,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-20",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-cri-02", "h-com-01"],
+    turmaIds: ["t-dsg-2026a", "t-dsg-2026b"],
     instrucoes: "Tamanho A3, mínimo 3 elementos hierárquicos, entregar em PDF.",
   },
   {
