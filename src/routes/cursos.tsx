@@ -263,6 +263,7 @@ function CursosPage() {
       <CourseFormDialog
         open={cursoFormOpen}
         onOpenChange={setCursoFormOpen}
+        editing={editingCurso}
         onSave={handleSaveCurso}
       />
 
