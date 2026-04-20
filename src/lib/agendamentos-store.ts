@@ -54,9 +54,12 @@ export const agendamentosStore = {
 export function useAgendamentos(): Agendamento[] {
   const [snapshot, setSnapshot] = useState(agendamentosStore.getAll());
   useEffect(() => {
-    return agendamentosStore.subscribe(() =>
+    const unsub = agendamentosStore.subscribe(() =>
       setSnapshot(agendamentosStore.getAll()),
     );
+    return () => {
+      unsub();
+    };
   }, []);
   return snapshot;
 }
