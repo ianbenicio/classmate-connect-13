@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,17 @@ import {
   ClipboardList,
   ArrowRight,
   BookOpen,
+  Plus,
 } from "lucide-react";
-import { SEED_ATIVIDADES, SEED_CURSOS } from "@/lib/academic-seed";
+import {
+  SEED_ATIVIDADES,
+  SEED_CURSOS,
+  SEED_GRUPOS,
+  SEED_HABILIDADES,
+} from "@/lib/academic-seed";
+import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
+import type { Atividade } from "@/lib/academic-types";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades")({
   head: () => ({
