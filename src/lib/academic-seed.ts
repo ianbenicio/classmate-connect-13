@@ -1,9 +1,27 @@
 import type { Atividade, Curso, Habilidade } from "./academic-types";
 
 export const SEED_CURSOS: Curso[] = [
-  { id: "c-dsg", sigla: "DSG", nome: "Design" },
-  { id: "c-inf", sigla: "INF", nome: "Informática" },
-  { id: "c-gam", sigla: "GAM", nome: "Games" },
+  {
+    id: "c-dsg",
+    sigla: "DSG",
+    nome: "Design",
+    descricao:
+      "Curso voltado à formação de competências em design visual, identidade de marca e interfaces digitais.",
+  },
+  {
+    id: "c-inf",
+    sigla: "INF",
+    nome: "Informática",
+    descricao:
+      "Fundamentos de computação, lógica de programação e uso produtivo de ferramentas digitais.",
+  },
+  {
+    id: "c-gam",
+    sigla: "GAM",
+    nome: "Games",
+    descricao:
+      "Universo dos jogos eletrônicos: e-sports, design de jogos e cultura gamer aplicada à educação.",
+  },
 ];
 
 export const SEED_GRUPOS: Record<string, string[]> = {
