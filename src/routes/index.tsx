@@ -218,6 +218,47 @@ function DashboardPage() {
           </div>
         </section>
 
+        {/* Alunos */}
+        <section className="mb-10">
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-xl font-semibold tracking-tight inline-flex items-center gap-2">
+              <GraduationCap className="h-5 w-5" />
+              Alunos
+            </h2>
+            <span className="text-sm text-muted-foreground">
+              {alunos.length} no total
+            </span>
+          </div>
+          <div className="bg-card border rounded-lg divide-y">
+            {cursos.map((c) => {
+              const total = alunos.filter((a) => a.cursoId === c.id).length;
+              return (
+                <div
+                  key={c.id}
+                  className="p-4 flex items-center gap-3 hover:bg-muted/40 transition-colors"
+                >
+                  <Badge variant="outline" className="font-mono">
+                    {c.cod}
+                  </Badge>
+                  <span className="font-medium flex-1 min-w-0 truncate">
+                    {c.nome}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Users className="h-3.5 w-3.5" />
+                    <span className="font-mono tabular-nums">{total}</span>
+                    <span className="hidden sm:inline">alunos</span>
+                  </span>
+                </div>
+              );
+            })}
+            {cursos.length === 0 && (
+              <p className="p-6 text-sm text-muted-foreground text-center">
+                Nenhum curso cadastrado.
+              </p>
+            )}
+          </div>
+        </section>
+
         {/* Próximas atividades */}
         <section>
           <div className="flex items-baseline justify-between mb-4">
