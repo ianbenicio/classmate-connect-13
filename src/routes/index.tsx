@@ -114,12 +114,11 @@ function DashboardPage() {
         <section className="mb-10">
           <div className="flex items-baseline justify-between mb-4">
             <h2 className="text-xl font-semibold tracking-tight">Cursos</h2>
-            <Link
-              to="/cursos"
-              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-            >
-              Gerenciar <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/cursos">
+                <BookOpen /> Cursos
+              </Link>
+            </Button>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {cursos.map((c) => {
