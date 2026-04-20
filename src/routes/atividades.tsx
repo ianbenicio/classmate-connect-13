@@ -40,7 +40,8 @@ export const Route = createFileRoute("/atividades")({
 
 function AtividadesPage() {
   const cursos = SEED_CURSOS;
-  const atividades = SEED_ATIVIDADES;
+  const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
+  const [formOpen, setFormOpen] = useState(false);
 
   const porCurso = useMemo(() => {
     return cursos.map((c) => {
@@ -57,6 +58,16 @@ function AtividadesPage() {
   const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas, 0);
   const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas, 0);
 
+  const handleSave = (atividade: Atividade) => {
+    setAtividades((prev) => {
+      const exists = prev.some((a) => a.id === atividade.id);
+      return exists
+        ? prev.map((a) => (a.id === atividade.id ? atividade : a))
+        : [atividade, ...prev];
+    });
+    toast.success("Atividade salva");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -69,11 +80,16 @@ function AtividadesPage() {
               Aulas e tarefas organizadas por curso.
             </p>
           </div>
-          <Button asChild variant="outline">
-            <Link to="/cursos">
-              <BookOpen /> Gerenciar cursos
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setFormOpen(true)}>
+              <Plus /> Nova Atividade
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/cursos">
+                <BookOpen /> Gerenciar cursos
+              </Link>
+            </Button>
+          </div>
         </header>
 
         {/* Resumo geral */}
