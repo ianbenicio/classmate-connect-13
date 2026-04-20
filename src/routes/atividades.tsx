@@ -3,6 +3,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   GraduationCap,
   ClipboardList,
   ArrowRight,
@@ -46,17 +52,14 @@ function AtividadesPage() {
   const porCurso = useMemo(() => {
     return cursos.map((c) => {
       const ativs = atividades.filter((a) => a.cursoId === c.id);
-      return {
-        curso: c,
-        aulas: ativs.filter((a) => a.tipo === 0).length,
-        tarefas: ativs.filter((a) => a.tipo === 1).length,
-        total: ativs.length,
-      };
+      const aulas = ativs.filter((a) => a.tipo === 0);
+      const tarefas = ativs.filter((a) => a.tipo === 1);
+      return { curso: c, aulas, tarefas, total: ativs.length };
     });
   }, [cursos, atividades]);
 
-  const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas, 0);
-  const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas, 0);
+  const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas.length, 0);
+  const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas.length, 0);
 
   const handleSave = (atividade: Atividade) => {
     setAtividades((prev) => {
@@ -136,39 +139,66 @@ function AtividadesPage() {
               Nenhum curso cadastrado.
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <Accordion
+              type="multiple"
+              className="space-y-2"
+            >
               {porCurso.map(({ curso, aulas, tarefas, total }) => (
-                <Link
+                <AccordionItem
                   key={curso.id}
-                  to="/atividades/$cursoId"
-                  params={{ cursoId: curso.id }}
-                  className="block bg-card border rounded-lg p-4 shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
+                  value={curso.id}
+                  className="bg-card border rounded-lg shadow-sm px-4"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline">{curso.cod}</Badge>
-                    <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
-                      {total} atividades{" "}
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                  <h3 className="font-semibold mb-3">{curso.nome}</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-md border bg-muted/40 p-2">
-                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium inline-flex items-center gap-1">
-                        <GraduationCap className="h-3 w-3" /> Aulas
+                  <AccordionTrigger className="hover:no-underline py-4">
+                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
+                      <Badge variant="outline" className="shrink-0">
+                        {curso.cod}
+                      </Badge>
+                      <span className="font-semibold truncate text-left">
+                        {curso.nome}
+                      </span>
+                      <div className="ml-auto flex items-center gap-2 shrink-0 text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <GraduationCap className="h-3.5 w-3.5" />
+                          {aulas.length}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <ClipboardList className="h-3.5 w-3.5" />
+                          {tarefas.length}
+                        </span>
+                        <Badge variant="secondary">{total}</Badge>
                       </div>
-                      <div className="text-lg font-bold">{aulas}</div>
                     </div>
-                    <div className="rounded-md border bg-muted/40 p-2">
-                      <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium inline-flex items-center gap-1">
-                        <ClipboardList className="h-3 w-3" /> Tarefas
-                      </div>
-                      <div className="text-lg font-bold">{tarefas}</div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <div className="flex justify-end mb-3">
+                      <Button asChild size="sm" variant="outline">
+                        <Link
+                          to="/atividades/$cursoId"
+                          params={{ cursoId: curso.id }}
+                        >
+                          Abrir curso <ArrowRight />
+                        </Link>
+                      </Button>
                     </div>
-                  </div>
-                </Link>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <ActivityList
+                        title="Aulas"
+                        icon={<GraduationCap className="h-4 w-4" />}
+                        items={aulas}
+                        emptyText="Nenhuma aula cadastrada."
+                      />
+                      <ActivityList
+                        title="Tarefas"
+                        icon={<ClipboardList className="h-4 w-4" />}
+                        items={tarefas}
+                        emptyText="Nenhuma tarefa cadastrada."
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           )}
         </section>
       </div>
@@ -181,6 +211,49 @@ function AtividadesPage() {
         habilidades={SEED_HABILIDADES}
         onSave={handleSave}
       />
+    </div>
+  );
+}
+
+function ActivityList({
+  title,
+  icon,
+  items,
+  emptyText,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  items: Atividade[];
+  emptyText: string;
+}) {
+  return (
+    <div className="rounded-md border bg-muted/30">
+      <div className="flex items-center gap-2 px-3 py-2 border-b">
+        {icon}
+        <h3 className="text-sm font-semibold">{title}</h3>
+        <Badge variant="secondary" className="ml-auto">
+          {items.length}
+        </Badge>
+      </div>
+      <div className="p-2 space-y-1.5">
+        {items.length === 0 ? (
+          <p className="text-xs text-muted-foreground text-center py-4">
+            {emptyText}
+          </p>
+        ) : (
+          items.map((a) => (
+            <div
+              key={a.id}
+              className="rounded-md border bg-background px-3 py-2"
+            >
+              <div className="text-sm font-medium truncate">{a.nome}</div>
+              <div className="text-[11px] text-muted-foreground truncate">
+                {a.codigo} · {a.grupo}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
