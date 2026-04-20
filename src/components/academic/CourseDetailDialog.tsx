@@ -45,6 +45,11 @@ export function CourseDetailDialog({
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
 
+  const turmasDoCurso = useMemo(
+    () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
+    [curso, turmas],
+  );
+
   const doCurso = useMemo(
     () => (curso ? atividades.filter((a) => a.cursoId === curso.id) : []),
     [curso, atividades],
