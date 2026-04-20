@@ -1,4 +1,11 @@
-import type { Aluno, Atividade, Curso, Habilidade, Turma } from "./academic-types";
+import type {
+  Agendamento,
+  Aluno,
+  Atividade,
+  Curso,
+  Habilidade,
+  Turma,
+} from "./academic-types";
 
 export const SEED_ALUNOS: Aluno[] = [
   {
@@ -41,7 +48,10 @@ export const SEED_TURMAS: Turma[] = [
     nome: "Design 2026/A",
     cod: "DSG-26A",
     data: "2026-02-03",
-    horario: "08:00 - 10:00",
+    horarios: [
+      { diaSemana: "seg", inicio: "08:00", fim: "10:00" },
+      { diaSemana: "qua", inicio: "08:00", fim: "10:00" },
+    ],
     alunosIds: ["al-001", "al-002"],
     descricao: "Turma matutina",
   },
@@ -51,7 +61,10 @@ export const SEED_TURMAS: Turma[] = [
     nome: "Design 2026/B",
     cod: "DSG-26B",
     data: "2026-02-03",
-    horario: "14:00 - 16:00",
+    horarios: [
+      { diaSemana: "ter", inicio: "14:00", fim: "16:00" },
+      { diaSemana: "qui", inicio: "14:00", fim: "16:00" },
+    ],
     alunosIds: [],
     descricao: "Turma vespertina",
   },
@@ -61,7 +74,7 @@ export const SEED_TURMAS: Turma[] = [
     nome: "Informática 2026/A",
     cod: "INF-26A",
     data: "2026-02-04",
-    horario: "10:00 - 12:00",
+    horarios: [{ diaSemana: "qua", inicio: "10:00", fim: "12:00" }],
     alunosIds: ["al-003"],
   },
   {
@@ -70,7 +83,7 @@ export const SEED_TURMAS: Turma[] = [
     nome: "Games 2026/A",
     cod: "GAM-26A",
     data: "2026-02-05",
-    horario: "19:00 - 21:00",
+    horarios: [{ diaSemana: "sex", inicio: "19:00", fim: "21:00" }],
     alunosIds: [],
   },
 ];
@@ -110,28 +123,25 @@ export const SEED_HABILIDADES: Habilidade[] = [
     id: "h-com-01",
     sigla: "COM-01",
     descricao:
-      "Comunicação clara: capacidade de expressar ideias de forma objetiva. Avaliar pela coerência da apresentação e clareza nas respostas.",
+      "Comunicação clara: capacidade de expressar ideias de forma objetiva.",
     grupo: "Socioemocional",
   },
   {
     id: "h-cri-02",
     sigla: "CRI-02",
-    descricao:
-      "Criatividade aplicada: gerar soluções originais para problemas propostos. Identificar pela diversidade de abordagens.",
+    descricao: "Criatividade aplicada: gerar soluções originais.",
     grupo: "Cognitivo",
   },
   {
     id: "h-col-03",
     sigla: "COL-03",
-    descricao:
-      "Colaboração em equipe: trabalhar coletivamente respeitando opiniões. Avaliar pela participação ativa em dinâmicas.",
+    descricao: "Colaboração em equipe: trabalhar coletivamente.",
     grupo: "Socioemocional",
   },
   {
     id: "h-tec-04",
     sigla: "TEC-04",
-    descricao:
-      "Domínio técnico de ferramentas digitais. Avaliar pela execução de tarefas práticas no software.",
+    descricao: "Domínio técnico de ferramentas digitais.",
     grupo: "Técnico",
   },
 ];
@@ -149,7 +159,6 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-10",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-tec-04", "h-cri-02"],
-    turmaIds: ["t-dsg-2026a"],
     descricaoConteudo: "Camadas, máscaras, atalhos básicos.",
     sugestoesPais: "Incentivar prática em casa por 15 min/dia.",
   },
@@ -165,7 +174,6 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-20",
     criadoPor: "Prof. Ana",
     habilidadeIds: ["h-cri-02", "h-com-01"],
-    turmaIds: ["t-dsg-2026a", "t-dsg-2026b"],
     instrucoes: "Tamanho A3, mínimo 3 elementos hierárquicos, entregar em PDF.",
   },
   {
@@ -180,8 +188,33 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-12",
     criadoPor: "Prof. Bruno",
     habilidadeIds: ["h-com-01", "h-col-03"],
-    turmaIds: ["t-inf-2026a"],
     descricaoConteudo: "Estruturas sequenciais, condicionais e repetição.",
     sugestoesPais: "Propor pequenos desafios lógicos em casa.",
+  },
+];
+
+export const SEED_AGENDAMENTOS: Agendamento[] = [
+  {
+    id: "ag-001",
+    turmaId: "t-dsg-2026a",
+    data: "2026-02-09",
+    diaSemana: "seg",
+    inicio: "08:00",
+    fim: "10:00",
+    atividadeIds: ["a-001"],
+    status: "pendente",
+    criadoEm: "2026-02-01T10:00:00.000Z",
+  },
+  {
+    id: "ag-002",
+    turmaId: "t-dsg-2026a",
+    data: "2026-02-11",
+    diaSemana: "qua",
+    inicio: "08:00",
+    fim: "10:00",
+    atividadeIds: ["a-002"],
+    status: "concluido",
+    criadoEm: "2026-02-01T10:00:00.000Z",
+    concluidoEm: "2026-02-11T10:05:00.000Z",
   },
 ];
