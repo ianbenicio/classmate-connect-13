@@ -156,12 +156,11 @@ function DashboardPage() {
               <CalendarClock className="h-5 w-5" />
               Próximas atividades
             </h2>
-            <Link
-              to="/cursos"
-              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-            >
-              Ver todas <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild size="sm">
+              <Link to="/cursos">
+                <ClipboardList /> Atividades
+              </Link>
+            </Button>
           </div>
 
           {proximas.length === 0 ? (
