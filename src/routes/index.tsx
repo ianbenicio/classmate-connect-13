@@ -7,8 +7,8 @@ import {
   GraduationCap,
   ClipboardList,
   Users,
-  ArrowRight,
   CalendarClock,
+  CalendarDays,
 } from "lucide-react";
 import {
   SEED_ALUNOS,
@@ -16,6 +16,8 @@ import {
   SEED_CURSOS,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
+import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
