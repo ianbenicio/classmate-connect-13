@@ -68,6 +68,7 @@ function AlunosPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Aluno | undefined>();
   const [confirmDelete, setConfirmDelete] = useState<Aluno | null>(null);
+  const [detalhe, setDetalhe] = useState<Aluno | null>(null);
 
   const cursoMap = useMemo(
     () => new Map(cursos.map((c) => [c.id, c])),
