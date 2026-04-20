@@ -104,15 +104,21 @@ function AtividadesPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">📚 Cursos</h1>
-          <p className="text-muted-foreground mt-1">
-            Selecione um curso para visualizar suas atividades.
-          </p>
+        <header className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">📚 Cursos</h1>
+            <p className="text-muted-foreground mt-1">
+              Selecione um curso para visualizar suas atividades.
+            </p>
+          </div>
+          <Button onClick={() => setCursoFormOpen(true)}>
+            <Plus className="h-4 w-4 mr-1" />
+            Novo curso
+          </Button>
         </header>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SEED_CURSOS.map((c) => {
+          {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             return (
               <button
