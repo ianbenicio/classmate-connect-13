@@ -320,6 +320,14 @@ function AlunosPage() {
         onSave={handleSave}
       />
 
+      <AlunoDetailDialog
+        aluno={detalhe}
+        curso={detalhe ? cursoMap.get(detalhe.cursoId) : undefined}
+        turma={detalhe ? turmaMap.get(detalhe.turmaId) : undefined}
+        atividades={SEED_ATIVIDADES}
+        onOpenChange={(o) => !o && setDetalhe(null)}
+      />
+
       <AlertDialog
         open={!!confirmDelete}
         onOpenChange={(o) => !o && setConfirmDelete(null)}
