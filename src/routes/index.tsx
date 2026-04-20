@@ -47,6 +47,8 @@ export const Route = createFileRoute("/")({
 });
 
 function AtividadesPage() {
+  const [cursos, setCursos] = useState<Curso[]>(SEED_CURSOS);
+  const [turmas] = useState(SEED_TURMAS);
   const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
   const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
 
@@ -55,6 +57,8 @@ function AtividadesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
+
+  const [cursoFormOpen, setCursoFormOpen] = useState(false);
 
   const [habilidadeDetalhe, setHabilidadeDetalhe] =
     useState<Habilidade | null>(null);
@@ -68,7 +72,7 @@ function AtividadesPage() {
 
   const contagemPorCurso = useMemo(() => {
     const map = new Map<string, { aulas: number; tarefas: number }>();
-    for (const c of SEED_CURSOS) map.set(c.id, { aulas: 0, tarefas: 0 });
+    for (const c of cursos) map.set(c.id, { aulas: 0, tarefas: 0 });
     for (const a of atividades) {
       const c = map.get(a.cursoId);
       if (!c) continue;
@@ -76,7 +80,11 @@ function AtividadesPage() {
       else c.tarefas++;
     }
     return map;
-  }, [atividades]);
+  }, [atividades, cursos]);
+
+  const handleSaveCurso = (curso: Curso) => {
+    setCursos((prev) => [...prev, curso]);
+  };
 
   const handleSave = (atividade: Atividade) => {
     setAtividades((prev) => {
