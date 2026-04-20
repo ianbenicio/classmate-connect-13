@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { format } from "date-fns";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,9 @@ import {
   SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import type { Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
