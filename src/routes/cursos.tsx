@@ -232,7 +232,6 @@ function CursosPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={cursos}
-        turmas={turmas}
         grupos={SEED_GRUPOS}
         habilidades={habilidades}
         editing={editing}
@@ -269,6 +268,7 @@ function CursosPage() {
             : undefined
         }
         alunos={alunos}
+        atividades={atividades}
         onOpenChange={(open) => !open && setTurmaDetalhe(null)}
       />
 
