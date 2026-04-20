@@ -113,6 +113,8 @@ export interface Aluno {
   nome: string;
   idade?: number;
   contato: string;
+  /** CPF do aluno — opcional, usado para identificação documental */
+  cpf?: string;
   cursoId: string;
   turmaId: string;
   habilidadeIds: string[];
