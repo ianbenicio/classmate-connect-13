@@ -52,12 +52,9 @@ function AtividadesPage() {
   const porCurso = useMemo(() => {
     return cursos.map((c) => {
       const ativs = atividades.filter((a) => a.cursoId === c.id);
-      return {
-        curso: c,
-        aulas: ativs.filter((a) => a.tipo === 0).length,
-        tarefas: ativs.filter((a) => a.tipo === 1).length,
-        total: ativs.length,
-      };
+      const aulas = ativs.filter((a) => a.tipo === 0);
+      const tarefas = ativs.filter((a) => a.tipo === 1);
+      return { curso: c, aulas, tarefas, total: ativs.length };
     });
   }, [cursos, atividades]);
 
