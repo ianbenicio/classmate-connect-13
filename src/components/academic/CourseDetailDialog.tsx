@@ -80,8 +80,32 @@ export function CourseDetailDialog({
           )}
         </DialogHeader>
 
-        {/* Filtros */}
-        <div className="flex flex-wrap items-center gap-2 py-3 border-y">
+        {/* Turmas */}
+        <section className="py-3 border-y">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            Turmas ({turmasDoCurso.length})
+          </h3>
+          {turmasDoCurso.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma turma cadastrada para este curso.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {turmasDoCurso.map((t) => (
+                <Badge key={t.id} variant="secondary" className="font-normal">
+                  {t.nome}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Atividades — Filtros */}
+        <div className="flex flex-wrap items-center gap-2 pb-3 border-b">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide w-full mt-2">
+            Atividades
+          </h3>
           <div className="flex gap-1">
             {(["todos", "aulas", "tarefas"] as FiltroTipo[]).map((t) => (
               <Button
