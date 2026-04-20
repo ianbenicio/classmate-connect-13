@@ -14,6 +14,7 @@ export interface Curso {
   id: string;
   sigla: string;
   nome: string;
+  descricao?: string;
 }
 
 // Base shared by Aula and Tarefa
