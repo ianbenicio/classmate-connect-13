@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { format } from "date-fns";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,9 @@ import {
   SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import type { Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,6 +48,13 @@ function DashboardPage() {
   const atividades = SEED_ATIVIDADES;
   const alunos = SEED_ALUNOS;
   const agendamentos = useAgendamentos();
+
+  const [agendarCtx, setAgendarCtx] = useState<{
+    curso: Curso;
+    turma: Turma;
+    data: string;
+    slot: HorarioSlot;
+  } | null>(null);
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
@@ -125,6 +135,16 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            onSlotClick={({ turma, date, inicio, fim, diaSemana }) => {
+              const curso = cursoMap.get(turma.cursoId);
+              if (!curso) return;
+              setAgendarCtx({
+                curso,
+                turma,
+                data: format(date, "yyyy-MM-dd"),
+                slot: { diaSemana, inicio, fim },
+              });
+            }}
           />
         </section>
 
@@ -226,6 +246,19 @@ function DashboardPage() {
           )}
         </section>
       </div>
+
+      {agendarCtx && (
+        <AgendarAtividadeDialog
+          open
+          onOpenChange={(o) => !o && setAgendarCtx(null)}
+          curso={agendarCtx.curso}
+          turmas={turmas.filter((t) => t.cursoId === agendarCtx.curso.id)}
+          atividades={atividades}
+          defaultTurmaId={agendarCtx.turma.id}
+          defaultData={agendarCtx.data}
+          defaultSlot={agendarCtx.slot}
+        />
+      )}
     </div>
   );
 }

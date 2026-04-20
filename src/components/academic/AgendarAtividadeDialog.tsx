@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -71,6 +69,7 @@ export function AgendarAtividadeDialog({
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
   const [slotIdx, setSlotIdx] = useState<string>("");
+  const [grupo, setGrupo] = useState<string>("");
   const [atividadeIds, setAtividadeIds] =
     useState<string[]>(defaultAtividadeIds);
   const [observacao, setObservacao] = useState("");
@@ -80,6 +79,7 @@ export function AgendarAtividadeDialog({
     setTurmaId(defaultTurmaId ?? turmas[0]?.id ?? "");
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
+    setGrupo("");
     setAtividadeIds(defaultAtividadeIds);
     setObservacao("");
   }, [open, defaultTurmaId, defaultData, defaultAtividadeIds, turmas]);
@@ -114,18 +114,68 @@ export function AgendarAtividadeDialog({
     }
   }, [slotsDisponiveis]);
 
-  const toggleAtividade = (id: string) =>
-    setAtividadeIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+  const ativsDoCurso = useMemo(
+    () => atividades.filter((a) => a.cursoId === curso.id),
+    [atividades, curso.id],
+  );
+
+  const grupos = useMemo(() => {
+    const set = new Set<string>();
+    for (const a of ativsDoCurso) if (a.grupo) set.add(a.grupo);
+    return Array.from(set).sort();
+  }, [ativsDoCurso]);
+
+  const ativsDoGrupo = useMemo(
+    () => (grupo ? ativsDoCurso.filter((a) => a.grupo === grupo) : []),
+    [ativsDoCurso, grupo],
+  );
+
+  const aulasDoGrupo = useMemo(
+    () => ativsDoGrupo.filter((a) => a.tipo === 0),
+    [ativsDoGrupo],
+  );
+  const tarefasDoGrupo = useMemo(
+    () => ativsDoGrupo.filter((a) => a.tipo === 1),
+    [ativsDoGrupo],
+  );
+
+  const aulaId = atividadeIds.find((id) =>
+    aulasDoGrupo.some((a) => a.id === id),
+  ) ?? "";
+  const tarefaId = atividadeIds.find((id) =>
+    tarefasDoGrupo.some((a) => a.id === id),
+  ) ?? "";
+
+  // Reseta seleção ao trocar grupo
+  useEffect(() => {
+    setAtividadeIds([]);
+  }, [grupo]);
+
+  const setAula = (id: string) => {
+    setAtividadeIds((prev) => {
+      const semAulas = prev.filter(
+        (x) => !aulasDoGrupo.some((a) => a.id === x),
+      );
+      return id ? [...semAulas, id] : semAulas;
+    });
+  };
+  const setTarefa = (id: string) => {
+    setAtividadeIds((prev) => {
+      const semTarefas = prev.filter(
+        (x) => !tarefasDoGrupo.some((a) => a.id === x),
+      );
+      return id ? [...semTarefas, id] : semTarefas;
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!turmaSelecionada) return toast.error("Selecione uma turma.");
     if (!date) return toast.error("Selecione uma data.");
     if (slotIdx === "") return toast.error("Selecione um horário.");
+    if (!grupo) return toast.error("Selecione um grupo.");
     if (atividadeIds.length === 0)
-      return toast.error("Escolha ao menos uma atividade.");
+      return toast.error("Escolha ao menos uma atividade (aula ou tarefa).");
 
     const slot = turmaSelecionada.horarios[Number(slotIdx)];
     const dataIso = format(date, "yyyy-MM-dd");
@@ -145,8 +195,6 @@ export function AgendarAtividadeDialog({
     toast.success("Atividade agendada!");
     onOpenChange(false);
   };
-
-  const ativsDoCurso = atividades.filter((a) => a.cursoId === curso.id);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -245,44 +293,84 @@ export function AgendarAtividadeDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Atividades *</Label>
+            <Label>Grupo *</Label>
             {ativsDoCurso.length === 0 ? (
               <p className="text-xs text-muted-foreground border rounded-md p-3">
                 Nenhuma atividade cadastrada neste curso ainda.
               </p>
+            ) : grupos.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Nenhum grupo disponível.
+              </p>
             ) : (
-              <div className="rounded-md border p-2 space-y-1 max-h-56 overflow-y-auto">
-                {ativsDoCurso.map((a) => {
-                  const checked = atividadeIds.includes(a.id);
-                  return (
-                    <label
-                      key={a.id}
-                      className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50"
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={() => toggleAtividade(a.id)}
-                        className="mt-0.5"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline" className="text-[10px]">
-                            {a.tipo === 0 ? "Aula" : "Tarefa"}
-                          </Badge>
-                          <span className="font-medium text-sm truncate">
-                            {a.nome}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {a.codigo} · {a.grupo}
-                        </div>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
+              <Select value={grupo} onValueChange={setGrupo}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o grupo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {grupos.map((g) => (
+                    <SelectItem key={g} value={g}>
+                      {g}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
+
+          {grupo && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Aula</Label>
+                <Select
+                  value={aulaId || "__none__"}
+                  onValueChange={(v) => setAula(v === "__none__" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sem aula" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
+                    {aulasDoGrupo.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.codigo} · {a.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {aulasDoGrupo.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sem aulas neste grupo.
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Tarefa</Label>
+                <Select
+                  value={tarefaId || "__none__"}
+                  onValueChange={(v) => setTarefa(v === "__none__" ? "" : v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sem tarefa" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
+                    {tarefasDoGrupo.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.codigo} · {a.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {tarefasDoGrupo.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sem tarefas neste grupo.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Observação</Label>

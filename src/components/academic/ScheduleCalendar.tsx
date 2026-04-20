@@ -25,10 +25,19 @@ import {
 import type { Agendamento } from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
 
+interface SlotClickPayload {
+  turma: Turma;
+  date: Date;
+  inicio: string;
+  fim: string;
+  diaSemana: DiaSemana;
+}
+
 interface Props {
   turmas: Turma[];
   cursos: Curso[];
   agendamentos: Agendamento[];
+  onSlotClick?: (payload: SlotClickPayload) => void;
 }
 
 // Gera ocorrências semanais (dia da semana + slot) para uma data
@@ -45,7 +54,7 @@ function turmasNoDia(turmas: Turma[], date: Date) {
   return items.sort((a, b) => a.inicio.localeCompare(b.inicio));
 }
 
-export function ScheduleCalendar({ turmas, cursos, agendamentos }: Props) {
+export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick }: Props) {
   const [refDate, setRefDate] = useState(new Date());
 
   const cursoMap = useMemo(
@@ -90,6 +99,7 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos }: Props) {
           cursoMap={cursoMap}
           agendamentos={agendamentos}
           onDayClick={(d) => setRefDate(d)}
+          onSlotClick={onSlotClick}
         />
       </TabsContent>
 
@@ -99,6 +109,7 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos }: Props) {
           turmas={turmas}
           cursoMap={cursoMap}
           agendamentos={agendamentos}
+          onSlotClick={onSlotClick}
         />
       </TabsContent>
     </Tabs>
@@ -131,12 +142,14 @@ function MonthView({
   cursoMap,
   agendamentos,
   onDayClick,
+  onSlotClick,
 }: {
   refDate: Date;
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
   onDayClick: (d: Date) => void;
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const monthStart = startOfMonth(refDate);
   const monthEnd = endOfMonth(refDate);
@@ -200,16 +213,27 @@ function MonthView({
               </div>
               <div className="space-y-0.5 overflow-hidden">
                 {items.slice(0, 3).map((it, i) => (
-                  <div
+                  <button
                     key={i}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSlotClick?.({
+                        turma: it.turma,
+                        date: d,
+                        inicio: it.inicio,
+                        fim: it.fim,
+                        diaSemana: diaSemanaFromDate(d),
+                      });
+                    }}
                     className={cn(
-                      "text-[10px] leading-tight px-1 py-0.5 rounded border truncate",
+                      "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left hover:brightness-110",
                       cursoChipClass(it.turma.cursoId),
                     )}
-                    title={`${it.turma.cod} · ${it.inicio}–${it.fim}`}
+                    title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
                   >
                     {it.inicio} {it.turma.cod}
-                  </div>
+                  </button>
                 ))}
                 {items.length > 3 && (
                   <div className="text-[10px] text-muted-foreground">
@@ -243,11 +267,13 @@ function WeekView({
   turmas,
   cursoMap,
   agendamentos,
+  onSlotClick,
 }: {
   refDate: Date;
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
@@ -333,6 +359,7 @@ function WeekView({
               byDay={byDay}
               cursoMap={cursoMap}
               agByKey={agByKey}
+              onSlotClick={onSlotClick}
             />
           ))}
         </div>
@@ -364,12 +391,14 @@ function FragmentRow({
   byDay,
   cursoMap,
   agByKey,
+  onSlotClick,
 }: {
   hour: number;
   weekDates: Date[];
   byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
   cursoMap: Map<string, Curso>;
   agByKey: Set<string>;
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
   return (
@@ -392,13 +421,23 @@ function FragmentRow({
             {items.map((it, idx) => {
               const hasAg = agByKey.has(`${dayKey}|${it.inicio}`);
               return (
-                <div
+                <button
                   key={idx}
+                  type="button"
+                  onClick={() =>
+                    onSlotClick?.({
+                      turma: it.turma,
+                      date,
+                      inicio: it.inicio,
+                      fim: it.fim,
+                      diaSemana: d.value,
+                    })
+                  }
                   className={cn(
-                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative",
+                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative w-full text-left hover:brightness-110 cursor-pointer",
                     cursoChipClass(it.turma.cursoId),
                   )}
-                  title={`${it.turma.cod} · ${it.inicio}–${it.fim}`}
+                  title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
                 >
                   <span className="font-semibold">{it.turma.cod}</span>
                   <span className="opacity-70 ml-1">
@@ -407,7 +446,7 @@ function FragmentRow({
                   {hasAg && (
                     <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-primary" />
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
