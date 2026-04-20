@@ -37,6 +37,7 @@ interface Props {
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
   onSkillClick: (h: Habilidade) => void;
+  onEditCurso: (c: Curso) => void;
   onNewTurma: () => void;
   onEditTurma: (t: Turma) => void;
   onDeleteTurma: (t: Turma) => void;
