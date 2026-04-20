@@ -168,6 +168,58 @@ export function TurmaDetailDialog({
           )}
         </section>
 
+
+        <section className="mt-4">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
+            <BookOpen className="h-3.5 w-3.5" />
+            Aulas Realizadas ({aulasRealizadas.length})
+          </h3>
+
+          {aulasRealizadas.length === 0 ? (
+            <p className="text-sm text-muted-foreground border rounded-md p-6 text-center">
+              Nenhuma aula realizada ainda. As aulas aparecem aqui quando o
+              professor registra o relatório.
+            </p>
+          ) : (
+            <ul className="border rounded-lg divide-y">
+              {aulasRealizadas.map(({ ag, aulas }) => (
+                <li key={ag.id} className="p-3">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {ag.data} · {ag.inicio}–{ag.fim}
+                      </div>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {aulas.map((a) => (
+                          <Badge
+                            key={a.id}
+                            variant="outline"
+                            className="inline-flex items-center gap-1"
+                          >
+                            <GraduationCap className="h-3 w-3" />
+                            {a.nome}
+                          </Badge>
+                        ))}
+                      </div>
+                      {ag.professor && (
+                        <div className="mt-1.5 text-xs text-muted-foreground inline-flex items-center gap-1">
+                          <UserIcon className="h-3 w-3" />
+                          {ag.professor}
+                        </div>
+                      )}
+                    </div>
+                    <Badge variant="secondary" className="text-[10px]">
+                      <CalendarCheck className="h-3 w-3 mr-1" />
+                      Concluída
+                    </Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
         <section className="mt-4">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
             <Users className="h-3.5 w-3.5" />
