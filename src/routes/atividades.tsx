@@ -18,15 +18,18 @@ import {
   BookOpen,
   Plus,
   ChevronRight,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   SEED_ATIVIDADES,
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
+  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
+import { PendingReportsDialog } from "@/components/academic/PendingReportsDialog";
 import type {
   Atividade,
   AtividadeTipo,
@@ -61,6 +64,7 @@ function AtividadesPage() {
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
+  const [pendentesOpen, setPendentesOpen] = useState(false);
 
   const porCurso = useMemo(() => {
     return cursos.map((c) => {
@@ -113,7 +117,13 @@ function AtividadesPage() {
               Aulas e tarefas organizadas por curso.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant="outline"
+              onClick={() => setPendentesOpen(true)}
+            >
+              <ClipboardCheck /> Registrar Relatório
+            </Button>
             <Button
               onClick={() => {
                 setEditing(undefined);
@@ -223,6 +233,14 @@ function AtividadesPage() {
         }}
         onEdit={handleEdit}
         onDelete={(a) => setConfirmDelete(a)}
+      />
+
+      <PendingReportsDialog
+        open={pendentesOpen}
+        onOpenChange={setPendentesOpen}
+        cursos={cursos}
+        turmas={SEED_TURMAS}
+        atividades={atividades}
       />
 
       <ActivityFormDialog
