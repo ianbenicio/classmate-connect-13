@@ -69,6 +69,7 @@ function CursosPage() {
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
 
   const [cursoFormOpen, setCursoFormOpen] = useState(false);
+  const [editingCurso, setEditingCurso] = useState<Curso | undefined>();
 
   const [turmaFormOpen, setTurmaFormOpen] = useState(false);
   const [editingTurma, setEditingTurma] = useState<Turma | undefined>();
