@@ -108,7 +108,13 @@ function CursosPage() {
   }, [atividades, cursos]);
 
   const handleSaveCurso = (curso: Curso) => {
-    setCursos((prev) => [...prev, curso]);
+    setCursos((prev) => {
+      const exists = prev.some((c) => c.id === curso.id);
+      return exists
+        ? prev.map((c) => (c.id === curso.id ? curso : c))
+        : [...prev, curso];
+    });
+    if (cursoSelecionado?.id === curso.id) setCursoSelecionado(curso);
   };
 
   const handleSave = (atividade: Atividade) => {
