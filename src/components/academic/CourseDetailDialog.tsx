@@ -69,7 +69,7 @@ export function CourseDetailDialog({
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <Badge variant="outline">{curso?.sigla}</Badge>
+            <Badge variant="outline">{curso?.cod}</Badge>
             <DialogTitle>{curso?.nome}</DialogTitle>
           </div>
           {curso?.descricao && (
