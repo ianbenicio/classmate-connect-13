@@ -359,6 +359,7 @@ function WeekView({
               byDay={byDay}
               cursoMap={cursoMap}
               agByKey={agByKey}
+              onSlotClick={onSlotClick}
             />
           ))}
         </div>
