@@ -68,6 +68,7 @@ export interface Atividade {
   prazo: string; // ISO date
   criadoPor: string;
   habilidadeIds: string[];
+  turmaIds: string[]; // turmas do curso atribuídas a esta atividade
 
   // Aula-only
   descricaoConteudo?: string;
