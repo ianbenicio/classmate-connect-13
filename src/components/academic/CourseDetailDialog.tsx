@@ -107,10 +107,32 @@ export function CourseDetailDialog({
               </Button>
             )}
           </div>
-          {curso?.descricao && (
-            <DialogDescription>{curso.descricao}</DialogDescription>
-          )}
+          <DialogDescription className="sr-only">
+            Detalhes do curso
+          </DialogDescription>
         </DialogHeader>
+
+        {/* Propriedades do curso */}
+        {curso && (
+          <dl className="grid grid-cols-[110px_1fr] gap-x-4 gap-y-2 text-sm py-3 border-b">
+            <dt className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-0.5">
+              Cod_Curso
+            </dt>
+            <dd className="font-mono">{curso.cod}</dd>
+
+            <dt className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-0.5">
+              Nome
+            </dt>
+            <dd className="font-medium">{curso.nome}</dd>
+
+            <dt className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-0.5">
+              Descrição
+            </dt>
+            <dd className="text-muted-foreground whitespace-pre-wrap">
+              {curso.descricao || "—"}
+            </dd>
+          </dl>
+        )}
 
         {/* Turmas */}
         <section className="py-3 border-y">
