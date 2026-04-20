@@ -29,9 +29,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { GraduationCap, Pencil, Plus, Search, Trash2, X } from "lucide-react";
-import { SEED_CURSOS, SEED_TURMAS } from "@/lib/academic-seed";
+import { SEED_ATIVIDADES, SEED_CURSOS, SEED_TURMAS } from "@/lib/academic-seed";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { AlunoFormDialog } from "@/components/academic/AlunoFormDialog";
+import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
 import type { Aluno } from "@/lib/academic-types";
 import { toast } from "sonner";
 
