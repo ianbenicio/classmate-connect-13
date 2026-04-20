@@ -158,6 +158,7 @@ export function ActivityFormDialog({
           prazo,
           criadoPor: "Prof. Logado",
           habilidadeIds,
+          turmaIds,
           descricaoConteudo: tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: tipo === 0 ? sugestoesPais : undefined,
           instrucoes: tipo === 1 ? instrucoes : undefined,
