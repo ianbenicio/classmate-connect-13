@@ -83,12 +83,15 @@ export interface RegistroTrabalho {
 export interface Aluno {
   id: string;
   nome: string;
+  idade?: number;
   contato: string;
   cursoId: string;
   turmaId: string;
   habilidadeIds: string[];
   aulas: RegistroAula[];
   trabalhos: RegistroTrabalho[];
+  responsavel?: string;
+  contatoResp?: string;
   observacao?: string;
 }
 
@@ -134,7 +137,9 @@ export interface Agendamento {
   criadoEm: string; // ISO datetime
   concluidoEm?: string; // ISO datetime
   observacao?: string;
-  professor?: string; // snapshot do professor responsável
+  professor?: string; // snapshot do professor responsável (da atividade)
+  criadoPorUserId?: string; // id do usuário que criou o agendamento
+  criadoPorNome?: string; // nome (snapshot)
 }
 
 // ---------- Notificação ----------
@@ -153,14 +158,62 @@ export interface Notificacao {
   atividadeIds: string[];
   criadoEm: string;
   lida: boolean;
+  /** marcador para evitar duplicatas geradas pelo varredor */
+  kind?: "agendado" | "atrasado" | "expirado" | "concluido";
 }
 
 // ---------- Helpers de janela "agendada" ----------
 // Agendamento fica ativo do início do dia até 24h após o término do slot.
 export function isAgendamentoAtivo(a: Agendamento, now: Date = new Date()): boolean {
-  const [hh, mm] = a.fim.split(":").map((n) => parseInt(n, 10));
-  const fimDate = new Date(`${a.data}T00:00:00`);
-  fimDate.setHours(hh, mm, 0, 0);
-  const expira = new Date(fimDate.getTime() + 24 * 60 * 60 * 1000);
+  const expira = endSlotPlus24h(a);
   return now <= expira && a.status !== "concluido";
 }
+
+/** Data/hora exata do FIM do slot do agendamento */
+export function endSlotDate(a: Pick<Agendamento, "data" | "fim">): Date {
+  const [hh, mm] = a.fim.split(":").map((n) => parseInt(n, 10));
+  const d = new Date(`${a.data}T00:00:00`);
+  d.setHours(hh, mm, 0, 0);
+  return d;
+}
+
+/** Fim do slot + 24h — limite para registrar relatório */
+export function endSlotPlus24h(a: Pick<Agendamento, "data" | "fim">): Date {
+  return new Date(endSlotDate(a).getTime() + 24 * 60 * 60 * 1000);
+}
+
+/**
+ * Estado visual de um slot (turma × data × horário) no calendário.
+ * - vazio_passado: slot no passado sem agendamento → CINZA
+ * - vazio_futuro: slot ≥ hoje sem agendamento → VERDE
+ * - agendado: agendamento pendente, antes do fim do slot → DOCUMENTO
+ * - atrasado: passou fim do slot, sem relatório, dentro de 24h → AMARELO
+ * - expirado: +24h após fim, sem relatório → CINZA (desabilitado)
+ * - concluido: relatório registrado → DOCUMENTO (com check)
+ */
+export type SlotEstado =
+  | "vazio_passado"
+  | "vazio_futuro"
+  | "agendado"
+  | "atrasado"
+  | "expirado"
+  | "concluido";
+
+export function computeSlotEstado(
+  data: string, // YYYY-MM-DD
+  fim: string, // HH:MM
+  agendamento: Agendamento | undefined,
+  now: Date = new Date(),
+): SlotEstado {
+  if (!agendamento) {
+    const slotEnd = endSlotDate({ data, fim });
+    return now > slotEnd ? "vazio_passado" : "vazio_futuro";
+  }
+  if (agendamento.status === "concluido") return "concluido";
+  const slotEnd = endSlotDate(agendamento);
+  const slotEnd24 = endSlotPlus24h(agendamento);
+  if (now <= slotEnd) return "agendado";
+  if (now <= slotEnd24) return "atrasado";
+  return "expirado";
+}
+

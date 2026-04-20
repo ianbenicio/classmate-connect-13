@@ -19,8 +19,11 @@ import {
 } from "@/lib/academic-seed";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
+import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
 import { useAgendamentos } from "@/lib/agendamentos-store";
-import type { Curso, HorarioSlot, Turma } from "@/lib/academic-types";
+import { useCurrentUser } from "@/lib/auth-store";
+import type { Agendamento, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,12 +51,18 @@ function DashboardPage() {
   const atividades = SEED_ATIVIDADES;
   const alunos = SEED_ALUNOS;
   const agendamentos = useAgendamentos();
+  const currentUser = useCurrentUser();
 
   const [agendarCtx, setAgendarCtx] = useState<{
     curso: Curso;
     turma: Turma;
     data: string;
     slot: HorarioSlot;
+  } | null>(null);
+  const [relatorioCtx, setRelatorioCtx] = useState<{
+    agendamento: Agendamento;
+    turma: Turma;
+    curso: Curso;
   } | null>(null);
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
@@ -135,15 +144,37 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
-            onSlotClick={({ turma, date, inicio, fim, diaSemana }) => {
+            onSlotClick={({ turma, date, inicio, fim, diaSemana, estado, agendamento }) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
-              setAgendarCtx({
-                curso,
-                turma,
-                data: format(date, "yyyy-MM-dd"),
-                slot: { diaSemana, inicio, fim },
-              });
+
+              if (estado === "vazio_futuro") {
+                setAgendarCtx({
+                  curso,
+                  turma,
+                  data: format(date, "yyyy-MM-dd"),
+                  slot: { diaSemana, inicio, fim },
+                });
+                return;
+              }
+
+              if ((estado === "agendado" || estado === "atrasado") && agendamento) {
+                const podeRegistrar =
+                  currentUser.role === "admin" ||
+                  agendamento.criadoPorUserId === currentUser.id;
+                if (!podeRegistrar) {
+                  toast.info(
+                    `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
+                  );
+                  return;
+                }
+                setRelatorioCtx({ agendamento, turma, curso });
+                return;
+              }
+
+              if (estado === "concluido") {
+                toast.success("Relatório já registrado para este slot.");
+              }
             }}
           />
         </section>
@@ -259,6 +290,15 @@ function DashboardPage() {
           defaultSlot={agendarCtx.slot}
         />
       )}
+
+      <RegistrarRelatorioDialog
+        open={!!relatorioCtx}
+        onOpenChange={(o) => !o && setRelatorioCtx(null)}
+        agendamento={relatorioCtx?.agendamento ?? null}
+        turma={relatorioCtx?.turma}
+        curso={relatorioCtx?.curso}
+        atividades={atividades}
+      />
     </div>
   );
 }

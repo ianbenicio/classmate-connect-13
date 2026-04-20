@@ -38,6 +38,7 @@ import {
 import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { SEED_ALUNOS } from "@/lib/academic-seed";
+import { authStore } from "@/lib/auth-store";
 import { toast } from "sonner";
 
 interface Props {
@@ -192,6 +193,7 @@ export function AgendarAtividadeDialog({
     ) as string[];
     const professor = professoresUnicos.join(" / ") || undefined;
 
+    const currentUser = authStore.get();
     agendamentosStore.add({
       id: crypto.randomUUID(),
       turmaId: turmaSelecionada.id,
@@ -204,6 +206,8 @@ export function AgendarAtividadeDialog({
       criadoEm: new Date().toISOString(),
       observacao: observacao.trim() || undefined,
       professor,
+      criadoPorUserId: currentUser.id,
+      criadoPorNome: currentUser.nome,
     });
 
     // Notificações: alunos da turma + professor
