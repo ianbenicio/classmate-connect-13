@@ -54,6 +54,7 @@ export function CourseDetailDialog({
   onEdit,
   onDelete,
   onSkillClick,
+  onEditCurso,
   onNewTurma,
   onEditTurma,
   onDeleteTurma,
