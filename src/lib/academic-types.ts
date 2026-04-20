@@ -12,7 +12,7 @@ export interface Habilidade {
 
 export interface Curso {
   id: string;
-  sigla: string;
+  cod: string;
   nome: string;
   descricao?: string;
 }
