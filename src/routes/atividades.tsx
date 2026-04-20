@@ -3,27 +3,35 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   GraduationCap,
   ClipboardList,
-  ArrowRight,
   BookOpen,
   Plus,
+  ChevronRight,
 } from "lucide-react";
 import {
   SEED_ATIVIDADES,
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
-  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
-import type { Atividade } from "@/lib/academic-types";
+import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
+import type {
+  Atividade,
+  AtividadeTipo,
+  Curso,
+} from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades")({
@@ -49,6 +57,10 @@ function AtividadesPage() {
   const cursos = SEED_CURSOS;
   const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
   const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Atividade | undefined>();
+  const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
+  const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
 
   const porCurso = useMemo(() => {
     return cursos.map((c) => {
@@ -72,6 +84,23 @@ function AtividadesPage() {
     toast.success("Atividade salva");
   };
 
+  const handleNew = (tipo: AtividadeTipo) => {
+    setEditing(undefined);
+    setDefaultTipo(tipo);
+    setFormOpen(true);
+  };
+
+  const handleEdit = (a: Atividade) => {
+    setEditing(a);
+    setFormOpen(true);
+  };
+
+  const handleDelete = (a: Atividade) => {
+    setAtividades((prev) => prev.filter((x) => x.id !== a.id));
+    toast.success("Atividade removida");
+    setConfirmDelete(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -85,7 +114,13 @@ function AtividadesPage() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => setFormOpen(true)}>
+            <Button
+              onClick={() => {
+                setEditing(undefined);
+                setDefaultTipo(0);
+                setFormOpen(true);
+              }}
+            >
               <Plus /> Nova Atividade
             </Button>
             <Button asChild variant="outline">
@@ -133,6 +168,9 @@ function AtividadesPage() {
             <h2 className="text-xl font-semibold tracking-tight">
               Atividades por curso
             </h2>
+            <p className="text-xs text-muted-foreground">
+              Clique em um curso para ver suas atividades
+            </p>
           </div>
 
           {porCurso.length === 0 ? (
@@ -140,69 +178,52 @@ function AtividadesPage() {
               Nenhum curso cadastrado.
             </p>
           ) : (
-            <Accordion
-              type="multiple"
-              className="space-y-2"
-            >
+            <div className="grid gap-2">
               {porCurso.map(({ curso, aulas, tarefas, total }) => (
-                <AccordionItem
+                <button
                   key={curso.id}
-                  value={curso.id}
-                  className="bg-card border rounded-lg shadow-sm px-4"
+                  type="button"
+                  onClick={() => setSelectedCurso(curso)}
+                  className="bg-card border rounded-lg shadow-sm px-4 py-4 text-left hover:border-primary/50 hover:shadow transition-all flex items-center gap-3"
                 >
-                  <AccordionTrigger className="hover:no-underline py-4">
-                    <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
-                      <Badge variant="outline" className="shrink-0">
-                        {curso.cod}
-                      </Badge>
-                      <span className="font-semibold truncate text-left">
-                        {curso.nome}
-                      </span>
-                      <div className="ml-auto flex items-center gap-2 shrink-0 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
-                          <GraduationCap className="h-3.5 w-3.5" />
-                          {aulas.length}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <ClipboardList className="h-3.5 w-3.5" />
-                          {tarefas.length}
-                        </span>
-                        <Badge variant="secondary">{total}</Badge>
-                      </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4">
-                    <div className="flex justify-end mb-3">
-                      <Button asChild size="sm" variant="outline">
-                        <Link
-                          to="/atividades/$cursoId"
-                          params={{ cursoId: curso.id }}
-                        >
-                          Abrir curso <ArrowRight />
-                        </Link>
-                      </Button>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <ActivityList
-                        title="Aulas"
-                        icon={<GraduationCap className="h-4 w-4" />}
-                        items={aulas}
-                        emptyText="Nenhuma aula cadastrada."
-                      />
-                      <ActivityList
-                        title="Tarefas"
-                        icon={<ClipboardList className="h-4 w-4" />}
-                        items={tarefas}
-                        emptyText="Nenhuma tarefa cadastrada."
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  <Badge variant="outline" className="shrink-0">
+                    {curso.cod}
+                  </Badge>
+                  <span className="font-semibold truncate flex-1 min-w-0">
+                    {curso.nome}
+                  </span>
+                  <div className="flex items-center gap-3 shrink-0 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1">
+                      <GraduationCap className="h-3.5 w-3.5" />
+                      {aulas.length}
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <ClipboardList className="h-3.5 w-3.5" />
+                      {tarefas.length}
+                    </span>
+                    <Badge variant="secondary">{total}</Badge>
+                    <ChevronRight className="h-4 w-4" />
+                  </div>
+                </button>
               ))}
-            </Accordion>
+            </div>
           )}
         </section>
       </div>
+
+      <CourseActivitiesDialog
+        curso={selectedCurso}
+        atividades={atividades}
+        onOpenChange={(open) => !open && setSelectedCurso(null)}
+        onNew={(tipo) => {
+          if (!selectedCurso) return;
+          setEditing(undefined);
+          setDefaultTipo(tipo);
+          setFormOpen(true);
+        }}
+        onEdit={handleEdit}
+        onDelete={(a) => setConfirmDelete(a)}
+      />
 
       <ActivityFormDialog
         open={formOpen}
@@ -210,51 +231,33 @@ function AtividadesPage() {
         cursos={cursos}
         grupos={SEED_GRUPOS}
         habilidades={SEED_HABILIDADES}
+        editing={editing}
+        defaultTipo={defaultTipo}
         onSave={handleSave}
       />
-    </div>
-  );
-}
 
-function ActivityList({
-  title,
-  icon,
-  items,
-  emptyText,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  items: Atividade[];
-  emptyText: string;
-}) {
-  return (
-    <div className="rounded-md border bg-muted/30">
-      <div className="flex items-center gap-2 px-3 py-2 border-b">
-        {icon}
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <Badge variant="secondary" className="ml-auto">
-          {items.length}
-        </Badge>
-      </div>
-      <div className="p-2 space-y-1.5">
-        {items.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-4">
-            {emptyText}
-          </p>
-        ) : (
-          items.map((a) => (
-            <div
-              key={a.id}
-              className="rounded-md border bg-background px-3 py-2"
+      <AlertDialog
+        open={!!confirmDelete}
+        onOpenChange={(open) => !open && setConfirmDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover atividade?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A atividade <strong>{confirmDelete?.nome}</strong> será removida
+              permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => confirmDelete && handleDelete(confirmDelete)}
             >
-              <div className="text-sm font-medium truncate">{a.nome}</div>
-              <div className="text-[11px] text-muted-foreground truncate">
-                {a.codigo} · {a.grupo}
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

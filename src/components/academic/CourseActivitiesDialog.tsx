@@ -1,0 +1,176 @@
+import { useMemo } from "react";
+import { Link } from "@tanstack/react-router";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  ClipboardList,
+  GraduationCap,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import type {
+  Atividade,
+  AtividadeTipo,
+  Curso,
+} from "@/lib/academic-types";
+
+interface Props {
+  curso: Curso | null;
+  atividades: Atividade[];
+  onOpenChange: (open: boolean) => void;
+  onNew: (tipo: AtividadeTipo) => void;
+  onEdit: (a: Atividade) => void;
+  onDelete: (a: Atividade) => void;
+}
+
+export function CourseActivitiesDialog({
+  curso,
+  atividades,
+  onOpenChange,
+  onNew,
+  onEdit,
+  onDelete,
+}: Props) {
+  const { aulas, tarefas } = useMemo(() => {
+    const list = curso
+      ? atividades.filter((a) => a.cursoId === curso.id)
+      : [];
+    return {
+      aulas: list.filter((a) => a.tipo === 0),
+      tarefas: list.filter((a) => a.tipo === 1),
+    };
+  }, [curso, atividades]);
+
+  return (
+    <Dialog open={!!curso} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">{curso?.cod}</Badge>
+            <DialogTitle>{curso?.nome}</DialogTitle>
+          </div>
+          {curso?.descricao && (
+            <DialogDescription>{curso.descricao}</DialogDescription>
+          )}
+        </DialogHeader>
+
+        <div className="flex justify-end">
+          {curso && (
+            <Button asChild size="sm" variant="outline">
+              <Link
+                to="/atividades/$cursoId"
+                params={{ cursoId: curso.id }}
+              >
+                Abrir página do curso <ArrowRight />
+              </Link>
+            </Button>
+          )}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Column
+            title="Aulas"
+            icon={<GraduationCap className="h-4 w-4" />}
+            items={aulas}
+            emptyText="Nenhuma aula cadastrada."
+            onAdd={() => onNew(0)}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+          <Column
+            title="Tarefas"
+            icon={<ClipboardList className="h-4 w-4" />}
+            items={tarefas}
+            emptyText="Nenhuma tarefa cadastrada."
+            onAdd={() => onNew(1)}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Column({
+  title,
+  icon,
+  items,
+  emptyText,
+  onAdd,
+  onEdit,
+  onDelete,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  items: Atividade[];
+  emptyText: string;
+  onAdd: () => void;
+  onEdit: (a: Atividade) => void;
+  onDelete: (a: Atividade) => void;
+}) {
+  return (
+    <section className="rounded-md border bg-muted/30 flex flex-col">
+      <header className="flex items-center gap-2 px-3 py-2 border-b">
+        {icon}
+        <h3 className="text-sm font-semibold">{title}</h3>
+        <Badge variant="secondary" className="ml-auto">
+          {items.length}
+        </Badge>
+        <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
+          <Plus className="h-3.5 w-3.5" />
+        </Button>
+      </header>
+      <div className="p-2 space-y-1.5">
+        {items.length === 0 ? (
+          <p className="text-xs text-muted-foreground text-center py-4">
+            {emptyText}
+          </p>
+        ) : (
+          items.map((a) => (
+            <div
+              key={a.id}
+              className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 transition-colors"
+            >
+              <div className="min-w-0">
+                <div className="text-sm font-medium truncate">{a.nome}</div>
+                <div className="text-[11px] text-muted-foreground truncate">
+                  {a.codigo} · {a.grupo}
+                </div>
+              </div>
+              <div className="flex gap-0.5 shrink-0">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7"
+                  onClick={() => onEdit(a)}
+                  aria-label={`Editar ${a.nome}`}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7"
+                  onClick={() => onDelete(a)}
+                  aria-label={`Remover ${a.nome}`}
+                >
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
