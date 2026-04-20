@@ -18,7 +18,6 @@ import {
   Trash2,
 } from "lucide-react";
 import {
-  getGrupoNome,
   type Atividade,
   type AtividadeTipo,
   type Curso,
