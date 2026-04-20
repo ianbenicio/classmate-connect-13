@@ -35,6 +35,8 @@ import type {
   Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
 export const Route = createFileRoute("/cursos")({
   head: () => ({
