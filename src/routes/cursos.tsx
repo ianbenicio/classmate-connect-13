@@ -227,6 +227,7 @@ function CursosPage() {
           {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             const numTurmas = turmasPorCurso.get(c.id) ?? 0;
+            const prog = progressoPorCurso.get(c.id) ?? { dadas: 0, total: 0, pct: 0 };
             return (
               <button
                 key={c.id}
@@ -260,6 +261,19 @@ function CursosPage() {
                     {cont.tarefas} tarefas
                   </span>
                 </div>
+                {prog.total > 0 && (
+                  <div className="mt-3 pt-3 border-t">
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                      <span className="uppercase tracking-wide font-medium">
+                        Aulas dadas
+                      </span>
+                      <span className="font-mono">
+                        {prog.dadas}/{prog.total} ({prog.pct}%)
+                      </span>
+                    </div>
+                    <Progress value={prog.pct} className="h-1.5" />
+                  </div>
+                )}
               </button>
             );
           })}
