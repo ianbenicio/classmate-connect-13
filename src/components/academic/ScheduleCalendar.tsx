@@ -391,12 +391,14 @@ function FragmentRow({
   byDay,
   cursoMap,
   agByKey,
+  onSlotClick,
 }: {
   hour: number;
   weekDates: Date[];
   byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
   cursoMap: Map<string, Curso>;
   agByKey: Set<string>;
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
   return (
@@ -419,13 +421,23 @@ function FragmentRow({
             {items.map((it, idx) => {
               const hasAg = agByKey.has(`${dayKey}|${it.inicio}`);
               return (
-                <div
+                <button
                   key={idx}
+                  type="button"
+                  onClick={() =>
+                    onSlotClick?.({
+                      turma: it.turma,
+                      date,
+                      inicio: it.inicio,
+                      fim: it.fim,
+                      diaSemana: d.value,
+                    })
+                  }
                   className={cn(
-                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative",
+                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate relative w-full text-left hover:brightness-110 cursor-pointer",
                     cursoChipClass(it.turma.cursoId),
                   )}
-                  title={`${it.turma.cod} · ${it.inicio}–${it.fim}`}
+                  title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
                 >
                   <span className="font-semibold">{it.turma.cod}</span>
                   <span className="opacity-70 ml-1">
@@ -434,7 +446,7 @@ function FragmentRow({
                   {hasAg && (
                     <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-primary" />
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
