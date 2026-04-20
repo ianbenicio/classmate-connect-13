@@ -137,6 +137,7 @@ export function ActivityFormDialog({
           descricao,
           objetivoResultados,
           habilidadeIds,
+          turmaIds,
           descricaoConteudo: editing!.tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: editing!.tipo === 0 ? sugestoesPais : undefined,
           instrucoes: editing!.tipo === 1 ? instrucoes : undefined,
