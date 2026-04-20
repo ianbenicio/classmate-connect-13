@@ -26,6 +26,7 @@ import type {
   AtividadeTipo,
   Curso,
   Habilidade,
+  Turma,
 } from "@/lib/academic-types";
 
 interface Props {
