@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import {
   formatHorarioSlot,
+  type Agendamento,
   type Aluno,
   type Atividade,
   type Curso,
