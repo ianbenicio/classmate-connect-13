@@ -15,13 +15,15 @@ import {
   GraduationCap,
   ClipboardList,
 } from "lucide-react";
-import type { Atividade, Curso, Habilidade } from "@/lib/academic-types";
+import { Users } from "lucide-react";
+import type { Atividade, Curso, Habilidade, Turma } from "@/lib/academic-types";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
 interface Props {
   curso: Curso | null;
   atividades: Atividade[];
+  turmas: Turma[];
   habilidadeMap: Map<string, Habilidade>;
   onOpenChange: (open: boolean) => void;
   onNew: (tipoDefault: 0 | 1) => void;
@@ -33,6 +35,7 @@ interface Props {
 export function CourseDetailDialog({
   curso,
   atividades,
+  turmas,
   habilidadeMap,
   onOpenChange,
   onNew,
