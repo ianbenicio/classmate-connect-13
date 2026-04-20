@@ -15,13 +15,15 @@ import {
   GraduationCap,
   ClipboardList,
 } from "lucide-react";
-import type { Atividade, Curso, Habilidade } from "@/lib/academic-types";
+import { Users } from "lucide-react";
+import type { Atividade, Curso, Habilidade, Turma } from "@/lib/academic-types";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
 interface Props {
   curso: Curso | null;
   atividades: Atividade[];
+  turmas: Turma[];
   habilidadeMap: Map<string, Habilidade>;
   onOpenChange: (open: boolean) => void;
   onNew: (tipoDefault: 0 | 1) => void;
@@ -33,6 +35,7 @@ interface Props {
 export function CourseDetailDialog({
   curso,
   atividades,
+  turmas,
   habilidadeMap,
   onOpenChange,
   onNew,
@@ -41,6 +44,11 @@ export function CourseDetailDialog({
   onSkillClick,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
+
+  const turmasDoCurso = useMemo(
+    () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
+    [curso, turmas],
+  );
 
   const doCurso = useMemo(
     () => (curso ? atividades.filter((a) => a.cursoId === curso.id) : []),
@@ -77,8 +85,32 @@ export function CourseDetailDialog({
           )}
         </DialogHeader>
 
-        {/* Filtros */}
-        <div className="flex flex-wrap items-center gap-2 py-3 border-y">
+        {/* Turmas */}
+        <section className="py-3 border-y">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            Turmas ({turmasDoCurso.length})
+          </h3>
+          {turmasDoCurso.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma turma cadastrada para este curso.
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {turmasDoCurso.map((t) => (
+                <Badge key={t.id} variant="secondary" className="font-normal">
+                  {t.nome}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Atividades — Filtros */}
+        <div className="flex flex-wrap items-center gap-2 pb-3 border-b">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide w-full mt-2">
+            Atividades
+          </h3>
           <div className="flex gap-1">
             {(["todos", "aulas", "tarefas"] as FiltroTipo[]).map((t) => (
               <Button

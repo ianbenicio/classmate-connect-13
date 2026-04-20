@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +12,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { GraduationCap, ClipboardList } from "lucide-react";
+import { GraduationCap, ClipboardList, Plus } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
+import { CourseFormDialog } from "@/components/academic/CourseFormDialog";
 import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import {
@@ -20,6 +22,7 @@ import {
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
+  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import type {
   Atividade,
@@ -44,6 +47,8 @@ export const Route = createFileRoute("/")({
 });
 
 function AtividadesPage() {
+  const [cursos, setCursos] = useState<Curso[]>(SEED_CURSOS);
+  const [turmas] = useState(SEED_TURMAS);
   const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
   const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
 
@@ -52,6 +57,8 @@ function AtividadesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
+
+  const [cursoFormOpen, setCursoFormOpen] = useState(false);
 
   const [habilidadeDetalhe, setHabilidadeDetalhe] =
     useState<Habilidade | null>(null);
@@ -65,7 +72,7 @@ function AtividadesPage() {
 
   const contagemPorCurso = useMemo(() => {
     const map = new Map<string, { aulas: number; tarefas: number }>();
-    for (const c of SEED_CURSOS) map.set(c.id, { aulas: 0, tarefas: 0 });
+    for (const c of cursos) map.set(c.id, { aulas: 0, tarefas: 0 });
     for (const a of atividades) {
       const c = map.get(a.cursoId);
       if (!c) continue;
@@ -73,7 +80,11 @@ function AtividadesPage() {
       else c.tarefas++;
     }
     return map;
-  }, [atividades]);
+  }, [atividades, cursos]);
+
+  const handleSaveCurso = (curso: Curso) => {
+    setCursos((prev) => [...prev, curso]);
+  };
 
   const handleSave = (atividade: Atividade) => {
     setAtividades((prev) => {
@@ -93,15 +104,21 @@ function AtividadesPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">📚 Cursos</h1>
-          <p className="text-muted-foreground mt-1">
-            Selecione um curso para visualizar suas atividades.
-          </p>
+        <header className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">📚 Cursos</h1>
+            <p className="text-muted-foreground mt-1">
+              Selecione um curso para visualizar suas atividades.
+            </p>
+          </div>
+          <Button onClick={() => setCursoFormOpen(true)}>
+            <Plus className="h-4 w-4 mr-1" />
+            Novo curso
+          </Button>
         </header>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {SEED_CURSOS.map((c) => {
+          {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             return (
               <button
@@ -142,6 +159,7 @@ function AtividadesPage() {
       <CourseDetailDialog
         curso={cursoSelecionado}
         atividades={atividades}
+        turmas={turmas}
         habilidadeMap={habilidadeMap}
         onOpenChange={(open) => !open && setCursoSelecionado(null)}
         onNew={(tipo) => {
@@ -160,7 +178,7 @@ function AtividadesPage() {
       <ActivityFormDialog
         open={formOpen}
         onOpenChange={setFormOpen}
-        cursos={SEED_CURSOS}
+        cursos={cursos}
         grupos={SEED_GRUPOS}
         habilidades={habilidades}
         editing={editing}
@@ -171,6 +189,12 @@ function AtividadesPage() {
       <SkillDetailDialog
         habilidade={habilidadeDetalhe}
         onOpenChange={(open) => !open && setHabilidadeDetalhe(null)}
+      />
+
+      <CourseFormDialog
+        open={cursoFormOpen}
+        onOpenChange={setCursoFormOpen}
+        onSave={handleSaveCurso}
       />
 
       <AlertDialog
