@@ -104,6 +104,13 @@ function RootComponent() {
             >
               Atividades
             </Link>
+            <Link
+              to="/alunos"
+              activeProps={{ className: "text-foreground font-medium" }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Alunos
+            </Link>
           </nav>
           <UserSwitcher />
           <NotificationsBell />
