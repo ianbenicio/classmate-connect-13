@@ -176,6 +176,21 @@ export function CourseDetailDialog({
           </dl>
         )}
 
+        {/* Progresso geral do curso */}
+        {curso && totalAulasCurso > 0 && turmasDoCurso.length > 0 && (
+          <div className="py-3 border-b">
+            <div className="flex items-center justify-between mb-1.5 text-xs">
+              <span className="font-medium text-muted-foreground uppercase tracking-wide">
+                Progresso do curso
+              </span>
+              <span className="font-mono text-muted-foreground">
+                {progressoCurso.dadas}/{progressoCurso.total} aulas ({progressoCurso.pct}%)
+              </span>
+            </div>
+            <Progress value={progressoCurso.pct} className="h-2" />
+          </div>
+        )}
+
         {/* Turmas */}
         <section className="py-3 border-y">
           <div className="flex items-center justify-between mb-2">
