@@ -78,11 +78,25 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">📊 Painel</h1>
-          <p className="text-muted-foreground mt-1">
-            Visão geral do sistema acadêmico.
-          </p>
+        <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">📊 Painel</h1>
+            <p className="text-muted-foreground mt-1">
+              Visão geral do sistema acadêmico.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link to="/cursos">
+                <BookOpen /> Cursos
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/cursos">
+                <ClipboardList /> Atividades
+              </Link>
+            </Button>
+          </div>
         </header>
 
         {/* Cards-resumo */}
