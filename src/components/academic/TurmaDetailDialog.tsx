@@ -15,6 +15,8 @@ import {
   ClipboardList,
   CalendarCheck,
   RotateCcw,
+  BookOpen,
+  User as UserIcon,
 } from "lucide-react";
 import {
   formatHorarioSlot,
