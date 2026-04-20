@@ -78,25 +78,11 @@ function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">📊 Painel</h1>
-            <p className="text-muted-foreground mt-1">
-              Visão geral do sistema acadêmico.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link to="/cursos">
-                <BookOpen /> Cursos
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link to="/cursos">
-                <ClipboardList /> Atividades
-              </Link>
-            </Button>
-          </div>
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">📊 Painel</h1>
+          <p className="text-muted-foreground mt-1">
+            Visão geral do sistema acadêmico.
+          </p>
         </header>
 
         {/* Cards-resumo */}
@@ -128,12 +114,11 @@ function DashboardPage() {
         <section className="mb-10">
           <div className="flex items-baseline justify-between mb-4">
             <h2 className="text-xl font-semibold tracking-tight">Cursos</h2>
-            <Link
-              to="/cursos"
-              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-            >
-              Gerenciar <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/cursos">
+                <BookOpen /> Cursos
+              </Link>
+            </Button>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {cursos.map((c) => {
@@ -171,12 +156,11 @@ function DashboardPage() {
               <CalendarClock className="h-5 w-5" />
               Próximas atividades
             </h2>
-            <Link
-              to="/cursos"
-              className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-            >
-              Ver todas <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild size="sm">
+              <Link to="/cursos">
+                <ClipboardList /> Atividades
+              </Link>
+            </Button>
           </div>
 
           {proximas.length === 0 ? (
