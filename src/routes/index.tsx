@@ -111,7 +111,7 @@ function AtividadesPage() {
                 className="text-left bg-card border rounded-lg p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline">{c.sigla}</Badge>
+                  <Badge variant="outline">{c.cod}</Badge>
                   <span className="text-xs text-muted-foreground">
                     {cont.aulas + cont.tarefas} atividades
                   </span>
