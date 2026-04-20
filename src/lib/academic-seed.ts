@@ -180,6 +180,7 @@ export const SEED_ATIVIDADES: Atividade[] = [
     prazo: "2026-05-12",
     criadoPor: "Prof. Bruno",
     habilidadeIds: ["h-com-01", "h-col-03"],
+    turmaIds: ["t-inf-2026a"],
     descricaoConteudo: "Estruturas sequenciais, condicionais e repetição.",
     sugestoesPais: "Propor pequenos desafios lógicos em casa.",
   },
