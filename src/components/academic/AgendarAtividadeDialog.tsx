@@ -116,18 +116,68 @@ export function AgendarAtividadeDialog({
     }
   }, [slotsDisponiveis]);
 
-  const toggleAtividade = (id: string) =>
-    setAtividadeIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+  const ativsDoCurso = useMemo(
+    () => atividades.filter((a) => a.cursoId === curso.id),
+    [atividades, curso.id],
+  );
+
+  const grupos = useMemo(() => {
+    const set = new Set<string>();
+    for (const a of ativsDoCurso) if (a.grupo) set.add(a.grupo);
+    return Array.from(set).sort();
+  }, [ativsDoCurso]);
+
+  const ativsDoGrupo = useMemo(
+    () => (grupo ? ativsDoCurso.filter((a) => a.grupo === grupo) : []),
+    [ativsDoCurso, grupo],
+  );
+
+  const aulasDoGrupo = useMemo(
+    () => ativsDoGrupo.filter((a) => a.tipo === 0),
+    [ativsDoGrupo],
+  );
+  const tarefasDoGrupo = useMemo(
+    () => ativsDoGrupo.filter((a) => a.tipo === 1),
+    [ativsDoGrupo],
+  );
+
+  const aulaId = atividadeIds.find((id) =>
+    aulasDoGrupo.some((a) => a.id === id),
+  ) ?? "";
+  const tarefaId = atividadeIds.find((id) =>
+    tarefasDoGrupo.some((a) => a.id === id),
+  ) ?? "";
+
+  // Reseta seleção ao trocar grupo
+  useEffect(() => {
+    setAtividadeIds([]);
+  }, [grupo]);
+
+  const setAula = (id: string) => {
+    setAtividadeIds((prev) => {
+      const semAulas = prev.filter(
+        (x) => !aulasDoGrupo.some((a) => a.id === x),
+      );
+      return id ? [...semAulas, id] : semAulas;
+    });
+  };
+  const setTarefa = (id: string) => {
+    setAtividadeIds((prev) => {
+      const semTarefas = prev.filter(
+        (x) => !tarefasDoGrupo.some((a) => a.id === x),
+      );
+      return id ? [...semTarefas, id] : semTarefas;
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!turmaSelecionada) return toast.error("Selecione uma turma.");
     if (!date) return toast.error("Selecione uma data.");
     if (slotIdx === "") return toast.error("Selecione um horário.");
+    if (!grupo) return toast.error("Selecione um grupo.");
     if (atividadeIds.length === 0)
-      return toast.error("Escolha ao menos uma atividade.");
+      return toast.error("Escolha ao menos uma atividade (aula ou tarefa).");
 
     const slot = turmaSelecionada.horarios[Number(slotIdx)];
     const dataIso = format(date, "yyyy-MM-dd");
@@ -147,8 +197,6 @@ export function AgendarAtividadeDialog({
     toast.success("Atividade agendada!");
     onOpenChange(false);
   };
-
-  const ativsDoCurso = atividades.filter((a) => a.cursoId === curso.id);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
