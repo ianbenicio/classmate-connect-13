@@ -17,20 +17,21 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (curso: Curso) => void;
+  editing?: Curso;
 }
 
-export function CourseFormDialog({ open, onOpenChange, onSave }: Props) {
+export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props) {
   const [cod, setCod] = useState("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
     if (open) {
-      setCod("");
-      setNome("");
-      setDescricao("");
+      setCod(editing?.cod ?? "");
+      setNome(editing?.nome ?? "");
+      setDescricao(editing?.descricao ?? "");
     }
-  }, [open]);
+  }, [open, editing]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,12 +40,12 @@ export function CourseFormDialog({ open, onOpenChange, onSave }: Props) {
       return;
     }
     onSave({
-      id: crypto.randomUUID(),
+      id: editing?.id ?? crypto.randomUUID(),
       cod: cod.trim().toUpperCase(),
       nome: nome.trim(),
       descricao: descricao.trim() || undefined,
     });
-    toast.success("Curso criado!");
+    toast.success(editing ? "Curso atualizado!" : "Curso criado!");
     onOpenChange(false);
   };
 
@@ -52,7 +53,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Novo Curso</DialogTitle>
+          <DialogTitle>{editing ? "Editar Curso" : "Novo Curso"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

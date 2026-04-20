@@ -69,6 +69,7 @@ function CursosPage() {
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
 
   const [cursoFormOpen, setCursoFormOpen] = useState(false);
+  const [editingCurso, setEditingCurso] = useState<Curso | undefined>();
 
   const [turmaFormOpen, setTurmaFormOpen] = useState(false);
   const [editingTurma, setEditingTurma] = useState<Turma | undefined>();
@@ -107,7 +108,13 @@ function CursosPage() {
   }, [atividades, cursos]);
 
   const handleSaveCurso = (curso: Curso) => {
-    setCursos((prev) => [...prev, curso]);
+    setCursos((prev) => {
+      const exists = prev.some((c) => c.id === curso.id);
+      return exists
+        ? prev.map((c) => (c.id === curso.id ? curso : c))
+        : [...prev, curso];
+    });
+    if (cursoSelecionado?.id === curso.id) setCursoSelecionado(curso);
   };
 
   const handleSave = (atividade: Atividade) => {
@@ -150,7 +157,12 @@ function CursosPage() {
               Selecione um curso para visualizar suas atividades.
             </p>
           </div>
-          <Button onClick={() => setCursoFormOpen(true)}>
+          <Button
+            onClick={() => {
+              setEditingCurso(undefined);
+              setCursoFormOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4 mr-1" />
             Novo curso
           </Button>
@@ -216,6 +228,10 @@ function CursosPage() {
         }}
         onDelete={(a) => setConfirmDelete(a)}
         onSkillClick={(h) => setHabilidadeDetalhe(h)}
+        onEditCurso={(c) => {
+          setEditingCurso(c);
+          setCursoFormOpen(true);
+        }}
         onNewTurma={() => {
           setEditingTurma(undefined);
           setTurmaFormOpen(true);
@@ -247,6 +263,7 @@ function CursosPage() {
       <CourseFormDialog
         open={cursoFormOpen}
         onOpenChange={setCursoFormOpen}
+        editing={editingCurso}
         onSave={handleSaveCurso}
       />
 

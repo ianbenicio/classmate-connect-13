@@ -14,6 +14,7 @@ import {
   Trash2,
   GraduationCap,
   ClipboardList,
+  Settings,
 } from "lucide-react";
 import { Users } from "lucide-react";
 import {
@@ -36,6 +37,7 @@ interface Props {
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
   onSkillClick: (h: Habilidade) => void;
+  onEditCurso: (c: Curso) => void;
   onNewTurma: () => void;
   onEditTurma: (t: Turma) => void;
   onDeleteTurma: (t: Turma) => void;
@@ -52,6 +54,7 @@ export function CourseDetailDialog({
   onEdit,
   onDelete,
   onSkillClick,
+  onEditCurso,
   onNewTurma,
   onEditTurma,
   onDeleteTurma,
@@ -92,7 +95,17 @@ export function CourseDetailDialog({
         <DialogHeader>
           <div className="flex items-center gap-2">
             <Badge variant="outline">{curso?.cod}</Badge>
-            <DialogTitle>{curso?.nome}</DialogTitle>
+            <DialogTitle className="flex-1">{curso?.nome}</DialogTitle>
+            {curso && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onEditCurso(curso)}
+              >
+                <Settings className="h-4 w-4 mr-1" />
+                Editar curso
+              </Button>
+            )}
           </div>
           {curso?.descricao && (
             <DialogDescription>{curso.descricao}</DialogDescription>
