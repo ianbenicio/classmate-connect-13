@@ -70,6 +70,7 @@ export function ActivityFormDialog({
   const [descricaoConteudo, setDescricaoConteudo] = useState("");
   const [sugestoesPais, setSugestoesPais] = useState("");
   const [instrucoes, setInstrucoes] = useState("");
+  const [professor, setProfessor] = useState("");
   const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -85,6 +86,7 @@ export function ActivityFormDialog({
       setDescricaoConteudo(editing.descricaoConteudo ?? "");
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
+      setProfessor(editing.professor ?? "");
       setHabilidadeIds(editing.habilidadeIds);
     } else {
       setTipo(defaultTipo);
@@ -97,6 +99,7 @@ export function ActivityFormDialog({
       setDescricaoConteudo("");
       setSugestoesPais("");
       setInstrucoes("");
+      setProfessor("");
       setHabilidadeIds([]);
     }
   }, [open, editing, defaultTipo, cursos]);
@@ -106,8 +109,8 @@ export function ActivityFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !cursoId || !grupo || !descricao) {
-      toast.error("Preencha os campos obrigatórios.");
+    if (!nome || !cursoId || !grupo || !descricao || !professor.trim()) {
+      toast.error("Preencha os campos obrigatórios (incluindo Professor responsável).");
       return;
     }
 
@@ -119,6 +122,7 @@ export function ActivityFormDialog({
           prazo,
           descricao,
           objetivoResultados,
+          professor: professor.trim(),
           habilidadeIds,
           descricaoConteudo: editing!.tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: editing!.tipo === 0 ? sugestoesPais : undefined,
@@ -139,6 +143,7 @@ export function ActivityFormDialog({
           objetivoResultados,
           prazo,
           criadoPor: "Prof. Logado",
+          professor: professor.trim(),
           habilidadeIds,
           descricaoConteudo: tipo === 0 ? descricaoConteudo : undefined,
           sugestoesPais: tipo === 0 ? sugestoesPais : undefined,
@@ -245,7 +250,16 @@ export function ActivityFormDialog({
               </>
             )}
 
-            <div className="space-y-2 md:col-span-2">
+            <div className="space-y-2">
+              <Label>Professor responsável *</Label>
+              <Input
+                value={professor}
+                onChange={(e) => setProfessor(e.target.value)}
+                placeholder="Ex.: Prof. Ana Souza"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label>Prazo de referência</Label>
               <Input
                 type="date"
