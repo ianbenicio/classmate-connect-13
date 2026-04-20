@@ -49,6 +49,13 @@ function DashboardPage() {
   const alunos = SEED_ALUNOS;
   const agendamentos = useAgendamentos();
 
+  const [agendarCtx, setAgendarCtx] = useState<{
+    curso: Curso;
+    turma: Turma;
+    data: string;
+    slot: HorarioSlot;
+  } | null>(null);
+
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
 
