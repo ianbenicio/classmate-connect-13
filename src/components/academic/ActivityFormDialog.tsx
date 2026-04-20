@@ -56,6 +56,7 @@ export function ActivityFormDialog({
   open,
   onOpenChange,
   cursos,
+  turmas,
   grupos,
   habilidades,
   editing,
