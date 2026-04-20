@@ -159,6 +159,7 @@ function AtividadesPage() {
       <CourseDetailDialog
         curso={cursoSelecionado}
         atividades={atividades}
+        turmas={turmas}
         habilidadeMap={habilidadeMap}
         onOpenChange={(open) => !open && setCursoSelecionado(null)}
         onNew={(tipo) => {
@@ -177,7 +178,7 @@ function AtividadesPage() {
       <ActivityFormDialog
         open={formOpen}
         onOpenChange={setFormOpen}
-        cursos={SEED_CURSOS}
+        cursos={cursos}
         grupos={SEED_GRUPOS}
         habilidades={habilidades}
         editing={editing}
