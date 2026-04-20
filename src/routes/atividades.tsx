@@ -208,6 +208,7 @@ function AtividadesPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={cursos}
+        turmas={SEED_TURMAS}
         grupos={SEED_GRUPOS}
         habilidades={SEED_HABILIDADES}
         onSave={handleSave}
