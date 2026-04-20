@@ -1,10 +1,78 @@
-import type { Atividade, Curso, Habilidade, Turma } from "./academic-types";
+import type { Aluno, Atividade, Curso, Habilidade, Turma } from "./academic-types";
+
+export const SEED_ALUNOS: Aluno[] = [
+  {
+    id: "al-001",
+    nome: "Maria Silva",
+    contato: "maria.silva@email.com",
+    cursoId: "c-dsg",
+    turmaId: "t-dsg-2026a",
+    habilidadeIds: ["h-cri-02", "h-com-01"],
+    aulas: [{ atividadeId: "a-001", presente: true }],
+    trabalhos: [{ atividadeId: "a-002", entregue: true, nota: 8.5 }],
+    observacao: "Demonstra forte interesse por tipografia.",
+  },
+  {
+    id: "al-002",
+    nome: "João Pereira",
+    contato: "joao.pereira@email.com",
+    cursoId: "c-dsg",
+    turmaId: "t-dsg-2026a",
+    habilidadeIds: ["h-tec-04"],
+    aulas: [{ atividadeId: "a-001", presente: false, observacao: "Atestado médico" }],
+    trabalhos: [],
+  },
+  {
+    id: "al-003",
+    nome: "Ana Costa",
+    contato: "ana.costa@email.com",
+    cursoId: "c-inf",
+    turmaId: "t-inf-2026a",
+    habilidadeIds: ["h-col-03"],
+    aulas: [{ atividadeId: "a-003", presente: true }],
+    trabalhos: [],
+  },
+];
 
 export const SEED_TURMAS: Turma[] = [
-  { id: "t-dsg-2026a", cursoId: "c-dsg", nome: "Design 2026/A", descricao: "Turma matutina" },
-  { id: "t-dsg-2026b", cursoId: "c-dsg", nome: "Design 2026/B", descricao: "Turma vespertina" },
-  { id: "t-inf-2026a", cursoId: "c-inf", nome: "Informática 2026/A" },
-  { id: "t-gam-2026a", cursoId: "c-gam", nome: "Games 2026/A" },
+  {
+    id: "t-dsg-2026a",
+    cursoId: "c-dsg",
+    nome: "Design 2026/A",
+    cod: "DSG-26A",
+    data: "2026-02-03",
+    horario: "08:00 - 10:00",
+    alunosIds: ["al-001", "al-002"],
+    descricao: "Turma matutina",
+  },
+  {
+    id: "t-dsg-2026b",
+    cursoId: "c-dsg",
+    nome: "Design 2026/B",
+    cod: "DSG-26B",
+    data: "2026-02-03",
+    horario: "14:00 - 16:00",
+    alunosIds: [],
+    descricao: "Turma vespertina",
+  },
+  {
+    id: "t-inf-2026a",
+    cursoId: "c-inf",
+    nome: "Informática 2026/A",
+    cod: "INF-26A",
+    data: "2026-02-04",
+    horario: "10:00 - 12:00",
+    alunosIds: ["al-003"],
+  },
+  {
+    id: "t-gam-2026a",
+    cursoId: "c-gam",
+    nome: "Games 2026/A",
+    cod: "GAM-26A",
+    data: "2026-02-05",
+    horario: "19:00 - 21:00",
+    alunosIds: [],
+  },
 ];
 
 export const SEED_CURSOS: Curso[] = [
