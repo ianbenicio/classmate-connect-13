@@ -12,12 +12,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { GraduationCap, ClipboardList, Plus } from "lucide-react";
+import { GraduationCap, ClipboardList, Plus, Users } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseFormDialog } from "@/components/academic/CourseFormDialog";
 import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
+import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
+import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import {
+  SEED_ALUNOS,
   SEED_ATIVIDADES,
   SEED_CURSOS,
   SEED_GRUPOS,
@@ -29,6 +32,7 @@ import type {
   AtividadeTipo,
   Curso,
   Habilidade,
+  Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -44,8 +48,7 @@ export const Route = createFileRoute("/cursos")({
       { property: "og:title", content: "Cursos — Sistema Acadêmico" },
       {
         property: "og:description",
-        content:
-          "Gerencie cursos, turmas e atividades acadêmicas.",
+        content: "Gerencie cursos, turmas e atividades acadêmicas.",
       },
     ],
   }),
@@ -54,7 +57,8 @@ export const Route = createFileRoute("/cursos")({
 
 function CursosPage() {
   const [cursos, setCursos] = useState<Curso[]>(SEED_CURSOS);
-  const [turmas] = useState(SEED_TURMAS);
+  const [turmas, setTurmas] = useState<Turma[]>(SEED_TURMAS);
+  const [alunos] = useState(SEED_ALUNOS);
   const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
   const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
 
@@ -66,6 +70,13 @@ function CursosPage() {
 
   const [cursoFormOpen, setCursoFormOpen] = useState(false);
 
+  const [turmaFormOpen, setTurmaFormOpen] = useState(false);
+  const [editingTurma, setEditingTurma] = useState<Turma | undefined>();
+  const [turmaDetalhe, setTurmaDetalhe] = useState<Turma | null>(null);
+  const [confirmDeleteTurma, setConfirmDeleteTurma] = useState<Turma | null>(
+    null,
+  );
+
   const [habilidadeDetalhe, setHabilidadeDetalhe] =
     useState<Habilidade | null>(null);
 
@@ -75,6 +86,13 @@ function CursosPage() {
     () => new Map(habilidades.map((h) => [h.id, h])),
     [habilidades],
   );
+
+  const turmasPorCurso = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const t of turmas)
+      map.set(t.cursoId, (map.get(t.cursoId) ?? 0) + 1);
+    return map;
+  }, [turmas]);
 
   const contagemPorCurso = useMemo(() => {
     const map = new Map<string, { aulas: number; tarefas: number }>();
@@ -107,6 +125,21 @@ function CursosPage() {
     setConfirmDelete(null);
   };
 
+  const handleSaveTurma = (turma: Turma) => {
+    setTurmas((prev) => {
+      const exists = prev.some((t) => t.id === turma.id);
+      return exists
+        ? prev.map((t) => (t.id === turma.id ? turma : t))
+        : [...prev, turma];
+    });
+  };
+
+  const handleDeleteTurma = (t: Turma) => {
+    setTurmas((prev) => prev.filter((x) => x.id !== t.id));
+    toast.success("Turma removida");
+    setConfirmDeleteTurma(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
@@ -126,6 +159,7 @@ function CursosPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
+            const numTurmas = turmasPorCurso.get(c.id) ?? 0;
             return (
               <button
                 key={c.id}
@@ -145,7 +179,11 @@ function CursosPage() {
                     {c.descricao}
                   </p>
                 )}
-                <div className="flex gap-3 text-xs text-muted-foreground">
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    <Users className="h-3.5 w-3.5" />
+                    {numTurmas} turmas
+                  </span>
                   <span className="inline-flex items-center gap-1">
                     <GraduationCap className="h-3.5 w-3.5" />
                     {cont.aulas} aulas
@@ -178,6 +216,16 @@ function CursosPage() {
         }}
         onDelete={(a) => setConfirmDelete(a)}
         onSkillClick={(h) => setHabilidadeDetalhe(h)}
+        onNewTurma={() => {
+          setEditingTurma(undefined);
+          setTurmaFormOpen(true);
+        }}
+        onEditTurma={(t) => {
+          setEditingTurma(t);
+          setTurmaFormOpen(true);
+        }}
+        onDeleteTurma={(t) => setConfirmDeleteTurma(t)}
+        onTurmaClick={(t) => setTurmaDetalhe(t)}
       />
 
       <ActivityFormDialog
@@ -202,6 +250,27 @@ function CursosPage() {
         onSave={handleSaveCurso}
       />
 
+      {cursoSelecionado && (
+        <TurmaFormDialog
+          open={turmaFormOpen}
+          onOpenChange={setTurmaFormOpen}
+          cursoId={cursoSelecionado.id}
+          editing={editingTurma}
+          onSave={handleSaveTurma}
+        />
+      )}
+
+      <TurmaDetailDialog
+        turma={turmaDetalhe}
+        curso={
+          turmaDetalhe
+            ? cursos.find((c) => c.id === turmaDetalhe.cursoId)
+            : undefined
+        }
+        alunos={alunos}
+        onOpenChange={(open) => !open && setTurmaDetalhe(null)}
+      />
+
       <AlertDialog
         open={!!confirmDelete}
         onOpenChange={(open) => !open && setConfirmDelete(null)}
@@ -218,6 +287,31 @@ function CursosPage() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => confirmDelete && handleDelete(confirmDelete)}
+            >
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={!!confirmDeleteTurma}
+        onOpenChange={(open) => !open && setConfirmDeleteTurma(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover turma?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A turma <strong>{confirmDeleteTurma?.nome}</strong> será removida.
+              Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                confirmDeleteTurma && handleDeleteTurma(confirmDeleteTurma)
+              }
             >
               Remover
             </AlertDialogAction>

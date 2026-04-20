@@ -30,6 +30,10 @@ interface Props {
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
   onSkillClick: (h: Habilidade) => void;
+  onNewTurma: () => void;
+  onEditTurma: (t: Turma) => void;
+  onDeleteTurma: (t: Turma) => void;
+  onTurmaClick: (t: Turma) => void;
 }
 
 export function CourseDetailDialog({
@@ -42,6 +46,10 @@ export function CourseDetailDialog({
   onEdit,
   onDelete,
   onSkillClick,
+  onNewTurma,
+  onEditTurma,
+  onDeleteTurma,
+  onTurmaClick,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
 
@@ -87,10 +95,16 @@ export function CourseDetailDialog({
 
         {/* Turmas */}
         <section className="py-3 border-y">
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5" />
-            Turmas ({turmasDoCurso.length})
-          </h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+              <Users className="h-3.5 w-3.5" />
+              Turmas ({turmasDoCurso.length})
+            </h3>
+            <Button size="sm" variant="outline" onClick={onNewTurma}>
+              <Plus className="h-4 w-4 mr-1" />
+              Nova turma
+            </Button>
+          </div>
           {turmasDoCurso.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               Nenhuma turma cadastrada para este curso.
@@ -100,19 +114,57 @@ export function CourseDetailDialog({
               {turmasDoCurso.map((t) => (
                 <div
                   key={t.id}
-                  className="border rounded-md p-2.5 bg-muted/30 text-sm"
+                  className="border rounded-md p-2.5 bg-muted/30 text-sm hover:border-primary/40 hover:bg-muted/60 transition-colors group"
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className="text-[10px] font-mono">
-                      {t.cod}
-                    </Badge>
-                    <span className="font-medium">{t.nome}</span>
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <button
+                      type="button"
+                      onClick={() => onTurmaClick(t)}
+                      className="text-left flex-1 min-w-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] font-mono">
+                          {t.cod}
+                        </Badge>
+                        <span className="font-medium truncate">{t.nome}</span>
+                      </div>
+                    </button>
+                    <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditTurma(t);
+                        }}
+                        aria-label="Editar turma"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteTurma(t);
+                        }}
+                        aria-label="Remover turma"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5">
+                  <button
+                    type="button"
+                    onClick={() => onTurmaClick(t)}
+                    className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5 w-full text-left"
+                  >
                     <span>📅 {t.data}</span>
                     <span>🕐 {t.horario}</span>
                     <span>👥 {t.alunosIds.length} alunos</span>
-                  </div>
+                  </button>
                 </div>
               ))}
             </div>
