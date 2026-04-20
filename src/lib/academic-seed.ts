@@ -13,10 +13,10 @@ import {
 // CURSOS
 // ====================================================================
 export const SEED_CURSOS: Curso[] = [
-  { id: "c-mp", cod: "MP", nome: "Curso MP", descricao: "Nome do curso a ser definido." },
+  { id: "c-mp", cod: "MP", nome: "ModeloPreca", descricao: "Curso integrado de Criativo e Pro Player com encerramento em torneio + feira criativa." },
   { id: "c-gp", cod: "GP", nome: "GamePro", descricao: "Formação completa para cyber atletas e criadores de conteúdo de games." },
-  { id: "c-ad", cod: "AD", nome: "Curso AD", descricao: "Nome do curso a ser definido." },
-  { id: "c-rb", cod: "RB", nome: "Curso RB", descricao: "Nome do curso a ser definido." },
+  { id: "c-ad", cod: "AD", nome: "Atleta Digital", descricao: "Formação de Atleta Digital — Game Play, Pro Player, Design, IA, Ética, Inglês, Ferramentas e Fechamento." },
+  { id: "c-rb", cod: "RB", nome: "Robótica", descricao: "Robótica com Design Thinking, Eletrônica, Modelagem 3D e produção acadêmica." },
 ];
 
 // ====================================================================
@@ -63,7 +63,11 @@ export const SEED_HABILIDADES: Habilidade[] = [
 // O `cod` compõe o código da atividade: <CURSO_COD><GRUPO_COD><NN>.
 // ====================================================================
 export const SEED_GRUPOS: Record<string, Grupo[]> = {
-  "c-mp": [{ cod: "GERAL", nome: "Geral" }],
+  "c-mp": [
+    { cod: "CR", nome: "Criativo" },
+    { cod: "PP", nome: "Proplayer" },
+    { cod: "EV", nome: "Evento" },
+  ],
   "c-gp": [
     { cod: "CA", nome: "Canva e Adobe Express" },
     { cod: "FG", nome: "Fundamentos do Game" },
@@ -74,13 +78,27 @@ export const SEED_GRUPOS: Record<string, Grupo[]> = {
     { cod: "P2", nome: "Pro Player 2" },
     { cod: "IN", nome: "Inglês para Cyber Atletas" },
   ],
-  "c-ad": [{ cod: "GERAL", nome: "Geral" }],
-  "c-rb": [{ cod: "GERAL", nome: "Geral" }],
+  "c-ad": [
+    { cod: "GP", nome: "Game Play" },
+    { cod: "PP", nome: "Pro Player" },
+    { cod: "DS", nome: "Design" },
+    { cod: "IA", nome: "Inteligência Artificial" },
+    { cod: "ET", nome: "Ética e Telas" },
+    { cod: "EN", nome: "Inglês" },
+    { cod: "TO", nome: "Ferramentas Adobe e Vídeo" },
+    { cod: "BF", nome: "Briefing Final / Fechamento" },
+  ],
+  "c-rb": [
+    { cod: "MD", nome: "Metodologia de Design" },
+    { cod: "EP", nome: "Eletrônica e Prototipagem" },
+    { cod: "3D", nome: "Modelagem 3D e Fabricação" },
+    { cod: "AC", nome: "Artigo Científico e Produção Acadêmica" },
+  ],
 };
 
 // ====================================================================
 // ATIVIDADES — catálogo de Aulas (tipo 0) e Tarefas (tipo 1) por curso.
-// Códigos no formato <CURSO_COD><GRUPO_COD><NN> (ex.: GPCA01, MPGERAL01).
+// Códigos no formato <CURSO_COD><GRUPO_COD><NN> (ex.: GPCA01, MPCR01).
 // Professor não é definido aqui — é atribuído ao agendar.
 // ====================================================================
 
@@ -111,41 +129,28 @@ function mkAula(
   };
 }
 
-function mkTarefa(
-  cursoId: string,
-  cursoCod: string,
-  grupoCod: string,
-  seq: number,
-  nome: string,
-  instrucoes: string,
-  habilidadeIds: string[] = [],
-): Atividade {
-  return {
-    id: `at-${cursoCod.toLowerCase()}-${grupoCod.toLowerCase()}-tarefa-${String(seq).padStart(2, "0")}`,
-    tipo: 1,
-    nome,
-    codigo: formatCodigoAtividade(cursoCod, grupoCod, seq),
-    cursoId,
-    grupo: grupoCod,
-    descricao: instrucoes,
-    objetivoResultados: `Praticar e consolidar o conteúdo: ${nome}.`,
-    prazo: "2026-12-31",
-    criadoPor: "Admin",
-    professor: "",
-    habilidadeIds,
-    instrucoes,
-  };
-}
-
 export const SEED_ATIVIDADES: Atividade[] = [
-  // ----- MP (Música/Performance) — placeholder até receber a planilha -----
-  mkAula("c-mp", "MP", "GERAL", 1, "Aula 1 — Boas-vindas e diagnóstico", "Apresentação do curso, expectativas e avaliação inicial dos alunos.", ["h-com-01"]),
-  mkAula("c-mp", "MP", "GERAL", 2, "Aula 2 — Fundamentos rítmicos", "Pulso, tempo e subdivisões. Exercícios práticos de percussão corporal.", ["h-tec-04"]),
-  mkAula("c-mp", "MP", "GERAL", 3, "Aula 3 — Leitura básica", "Introdução à leitura de partitura: claves, figuras e pausas.", ["h-tec-04", "h-cri-02"]),
-  mkAula("c-mp", "MP", "GERAL", 4, "Aula 4 — Escalas maiores", "Construção e prática de escalas maiores em diferentes tonalidades.", ["h-tec-04"]),
-  mkAula("c-mp", "MP", "GERAL", 5, "Aula 5 — Performance em grupo", "Ensaio coletivo focado em escuta e entrosamento.", ["h-col-03", "h-com-01"]),
+  // ====================================================================
+  // MP — ModeloPreca (12 aulas: CR=6, PP=5, EV=1)
+  // ====================================================================
+  mkAula("c-mp", "MP", "CR", 1, "Introdução ao Design e Branding para Games", "Introdução ao Design e Branding para Games."),
+  mkAula("c-mp", "MP", "CR", 2, "Ferramentas Grátis (Canva, Photoshop)", "Visão geral de ferramentas gratuitas: Canva e Photoshop."),
+  mkAula("c-mp", "MP", "CR", 3, "Identidade Visual e Paleta para Streamers", "Construção de identidade visual e paleta de cores para streamers."),
+  mkAula("c-mp", "MP", "CR", 4, "Elementos Gráficos: Logos, Banners, e Sobreposições", "Criação de logos, banners e sobreposições (overlays)."),
+  mkAula("c-mp", "MP", "CR", 5, "Branding Pessoal: Aplicação para Streamers e YouTubers", "Branding pessoal aplicado a streamers e YouTubers."),
+  mkAula("c-mp", "MP", "CR", 6, "Criação de Portifólio", "Montagem de portfólio criativo do aluno."),
 
-  // ----- GP (GamePro) — 48 aulas em 8 módulos (planilha Aulas_GamePro.xlsx) -----
+  mkAula("c-mp", "MP", "PP", 1, "Introdução ao Mundo Pro Player", "Introdução ao mundo Pro Player."),
+  mkAula("c-mp", "MP", "PP", 2, "Mecânicas Avançadas (Aim, Movimentação)", "Mecânicas avançadas: aim e movimentação."),
+  mkAula("c-mp", "MP", "PP", 3, "Estratégia e Análise de Jogo (VODs)", "Estratégia e análise de jogo a partir de VODs."),
+  mkAula("c-mp", "MP", "PP", 4, "Psicologia Competitiva (Mindset, Tilting)", "Psicologia competitiva: mindset e controle de tilt."),
+  mkAula("c-mp", "MP", "PP", 5, "Comunicação, Callouts e Treinamento em Grupo", "Comunicação, callouts e treinamento em grupo."),
+
+  mkAula("c-mp", "MP", "EV", 1, "Torneio entre alunos + Feira Criativa", "Encerramento: torneio entre alunos + feira criativa."),
+
+  // ====================================================================
+  // GP — GamePro (48 aulas em 8 módulos)
+  // ====================================================================
   // CA — Canva e Adobe Express
   mkAula("c-gp", "GP", "CA", 1, "Visão geral do design gráfico", "Visão geral do design gráfico aplicada ao mundo dos games."),
   mkAula("c-gp", "GP", "CA", 2, "Ferramentas de apoio ao designer", "Ferramentas de apoio ao designer: paletas, fontes, mockups."),
@@ -203,22 +208,139 @@ export const SEED_ATIVIDADES: Atividade[] = [
   mkAula("c-gp", "GP", "IN", 5, "Conversação 1", "Conversação — nível 1."),
   mkAula("c-gp", "GP", "IN", 6, "Prova prática", "Prova prática do módulo."),
 
-  // ----- AD (Artes/Desenho) — placeholder -----
-  mkAula("c-ad", "AD", "GERAL", 1, "Aula 1 — Linha e forma", "Exercícios de observação: linha contínua, contorno e silhueta.", ["h-cri-02"]),
-  mkAula("c-ad", "AD", "GERAL", 2, "Aula 2 — Luz e sombra", "Estudo de valores tonais com lápis grafite.", ["h-cri-02", "h-tec-04"]),
-  mkAula("c-ad", "AD", "GERAL", 3, "Aula 3 — Composição", "Regras de composição visual: terços, equilíbrio e foco.", ["h-cri-02"]),
-  mkAula("c-ad", "AD", "GERAL", 4, "Aula 4 — Cor", "Teoria das cores e paletas harmônicas.", ["h-cri-02", "h-tec-04"]),
-  mkTarefa("c-ad", "AD", "GERAL", 1, "Tarefa 1 — Estudo de objeto", "Desenhar um objeto do cotidiano aplicando luz e sombra.", ["h-cri-02"]),
-  mkTarefa("c-ad", "AD", "GERAL", 2, "Tarefa 2 — Paleta limitada", "Compor uma cena usando apenas 3 cores + branco.", ["h-cri-02"]),
+  // ====================================================================
+  // AD — Atleta Digital (90 aulas em 8 módulos base)
+  // Sufixos numéricos do modulo_sigla original (GP01..GP08 etc.) foram
+  // colapsados na sigla-base. ADPP1..ADPP9 normalizados para ADPP01..ADPP09.
+  // ====================================================================
+  // GP — Game Play (24)
+  mkAula("c-ad", "AD", "GP", 1, "O que é ser Atleta Digital + Diagnóstico Inicial", "O que é ser Atleta Digital + diagnóstico inicial."),
+  mkAula("c-ad", "AD", "GP", 2, "Fundamentos do Jogo + Controles Básicos", "Fundamentos do jogo e controles básicos."),
+  mkAula("c-ad", "AD", "GP", 3, "Rotina de Atleta: Tempo, Estudo e Descanso", "Rotina de atleta: tempo, estudo e descanso."),
+  mkAula("c-ad", "AD", "GP", 4, "Emoções em Jogo: Entendendo o Tilt", "Emoções em jogo: entendendo o tilt."),
+  mkAula("c-ad", "AD", "GP", 5, "Execução Técnica + Movimentação", "Execução técnica e movimentação."),
+  mkAula("c-ad", "AD", "GP", 6, "Erro, Derrota e Aprendizado", "Erro, derrota e aprendizado."),
+  mkAula("c-ad", "AD", "GP", 7, "Visão de Mapa e Consciência de Jogo", "Visão de mapa e consciência de jogo."),
+  mkAula("c-ad", "AD", "GP", 8, "Regras, Fair Play e Confiança", "Regras, fair play e confiança."),
+  mkAula("c-ad", "AD", "GP", 9, "Papéis Básicos no Time", "Papéis básicos no time."),
+  mkAula("c-ad", "AD", "GP", 10, "Vida Digital Saudável + Energia para Performance", "Vida digital saudável e energia para performance."),
+  mkAula("c-ad", "AD", "GP", 11, "Mini-Estratégias: Começo, Meio e Fim de Partida", "Mini-estratégias: começo, meio e fim de partida."),
+  mkAula("c-ad", "AD", "GP", 12, "Comunicação em Jogo I: O que Ajuda e o que Atrapalha", "Comunicação em jogo I: o que ajuda e o que atrapalha."),
+  mkAula("c-ad", "AD", "GP", 13, "Comunicação Técnica Básica + Callouts", "Comunicação técnica básica e callouts."),
+  mkAula("c-ad", "AD", "GP", 14, "Introdução à Análise de VOD", "Introdução à análise de VOD."),
+  mkAula("c-ad", "AD", "GP", 15, "Respeito e Colaboração: Anti-Toxicity Básico", "Respeito e colaboração: anti-toxicity básico."),
+  mkAula("c-ad", "AD", "GP", 16, "Scrim Guiada com Foco em Fundamentos", "Scrim guiada com foco em fundamentos."),
+  mkAula("c-ad", "AD", "GP", 17, "Liderança Básica: Capitão da Vez", "Liderança básica: capitão da vez."),
+  mkAula("c-ad", "AD", "GP", 18, "Inglês In-Game I: Callouts Básicos", "Inglês in-game I: callouts básicos."),
+  mkAula("c-ad", "AD", "GP", 19, "Comunicação Integrada: PT + Ping + Inglês", "Comunicação integrada: PT + ping + inglês."),
+  mkAula("c-ad", "AD", "GP", 20, "Tela não é Vilã, mas também não é Santa", "Tela não é vilã, mas também não é santa."),
+  mkAula("c-ad", "AD", "GP", 21, "Conflitos Simples e Pedido de Desculpas", "Conflitos simples e pedido de desculpas."),
+  mkAula("c-ad", "AD", "GP", 22, "Debriefing Simples + Como Explicar aos Pais", "Debriefing simples e como explicar aos pais."),
+  mkAula("c-ad", "AD", "GP", 23, "Mini-desafio de Disciplina + Autocontrole", "Mini-desafio de disciplina e autocontrole."),
+  mkAula("c-ad", "AD", "GP", 24, "Tracking e Micro-ajustes", "Tracking e micro-ajustes."),
+  // PP — Pro Player (21) — normalizado para 2 dígitos
+  mkAula("c-ad", "AD", "PP", 1, "Flicking e Reação Muscular", "Flicking e reação muscular."),
+  mkAula("c-ad", "AD", "PP", 2, "Controle de Recuo (Spray Control)", "Controle de recuo (spray control)."),
+  mkAula("c-ad", "AD", "PP", 3, "Posicionamento de Crosshair (Pre-aim)", "Posicionamento de crosshair (pre-aim)."),
+  mkAula("c-ad", "AD", "PP", 4, "Simulação de Situações Reais", "Simulação de situações reais."),
+  mkAula("c-ad", "AD", "PP", 5, "Trigger Discipline", "Trigger discipline."),
+  mkAula("c-ad", "AD", "PP", 6, "Strafe e Counter-strafe", "Strafe e counter-strafe."),
+  mkAula("c-ad", "AD", "PP", 7, "Jiggle Peeking e Info Peek", "Jiggle peeking e info peek."),
+  mkAula("c-ad", "AD", "PP", 8, "Crouch e Jump Peeking", "Crouch e jump peeking."),
+  mkAula("c-ad", "AD", "PP", 9, "Parkour e Atalhos de Mapa", "Parkour e atalhos de mapa."),
+  mkAula("c-ad", "AD", "PP", 10, "Uso de Cobertura (Peeking Angles)", "Uso de cobertura (peeking angles)."),
+  mkAula("c-ad", "AD", "PP", 11, "Utility Mastery (Granadas e Smokes)", "Utility mastery (granadas e smokes)."),
+  mkAula("c-ad", "AD", "PP", 12, "Timing de Flashes e Entradas", "Timing de flashes e entradas."),
+  mkAula("c-ad", "AD", "PP", 13, "Economia de Jogo e Gestão de Recursos", "Economia de jogo e gestão de recursos."),
+  mkAula("c-ad", "AD", "PP", 14, "Leitura de Setup Adversário", "Leitura de setup adversário."),
+  mkAula("c-ad", "AD", "PP", 15, "Power Positions", "Power positions."),
+  mkAula("c-ad", "AD", "PP", 16, "Entry Killing e Criação de Espaço", "Entry killing e criação de espaço."),
+  mkAula("c-ad", "AD", "PP", 17, "Trade Kill e Cobertura Mútua", "Trade kill e cobertura mútua."),
+  mkAula("c-ad", "AD", "PP", 18, "Retake e Defesa de Objetivo", "Retake e defesa de objetivo."),
+  mkAula("c-ad", "AD", "PP", 19, "Clutch 1vX (Decisão sob Stress)", "Clutch 1vX: decisão sob stress."),
+  mkAula("c-ad", "AD", "PP", 20, "Especialização em Armamento (Sniper vs Rifler)", "Especialização em armamento (sniper vs rifler)."),
+  mkAula("c-ad", "AD", "PP", 21, "Drills de Aquecimento e Aim Trainers", "Drills de aquecimento e aim trainers."),
+  // DS — Design (12)
+  mkAula("c-ad", "AD", "DS", 1, "Nome, Símbolo e Avatar (Aplicação para Perfil)", "Nome, símbolo e avatar — aplicação para perfil."),
+  mkAula("c-ad", "AD", "DS", 2, "Layout em Tela (Overlay) e Composição", "Layout em tela (overlay) e composição."),
+  mkAula("c-ad", "AD", "DS", 3, "Cor, Emoção e Legibilidade", "Cor, emoção e legibilidade."),
+  mkAula("c-ad", "AD", "DS", 4, "Cartaz de Scrim/Torneio + Roteiro Mínimo", "Cartaz de scrim/torneio + roteiro mínimo."),
+  mkAula("c-ad", "AD", "DS", 5, "A Cara do Time: Marca em Linguagem Simples", "A cara do time: marca em linguagem simples."),
+  mkAula("c-ad", "AD", "DS", 6, "Storytelling do Time: Construindo uma Narrativa", "Storytelling do time: construindo uma narrativa."),
+  mkAula("c-ad", "AD", "DS", 7, "O que é Conteúdo e por que o Time Precisa Disso", "O que é conteúdo e por que o time precisa disso."),
+  mkAula("c-ad", "AD", "DS", 8, "Registrando Evolução com o Diário do Atleta Digital", "Registrando evolução com o diário do atleta digital."),
+  mkAula("c-ad", "AD", "DS", 9, "Objetivo do Conteúdo e Público", "Objetivo do conteúdo e público."),
+  mkAula("c-ad", "AD", "DS", 10, "Roteiro Simples para Vídeo Curto (Começo, Meio, Fim)", "Roteiro simples para vídeo curto (começo, meio, fim)."),
+  mkAula("c-ad", "AD", "DS", 11, "Estratégias de Conteúdo: O Papel de Cada Post", "Estratégias de conteúdo: o papel de cada post."),
+  mkAula("c-ad", "AD", "DS", 12, "Editorial de Conteúdo: Planejando o que Postar", "Editorial de conteúdo: planejando o que postar."),
+  // IA — Inteligência Artificial (12)
+  mkAula("c-ad", "AD", "IA", 1, "O que é IA e o que ela não é + Como Fazer um Bom Prompt", "O que é IA e o que ela não é + como fazer um bom prompt."),
+  mkAula("c-ad", "AD", "IA", 2, "IA, Jogos e o Medo dos Pais", "IA, jogos e o medo dos pais."),
+  mkAula("c-ad", "AD", "IA", 3, "IA não é Muleta (IA não substitui o raciocínio)", "IA não é muleta — IA não substitui o raciocínio."),
+  mkAula("c-ad", "AD", "IA", 4, "Criação de Scripts, Roteiros e Ideias para Clipes com IA", "Criação de scripts, roteiros e ideias para clipes com IA."),
+  mkAula("c-ad", "AD", "IA", 5, "IA para Ideias de Conteúdo do Time", "IA para ideias de conteúdo do time."),
+  mkAula("c-ad", "AD", "IA", 6, "IA para Identidade Visual de Times", "IA para identidade visual de times."),
+  mkAula("c-ad", "AD", "IA", 7, "IA como Coach de Gameplay (Leitura de Partidas)", "IA como coach de gameplay (leitura de partidas)."),
+  mkAula("c-ad", "AD", "IA", 8, "IA na Leitura de Jogos e Tomada de Decisões", "IA na leitura de jogos e tomada de decisões."),
+  mkAula("c-ad", "AD", "IA", 9, "IA nas Estatísticas e Dados do E-sport", "IA nas estatísticas e dados do e-sport."),
+  mkAula("c-ad", "AD", "IA", 10, "IA que Aprende a Jogar (Agentes e Automação)", "IA que aprende a jogar (agentes e automação)."),
+  mkAula("c-ad", "AD", "IA", 11, "IA no Tempo de Reação e Treinamento Cognitivo", "IA no tempo de reação e treinamento cognitivo."),
+  mkAula("c-ad", "AD", "IA", 12, "IA para Listar Pontos Fortes e Fracos em Jogo", "IA para listar pontos fortes e fracos em jogo."),
+  // ET — Ética e Telas (6)
+  mkAula("c-ad", "AD", "ET", 1, "Entendendo o Medo dos Pais", "Entendendo o medo dos pais."),
+  mkAula("c-ad", "AD", "ET", 2, "Acordos de Tela, Parte 1 (Perspectiva do Aluno)", "Acordos de tela, parte 1 — perspectiva do aluno."),
+  mkAula("c-ad", "AD", "ET", 3, "O que Seus Pais não Sabem que Você Já Entende", "O que seus pais não sabem que você já entende."),
+  mkAula("c-ad", "AD", "ET", 4, "Games como Ferramenta de Treino, Estudo e Conexão", "Games como ferramenta de treino, estudo e conexão."),
+  mkAula("c-ad", "AD", "ET", 5, "Games nas Notícias: O que Falam de Você por Aí", "Games nas notícias: o que falam de você por aí."),
+  mkAula("c-ad", "AD", "ET", 6, "Riscos Reais do Mundo Digital + Segurança Online", "Riscos reais do mundo digital + segurança online."),
+  // EN — Inglês (3)
+  mkAula("c-ad", "AD", "EN", 1, "Onde o Inglês Aparece nos Jogos? Vocabulário de Partida e Comandos", "Onde o inglês aparece nos jogos? Vocabulário de partida e comandos."),
+  mkAula("c-ad", "AD", "EN", 2, "Listening com Apoio Visual (sem Autoengano)", "Listening com apoio visual (sem autoengano)."),
+  mkAula("c-ad", "AD", "EN", 3, "Comunicação em Equipe: Calls Mínimas", "Comunicação em equipe: calls mínimas."),
+  // TO — Ferramentas Adobe e Vídeo (6)
+  mkAula("c-ad", "AD", "TO", 1, "Ferramentas e Layout Adobe (Introdução ao Ecossistema)", "Ferramentas e layout Adobe — introdução ao ecossistema."),
+  mkAula("c-ad", "AD", "TO", 2, "Photoshop: Do Básico ao Intermediário", "Photoshop: do básico ao intermediário."),
+  mkAula("c-ad", "AD", "TO", 3, "Illustrator: Do Básico ao Intermediário", "Illustrator: do básico ao intermediário."),
+  mkAula("c-ad", "AD", "TO", 4, "Premiere: Edição de Vídeo do Básico ao Intermediário", "Premiere: edição de vídeo do básico ao intermediário."),
+  mkAula("c-ad", "AD", "TO", 5, "After Effects: Efeitos e Animações", "After Effects: efeitos e animações."),
+  mkAula("c-ad", "AD", "TO", 6, "Criação de Highlights: After Effects + Premiere", "Criação de highlights: After Effects + Premiere."),
+  // BF — Briefing Final / Fechamento (8)
+  mkAula("c-ad", "AD", "BF", 1, "Miniportfólio do Time (Fechamento Criativo)", "Miniportfólio do time (fechamento criativo)."),
+  mkAula("c-ad", "AD", "BF", 2, "Fechamento N1 e Registro de Evolução", "Fechamento N1 e registro de evolução."),
+  mkAula("c-ad", "AD", "BF", 3, "Revisão da Jornada e Escopo do Projeto Final", "Revisão da jornada e escopo do projeto final."),
+  mkAula("c-ad", "AD", "BF", 4, "Seleção do Clipe e Regra de Fair Play", "Seleção do clipe e regra de fair play."),
+  mkAula("c-ad", "AD", "BF", 5, "Auditoria de Tela + Preparação para Conversa com Pais", "Auditoria de tela + preparação para conversa com pais."),
+  mkAula("c-ad", "AD", "BF", 6, "Apresentando o Time: Argumento Simples", "Apresentando o time: argumento simples."),
+  mkAula("c-ad", "AD", "BF", 7, "Encontro com Pais + Devolutiva com Evidência", "Encontro com pais + devolutiva com evidência."),
+  mkAula("c-ad", "AD", "BF", 8, "Cerimônia de Encerramento do Nível 1", "Cerimônia de encerramento do nível 1."),
 
-  // ----- RB (Robótica) — placeholder -----
-  mkAula("c-rb", "RB", "GERAL", 1, "Aula 1 — Introdução à robótica", "O que é robótica, exemplos no cotidiano, componentes básicos.", ["h-tec-04", "h-com-01"]),
-  mkAula("c-rb", "RB", "GERAL", 2, "Aula 2 — Circuitos elétricos", "Tensão, corrente e montagem de circuitos simples em protoboard.", ["h-tec-04"]),
-  mkAula("c-rb", "RB", "GERAL", 3, "Aula 3 — Lógica de programação", "Variáveis, condicionais e laços com blocos visuais.", ["h-tec-04", "h-cri-02"]),
-  mkAula("c-rb", "RB", "GERAL", 4, "Aula 4 — Sensores e atuadores", "Leitura de sensores e controle de motores/LEDs.", ["h-tec-04"]),
-  mkAula("c-rb", "RB", "GERAL", 5, "Aula 5 — Projeto final", "Planejamento e construção colaborativa de um robô-protótipo.", ["h-col-03", "h-cri-02", "h-tec-04"]),
-  mkTarefa("c-rb", "RB", "GERAL", 1, "Tarefa 1 — Diagrama de circuito", "Desenhar o esquema do circuito montado em aula.", ["h-tec-04"]),
-  mkTarefa("c-rb", "RB", "GERAL", 2, "Tarefa 2 — Mini-programa", "Escrever em blocos um programa que pisque um LED em padrão SOS.", ["h-tec-04", "h-cri-02"]),
+  // ====================================================================
+  // RB — Robótica (20 aulas em 4 módulos: MD=5, EP=7, 3D=5, AC=3)
+  // ====================================================================
+  // MD — Metodologia de Design
+  mkAula("c-rb", "RB", "MD", 1, "Conhecendo o curso + Design Thinking", "Apresentação do curso e introdução ao Design Thinking."),
+  mkAula("c-rb", "RB", "MD", 2, "Definição do Problema", "Definição do problema."),
+  mkAula("c-rb", "RB", "MD", 3, "Dados, Mercado e Hipótese", "Dados, mercado e hipótese."),
+  mkAula("c-rb", "RB", "MD", 4, "Da Ideia à Decisão", "Da ideia à decisão."),
+  mkAula("c-rb", "RB", "MD", 5, "IA com Propósito: Limites e Ética na Prática", "IA com propósito: limites e ética na prática."),
+  // EP — Eletrônica e Prototipagem
+  mkAula("c-rb", "RB", "EP", 1, "Fundamentos de eletrônica no projeto real", "Fundamentos de eletrônica aplicados em projeto real."),
+  mkAula("c-rb", "RB", "EP", 2, "Circuitos Integrados + IA (CI 555)", "Circuitos integrados + IA — CI 555."),
+  mkAula("c-rb", "RB", "EP", 3, "Introdução ao Arduino + IA", "Introdução ao Arduino + IA."),
+  mkAula("c-rb", "RB", "EP", 4, "Comunicação e Interfaces do Arduino + IA", "Comunicação e interfaces do Arduino + IA."),
+  mkAula("c-rb", "RB", "EP", 5, "Sensores no Arduino + IA", "Sensores no Arduino + IA."),
+  mkAula("c-rb", "RB", "EP", 6, "Controle de Potência, Atuadores e Drivers + IA", "Controle de potência, atuadores e drivers + IA."),
+  mkAula("c-rb", "RB", "EP", 7, "Eletrônica do Braço Robótico — Parte 1", "Eletrônica do braço robótico — parte 1."),
+  // 3D — Modelagem 3D e Fabricação
+  mkAula("c-rb", "RB", "3D", 1, "Introdução à Modelagem 3D — Parte 1", "Introdução à modelagem 3D — parte 1."),
+  mkAula("c-rb", "RB", "3D", 2, "Modelagem 3D — Parte 2 (projeto autoral)", "Modelagem 3D — parte 2 (projeto autoral)."),
+  mkAula("c-rb", "RB", "3D", 3, "Modelagem 3D — Parte 3 (finalização + STL)", "Modelagem 3D — parte 3 (finalização + STL)."),
+  mkAula("c-rb", "RB", "3D", 4, "Operação e manutenção de impressoras 3D", "Operação e manutenção de impressoras 3D."),
+  mkAula("c-rb", "RB", "3D", 5, "Montagem e integração do Braço Robótico", "Montagem e integração do braço robótico."),
+  // AC — Artigo Científico
+  mkAula("c-rb", "RB", "AC", 1, "Introdução à Escrita Científica", "Introdução à escrita científica."),
+  mkAula("c-rb", "RB", "AC", 2, "Construindo o Artigo — Estrutura, Revisão e Normas", "Construindo o artigo — estrutura, conteúdo, revisão, formatação e normas técnicas."),
+  mkAula("c-rb", "RB", "AC", 3, "Submissão: Feiras, Eventos e Revistas", "Submissão: feiras, eventos e revistas."),
 ];
 
 export const SEED_AGENDAMENTOS: Agendamento[] = [];
