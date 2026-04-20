@@ -111,6 +111,13 @@ export function ActivityFormDialog({
 
   const cursoSelecionado = cursos.find((c) => c.id === cursoId);
   const gruposDisponiveis = grupos[cursoId] ?? [];
+  const turmasDoCurso = turmas.filter((t) => t.cursoId === cursoId);
+
+  const toggleTurma = (id: string) => {
+    setTurmaIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
