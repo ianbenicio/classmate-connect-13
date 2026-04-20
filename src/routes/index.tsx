@@ -44,6 +44,7 @@ function DashboardPage() {
   const turmas = SEED_TURMAS;
   const atividades = SEED_ATIVIDADES;
   const alunos = SEED_ALUNOS;
+  const agendamentos = useAgendamentos();
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
