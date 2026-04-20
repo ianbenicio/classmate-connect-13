@@ -2,6 +2,14 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +26,7 @@ import {
   GraduationCap,
   Pencil,
   Plus,
+  Search,
   Trash2,
   Users,
 } from "lucide-react";
@@ -30,9 +39,9 @@ import {
   SEED_TURMAS,
 } from "@/lib/academic-seed";
 import {
-  getGrupoNome,
   type Atividade,
   type AtividadeTipo,
+  type Grupo,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -83,6 +92,11 @@ function CursoAtividadesPage() {
 
   const turmasDoCurso = useMemo(
     () => SEED_TURMAS.filter((t) => t.cursoId === curso.id),
+    [curso.id],
+  );
+
+  const gruposCurso = useMemo(
+    () => SEED_GRUPOS[curso.id] ?? [],
     [curso.id],
   );
 
@@ -172,6 +186,7 @@ function CursoAtividadesPage() {
             title="Aulas"
             icon={<GraduationCap className="h-5 w-5" />}
             items={aulas}
+            grupos={gruposCurso}
             emptyText="Nenhuma aula cadastrada."
             onAdd={() => openNew(0)}
             onEdit={openEdit}
@@ -181,6 +196,7 @@ function CursoAtividadesPage() {
             title="Tarefas"
             icon={<ClipboardList className="h-5 w-5" />}
             items={tarefas}
+            grupos={gruposCurso}
             emptyText="Nenhuma tarefa cadastrada."
             onAdd={() => openNew(1)}
             onEdit={openEdit}
@@ -230,6 +246,7 @@ function ActivityColumn({
   title,
   icon,
   items,
+  grupos,
   emptyText,
   onAdd,
   onEdit,
@@ -238,18 +255,64 @@ function ActivityColumn({
   title: string;
   icon: React.ReactNode;
   items: Atividade[];
+  grupos: Grupo[];
   emptyText: string;
   onAdd: () => void;
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
 }) {
+  const [search, setSearch] = useState("");
+  const [moduloFilter, setModuloFilter] = useState("__all__");
+
+  const filtered = useMemo(() => {
+    let list = items;
+    if (moduloFilter !== "__all__") {
+      list = list.filter((a) => a.grupo === moduloFilter);
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter(
+        (a) =>
+          a.nome.toLowerCase().includes(q) ||
+          a.codigo.toLowerCase().includes(q),
+      );
+    }
+    return list;
+  }, [items, search, moduloFilter]);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, Atividade[]>();
+    for (const a of filtered) {
+      const list = map.get(a.grupo) ?? [];
+      list.push(a);
+      map.set(a.grupo, list);
+    }
+    const result: { cod: string; nome: string; items: Atividade[] }[] = [];
+    for (const g of grupos) {
+      const list = map.get(g.cod);
+      if (list?.length) {
+        result.push({ cod: g.cod, nome: g.nome, items: list });
+        map.delete(g.cod);
+      }
+    }
+    for (const [cod, list] of map) {
+      result.push({ cod, nome: cod, items: list });
+    }
+    return result;
+  }, [filtered, grupos]);
+
+  const showGroupHeaders = grupos.length > 1;
+  const showFilters = items.length > 6;
+
   return (
     <section className="bg-card border rounded-lg shadow-sm flex flex-col">
       <header className="flex items-center justify-between p-4 border-b">
         <h2 className="font-semibold inline-flex items-center gap-2">
           {icon} {title}
           <Badge variant="secondary" className="ml-1">
-            {items.length}
+            {filtered.length !== items.length
+              ? `${filtered.length}/${items.length}`
+              : items.length}
           </Badge>
         </h2>
         <Button size="sm" onClick={onAdd}>
@@ -257,41 +320,93 @@ function ActivityColumn({
         </Button>
       </header>
 
+      {showFilters && (
+        <div className="px-3 pt-3 flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar nome ou código…"
+              className="h-9 pl-8 text-sm"
+            />
+          </div>
+          {grupos.length > 1 && (
+            <Select value={moduloFilter} onValueChange={setModuloFilter}>
+              <SelectTrigger className="h-9 w-[130px] text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos</SelectItem>
+                {grupos.map((g) => (
+                  <SelectItem key={g.cod} value={g.cod}>
+                    {g.cod} — {g.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
       <div className="p-3 space-y-2">
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
             {emptyText}
           </p>
+        ) : filtered.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            Nenhum resultado para a busca.
+          </p>
         ) : (
-          items.map((a) => (
-            <div
-              key={a.id}
-              className="flex items-center justify-between gap-2 rounded-md border bg-background p-3 hover:border-primary/40 transition-colors"
-            >
-                <div className="min-w-0">
-                <div className="font-medium truncate">{a.nome}</div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {a.codigo} · {getGrupoNome(SEED_GRUPOS, a.cursoId, a.grupo)}
+          grouped.map((group) => (
+            <div key={group.cod}>
+              {showGroupHeaders && (
+                <div className="flex items-center gap-2 px-1 pt-2 pb-1">
+                  <Badge variant="outline" className="text-[10px] font-mono">
+                    {group.cod}
+                  </Badge>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {group.nome}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground ml-auto">
+                    {group.items.length}
+                  </span>
                 </div>
-              </div>
-              <div className="flex gap-1 shrink-0">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onEdit(a)}
-                  aria-label={`Editar ${a.nome}`}
-                >
-                  <Pencil />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onDelete(a)}
-                  aria-label={`Remover ${a.nome}`}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 />
-                </Button>
+              )}
+              <div className="space-y-2">
+                {group.items.map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between gap-2 rounded-md border bg-background p-3 hover:border-primary/40 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{a.nome}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {a.codigo}
+                      </div>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => onEdit(a)}
+                        aria-label={`Editar ${a.nome}`}
+                      >
+                        <Pencil />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => onDelete(a)}
+                        aria-label={`Remover ${a.nome}`}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))
