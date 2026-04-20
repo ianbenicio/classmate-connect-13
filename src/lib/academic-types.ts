@@ -17,6 +17,13 @@ export interface Curso {
   descricao?: string;
 }
 
+export interface Turma {
+  id: string;
+  cursoId: string;
+  nome: string;
+  descricao?: string;
+}
+
 // Base shared by Aula and Tarefa
 export interface Atividade {
   id: string;
