@@ -142,12 +142,14 @@ function MonthView({
   cursoMap,
   agendamentos,
   onDayClick,
+  onSlotClick,
 }: {
   refDate: Date;
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
   onDayClick: (d: Date) => void;
+  onSlotClick?: (p: SlotClickPayload) => void;
 }) {
   const monthStart = startOfMonth(refDate);
   const monthEnd = endOfMonth(refDate);
