@@ -83,12 +83,15 @@ export interface RegistroTrabalho {
 export interface Aluno {
   id: string;
   nome: string;
+  idade?: number;
   contato: string;
   cursoId: string;
   turmaId: string;
   habilidadeIds: string[];
   aulas: RegistroAula[];
   trabalhos: RegistroTrabalho[];
+  responsavel?: string;
+  contatoResp?: string;
   observacao?: string;
 }
 
