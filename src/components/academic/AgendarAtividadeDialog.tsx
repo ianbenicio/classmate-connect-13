@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import {
   diaSemanaFromDate,
   formatHorarioSlot,
+  getGrupoNome,
   type Atividade,
   type Curso,
   type HorarioSlot,
@@ -37,7 +38,7 @@ import {
 } from "@/lib/academic-types";
 import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
-import { SEED_ALUNOS } from "@/lib/academic-seed";
+import { SEED_ALUNOS, SEED_GRUPOS } from "@/lib/academic-seed";
 import { authStore } from "@/lib/auth-store";
 import { toast } from "sonner";
 
@@ -379,7 +380,8 @@ export function AgendarAtividadeDialog({
                 <SelectContent>
                   {grupos.map((g) => (
                     <SelectItem key={g} value={g}>
-                      {g}
+                      <span className="font-mono text-xs mr-2">{g}</span>
+                      {getGrupoNome(SEED_GRUPOS, curso.id, g)}
                     </SelectItem>
                   ))}
                 </SelectContent>
