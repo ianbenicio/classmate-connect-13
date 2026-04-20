@@ -96,11 +96,24 @@ export function CourseDetailDialog({
               Nenhuma turma cadastrada para este curso.
             </p>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               {turmasDoCurso.map((t) => (
-                <Badge key={t.id} variant="secondary" className="font-normal">
-                  {t.nome}
-                </Badge>
+                <div
+                  key={t.id}
+                  className="border rounded-md p-2.5 bg-muted/30 text-sm"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="text-[10px] font-mono">
+                      {t.cod}
+                    </Badge>
+                    <span className="font-medium">{t.nome}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5">
+                    <span>📅 {t.data}</span>
+                    <span>🕐 {t.horario}</span>
+                    <span>👥 {t.alunosIds.length} alunos</span>
+                  </div>
+                </div>
               ))}
             </div>
           )}
