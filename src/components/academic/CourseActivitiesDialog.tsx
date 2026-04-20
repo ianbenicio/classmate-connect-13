@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Dialog,
@@ -9,12 +9,21 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ArrowRight,
   ClipboardList,
   GraduationCap,
   Pencil,
   Plus,
+  Search,
   Trash2,
 } from "lucide-react";
 import {
@@ -125,15 +134,32 @@ function Column({
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
 }) {
-  // Group items by grupo cod, preserving grupos order
+  const [search, setSearch] = useState("");
+  const [moduloFilter, setModuloFilter] = useState("__all__");
+
+  const filtered = useMemo(() => {
+    let list = items;
+    if (moduloFilter !== "__all__") {
+      list = list.filter((a) => a.grupo === moduloFilter);
+    }
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter(
+        (a) =>
+          a.nome.toLowerCase().includes(q) ||
+          a.codigo.toLowerCase().includes(q),
+      );
+    }
+    return list;
+  }, [items, search, moduloFilter]);
+
   const grouped = useMemo(() => {
     const map = new Map<string, Atividade[]>();
-    for (const a of items) {
+    for (const a of filtered) {
       const list = map.get(a.grupo) ?? [];
       list.push(a);
       map.set(a.grupo, list);
     }
-    // Order by grupos definition, then any remaining
     const result: { cod: string; nome: string; items: Atividade[] }[] = [];
     for (const g of grupos) {
       const list = map.get(g.cod);
@@ -142,14 +168,14 @@ function Column({
         map.delete(g.cod);
       }
     }
-    // Any remaining not in grupos definition
     for (const [cod, list] of map) {
       result.push({ cod, nome: cod, items: list });
     }
     return result;
-  }, [items, grupos]);
+  }, [filtered, grupos]);
 
-  const showGroupHeaders = grouped.length > 1;
+  const showGroupHeaders = grupos.length > 1;
+  const showFilters = items.length > 6;
 
   return (
     <section className="rounded-md border bg-muted/30 flex flex-col">
@@ -157,16 +183,52 @@ function Column({
         {icon}
         <h3 className="text-sm font-semibold">{title}</h3>
         <Badge variant="secondary" className="ml-auto">
-          {items.length}
+          {filtered.length !== items.length
+            ? `${filtered.length}/${items.length}`
+            : items.length}
         </Badge>
         <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </header>
-      <div className="p-2 space-y-1">
+
+      {showFilters && (
+        <div className="px-2 pt-2 flex gap-1.5">
+          <div className="relative flex-1">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar nome ou código…"
+              className="h-8 pl-7 text-xs"
+            />
+          </div>
+          {grupos.length > 1 && (
+            <Select value={moduloFilter} onValueChange={setModuloFilter}>
+              <SelectTrigger className="h-8 w-[110px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos</SelectItem>
+                {grupos.map((g) => (
+                  <SelectItem key={g.cod} value={g.cod}>
+                    {g.cod} — {g.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
+      <div className="p-2 space-y-1 max-h-[50vh] overflow-y-auto">
         {items.length === 0 ? (
           <p className="text-xs text-muted-foreground text-center py-4">
             {emptyText}
+          </p>
+        ) : filtered.length === 0 ? (
+          <p className="text-xs text-muted-foreground text-center py-4">
+            Nenhum resultado para a busca.
           </p>
         ) : (
           grouped.map((group) => (
