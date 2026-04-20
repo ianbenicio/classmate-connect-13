@@ -213,16 +213,27 @@ function MonthView({
               </div>
               <div className="space-y-0.5 overflow-hidden">
                 {items.slice(0, 3).map((it, i) => (
-                  <div
+                  <button
                     key={i}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSlotClick?.({
+                        turma: it.turma,
+                        date: d,
+                        inicio: it.inicio,
+                        fim: it.fim,
+                        diaSemana: diaSemanaFromDate(d),
+                      });
+                    }}
                     className={cn(
-                      "text-[10px] leading-tight px-1 py-0.5 rounded border truncate",
+                      "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left hover:brightness-110",
                       cursoChipClass(it.turma.cursoId),
                     )}
-                    title={`${it.turma.cod} · ${it.inicio}–${it.fim}`}
+                    title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
                   >
                     {it.inicio} {it.turma.cod}
-                  </div>
+                  </button>
                 ))}
                 {items.length > 3 && (
                   <div className="text-[10px] text-muted-foreground">
