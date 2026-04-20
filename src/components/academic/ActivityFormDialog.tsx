@@ -105,6 +105,7 @@ export function ActivityFormDialog({
       setSugestoesPais("");
       setInstrucoes("");
       setHabilidadeIds([]);
+      setTurmaIds([]);
     }
   }, [open, editing, defaultTipo, cursos]);
 
