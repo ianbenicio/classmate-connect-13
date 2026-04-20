@@ -33,6 +33,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cursos: Curso[];
+  turmas: Turma[];
   grupos: Record<string, string[]>;
   habilidades: Habilidade[];
   /** undefined => criação; com valor => edição */
