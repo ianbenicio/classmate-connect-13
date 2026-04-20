@@ -134,4 +134,33 @@ export interface Agendamento {
   criadoEm: string; // ISO datetime
   concluidoEm?: string; // ISO datetime
   observacao?: string;
+  professor?: string; // snapshot do professor responsável
+}
+
+// ---------- Notificação ----------
+export interface Notificacao {
+  id: string;
+  destinatarioTipo: "aluno" | "professor";
+  destinatarioId: string; // alunoId ou nome do professor
+  titulo: string;
+  mensagem: string;
+  cursoId: string;
+  turmaId: string;
+  data: string; // YYYY-MM-DD da aula
+  inicio: string;
+  fim: string;
+  professor?: string;
+  atividadeIds: string[];
+  criadoEm: string;
+  lida: boolean;
+}
+
+// ---------- Helpers de janela "agendada" ----------
+// Agendamento fica ativo do início do dia até 24h após o término do slot.
+export function isAgendamentoAtivo(a: Agendamento, now: Date = new Date()): boolean {
+  const [hh, mm] = a.fim.split(":").map((n) => parseInt(n, 10));
+  const fimDate = new Date(`${a.data}T00:00:00`);
+  fimDate.setHours(hh, mm, 0, 0);
+  const expira = new Date(fimDate.getTime() + 24 * 60 * 60 * 1000);
+  return now <= expira && a.status !== "concluido";
 }
