@@ -330,6 +330,50 @@ export function ActivityFormDialog({
           )}
 
           <div className="space-y-2">
+            <Label>Turmas do curso</Label>
+            {!cursoId ? (
+              <p className="text-xs text-muted-foreground">
+                Selecione um curso para listar as turmas.
+              </p>
+            ) : turmasDoCurso.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Este curso ainda não possui turmas cadastradas.
+              </p>
+            ) : (
+              <div className="rounded-md border p-3 space-y-2">
+                {turmasDoCurso.map((t) => {
+                  const checked = turmaIds.includes(t.id);
+                  return (
+                    <label
+                      key={t.id}
+                      className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={() => toggleTurma(t.id)}
+                        className="mt-0.5"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm truncate">
+                            {t.nome}
+                          </span>
+                          <Badge variant="outline" className="text-[10px]">
+                            {t.cod}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {t.horario} · {t.alunosIds.length} alunos
+                        </div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-2">
             <Label>Habilidades Relacionadas</Label>
             <SkillSelector
               habilidades={habilidades}
