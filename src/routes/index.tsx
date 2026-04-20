@@ -135,6 +135,16 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            onSlotClick={({ turma, date, inicio, fim, diaSemana }) => {
+              const curso = cursoMap.get(turma.cursoId);
+              if (!curso) return;
+              setAgendarCtx({
+                curso,
+                turma,
+                data: format(date, "yyyy-MM-dd"),
+                slot: { diaSemana, inicio, fim },
+              });
+            }}
           />
         </section>
 
