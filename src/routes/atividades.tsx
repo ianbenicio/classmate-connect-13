@@ -172,6 +172,15 @@ function AtividadesPage() {
           )}
         </section>
       </div>
+
+      <ActivityFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        cursos={cursos}
+        grupos={SEED_GRUPOS}
+        habilidades={SEED_HABILIDADES}
+        onSave={handleSave}
+      />
     </div>
   );
 }
