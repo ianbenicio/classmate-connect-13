@@ -12,11 +12,11 @@ import {
   CalendarDays,
 } from "lucide-react";
 import {
-  SEED_ALUNOS,
   SEED_ATIVIDADES,
   SEED_CURSOS,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
+import { useAlunos } from "@/lib/alunos-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
@@ -49,7 +49,7 @@ function DashboardPage() {
   const cursos = SEED_CURSOS;
   const turmas = SEED_TURMAS;
   const atividades = SEED_ATIVIDADES;
-  const alunos = SEED_ALUNOS;
+  const alunos = useAlunos();
   const agendamentos = useAgendamentos();
   const currentUser = useCurrentUser();
 
@@ -89,7 +89,12 @@ function DashboardPage() {
       to: "/cursos" as const,
     },
     { label: "Turmas", value: turmas.length, icon: Users },
-    { label: "Alunos", value: alunos.length, icon: GraduationCap },
+    {
+      label: "Alunos",
+      value: alunos.length,
+      icon: GraduationCap,
+      to: "/alunos" as const,
+    },
     {
       label: "Aulas / Tarefas",
       value: `${aulasCount} / ${tarefasCount}`,
