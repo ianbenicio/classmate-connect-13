@@ -77,16 +77,11 @@ export function CourseDetailDialog({
     [curso, atividades],
   );
 
-  const totalAulasCurso = useMemo(
-    () => doCurso.filter((a) => a.tipo === 0).length,
-    [doCurso],
-  );
+  const totalAulasCurso = useMemo(() => doCurso.length, [doCurso]);
 
-  // Mapa turmaId -> Set de atividadeIds (aulas) já concluídas
+  // Mapa turmaId -> Set de atividadeIds já concluídas
   const aulasDadasPorTurma = useMemo(() => {
-    const aulaIds = new Set(
-      doCurso.filter((a) => a.tipo === 0).map((a) => a.id),
-    );
+    const aulaIds = new Set(doCurso.map((a) => a.id));
     const map = new Map<string, Set<string>>();
     for (const ag of agendamentos) {
       if (ag.status !== "concluido") continue;
