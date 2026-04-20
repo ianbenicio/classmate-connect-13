@@ -7,6 +7,7 @@ import {
   format,
   isSameDay,
   isSameMonth,
+  startOfDay,
   startOfMonth,
   startOfWeek,
   subMonths,
@@ -18,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   diaSemanaFromDate,
+  isAgendamentoAtivo,
   type Curso,
   type Turma,
   type DiaSemana,
@@ -212,29 +214,46 @@ function MonthView({
                 )}
               </div>
               <div className="space-y-0.5 overflow-hidden">
-                {items.slice(0, 3).map((it, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSlotClick?.({
-                        turma: it.turma,
-                        date: d,
-                        inicio: it.inicio,
-                        fim: it.fim,
-                        diaSemana: diaSemanaFromDate(d),
-                      });
-                    }}
-                    className={cn(
-                      "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left hover:brightness-110",
-                      cursoChipClass(it.turma.cursoId),
-                    )}
-                    title={`${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`}
-                  >
-                    {it.inicio} {it.turma.cod}
-                  </button>
-                ))}
+                {items.slice(0, 3).map((it, i) => {
+                  const dayKey = format(d, "yyyy-MM-dd");
+                  const ag = ags.find(
+                    (a) => a.turmaId === it.turma.id && a.inicio === it.inicio,
+                  );
+                  const ativa = ag ? isAgendamentoAtivo(ag) : false;
+                  const isPast = startOfDay(d) < startOfDay(new Date());
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      disabled={isPast}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (isPast) return;
+                        onSlotClick?.({
+                          turma: it.turma,
+                          date: d,
+                          inicio: it.inicio,
+                          fim: it.fim,
+                          diaSemana: diaSemanaFromDate(d),
+                        });
+                      }}
+                      className={cn(
+                        "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left hover:brightness-110",
+                        cursoChipClass(it.turma.cursoId),
+                        isPast && "opacity-40 cursor-not-allowed hover:brightness-100",
+                        ativa && "ring-1 ring-primary",
+                      )}
+                      title={
+                        isPast
+                          ? `${it.turma.cod} · ${it.inicio}–${it.fim} — data passada`
+                          : `${it.turma.cod} · ${it.inicio}–${it.fim} — clique para agendar`
+                      }
+                    >
+                      {ativa && "● "}
+                      {it.inicio} {it.turma.cod}
+                    </button>
+                  );
+                })}
                 {items.length > 3 && (
                   <div className="text-[10px] text-muted-foreground">
                     +{items.length - 3}
