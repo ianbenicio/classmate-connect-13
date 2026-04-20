@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { format, parse, addDays } from "date-fns";
+import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon, Clock } from "lucide-react";
 import {
@@ -36,6 +36,8 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { agendamentosStore } from "@/lib/agendamentos-store";
+import { notificacoesStore } from "@/lib/notificacoes-store";
+import { SEED_ALUNOS } from "@/lib/academic-seed";
 import { toast } from "sonner";
 
 interface Props {
@@ -172,6 +174,8 @@ export function AgendarAtividadeDialog({
     e.preventDefault();
     if (!turmaSelecionada) return toast.error("Selecione uma turma.");
     if (!date) return toast.error("Selecione uma data.");
+    if (date < startOfDay(new Date()))
+      return toast.error("Não é possível agendar em datas passadas.");
     if (slotIdx === "") return toast.error("Selecione um horário.");
     if (!grupo) return toast.error("Selecione um grupo.");
     if (atividadeIds.length === 0)
@@ -179,6 +183,7 @@ export function AgendarAtividadeDialog({
 
     const slot = turmaSelecionada.horarios[Number(slotIdx)];
     const dataIso = format(date, "yyyy-MM-dd");
+    const professor = turmaSelecionada.professor;
 
     agendamentosStore.add({
       id: crypto.randomUUID(),
@@ -191,8 +196,61 @@ export function AgendarAtividadeDialog({
       status: "pendente",
       criadoEm: new Date().toISOString(),
       observacao: observacao.trim() || undefined,
+      professor,
     });
-    toast.success("Atividade agendada!");
+
+    // Notificações: alunos da turma + professor
+    const ativsSel = atividades.filter((a) => atividadeIds.includes(a.id));
+    const partes = ativsSel
+      .map((a) => `${a.tipo === 0 ? "Aula" : "Tarefa"}: ${a.nome}`)
+      .join(" · ");
+    const titulo = `Atividade agendada — ${turmaSelecionada.cod}`;
+    const mensagem = `${curso.nome} · ${turmaSelecionada.nome} · ${format(
+      date,
+      "PPP",
+      { locale: ptBR },
+    )} ${slot.inicio}–${slot.fim}${professor ? ` · ${professor}` : ""}${
+      partes ? ` — ${partes}` : ""
+    }`;
+    const base = {
+      titulo,
+      mensagem,
+      cursoId: curso.id,
+      turmaId: turmaSelecionada.id,
+      data: dataIso,
+      inicio: slot.inicio,
+      fim: slot.fim,
+      professor,
+      atividadeIds,
+      criadoEm: new Date().toISOString(),
+      lida: false,
+    };
+    const alunosDaTurma = SEED_ALUNOS.filter(
+      (al) => al.turmaId === turmaSelecionada.id,
+    );
+    const notifs = [
+      ...alunosDaTurma.map((al) => ({
+        ...base,
+        id: crypto.randomUUID(),
+        destinatarioTipo: "aluno" as const,
+        destinatarioId: al.id,
+      })),
+      ...(professor
+        ? [
+            {
+              ...base,
+              id: crypto.randomUUID(),
+              destinatarioTipo: "professor" as const,
+              destinatarioId: professor,
+            },
+          ]
+        : []),
+    ];
+    notificacoesStore.addMany(notifs);
+
+    toast.success(
+      `Atividade agendada! ${notifs.length} notificação(ões) gerada(s).`,
+    );
     onOpenChange(false);
   };
 
@@ -252,7 +310,7 @@ export function AgendarAtividadeDialog({
                     mode="single"
                     selected={date}
                     onSelect={setDate}
-                    disabled={(d) => d < addDays(new Date(), -365)}
+                    disabled={(d) => d < startOfDay(new Date())}
                     initialFocus
                     locale={ptBR}
                     className={cn("p-3 pointer-events-auto")}
