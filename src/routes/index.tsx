@@ -157,7 +157,7 @@ function DashboardPage() {
               Próximas atividades
             </h2>
             <Button asChild size="sm">
-              <Link to="/cursos">
+              <Link to="/atividades">
                 <ClipboardList /> Atividades
               </Link>
             </Button>

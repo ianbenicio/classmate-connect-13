@@ -93,6 +93,13 @@ function RootComponent() {
             >
               Cursos
             </Link>
+            <Link
+              to="/atividades"
+              activeProps={{ className: "text-foreground font-medium" }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Atividades
+            </Link>
           </nav>
         </div>
       </header>
