@@ -115,7 +115,8 @@ function AtividadesPage() {
               {porCurso.map(({ curso, aulas, tarefas, total }) => (
                 <Link
                   key={curso.id}
-                  to="/cursos"
+                  to="/atividades/$cursoId"
+                  params={{ cursoId: curso.id }}
                   className="block bg-card border rounded-lg p-4 shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
                 >
                   <div className="flex items-center justify-between mb-2">
