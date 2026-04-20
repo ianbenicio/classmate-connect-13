@@ -61,6 +61,20 @@ export function TurmaDetailDialog({
 
   const ativPorId = new Map(atividades.map((a) => [a.id, a]));
 
+  // Aulas Realizadas = agendamentos concluídos cujo conteúdo inclui ao menos
+  // uma atividade do tipo Aula (tipo 0). Ordenadas mais recentes primeiro.
+  const aulasRealizadas = concluidas
+    .map((ag) => {
+      const aulas = ag.atividadeIds
+        .map((id) => ativPorId.get(id))
+        .filter((a): a is Atividade => !!a && a.tipo === 0);
+      return aulas.length ? { ag, aulas } : null;
+    })
+    .filter((x): x is { ag: Agendamento; aulas: Atividade[] } => !!x)
+    .sort((a, b) =>
+      (b.ag.data + b.ag.inicio).localeCompare(a.ag.data + a.ag.inicio),
+    );
+
   return (
     <Dialog open={!!turma} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
