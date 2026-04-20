@@ -71,6 +71,7 @@ export function AgendarAtividadeDialog({
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
   const [slotIdx, setSlotIdx] = useState<string>("");
+  const [grupo, setGrupo] = useState<string>("");
   const [atividadeIds, setAtividadeIds] =
     useState<string[]>(defaultAtividadeIds);
   const [observacao, setObservacao] = useState("");
@@ -80,6 +81,7 @@ export function AgendarAtividadeDialog({
     setTurmaId(defaultTurmaId ?? turmas[0]?.id ?? "");
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
+    setGrupo("");
     setAtividadeIds(defaultAtividadeIds);
     setObservacao("");
   }, [open, defaultTurmaId, defaultData, defaultAtividadeIds, turmas]);
