@@ -113,6 +113,21 @@ function DashboardPage() {
           })}
         </section>
 
+        {/* Calendário */}
+        <section className="mb-10">
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-xl font-semibold tracking-tight inline-flex items-center gap-2">
+              <CalendarDays className="h-5 w-5" />
+              Calendário
+            </h2>
+          </div>
+          <ScheduleCalendar
+            turmas={turmas}
+            cursos={cursos}
+            agendamentos={agendamentos}
+          />
+        </section>
+
         {/* Cursos */}
         <section className="mb-10">
           <div className="flex items-baseline justify-between mb-4">
