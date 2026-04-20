@@ -84,7 +84,9 @@ export function AgendarAtividadeDialog({
     setGrupo("");
     setAtividadeIds(defaultAtividadeIds);
     setObservacao("");
-  }, [open, defaultTurmaId, defaultData, defaultAtividadeIds, turmas]);
+    // defaultAtividadeIds intencionalmente fora para evitar loop quando pai passa array novo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, defaultTurmaId, defaultData, turmas]);
 
   const turmaSelecionada = turmas.find((t) => t.id === turmaId);
 
