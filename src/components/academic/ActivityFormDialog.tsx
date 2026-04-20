@@ -131,7 +131,7 @@ export function ActivityFormDialog({
           tipo,
           nome,
           codigo: gerarCodigo(
-            cursoSelecionado?.sigla ?? "XXX",
+            cursoSelecionado?.cod ?? "XXX",
             grupo,
             Math.floor(Math.random() * 900) + 100,
           ),
