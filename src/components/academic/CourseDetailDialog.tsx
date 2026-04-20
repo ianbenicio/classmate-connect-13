@@ -26,6 +26,8 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { Progress } from "@/components/ui/progress";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
@@ -63,6 +65,7 @@ export function CourseDetailDialog({
   onTurmaClick,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
+  const agendamentos = useAgendamentos();
 
   const turmasDoCurso = useMemo(
     () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
@@ -73,6 +76,43 @@ export function CourseDetailDialog({
     () => (curso ? atividades.filter((a) => a.cursoId === curso.id) : []),
     [curso, atividades],
   );
+
+  const totalAulasCurso = useMemo(
+    () => doCurso.filter((a) => a.tipo === 0).length,
+    [doCurso],
+  );
+
+  // Mapa turmaId -> Set de atividadeIds (aulas) já concluídas
+  const aulasDadasPorTurma = useMemo(() => {
+    const aulaIds = new Set(
+      doCurso.filter((a) => a.tipo === 0).map((a) => a.id),
+    );
+    const map = new Map<string, Set<string>>();
+    for (const ag of agendamentos) {
+      if (ag.status !== "concluido") continue;
+      let set = map.get(ag.turmaId);
+      if (!set) {
+        set = new Set();
+        map.set(ag.turmaId, set);
+      }
+      for (const aid of ag.atividadeIds) {
+        if (aulaIds.has(aid)) set.add(aid);
+      }
+    }
+    return map;
+  }, [agendamentos, doCurso]);
+
+  const progressoCurso = useMemo(() => {
+    if (!curso || totalAulasCurso === 0 || turmasDoCurso.length === 0) {
+      return { dadas: 0, total: 0, pct: 0 };
+    }
+    let dadas = 0;
+    for (const t of turmasDoCurso) {
+      dadas += aulasDadasPorTurma.get(t.id)?.size ?? 0;
+    }
+    const total = totalAulasCurso * turmasDoCurso.length;
+    return { dadas, total, pct: Math.round((dadas / total) * 100) };
+  }, [curso, totalAulasCurso, turmasDoCurso, aulasDadasPorTurma]);
 
   const filtradas = useMemo(() => {
     return doCurso.filter((a) => {
@@ -134,6 +174,21 @@ export function CourseDetailDialog({
               {curso.descricao || "—"}
             </dd>
           </dl>
+        )}
+
+        {/* Progresso geral do curso */}
+        {curso && totalAulasCurso > 0 && turmasDoCurso.length > 0 && (
+          <div className="py-3 border-b">
+            <div className="flex items-center justify-between mb-1.5 text-xs">
+              <span className="font-medium text-muted-foreground uppercase tracking-wide">
+                Progresso do curso
+              </span>
+              <span className="font-mono text-muted-foreground">
+                {progressoCurso.dadas}/{progressoCurso.total} aulas ({progressoCurso.pct}%)
+              </span>
+            </div>
+            <Progress value={progressoCurso.pct} className="h-2" />
+          </div>
         )}
 
         {/* Turmas */}
@@ -208,6 +263,21 @@ export function CourseDetailDialog({
                     <span>🕐 {formatHorarios(t.horarios)}</span>
                     <span>👥 {t.alunosIds.length} alunos</span>
                   </button>
+                  {totalAulasCurso > 0 && (() => {
+                    const dadas = aulasDadasPorTurma.get(t.id)?.size ?? 0;
+                    const pct = Math.round((dadas / totalAulasCurso) * 100);
+                    return (
+                      <div className="mt-2">
+                        <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                          <span>Aulas dadas</span>
+                          <span className="font-mono">
+                            {dadas}/{totalAulasCurso} ({pct}%)
+                          </span>
+                        </div>
+                        <Progress value={pct} className="h-1.5" />
+                      </div>
+                    );
+                  })()}
                 </div>
               ))}
             </div>
