@@ -19,11 +19,13 @@ import {
 import { Users } from "lucide-react";
 import {
   formatHorarios,
+  getGrupoNome,
   type Atividade,
   type Curso,
   type Habilidade,
   type Turma,
 } from "@/lib/academic-types";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
@@ -249,7 +251,8 @@ export function CourseDetailDialog({
             {Array.from(agrupadas.entries()).map(([grupo, items]) => (
               <div key={grupo}>
                 <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                  {grupo}
+                  <span className="font-mono mr-2">{grupo}</span>
+                  {curso ? getGrupoNome(SEED_GRUPOS, curso.id, grupo) : grupo}
                 </h3>
                 <div className="space-y-3">
                   {items.map((a) => {
