@@ -263,6 +263,21 @@ export function CourseDetailDialog({
                     <span>🕐 {formatHorarios(t.horarios)}</span>
                     <span>👥 {t.alunosIds.length} alunos</span>
                   </button>
+                  {totalAulasCurso > 0 && (() => {
+                    const dadas = aulasDadasPorTurma.get(t.id)?.size ?? 0;
+                    const pct = Math.round((dadas / totalAulasCurso) * 100);
+                    return (
+                      <div className="mt-2">
+                        <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                          <span>Aulas dadas</span>
+                          <span className="font-mono">
+                            {dadas}/{totalAulasCurso} ({pct}%)
+                          </span>
+                        </div>
+                        <Progress value={pct} className="h-1.5" />
+                      </div>
+                    );
+                  })()}
                 </div>
               ))}
             </div>
