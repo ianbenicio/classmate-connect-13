@@ -25,10 +25,19 @@ import {
 import type { Agendamento } from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
 
+interface SlotClickPayload {
+  turma: Turma;
+  date: Date;
+  inicio: string;
+  fim: string;
+  diaSemana: DiaSemana;
+}
+
 interface Props {
   turmas: Turma[];
   cursos: Curso[];
   agendamentos: Agendamento[];
+  onSlotClick?: (payload: SlotClickPayload) => void;
 }
 
 // Gera ocorrências semanais (dia da semana + slot) para uma data
