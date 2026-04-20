@@ -290,6 +290,15 @@ function DashboardPage() {
           defaultSlot={agendarCtx.slot}
         />
       )}
+
+      <RegistrarRelatorioDialog
+        open={!!relatorioCtx}
+        onOpenChange={(o) => !o && setRelatorioCtx(null)}
+        agendamento={relatorioCtx?.agendamento ?? null}
+        turma={relatorioCtx?.turma}
+        curso={relatorioCtx?.curso}
+        atividades={atividades}
+      />
     </div>
   );
 }
