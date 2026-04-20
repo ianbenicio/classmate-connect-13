@@ -43,13 +43,14 @@ export function CourseActivitiesDialog({
   onEdit,
   onDelete,
 }: Props) {
-  const { aulas, tarefas } = useMemo(() => {
+  const { aulas, tarefas, gruposCurso } = useMemo(() => {
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
       : [];
     return {
       aulas: list.filter((a) => a.tipo === 0),
       tarefas: list.filter((a) => a.tipo === 1),
+      gruposCurso: curso ? (SEED_GRUPOS[curso.id] ?? []) : [],
     };
   }, [curso, atividades]);
 
