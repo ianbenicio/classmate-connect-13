@@ -65,6 +65,7 @@ export function CourseDetailDialog({
   onTurmaClick,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
+  const agendamentos = useAgendamentos();
 
   const turmasDoCurso = useMemo(
     () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
@@ -75,6 +76,43 @@ export function CourseDetailDialog({
     () => (curso ? atividades.filter((a) => a.cursoId === curso.id) : []),
     [curso, atividades],
   );
+
+  const totalAulasCurso = useMemo(
+    () => doCurso.filter((a) => a.tipo === 0).length,
+    [doCurso],
+  );
+
+  // Mapa turmaId -> Set de atividadeIds (aulas) já concluídas
+  const aulasDadasPorTurma = useMemo(() => {
+    const aulaIds = new Set(
+      doCurso.filter((a) => a.tipo === 0).map((a) => a.id),
+    );
+    const map = new Map<string, Set<string>>();
+    for (const ag of agendamentos) {
+      if (ag.status !== "concluido") continue;
+      let set = map.get(ag.turmaId);
+      if (!set) {
+        set = new Set();
+        map.set(ag.turmaId, set);
+      }
+      for (const aid of ag.atividadeIds) {
+        if (aulaIds.has(aid)) set.add(aid);
+      }
+    }
+    return map;
+  }, [agendamentos, doCurso]);
+
+  const progressoCurso = useMemo(() => {
+    if (!curso || totalAulasCurso === 0 || turmasDoCurso.length === 0) {
+      return { dadas: 0, total: 0, pct: 0 };
+    }
+    let dadas = 0;
+    for (const t of turmasDoCurso) {
+      dadas += aulasDadasPorTurma.get(t.id)?.size ?? 0;
+    }
+    const total = totalAulasCurso * turmasDoCurso.length;
+    return { dadas, total, pct: Math.round((dadas / total) * 100) };
+  }, [curso, totalAulasCurso, turmasDoCurso, aulasDadasPorTurma]);
 
   const filtradas = useMemo(() => {
     return doCurso.filter((a) => {
