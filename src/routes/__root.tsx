@@ -1,6 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsBell } from "@/components/NotificationsBell";
+import { UserSwitcher } from "@/components/UserSwitcher";
+import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 
 import appCss from "../styles.css?url";
 
@@ -71,6 +73,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useAgendamentoScanner();
   return (
     <>
       <header className="border-b bg-card sticky top-0 z-40">
@@ -102,6 +105,7 @@ function RootComponent() {
               Atividades
             </Link>
           </nav>
+          <UserSwitcher />
           <NotificationsBell />
         </div>
       </header>
