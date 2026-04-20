@@ -157,7 +157,12 @@ function CursosPage() {
               Selecione um curso para visualizar suas atividades.
             </p>
           </div>
-          <Button onClick={() => setCursoFormOpen(true)}>
+          <Button
+            onClick={() => {
+              setEditingCurso(undefined);
+              setCursoFormOpen(true);
+            }}
+          >
             <Plus className="h-4 w-4 mr-1" />
             Novo curso
           </Button>
