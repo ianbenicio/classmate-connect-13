@@ -14,6 +14,7 @@ import {
   Trash2,
   GraduationCap,
   ClipboardList,
+  Settings,
 } from "lucide-react";
 import { Users } from "lucide-react";
 import {
