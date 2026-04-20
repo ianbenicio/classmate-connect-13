@@ -26,6 +26,8 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { Progress } from "@/components/ui/progress";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
