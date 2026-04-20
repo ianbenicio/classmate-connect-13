@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { NotificationsBell } from "@/components/NotificationsBell";
 
 import appCss from "../styles.css?url";
 
@@ -77,7 +78,7 @@ function RootComponent() {
           <Link to="/" className="font-bold tracking-tight">
             🎓 Acadêmico
           </Link>
-          <nav className="flex items-center gap-4 text-sm">
+          <nav className="flex items-center gap-4 text-sm flex-1">
             <Link
               to="/"
               activeOptions={{ exact: true }}
@@ -101,6 +102,7 @@ function RootComponent() {
               Atividades
             </Link>
           </nav>
+          <NotificationsBell />
         </div>
       </header>
       <Outlet />
