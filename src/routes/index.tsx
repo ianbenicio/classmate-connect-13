@@ -49,7 +49,7 @@ function DashboardPage() {
   const cursos = SEED_CURSOS;
   const turmas = SEED_TURMAS;
   const atividades = SEED_ATIVIDADES;
-  const alunos = SEED_ALUNOS;
+  const alunos = useAlunos();
   const agendamentos = useAgendamentos();
   const currentUser = useCurrentUser();
 
