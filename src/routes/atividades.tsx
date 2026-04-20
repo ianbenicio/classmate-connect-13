@@ -20,6 +20,7 @@ import {
   SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
+  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import type { Atividade } from "@/lib/academic-types";
