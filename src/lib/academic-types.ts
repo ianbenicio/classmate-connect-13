@@ -16,6 +16,34 @@ export interface Curso {
   descricao?: string;
 }
 
+// ---------- Grupo / Módulo ----------
+// Cada curso tem um conjunto de grupos (módulos). O `cod` é usado na
+// composição do código da atividade: `<CURSO_COD><GRUPO_COD><NN>`.
+export interface Grupo {
+  cod: string;
+  nome: string;
+}
+
+/** Resolve o nome do grupo (módulo) a partir do cod, dentro de um curso. */
+export function getGrupoNome(
+  grupos: Record<string, Grupo[]>,
+  cursoId: string,
+  grupoCod: string,
+): string {
+  return (
+    grupos[cursoId]?.find((g) => g.cod === grupoCod)?.nome ?? grupoCod
+  );
+}
+
+/** Gera código de atividade no padrão `<CURSO><GRUPO><NN>`. */
+export function formatCodigoAtividade(
+  cursoCod: string,
+  grupoCod: string,
+  seq: number,
+): string {
+  return `${cursoCod}${grupoCod}${String(seq).padStart(2, "0")}`;
+}
+
 // ---------- Horários ----------
 
 export type DiaSemana = "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom";
@@ -101,9 +129,9 @@ export interface Atividade {
   id: string;
   tipo: AtividadeTipo;
   nome: string;
-  codigo: string; // SIGLA_CURSO + GRUPO + sequencial
+  codigo: string; // <CURSO_COD><GRUPO_COD><NN> — ex.: GPCA01
   cursoId: string;
-  grupo: string;
+  grupo: string; // cod do grupo (módulo) — ex.: "CA", "GERAL"
   descricao: string;
   objetivoResultados: string;
   prazo: string; // ISO date (referência didática)
