@@ -400,119 +400,126 @@ export function AlunoDetailDialog({
             </section>
 
             {/* ============================================================ */}
-            {/* SETOR 3 — AVALIAÇÕES                                         */}
+            {/* SETOR 3 — AVALIAÇÕES (Habilidades | Tarefas)                 */}
             {/* ============================================================ */}
-            <section className="border rounded-lg p-4 mt-3 space-y-4">
-              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+            <section className="border rounded-lg p-4 mt-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
                 <Award className="h-3.5 w-3.5" />
                 Avaliações
               </h3>
 
-              {/* Habilidades */}
-              <div>
-                <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2">
-                  Habilidades
-                </h4>
-                {aluno.habilidadeIds.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">
-                    Nenhuma habilidade vinculada.
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Coluna HABILIDADES — gráfico spiderweb */}
+                <div>
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2">
+                    Habilidades
+                  </h4>
+                  <SkillsRadarChart
+                    axes={[
+                      { label: "Foco", value: 0 },
+                      { label: "Criatividade", value: 0 },
+                      { label: "Equipe", value: 0 },
+                      { label: "Técnica", value: 0 },
+                      { label: "Comunicação", value: 0 },
+                    ]}
+                  />
+                  <p className="text-[10px] text-muted-foreground italic text-center mt-1">
+                    Habilidades a definir.
                   </p>
-                ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {aluno.habilidadeIds.map((id) => (
-                      <Badge key={id} variant="secondary" className="text-xs">
-                        {id}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Tarefas com nota */}
-              <div>
-                <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2">
-                  Tarefas avaliadas
-                </h4>
-                {tarefasComNota.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">
-                    Sem notas registradas.
-                  </p>
-                ) : (
-                  <ul className="divide-y border rounded-md">
-                    {tarefasComNota.map(({ reg, atividade }) => (
-                      <li
-                        key={reg.atividadeId}
-                        className="px-3 py-2 flex items-center gap-3 text-sm"
-                      >
-                        <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">
-                          {atividade?.codigo ??
-                            reg.atividadeId.slice(0, 6)}
-                        </span>
-                        <span className="flex-1 min-w-0 truncate">
-                          {atividade?.nome ?? "—"}
-                        </span>
-                        <Badge variant="outline" className="font-mono">
-                          {reg.nota}
-                        </Badge>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Observações dos professores */}
-              <div>
-                <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2 flex items-center gap-1.5">
-                  <MessageSquare className="h-3 w-3" />
-                  Observações
-                </h4>
-                {observacoes.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">
-                    Sem observações registradas.
-                  </p>
-                ) : (
-                  <ul className="space-y-2">
-                    {observacoes.map((o, i) => (
-                      <li
-                        key={i}
-                        className="text-xs border-l-2 border-muted pl-3 py-1"
-                      >
-                        <span className="font-mono text-muted-foreground">
-                          {o.origem}:
-                        </span>{" "}
-                        <span>{o.texto}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* Perfil IA — só coordenação/admin */}
-              {canSeePerfil && (
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5" />
-                      Perfil descritivo (IA)
-                    </h4>
-                    <Badge variant="outline" className="gap-1 text-[10px]">
-                      <Lock className="h-3 w-3" />
-                      Coordenação
-                    </Badge>
-                  </div>
-                  <div className="border rounded-md p-3 bg-muted/30 text-sm text-muted-foreground">
-                    <p className="mb-1">
-                      Perfil descritivo será gerado a partir de presença, notas,
-                      habilidades, observações dos professores e retorno dos
-                      pais.
-                    </p>
-                    <p className="text-xs italic">
-                      Geração por IA disponível após ativação do Lovable Cloud.
-                    </p>
-                  </div>
                 </div>
+
+                {/* Coluna TAREFAS AVALIADAS — 5 estrelas */}
+                <div>
+                  <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2">
+                    Tarefas avaliadas
+                  </h4>
+                  {tarefasComNota.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      Sem notas registradas.
+                    </p>
+                  ) : (
+                    <ul className="divide-y border rounded-md">
+                      {tarefasComNota.map(({ reg, atividade }) => (
+                        <li
+                          key={reg.atividadeId}
+                          className="px-3 py-2 flex items-center gap-3 text-sm"
+                        >
+                          <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">
+                            {atividade?.codigo ?? reg.atividadeId.slice(0, 6)}
+                          </span>
+                          <span className="flex-1 min-w-0 truncate">
+                            {atividade?.nome ?? "—"}
+                          </span>
+                          <StarRating value={reg.nota ?? 0} max={10} />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* ============================================================ */}
+            {/* SETOR 4 — OBSERVAÇÕES (comentários do professor)             */}
+            {/* ============================================================ */}
+            <section className="border rounded-lg p-4 mt-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                <MessageSquare className="h-3.5 w-3.5" />
+                Observações
+              </h3>
+              {observacoes.length === 0 ? (
+                <p className="text-xs text-muted-foreground italic">
+                  Sem observações registradas.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {observacoes.slice(0, 3).map((o, i) => (
+                    <li
+                      key={i}
+                      className="text-xs border-l-2 border-primary/40 pl-3 py-1"
+                    >
+                      <span className="font-mono text-muted-foreground">
+                        {o.origem}:
+                      </span>{" "}
+                      <span>{o.texto}</span>
+                    </li>
+                  ))}
+                  {observacoes.length > 3 && (
+                    <li className="text-[10px] text-muted-foreground italic pl-3">
+                      + {observacoes.length - 3} observação(ões) adicional(is).
+                    </li>
+                  )}
+                </ul>
               )}
             </section>
+
+            {/* ============================================================ */}
+            {/* SETOR 5 — PERFIL IA (somente coordenação)                    */}
+            {/* ============================================================ */}
+            {canSeePerfil && (
+              <section className="border rounded-lg p-4 mt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Perfil descritivo (IA)
+                  </h3>
+                  <Badge variant="outline" className="gap-1 text-[10px]">
+                    <Lock className="h-3 w-3" />
+                    Coordenação
+                  </Badge>
+                </div>
+                <div className="border rounded-md p-3 bg-muted/30 text-sm text-muted-foreground">
+                  <p className="mb-1">
+                    Perfil descritivo será gerado a partir de presença, notas,
+                    habilidades, observações dos professores e retorno dos
+                    pais.
+                  </p>
+                  <p className="text-xs italic">
+                    Geração por IA disponível após ativação do Lovable Cloud.
+                  </p>
+                </div>
+              </section>
+            )}
           </>
         )}
       </DialogContent>
