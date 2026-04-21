@@ -52,11 +52,33 @@ export function AlunoDetailDialog({
 }: Props) {
   const currentUser = useCurrentUser();
   const canSeePerfil = isCoordenacao(currentUser);
+  const agendamentos = useAgendamentos();
 
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
     [atividades],
   );
+
+  /** Mapa atividadeId → primeira data agendada para a turma do aluno (YYYY-MM-DD). */
+  const dataPorAtividade = useMemo(() => {
+    const m = new Map<string, string>();
+    if (!aluno) return m;
+    const ags = agendamentos
+      .filter((g) => g.turmaId === aluno.turmaId)
+      .sort((a, b) => a.data.localeCompare(b.data));
+    for (const g of ags) {
+      for (const aid of g.atividadeIds) {
+        if (!m.has(aid)) m.set(aid, g.data);
+      }
+    }
+    return m;
+  }, [agendamentos, aluno]);
+
+  const formatData = (iso?: string) => {
+    if (!iso) return "";
+    const [y, mo, d] = iso.split("-");
+    return `${d}/${mo}/${y.slice(2)}`;
+  };
 
   // Templates do curso
   const aulasCurso = useMemo(
