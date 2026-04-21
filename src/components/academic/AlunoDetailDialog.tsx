@@ -16,7 +16,11 @@ import {
   User,
   Phone,
   IdCard,
+  Sparkles,
+  Lock,
 } from "lucide-react";
+import { useCurrentUser } from "@/lib/auth-store";
+import { isCoordenacao } from "@/lib/users";
 import {
   formatHorarios,
   type Aluno,
