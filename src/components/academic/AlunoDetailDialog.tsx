@@ -61,11 +61,35 @@ export function AlunoDetailDialog({
   const currentUser = useCurrentUser();
   const canSeePerfil = isCoordenacao(currentUser);
   const agendamentos = useAgendamentos();
+  const avaliacoes = useAvaliacoes();
+  const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
 
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
     [atividades],
   );
+
+  /** Aulas pendentes de avaliação para este aluno (dentro da janela de 24h pós-fim). */
+  const pendentesAvaliacao = useMemo(() => {
+    if (!aluno) return [] as { ag: Agendamento; expiraEm: Date }[];
+    const now = new Date();
+    return agendamentos
+      .filter((g) => g.turmaId === aluno.turmaId)
+      .filter((g) => {
+        const fim = endSlotDate(g);
+        const expira = endSlotPlus24h(g);
+        // janela: depois do fim da aula, até 24h depois
+        return now >= fim && now <= expira;
+      })
+      .filter(
+        (g) =>
+          !avaliacoes.some(
+            (av) => av.agendamentoId === g.id && av.alunoId === aluno.id,
+          ),
+      )
+      .map((g) => ({ ag: g, expiraEm: endSlotPlus24h(g) }))
+      .sort((a, b) => a.expiraEm.getTime() - b.expiraEm.getTime());
+  }, [agendamentos, aluno, avaliacoes]);
 
   /** Mapa atividadeId → primeira data agendada para a turma do aluno (YYYY-MM-DD). */
   const dataPorAtividade = useMemo(() => {
