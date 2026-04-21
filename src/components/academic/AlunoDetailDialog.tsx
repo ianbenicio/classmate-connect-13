@@ -16,7 +16,11 @@ import {
   User,
   Phone,
   IdCard,
+  Sparkles,
+  Lock,
 } from "lucide-react";
+import { useCurrentUser } from "@/lib/auth-store";
+import { isCoordenacao } from "@/lib/users";
 import {
   formatHorarios,
   type Aluno,
@@ -40,6 +44,9 @@ export function AlunoDetailDialog({
   atividades,
   onOpenChange,
 }: Props) {
+  const currentUser = useCurrentUser();
+  const canSeePerfil = isCoordenacao(currentUser);
+
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
     [atividades],
@@ -353,6 +360,31 @@ export function AlunoDetailDialog({
                 </ul>
               )}
             </section>
+
+            {/* Perfil do aluno (IA) — somente coordenação/admin */}
+            {canSeePerfil && (
+              <section className="py-3 border-t">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Perfil do aluno (IA)
+                  </h3>
+                  <Badge variant="outline" className="gap-1 text-[10px]">
+                    <Lock className="h-3 w-3" />
+                    Coordenação
+                  </Badge>
+                </div>
+                <div className="border rounded-md p-4 bg-muted/30 text-sm text-muted-foreground">
+                  <p className="mb-2">
+                    Um perfil descritivo do aluno será gerado a partir de presença,
+                    notas, habilidades e observações dos professores.
+                  </p>
+                  <p className="text-xs italic">
+                    Geração por IA disponível após ativação do Lovable Cloud.
+                  </p>
+                </div>
+              </section>
+            )}
           </>
         )}
       </DialogContent>
