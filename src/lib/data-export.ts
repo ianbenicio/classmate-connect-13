@@ -59,19 +59,43 @@ export function buildExportPayload(): ExportPayload {
   };
 }
 
-/** Dispara download no navegador com um JSON minificado (menor tamanho). */
-export function downloadExportJSON() {
+/** Dispara download no navegador com um JSON minificado (menor tamanho).
+ *  Também registra o relatório no histórico (relatoriosStore). */
+export function downloadExportJSON(opts?: {
+  geradoPorUserId?: string;
+  geradoPorNome?: string;
+}) {
   const payload = buildExportPayload();
   const json = JSON.stringify(payload); // sem indentação → menor
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  const filename = `academia-flow-${ts}.json`;
   a.href = url;
-  a.download = `academia-flow-${ts}.json`;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  return { sizeBytes: blob.size, filename: a.download };
+
+  // Registra no histórico de relatórios
+  // Import dinâmico evita ciclo de dependências em SSR.
+  import("./relatorios-store").then(({ relatoriosStore }) => {
+    relatoriosStore.add({
+      id: crypto.randomUUID(),
+      tipo: "export_completo",
+      titulo: "Exportação completa do sistema",
+      geradoEm: payload.meta.geradoEm,
+      geradoPorUserId: opts?.geradoPorUserId,
+      geradoPorNome: opts?.geradoPorNome,
+      formato: "json",
+      sizeBytes: blob.size,
+      filename,
+      conteudo: json,
+    });
+  });
+
+  return { sizeBytes: blob.size, filename };
 }
+
