@@ -433,9 +433,27 @@ export const SEED_ATIVIDADES: Atividade[] = [
   mkAula("c-rb", "RB", "AC", 3, "Submissão: Feiras, Eventos e Revistas", "Submissão: feiras, eventos e revistas."),
 ];
 
+// DEMO: aula "recente" (algumas horas atrás) — sempre dentro da janela de 24h
+// para que a pendência de Avaliação do Aluno apareça em qualquer dia que você abrir o app.
+const _demoRecente = (() => {
+  const now = new Date();
+  const start = new Date(now.getTime() - 3 * 60 * 60 * 1000); // 3h atrás
+  const end = new Date(start.getTime() + 60 * 60 * 1000); // +1h
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const data = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+  const dias: Agendamento["diaSemana"][] = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+  return {
+    data,
+    diaSemana: dias[start.getDay()],
+    inicio: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
+    fim: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
+    criadoEm: start.toISOString(),
+  };
+})();
+
 export const SEED_AGENDAMENTOS: Agendamento[] = [
-  // DEMO: aula de ontem para teste do formulário de avaliação do aluno
-  { id: "ag-demo-mp1-20260420", turmaId: "t-mp-1", data: "2026-04-20", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-05"], status: "pendente", criadoEm: "2026-04-20T14:00:00.000Z", professor: "Celso" },
+  // DEMO: aula recente (~3h atrás) para a turma t-mp-1 — Ana Carolina vê pendência de avaliação
+  { id: "ag-demo-mp1-recente", turmaId: "t-mp-1", ..._demoRecente, atividadeIds: ["at-mp-c-aula-05"], status: "pendente", professor: "Celso" },
   { id: "ag-t-mp-1-mpc01-20260202", turmaId: "t-mp-1", data: "2026-02-02", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-02-02T14:00:00.000Z", concluidoEm: "2026-02-02T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpp01-20260223", turmaId: "t-mp-1", data: "2026-02-23", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-02-23T14:00:00.000Z", concluidoEm: "2026-02-23T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpc02-20260302", turmaId: "t-mp-1", data: "2026-03-02", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-02"], status: "concluido", criadoEm: "2026-03-02T14:00:00.000Z", concluidoEm: "2026-03-02T15:00:00.000Z" },
