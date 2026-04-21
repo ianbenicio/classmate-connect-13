@@ -311,6 +311,7 @@ export function AlunoDetailDialog({
                     <ul className="divide-y border rounded-md max-h-72 overflow-y-auto">
                       {aulasCurso.map((a) => {
                         const reg = aulasMap.get(a.id);
+                        const data = dataPorAtividade.get(a.id);
                         return (
                           <li
                             key={a.id}
@@ -322,6 +323,11 @@ export function AlunoDetailDialog({
                             <span className="flex-1 min-w-0 truncate">
                               {a.nome}
                             </span>
+                            {data && (
+                              <span className="font-mono text-[10px] text-muted-foreground shrink-0">
+                                {formatData(data)}
+                              </span>
+                            )}
                             {reg === undefined ? (
                               <span className="text-muted-foreground/60 text-[10px]">
                                 —
