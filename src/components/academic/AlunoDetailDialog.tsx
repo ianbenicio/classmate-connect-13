@@ -44,6 +44,9 @@ export function AlunoDetailDialog({
   atividades,
   onOpenChange,
 }: Props) {
+  const currentUser = useCurrentUser();
+  const canSeePerfil = isCoordenacao(currentUser);
+
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
     [atividades],
