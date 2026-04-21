@@ -65,9 +65,9 @@ export function SkillsRadarChart({ axes, size = 220 }: Props) {
           key={i}
           points={pts}
           fill="none"
-          stroke="hsl(var(--border))"
+          stroke="var(--border)"
           strokeWidth={1}
-          opacity={0.5}
+          opacity={0.6}
         />
       ))}
       {/* eixos */}
@@ -80,17 +80,17 @@ export function SkillsRadarChart({ axes, size = 220 }: Props) {
             y1={cy}
             x2={p.x}
             y2={p.y}
-            stroke="hsl(var(--border))"
+            stroke="var(--border)"
             strokeWidth={1}
-            opacity={0.5}
+            opacity={0.6}
           />
         );
       })}
       {/* dados */}
       <polygon
         points={dataPoly}
-        fill="hsl(var(--primary) / 0.25)"
-        stroke="hsl(var(--primary))"
+        fill="color-mix(in oklab, var(--primary) 25%, transparent)"
+        stroke="var(--primary)"
         strokeWidth={1.5}
       />
       {/* labels */}
