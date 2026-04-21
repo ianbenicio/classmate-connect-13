@@ -314,6 +314,51 @@ export function AlunoDetailDialog({
             </section>
 
             {/* ============================================================ */}
+            {/* SETOR 1.5 — PENDÊNCIAS DO ALUNO (avaliações de aula)         */}
+            {/* ============================================================ */}
+            {pendentesAvaliacao.length > 0 && (
+              <section className="border border-primary/40 rounded-lg p-4 mt-3 bg-primary/5">
+                <h3 className="text-xs font-medium uppercase tracking-wide flex items-center gap-1.5 mb-3 text-primary">
+                  <Bell className="h-3.5 w-3.5" />
+                  Avaliações pendentes
+                  <Badge variant="secondary" className="ml-1 text-[10px]">
+                    {pendentesAvaliacao.length}
+                  </Badge>
+                </h3>
+                <ul className="space-y-2">
+                  {pendentesAvaliacao.map(({ ag, expiraEm }) => {
+                    const horasRestantes = Math.max(
+                      0,
+                      Math.round((expiraEm.getTime() - Date.now()) / 3600000),
+                    );
+                    const [y, mo, d] = ag.data.split("-");
+                    return (
+                      <li
+                        key={ag.id}
+                        className="flex items-center gap-3 bg-background border rounded-md px-3 py-2"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate">
+                            Avalie a aula de {d}/{mo}/{y.slice(2)}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {ag.inicio}–{ag.fim}
+                            {ag.professor && ` · ${ag.professor}`} · expira em{" "}
+                            {horasRestantes}h
+                          </div>
+                        </div>
+                        <Button size="sm" onClick={() => setAvaliarAg(ag)}>
+                          Avaliar
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )}
+
+            {/* ============================================================ */}
             {/* SETOR 2 — ACOMPANHAMENTO                                     */}
             {/* ============================================================ */}
             <section className="border rounded-lg p-4 mt-3">
