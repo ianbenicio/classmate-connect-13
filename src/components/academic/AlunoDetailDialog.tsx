@@ -23,6 +23,9 @@ import {
   MessageSquare,
   Bell,
   CheckCircle2,
+  FileText,
+  AlertTriangle,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/lib/auth-store";
