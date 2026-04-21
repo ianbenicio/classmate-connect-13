@@ -600,6 +600,17 @@ export function AlunoDetailDialog({
           </>
         )}
       </DialogContent>
+
+      {aluno && curso && turma && avaliarAg && (
+        <AvaliacaoAulaDialog
+          open={!!avaliarAg}
+          onOpenChange={(o) => !o && setAvaliarAg(null)}
+          agendamento={avaliarAg}
+          aluno={aluno}
+          turma={turma}
+          curso={curso}
+        />
+      )}
     </Dialog>
   );
 }
