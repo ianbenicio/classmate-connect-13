@@ -126,15 +126,6 @@ export function AlunoDetailDialog({
     };
   }, [aluno]);
 
-  // Progresso geral do Acompanhamento (média entre frequência e atividades)
-  const acompanhamentoPct = useMemo(() => {
-    const partes: number[] = [];
-    if (freqStats.total > 0) partes.push(freqStats.pct);
-    if (tarefasStats.total > 0) partes.push(tarefasStats.pct);
-    if (partes.length === 0) return 0;
-    return Math.round(partes.reduce((a, b) => a + b, 0) / partes.length);
-  }, [freqStats, tarefasStats]);
-
   // Tarefas com nota (Avaliações)
   const tarefasComNota = useMemo(() => {
     if (!aluno) return [];
@@ -269,30 +260,24 @@ export function AlunoDetailDialog({
             {/* SETOR 2 — ACOMPANHAMENTO                                     */}
             {/* ============================================================ */}
             <section className="border rounded-lg p-4 mt-3">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
-                  <Activity className="h-3.5 w-3.5" />
-                  Acompanhamento
-                </h3>
-                <span className="text-xs font-mono text-muted-foreground">
-                  {acompanhamentoPct}%
-                </span>
-              </div>
-              <Progress value={acompanhamentoPct} className="h-2 mb-4" />
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                <Activity className="h-3.5 w-3.5" />
+                Acompanhamento
+              </h3>
 
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Coluna FREQUÊNCIA */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1">
                     <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
                       <GraduationCap className="h-3.5 w-3.5" />
                       Frequência
                     </h4>
                     <span className="text-[11px] font-mono text-muted-foreground">
-                      {freqStats.presentes}/{freqStats.total || aulasCurso.length}
+                      {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
                     </span>
                   </div>
-                  <Progress value={freqStats.pct} className="h-1 mb-2" />
+                  <Progress value={freqStats.pct} className="h-2 mb-2" />
                   {aulasCurso.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">
                       Nenhuma aula no curso.
@@ -330,17 +315,16 @@ export function AlunoDetailDialog({
 
                 {/* Coluna ATIVIDADES */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1">
                     <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
                       <ClipboardList className="h-3.5 w-3.5" />
                       Atividades
                     </h4>
                     <span className="text-[11px] font-mono text-muted-foreground">
-                      {tarefasStats.entregues}/
-                      {tarefasStats.total || tarefasCurso.length}
+                      {tarefasStats.entregues}/{tarefasStats.total || tarefasCurso.length} · {tarefasStats.pct}%
                     </span>
                   </div>
-                  <Progress value={tarefasStats.pct} className="h-1 mb-2" />
+                  <Progress value={tarefasStats.pct} className="h-2 mb-2" />
                   {tarefasCurso.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">
                       Nenhuma tarefa no curso.
