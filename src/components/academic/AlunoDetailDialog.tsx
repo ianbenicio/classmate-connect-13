@@ -317,6 +317,91 @@ export function AlunoDetailDialog({
             </section>
 
             {/* ============================================================ */}
+            {/* SETOR 1.2 — NOTIFICAÇÕES (resumo de pendências do aluno)     */}
+            {/* ============================================================ */}
+            {(() => {
+              const tarefasPend = tarefasStats.pendentes;
+              const faltas = freqStats.faltas;
+              const avaliacoesPend = pendentesAvaliacao.length;
+              const mensagens = 0; // placeholder — futuro: integração de mensagens
+              const relatoriosPend = 0; // placeholder — relatórios do aluno (a definir)
+              const total =
+                tarefasPend + faltas + avaliacoesPend + mensagens + relatoriosPend;
+
+              const items: {
+                key: string;
+                icon: typeof Bell;
+                label: string;
+                count: number;
+                tone: "primary" | "warning" | "danger" | "muted";
+              }[] = [
+                { key: "msg", icon: Mail, label: "Mensagens", count: mensagens, tone: "primary" },
+                { key: "tar", icon: ClipboardList, label: "Tarefas pendentes", count: tarefasPend, tone: "warning" },
+                { key: "falt", icon: AlertTriangle, label: "Faltas", count: faltas, tone: "danger" },
+                { key: "rel", icon: FileText, label: "Relatórios pendentes", count: relatoriosPend, tone: "warning" },
+                { key: "av", icon: CheckCircle2, label: "Avaliações de aula", count: avaliacoesPend, tone: "primary" },
+              ];
+
+              const toneClass = (tone: string, active: boolean) => {
+                if (!active) return "bg-muted/30 text-muted-foreground border-transparent";
+                switch (tone) {
+                  case "danger":
+                    return "bg-destructive/10 text-destructive border-destructive/30";
+                  case "warning":
+                    return "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30";
+                  case "primary":
+                    return "bg-primary/10 text-primary border-primary/30";
+                  default:
+                    return "bg-muted text-foreground border-border";
+                }
+              };
+
+              return (
+                <section className="border rounded-lg p-4 mt-3 bg-muted/10">
+                  <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                    <Bell className="h-3.5 w-3.5" />
+                    Notificações
+                    {total > 0 && (
+                      <Badge variant="secondary" className="ml-1 text-[10px]">
+                        {total}
+                      </Badge>
+                    )}
+                  </h3>
+
+                  {total === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      Nada pendente — tudo em dia! 🎉
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      {items.map((it) => {
+                        const Icon = it.icon;
+                        const active = it.count > 0;
+                        return (
+                          <div
+                            key={it.key}
+                            className={`relative border rounded-md p-2 flex flex-col items-center justify-center gap-1 text-center transition-colors ${toneClass(it.tone, active)}`}
+                            title={`${it.label}: ${it.count}`}
+                          >
+                            <Icon className="h-5 w-5" />
+                            <span className="text-[10px] font-medium leading-tight">
+                              {it.label}
+                            </span>
+                            {active && (
+                              <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold shadow">
+                                {it.count}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              );
+            })()}
+
+            {/* ============================================================ */}
             {/* SETOR 1.5 — PENDÊNCIAS DO ALUNO (avaliações de aula)         */}
             {/* ============================================================ */}
             {pendentesAvaliacao.length > 0 && (
