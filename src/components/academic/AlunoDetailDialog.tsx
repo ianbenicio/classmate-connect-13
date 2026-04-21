@@ -324,9 +324,8 @@ export function AlunoDetailDialog({
               const faltas = freqStats.faltas;
               const avaliacoesPend = pendentesAvaliacao.length;
               const mensagens = 0; // placeholder — futuro: integração de mensagens
-              const relatoriosPend = 0; // placeholder — relatórios do aluno (a definir)
               const total =
-                tarefasPend + faltas + avaliacoesPend + mensagens + relatoriosPend;
+                tarefasPend + faltas + avaliacoesPend + mensagens;
 
               const items: {
                 key: string;
@@ -338,7 +337,6 @@ export function AlunoDetailDialog({
                 { key: "msg", icon: Mail, label: "Mensagens", count: mensagens, tone: "primary" },
                 { key: "tar", icon: ClipboardList, label: "Tarefas pendentes", count: tarefasPend, tone: "warning" },
                 { key: "falt", icon: AlertTriangle, label: "Faltas", count: faltas, tone: "danger" },
-                { key: "rel", icon: FileText, label: "Relatórios pendentes", count: relatoriosPend, tone: "warning" },
                 { key: "av", icon: CheckCircle2, label: "Avaliações de aula", count: avaliacoesPend, tone: "primary" },
               ];
 
