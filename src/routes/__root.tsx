@@ -1,6 +1,7 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsBell } from "@/components/NotificationsBell";
+import { ExportDataButton } from "@/components/ExportDataButton";
 import { UserSwitcher } from "@/components/UserSwitcher";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 
@@ -113,6 +114,7 @@ function RootComponent() {
             </Link>
           </nav>
           <UserSwitcher />
+          <ExportDataButton />
           <NotificationsBell />
         </div>
       </header>
