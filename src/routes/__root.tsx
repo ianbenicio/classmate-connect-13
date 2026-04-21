@@ -4,6 +4,7 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 import { ExportDataButton } from "@/components/ExportDataButton";
 import { UserSwitcher } from "@/components/UserSwitcher";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
+import { useCurrentUser } from "@/lib/auth-store";
 
 import appCss from "../styles.css?url";
 

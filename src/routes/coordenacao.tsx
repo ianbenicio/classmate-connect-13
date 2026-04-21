@@ -1,0 +1,234 @@
+import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Download, FileText, Trash2, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCurrentUser } from "@/lib/auth-store";
+import {
+  downloadRelatorio,
+  relatoriosStore,
+  useRelatorios,
+  type RelatorioTipo,
+  RELATORIO_TIPO_LABEL,
+} from "@/lib/relatorios-store";
+import { downloadExportJSON } from "@/lib/data-export";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/coordenacao")({
+  component: CoordenacaoPage,
+});
+
+const TIPO_BADGE: Record<RelatorioTipo, string> = {
+  export_completo: "bg-primary/15 text-primary",
+  avaliacoes: "bg-purple-500/15 text-purple-700 dark:text-purple-300",
+  frequencia: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  outro: "bg-muted text-muted-foreground",
+};
+
+function CoordenacaoPage() {
+  const user = useCurrentUser();
+  const relatorios = useRelatorios();
+  const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
+
+  if (user.role !== "admin") {
+    return (
+      <main className="container mx-auto max-w-2xl px-4 py-12">
+        <Card>
+          <CardHeader>
+            <CardTitle className="inline-flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" /> Acesso restrito
+            </CardTitle>
+            <CardDescription>
+              Esta área é exclusiva para usuários com perfil <b>Admin</b>.
+              Você está logado como <b>{user.nome}</b> ({user.role}).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline">
+              <Link to="/">
+                <ArrowLeft /> Voltar ao painel
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  const tiposPresentes = useMemo(() => {
+    const set = new Set<RelatorioTipo>();
+    for (const r of relatorios) set.add(r.tipo);
+    return Array.from(set);
+  }, [relatorios]);
+
+  const grupos = useMemo(() => {
+    const filtrados = relatorios.filter(
+      (r) => filtro === "all" || r.tipo === filtro,
+    );
+    // Agrupa por tipo
+    const byTipo = new Map<RelatorioTipo, typeof relatorios>();
+    for (const r of filtrados) {
+      const arr = byTipo.get(r.tipo) ?? [];
+      arr.push(r);
+      byTipo.set(r.tipo, arr);
+    }
+    // Ordena cada grupo por data desc
+    for (const arr of byTipo.values()) {
+      arr.sort((a, b) => b.geradoEm.localeCompare(a.geradoEm));
+    }
+    // Ordena os tipos pelo relatório mais recente
+    return Array.from(byTipo.entries()).sort(
+      ([, a], [, b]) => b[0].geradoEm.localeCompare(a[0].geradoEm),
+    );
+  }, [relatorios, filtro]);
+
+  const handleGerarAgora = () => {
+    const { sizeBytes, filename } = downloadExportJSON({
+      geradoPorUserId: user.id,
+      geradoPorNome: user.nome,
+    });
+    toast.success(`Relatório gerado: ${filename}`, {
+      description: `${(sizeBytes / 1024).toFixed(1)} KB`,
+    });
+  };
+
+  return (
+    <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
+      <header className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight inline-flex items-center gap-2">
+            <ShieldCheck className="h-6 w-6 text-primary" /> Coordenação
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Histórico de relatórios gerados pelo sistema.
+          </p>
+        </div>
+        <Button onClick={handleGerarAgora}>
+          <FileText /> Gerar exportação completa
+        </Button>
+      </header>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <div>
+            <CardTitle className="text-base">Relatórios</CardTitle>
+            <CardDescription>
+              {relatorios.length === 0
+                ? "Nenhum relatório gerado ainda."
+                : `${relatorios.length} no total — classificados por tipo, ordenados por data.`}
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select
+              value={filtro}
+              onValueChange={(v) => setFiltro(v as typeof filtro)}
+            >
+              <SelectTrigger className="h-8 w-[180px] text-xs">
+                <SelectValue placeholder="Filtrar por tipo" />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="all">Todos os tipos</SelectItem>
+                {tiposPresentes.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {RELATORIO_TIPO_LABEL[t]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {relatorios.length > 0 && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 text-xs"
+                onClick={() => {
+                  if (confirm("Limpar todo o histórico de relatórios?")) {
+                    relatoriosStore.clear();
+                    toast.success("Histórico limpo.");
+                  }
+                }}
+              >
+                Limpar
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {grupos.length === 0 ? (
+            <p className="text-sm text-muted-foreground border rounded-lg p-8 text-center">
+              {relatorios.length === 0
+                ? "Clique em “Gerar exportação completa” para criar o primeiro relatório."
+                : "Nenhum relatório para o filtro selecionado."}
+            </p>
+          ) : (
+            <div className="space-y-6">
+              {grupos.map(([tipo, items]) => (
+                <section key={tipo} className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge className={TIPO_BADGE[tipo]} variant="secondary">
+                      {RELATORIO_TIPO_LABEL[tipo]}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {items.length} {items.length === 1 ? "relatório" : "relatórios"}
+                    </span>
+                  </div>
+                  <ul className="divide-y border rounded-lg">
+                    {items.map((r) => (
+                      <li
+                        key={r.id}
+                        className="p-3 flex items-center gap-3 hover:bg-muted/40 transition-colors"
+                      >
+                        <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate">
+                            {r.titulo}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {format(new Date(r.geradoEm), "PPp", { locale: ptBR })}
+                            {r.geradoPorNome && ` · ${r.geradoPorNome}`}
+                            {" · "}
+                            {(r.sizeBytes / 1024).toFixed(1)} KB · {r.formato.toUpperCase()}
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => downloadRelatorio(r)}
+                        >
+                          <Download /> Baixar
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          aria-label="Remover"
+                          onClick={() => relatoriosStore.remove(r.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </main>
+  );
+}
