@@ -76,6 +76,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useAgendamentoScanner();
+  const user = useCurrentUser();
   return (
     <>
       <header className="border-b bg-card sticky top-0 z-40">
@@ -113,6 +114,15 @@ function RootComponent() {
             >
               Alunos
             </Link>
+            {user.role === "admin" && (
+              <Link
+                to="/coordenacao"
+                activeProps={{ className: "text-foreground font-medium" }}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Coordenação
+              </Link>
+            )}
           </nav>
           <UserSwitcher />
           <ExportDataButton />
