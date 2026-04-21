@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,14 +21,22 @@ import {
   Activity,
   Award,
   MessageSquare,
+  Bell,
+  CheckCircle2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/lib/auth-store";
 import { isCoordenacao } from "@/lib/users";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { SkillsRadarChart } from "./SkillsRadarChart";
 import { StarRating } from "./StarRating";
+import { AvaliacaoAulaDialog } from "./AvaliacaoAulaDialog";
+import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import {
+  endSlotDate,
+  endSlotPlus24h,
   formatHorarios,
+  type Agendamento,
   type Aluno,
   type Atividade,
   type Curso,
