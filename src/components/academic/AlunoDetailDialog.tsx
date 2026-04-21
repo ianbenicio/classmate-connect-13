@@ -370,7 +370,7 @@ export function AlunoDetailDialog({
                       Nada pendente — tudo em dia! 🎉
                     </p>
                   ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {items.map((it) => {
                         const Icon = it.icon;
                         const active = it.count > 0;
