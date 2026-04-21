@@ -24,6 +24,9 @@ import {
 } from "lucide-react";
 import { useCurrentUser } from "@/lib/auth-store";
 import { isCoordenacao } from "@/lib/users";
+import { useAgendamentos } from "@/lib/agendamentos-store";
+import { SkillsRadarChart } from "./SkillsRadarChart";
+import { StarRating } from "./StarRating";
 import {
   formatHorarios,
   type Aluno,
