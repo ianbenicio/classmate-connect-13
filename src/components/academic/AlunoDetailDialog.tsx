@@ -23,7 +23,6 @@ import {
   MessageSquare,
   Bell,
   CheckCircle2,
-  FileText,
   AlertTriangle,
   Mail,
 } from "lucide-react";
