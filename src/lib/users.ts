@@ -1,7 +1,7 @@
 // Usuários mock do sistema (sem backend ainda).
 // Quando ativarmos Lovable Cloud, substituímos por auth real.
 
-export type UserRole = "admin" | "professor" | "coordenacao";
+export type UserRole = "admin" | "professor" | "coordenacao" | "aluno";
 
 export interface AppUser {
   id: string;
@@ -16,6 +16,7 @@ export const USERS: AppUser[] = [
   { id: "u-anne", nome: "Anne", role: "professor" },
   { id: "u-gustavo", nome: "Gustavo", role: "professor" },
   { id: "u-manoel", nome: "Manoel", role: "professor" },
+  { id: "u-aluno", nome: "Aluno (demo)", role: "aluno" },
 ];
 
 export const PROFESSOR_NAMES = USERS.filter((u) => u.role === "professor").map(
