@@ -28,6 +28,8 @@ import {
 import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { Progress } from "@/components/ui/progress";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import { ActivityViewDialog } from "./ActivityViewDialog";
+import { useCurrentUser } from "@/lib/auth-store";
 
 type FiltroTipo = "todos" | "aulas" | "tarefas";
 
