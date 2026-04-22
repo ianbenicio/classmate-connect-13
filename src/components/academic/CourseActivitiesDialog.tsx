@@ -89,6 +89,7 @@ export function CourseActivitiesDialog({
               <Link
                 to="/atividades/$cursoId"
                 params={{ cursoId: curso.id }}
+                onClick={() => onOpenChange(false)}
               >
                 Abrir página do curso <ArrowRight />
               </Link>
