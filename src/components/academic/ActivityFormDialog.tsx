@@ -95,14 +95,16 @@ export function ActivityFormDialog({
 
   // Pedagógico
   const [objetivoResultados, setObjetivoResultados] = useState("");
+  const [resultadosEsperados, setResultadosEsperados] = useState("");
+  const [notasInstrutor, setNotasInstrutor] = useState("");
   const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
   const [niveisAlvo, setNiveisAlvo] = useState<HabilidadeNivelAlvo[]>([]);
-  const [posicaoModulo, setPosicaoModulo] = useState("");
   const [preRequisitos, setPreRequisitos] = useState("");
   const [criteriosSucesso, setCriteriosSucesso] = useState("");
 
   // Conteúdo & Materiais
   const [descricaoConteudo, setDescricaoConteudo] = useState("");
+  const [metodologias, setMetodologias] = useState("");
   const [roteiro, setRoteiro] = useState<RoteiroBloco[]>([]);
   const [materiais, setMateriais] = useState<MaterialAula[]>([]);
   const [referencias, setReferencias] = useState("");
@@ -128,16 +130,24 @@ export function ActivityFormDialog({
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
       setObjetivoResultados(editing.objetivoResultados);
+      setResultadosEsperados(editing.resultadosEsperados ?? "");
+      setNotasInstrutor(editing.notasInstrutor ?? "");
       setHabilidadeIds(editing.habilidadeIds);
       setNiveisAlvo(editing.niveisAlvo ?? []);
-      setPosicaoModulo(editing.posicaoModulo ?? "");
       setPreRequisitos(editing.preRequisitos ?? "");
       setCriteriosSucesso(editing.criteriosSucesso ?? "");
       setDescricaoConteudo(editing.descricaoConteudo ?? "");
+      setMetodologias(editing.metodologias ?? "");
       setRoteiro(editing.roteiro ?? []);
       setMateriais(editing.materiais ?? []);
       setReferencias(editing.referencias ?? "");
-      setFormularios(editing.formularios ?? DEFAULT_FORMULARIOS);
+      setFormularios({
+        ...DEFAULT_FORMULARIOS,
+        ...(editing.formularios ?? {}),
+        // Aulas: forçar sempre ON
+        relatorioProfessor: editing.tipo === 0 ? true : (editing.formularios?.relatorioProfessor ?? true),
+        autoavaliacaoAluno: editing.tipo === 0 ? true : (editing.formularios?.autoavaliacaoAluno ?? false),
+      });
       setRubricas(editing.rubricas ?? []);
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
@@ -150,16 +160,22 @@ export function ActivityFormDialog({
       setDescricao("");
       setProfessor("");
       setObjetivoResultados("");
+      setResultadosEsperados("");
+      setNotasInstrutor("");
       setHabilidadeIds([]);
       setNiveisAlvo([]);
-      setPosicaoModulo("");
       setPreRequisitos("");
       setCriteriosSucesso("");
       setDescricaoConteudo("");
+      setMetodologias("");
       setRoteiro([]);
       setMateriais([]);
       setReferencias("");
-      setFormularios(DEFAULT_FORMULARIOS);
+      setFormularios({
+        ...DEFAULT_FORMULARIOS,
+        relatorioProfessor: true,
+        autoavaliacaoAluno: defaultTipo === 0 ? true : false,
+      });
       setRubricas([]);
       setSugestoesPais("");
       setInstrucoes("");
