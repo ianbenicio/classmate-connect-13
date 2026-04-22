@@ -106,6 +106,8 @@ export function CourseActivitiesDialog({
             onAdd={() => onNew(0)}
             onEdit={onEdit}
             onDelete={onDelete}
+            onView={setViewing}
+            isAluno={isAluno}
           />
           <Column
             title="Tarefas"
@@ -116,9 +118,19 @@ export function CourseActivitiesDialog({
             onAdd={() => onNew(1)}
             onEdit={onEdit}
             onDelete={onDelete}
+            onView={setViewing}
+            isAluno={isAluno}
           />
         </div>
       </DialogContent>
+
+      <ActivityViewDialog
+        atividade={viewing}
+        curso={curso ?? undefined}
+        habilidades={habilidades}
+        role={user.role}
+        onOpenChange={(o) => !o && setViewing(null)}
+      />
     </Dialog>
   );
 }
@@ -132,6 +144,8 @@ function Column({
   onAdd,
   onEdit,
   onDelete,
+  onView,
+  isAluno,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -141,6 +155,8 @@ function Column({
   onAdd: () => void;
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
+  onView: (a: Atividade) => void;
+  isAluno: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [moduloFilter, setModuloFilter] = useState("__all__");
