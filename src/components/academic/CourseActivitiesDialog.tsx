@@ -211,9 +211,11 @@ function Column({
             ? `${filtered.length}/${items.length}`
             : items.length}
         </Badge>
-        <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
-          <Plus className="h-3.5 w-3.5" />
-        </Button>
+        {!isAluno && (
+          <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
+            <Plus className="h-3.5 w-3.5" />
+          </Button>
+        )}
       </header>
 
       {showFilters && (
@@ -272,9 +274,11 @@ function Column({
               )}
               <div className="space-y-1">
                 {group.items.map((a) => (
-                  <div
+                  <button
                     key={a.id}
-                    className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 transition-colors"
+                    type="button"
+                    onClick={() => onView(a)}
+                    className="w-full text-left flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 hover:bg-accent/40 transition-colors"
                   >
                     <div className="min-w-0">
                       <div className="text-sm font-medium truncate">{a.nome}</div>
@@ -282,27 +286,47 @@ function Column({
                         {a.codigo}
                       </div>
                     </div>
-                    <div className="flex gap-0.5 shrink-0">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => onEdit(a)}
-                        aria-label={`Editar ${a.nome}`}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => onDelete(a)}
-                        aria-label={`Remover ${a.nome}`}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                      </Button>
-                    </div>
-                  </div>
+                    {!isAluno && (
+                      <div className="flex gap-0.5 shrink-0">
+                        <Button
+                          asChild
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          aria-label={`Editar ${a.nome}`}
+                        >
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(a);
+                            }}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </span>
+                        </Button>
+                        <Button
+                          asChild
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          aria-label={`Remover ${a.nome}`}
+                        >
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(a);
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </span>
+                        </Button>
+                      </div>
+                    )}
+                  </button>
                 ))}
               </div>
             </div>
