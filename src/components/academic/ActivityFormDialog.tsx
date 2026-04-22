@@ -351,31 +351,35 @@ export function ActivityFormDialog({
               {/* ============ PEDAGÓGICO ============ */}
               <TabsContent value="pedagogico" className="space-y-4">
                 <div className="space-y-2">
-                  <FieldLabel field="objetivoResultados">Objetivo / Resultados Esperados</FieldLabel>
+                  <FieldLabel field="objetivoResultados">Objetivo</FieldLabel>
                   <Textarea
                     value={objetivoResultados}
                     onChange={(e) => setObjetivoResultados(e.target.value)}
                     rows={2}
+                    placeholder="O propósito pedagógico desta aula"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <FieldLabel field="posicaoModulo">Posição no Módulo</FieldLabel>
-                    <Input
-                      value={posicaoModulo}
-                      onChange={(e) => setPosicaoModulo(e.target.value)}
-                      placeholder="Ex.: 3 de 8"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <FieldLabel field="preRequisitos">Pré-requisitos</FieldLabel>
-                    <Input
-                      value={preRequisitos}
-                      onChange={(e) => setPreRequisitos(e.target.value)}
-                      placeholder="Ex.: GPCA01, GPCA02"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <FieldLabel field="resultadosEsperados">Resultados Esperados e Benefícios</FieldLabel>
+                  <Textarea
+                    value={resultadosEsperados}
+                    onChange={(e) => setResultadosEsperados(e.target.value)}
+                    rows={10}
+                    placeholder={`Para os alunos:\n- ...\n\nPara os pais/responsáveis:\n- ...\n\nPara a instituição:\n- ...`}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Use as seções <strong>Para os alunos</strong>, <strong>Para os pais/responsáveis</strong> e <strong>Para a instituição</strong>.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="preRequisitos">Pré-requisitos</FieldLabel>
+                  <Input
+                    value={preRequisitos}
+                    onChange={(e) => setPreRequisitos(e.target.value)}
+                    placeholder="Ex.: GPCA01, GPCA02"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -386,6 +390,19 @@ export function ActivityFormDialog({
                     rows={2}
                     placeholder="O que o aluno deve conseguir fazer ao final da aula"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="notasInstrutor">Notas para o Instrutor</FieldLabel>
+                  <Textarea
+                    value={notasInstrutor}
+                    onChange={(e) => setNotasInstrutor(e.target.value)}
+                    rows={6}
+                    placeholder={`Linguagem: ...\nMediação: ...\nSensibilidade: ...\nConexão com família: ...\nRegistro: ...`}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Orientações sobre <strong>Linguagem</strong>, <strong>Mediação</strong>, <strong>Sensibilidade</strong>, <strong>Conexão com família</strong> e <strong>Registro</strong>.
+                  </p>
                 </div>
 
                 <div className="space-y-2">
