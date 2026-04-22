@@ -472,6 +472,16 @@ export function ActivityFormDialog({
                 </div>
 
                 <div className="space-y-2">
+                  <FieldLabel field="metodologias">Metodologias</FieldLabel>
+                  <Textarea
+                    value={metodologias}
+                    onChange={(e) => setMetodologias(e.target.value)}
+                    rows={4}
+                    placeholder="Ex.: aula expositiva dialogada, aprendizagem baseada em problemas, gamificação, estudo de caso, prática supervisionada..."
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <FieldLabel field="roteiro">Roteiro da Aula</FieldLabel>
                     <Button type="button" size="sm" variant="outline" onClick={addRoteiro}>
@@ -584,16 +594,18 @@ export function ActivityFormDialog({
                 <div className="space-y-3 rounded-md border bg-muted/30 p-4">
                   <FieldLabel field="formularios">Formulários a disparar nesta aula</FieldLabel>
                   <FormularioCheckbox
-                    checked={formularios.relatorioProfessor}
-                    onChange={(v) => setFormularios((f) => ({ ...f, relatorioProfessor: v }))}
+                    checked={true}
+                    onChange={() => {}}
                     label="📋 Relatório do Professor"
-                    desc="Sempre recomendado. Pós-aula, dentro de 24h."
+                    desc="Obrigatório em toda aula. Pós-aula, dentro de 24h."
+                    locked
                   />
                   <FormularioCheckbox
-                    checked={formularios.autoavaliacaoAluno}
-                    onChange={(v) => setFormularios((f) => ({ ...f, autoavaliacaoAluno: v }))}
+                    checked={true}
+                    onChange={() => {}}
                     label="🎓 Autoavaliação do Aluno"
-                    desc="Aluno avalia o que aprendeu (carinha + texto curto)."
+                    desc="Obrigatório em toda aula. Aluno avalia o que aprendeu (carinha + texto curto)."
+                    locked
                   />
                   <FormularioCheckbox
                     checked={formularios.diagnosticoPre}
@@ -907,21 +919,27 @@ function FormularioCheckbox({
   onChange,
   label,
   desc,
+  locked,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   label: string;
   desc: string;
+  locked?: boolean;
 }) {
   return (
-    <label className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50 transition-colors">
+    <label className={`flex items-start gap-3 rounded-md p-2 transition-colors ${locked ? "opacity-90 cursor-not-allowed bg-muted/40" : "cursor-pointer hover:bg-muted/50"}`}>
       <Checkbox
         checked={checked}
-        onCheckedChange={(v) => onChange(v === true)}
+        disabled={locked}
+        onCheckedChange={(v) => !locked && onChange(v === true)}
         className="mt-0.5"
       />
       <div className="flex-1">
-        <div className="text-sm font-medium">{label}</div>
+        <div className="text-sm font-medium flex items-center gap-2">
+          {label}
+          {locked && <span className="text-[10px] uppercase tracking-wide text-muted-foreground border rounded px-1 py-0.5">obrigatório</span>}
+        </div>
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
     </label>
