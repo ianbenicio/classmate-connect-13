@@ -31,12 +31,16 @@ import {
   type AtividadeTipo,
   type Curso,
   type Grupo,
+  type Habilidade,
 } from "@/lib/academic-types";
 import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { useCurrentUser } from "@/lib/auth-store";
+import { ActivityViewDialog } from "./ActivityViewDialog";
 
 interface Props {
   curso: Curso | null;
   atividades: Atividade[];
+  habilidades?: Habilidade[];
   onOpenChange: (open: boolean) => void;
   onNew: (tipo: AtividadeTipo) => void;
   onEdit: (a: Atividade) => void;
@@ -46,11 +50,15 @@ interface Props {
 export function CourseActivitiesDialog({
   curso,
   atividades,
+  habilidades = [],
   onOpenChange,
   onNew,
   onEdit,
   onDelete,
 }: Props) {
+  const user = useCurrentUser();
+  const isAluno = user.role === "aluno";
+  const [viewing, setViewing] = useState<Atividade | null>(null);
   const { aulas, tarefas, gruposCurso } = useMemo(() => {
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
