@@ -31,12 +31,16 @@ import {
   type AtividadeTipo,
   type Curso,
   type Grupo,
+  type Habilidade,
 } from "@/lib/academic-types";
 import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { useCurrentUser } from "@/lib/auth-store";
+import { ActivityViewDialog } from "./ActivityViewDialog";
 
 interface Props {
   curso: Curso | null;
   atividades: Atividade[];
+  habilidades?: Habilidade[];
   onOpenChange: (open: boolean) => void;
   onNew: (tipo: AtividadeTipo) => void;
   onEdit: (a: Atividade) => void;
@@ -46,11 +50,15 @@ interface Props {
 export function CourseActivitiesDialog({
   curso,
   atividades,
+  habilidades = [],
   onOpenChange,
   onNew,
   onEdit,
   onDelete,
 }: Props) {
+  const user = useCurrentUser();
+  const isAluno = user.role === "aluno";
+  const [viewing, setViewing] = useState<Atividade | null>(null);
   const { aulas, tarefas, gruposCurso } = useMemo(() => {
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
@@ -98,6 +106,8 @@ export function CourseActivitiesDialog({
             onAdd={() => onNew(0)}
             onEdit={onEdit}
             onDelete={onDelete}
+            onView={setViewing}
+            isAluno={isAluno}
           />
           <Column
             title="Tarefas"
@@ -108,9 +118,19 @@ export function CourseActivitiesDialog({
             onAdd={() => onNew(1)}
             onEdit={onEdit}
             onDelete={onDelete}
+            onView={setViewing}
+            isAluno={isAluno}
           />
         </div>
       </DialogContent>
+
+      <ActivityViewDialog
+        atividade={viewing}
+        curso={curso ?? undefined}
+        habilidades={habilidades}
+        role={user.role}
+        onOpenChange={(o) => !o && setViewing(null)}
+      />
     </Dialog>
   );
 }
@@ -124,6 +144,8 @@ function Column({
   onAdd,
   onEdit,
   onDelete,
+  onView,
+  isAluno,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -133,6 +155,8 @@ function Column({
   onAdd: () => void;
   onEdit: (a: Atividade) => void;
   onDelete: (a: Atividade) => void;
+  onView: (a: Atividade) => void;
+  isAluno: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [moduloFilter, setModuloFilter] = useState("__all__");
@@ -187,9 +211,11 @@ function Column({
             ? `${filtered.length}/${items.length}`
             : items.length}
         </Badge>
-        <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
-          <Plus className="h-3.5 w-3.5" />
-        </Button>
+        {!isAluno && (
+          <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
+            <Plus className="h-3.5 w-3.5" />
+          </Button>
+        )}
       </header>
 
       {showFilters && (
@@ -250,7 +276,16 @@ function Column({
                 {group.items.map((a) => (
                   <div
                     key={a.id}
-                    className="flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 transition-colors"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => onView(a)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onView(a);
+                      }
+                    }}
+                    className="cursor-pointer flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 hover:bg-accent/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     <div className="min-w-0">
                       <div className="text-sm font-medium truncate">{a.nome}</div>
@@ -258,26 +293,34 @@ function Column({
                         {a.codigo}
                       </div>
                     </div>
-                    <div className="flex gap-0.5 shrink-0">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => onEdit(a)}
-                        aria-label={`Editar ${a.nome}`}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7"
-                        onClick={() => onDelete(a)}
-                        aria-label={`Remover ${a.nome}`}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                      </Button>
-                    </div>
+                    {!isAluno && (
+                      <div className="flex gap-0.5 shrink-0">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(a);
+                          }}
+                          aria-label={`Editar ${a.nome}`}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(a);
+                          }}
+                          aria-label={`Remover ${a.nome}`}
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -224,6 +224,7 @@ function AtividadesPage() {
       <CourseActivitiesDialog
         curso={selectedCurso}
         atividades={atividades}
+        habilidades={SEED_HABILIDADES}
         onOpenChange={(open) => !open && setSelectedCurso(null)}
         onNew={(tipo) => {
           if (!selectedCurso) return;
