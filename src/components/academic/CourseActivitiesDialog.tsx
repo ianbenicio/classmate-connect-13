@@ -274,11 +274,18 @@ function Column({
               )}
               <div className="space-y-1">
                 {group.items.map((a) => (
-                  <button
+                  <div
                     key={a.id}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => onView(a)}
-                    className="w-full text-left flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 hover:bg-accent/40 transition-colors"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onView(a);
+                      }
+                    }}
+                    className="cursor-pointer flex items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 hover:border-primary/40 hover:bg-accent/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
                   >
                     <div className="min-w-0">
                       <div className="text-sm font-medium truncate">{a.nome}</div>
@@ -289,44 +296,32 @@ function Column({
                     {!isAluno && (
                       <div className="flex gap-0.5 shrink-0">
                         <Button
-                          asChild
                           size="icon"
                           variant="ghost"
                           className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(a);
+                          }}
                           aria-label={`Editar ${a.nome}`}
                         >
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onEdit(a);
-                            }}
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </span>
+                          <Pencil className="h-3.5 w-3.5" />
                         </Button>
                         <Button
-                          asChild
                           size="icon"
                           variant="ghost"
                           className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(a);
+                          }}
                           aria-label={`Remover ${a.nome}`}
                         >
-                          <span
-                            role="button"
-                            tabIndex={0}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDelete(a);
-                            }}
-                          >
-                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                          </span>
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
                         </Button>
                       </div>
                     )}
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
