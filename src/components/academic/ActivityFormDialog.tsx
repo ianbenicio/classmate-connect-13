@@ -199,7 +199,7 @@ export function ActivityFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !cursoId || !grupo || !descricao || !professor.trim()) {
+    if (!nome || !cursoId || !grupo || !descricao) {
       toast.error("Preencha os campos obrigatórios na aba Identificação.");
       setTab("identificacao");
       return;
@@ -886,16 +886,6 @@ function IdentificacaoFields({
             </div>
           </>
         )}
-
-        <div className="space-y-2">
-          <FieldLabel field="professor" required>Professor responsável</FieldLabel>
-          <Input
-            value={professor}
-            onChange={(e) => setProfessor(e.target.value)}
-            placeholder="Ex.: Prof. Ana Souza"
-          />
-        </div>
-
         <div className="space-y-2">
           <FieldLabel field="prazo">Prazo de referência</FieldLabel>
           <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
