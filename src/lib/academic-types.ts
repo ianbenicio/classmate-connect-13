@@ -188,12 +188,14 @@ export interface Atividade {
   sugestoesPais?: string;
 
   // Aula-only — Pedagógico (novo)
-  posicaoModulo?: string; // ex.: "3 de 8"
+  resultadosEsperados?: string; // benefícios para alunos/pais/instituição
+  notasInstrutor?: string; // linguagem, mediação, sensibilidade, conexão família, registro
   preRequisitos?: string; // texto livre / códigos
   niveisAlvo?: HabilidadeNivelAlvo[];
   criteriosSucesso?: string; // o que o aluno deve conseguir fazer
 
   // Aula-only — Conteúdo & Materiais (novo)
+  metodologias?: string; // abordagens/métodos pedagógicos
   roteiro?: RoteiroBloco[];
   materiais?: MaterialAula[];
   referencias?: string; // links/textos
@@ -225,13 +227,15 @@ export const FIELD_VISIBILITY: Record<string, PerfilAcesso[]> = {
   descricao: ["professor", "coordenacao", "aluno", "pais"],
   // Pedagógico
   objetivoResultados: ["professor", "coordenacao", "aluno", "pais"],
+  resultadosEsperados: ["professor", "coordenacao", "aluno", "pais"],
+  notasInstrutor: ["professor", "coordenacao"],
   habilidadeIds: ["professor", "coordenacao"],
   niveisAlvo: ["professor", "coordenacao"],
-  posicaoModulo: ["professor", "coordenacao", "aluno"],
   preRequisitos: ["professor", "coordenacao"],
   criteriosSucesso: ["professor", "coordenacao", "aluno"],
   // Conteúdo & Materiais
   descricaoConteudo: ["professor", "coordenacao", "aluno", "pais"],
+  metodologias: ["professor", "coordenacao"],
   roteiro: ["professor", "coordenacao"],
   materiais: ["professor", "coordenacao", "aluno"],
   referencias: ["professor", "coordenacao", "aluno"],

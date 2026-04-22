@@ -95,14 +95,16 @@ export function ActivityFormDialog({
 
   // Pedagógico
   const [objetivoResultados, setObjetivoResultados] = useState("");
+  const [resultadosEsperados, setResultadosEsperados] = useState("");
+  const [notasInstrutor, setNotasInstrutor] = useState("");
   const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
   const [niveisAlvo, setNiveisAlvo] = useState<HabilidadeNivelAlvo[]>([]);
-  const [posicaoModulo, setPosicaoModulo] = useState("");
   const [preRequisitos, setPreRequisitos] = useState("");
   const [criteriosSucesso, setCriteriosSucesso] = useState("");
 
   // Conteúdo & Materiais
   const [descricaoConteudo, setDescricaoConteudo] = useState("");
+  const [metodologias, setMetodologias] = useState("");
   const [roteiro, setRoteiro] = useState<RoteiroBloco[]>([]);
   const [materiais, setMateriais] = useState<MaterialAula[]>([]);
   const [referencias, setReferencias] = useState("");
@@ -128,16 +130,24 @@ export function ActivityFormDialog({
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
       setObjetivoResultados(editing.objetivoResultados);
+      setResultadosEsperados(editing.resultadosEsperados ?? "");
+      setNotasInstrutor(editing.notasInstrutor ?? "");
       setHabilidadeIds(editing.habilidadeIds);
       setNiveisAlvo(editing.niveisAlvo ?? []);
-      setPosicaoModulo(editing.posicaoModulo ?? "");
       setPreRequisitos(editing.preRequisitos ?? "");
       setCriteriosSucesso(editing.criteriosSucesso ?? "");
       setDescricaoConteudo(editing.descricaoConteudo ?? "");
+      setMetodologias(editing.metodologias ?? "");
       setRoteiro(editing.roteiro ?? []);
       setMateriais(editing.materiais ?? []);
       setReferencias(editing.referencias ?? "");
-      setFormularios(editing.formularios ?? DEFAULT_FORMULARIOS);
+      setFormularios({
+        ...DEFAULT_FORMULARIOS,
+        ...(editing.formularios ?? {}),
+        // Aulas: forçar sempre ON
+        relatorioProfessor: editing.tipo === 0 ? true : (editing.formularios?.relatorioProfessor ?? true),
+        autoavaliacaoAluno: editing.tipo === 0 ? true : (editing.formularios?.autoavaliacaoAluno ?? false),
+      });
       setRubricas(editing.rubricas ?? []);
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
@@ -150,16 +160,22 @@ export function ActivityFormDialog({
       setDescricao("");
       setProfessor("");
       setObjetivoResultados("");
+      setResultadosEsperados("");
+      setNotasInstrutor("");
       setHabilidadeIds([]);
       setNiveisAlvo([]);
-      setPosicaoModulo("");
       setPreRequisitos("");
       setCriteriosSucesso("");
       setDescricaoConteudo("");
+      setMetodologias("");
       setRoteiro([]);
       setMateriais([]);
       setReferencias("");
-      setFormularios(DEFAULT_FORMULARIOS);
+      setFormularios({
+        ...DEFAULT_FORMULARIOS,
+        relatorioProfessor: true,
+        autoavaliacaoAluno: defaultTipo === 0 ? true : false,
+      });
       setRubricas([]);
       setSugestoesPais("");
       setInstrucoes("");
@@ -183,7 +199,7 @@ export function ActivityFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !cursoId || !grupo || !descricao || !professor.trim()) {
+    if (!nome || !cursoId || !grupo || !descricao) {
       toast.error("Preencha os campos obrigatórios na aba Identificação.");
       setTab("identificacao");
       return;
@@ -191,6 +207,10 @@ export function ActivityFormDialog({
 
     const tipoFinal: AtividadeTipo = isEdit ? editing!.tipo : tipo;
     const isAula = tipoFinal === 0;
+
+    const formulariosFinais: FormulariosConfig = isAula
+      ? { ...formularios, relatorioProfessor: true, autoavaliacaoAluno: true }
+      : formularios;
 
     const atividade: Atividade = isEdit
       ? {
@@ -204,14 +224,16 @@ export function ActivityFormDialog({
           // Aula
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
-          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
+          notasInstrutor: isAula ? notasInstrutor || undefined : undefined,
           preRequisitos: isAula ? preRequisitos || undefined : undefined,
           niveisAlvo: isAula ? niveisAlvo : undefined,
           criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          metodologias: isAula ? metodologias || undefined : undefined,
           roteiro: isAula ? roteiro : undefined,
           materiais: isAula ? materiais : undefined,
           referencias: isAula ? referencias || undefined : undefined,
-          formularios: isAula ? formularios : undefined,
+          formularios: isAula ? formulariosFinais : undefined,
           rubricas: isAula ? rubricas : undefined,
           // Tarefa
           instrucoes: !isAula ? instrucoes : undefined,
@@ -235,14 +257,16 @@ export function ActivityFormDialog({
           habilidadeIds,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
-          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
+          notasInstrutor: isAula ? notasInstrutor || undefined : undefined,
           preRequisitos: isAula ? preRequisitos || undefined : undefined,
           niveisAlvo: isAula ? niveisAlvo : undefined,
           criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          metodologias: isAula ? metodologias || undefined : undefined,
           roteiro: isAula ? roteiro : undefined,
           materiais: isAula ? materiais : undefined,
           referencias: isAula ? referencias || undefined : undefined,
-          formularios: isAula ? formularios : undefined,
+          formularios: isAula ? formulariosFinais : undefined,
           rubricas: isAula ? rubricas : undefined,
           instrucoes: !isAula ? instrucoes : undefined,
         };
@@ -327,31 +351,35 @@ export function ActivityFormDialog({
               {/* ============ PEDAGÓGICO ============ */}
               <TabsContent value="pedagogico" className="space-y-4">
                 <div className="space-y-2">
-                  <FieldLabel field="objetivoResultados">Objetivo / Resultados Esperados</FieldLabel>
+                  <FieldLabel field="objetivoResultados">Objetivo</FieldLabel>
                   <Textarea
                     value={objetivoResultados}
                     onChange={(e) => setObjetivoResultados(e.target.value)}
                     rows={2}
+                    placeholder="O propósito pedagógico desta aula"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <FieldLabel field="posicaoModulo">Posição no Módulo</FieldLabel>
-                    <Input
-                      value={posicaoModulo}
-                      onChange={(e) => setPosicaoModulo(e.target.value)}
-                      placeholder="Ex.: 3 de 8"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <FieldLabel field="preRequisitos">Pré-requisitos</FieldLabel>
-                    <Input
-                      value={preRequisitos}
-                      onChange={(e) => setPreRequisitos(e.target.value)}
-                      placeholder="Ex.: GPCA01, GPCA02"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <FieldLabel field="resultadosEsperados">Resultados Esperados e Benefícios</FieldLabel>
+                  <Textarea
+                    value={resultadosEsperados}
+                    onChange={(e) => setResultadosEsperados(e.target.value)}
+                    rows={10}
+                    placeholder={`Para os alunos:\n- ...\n\nPara os pais/responsáveis:\n- ...\n\nPara a instituição:\n- ...`}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Use as seções <strong>Para os alunos</strong>, <strong>Para os pais/responsáveis</strong> e <strong>Para a instituição</strong>.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="preRequisitos">Pré-requisitos</FieldLabel>
+                  <Input
+                    value={preRequisitos}
+                    onChange={(e) => setPreRequisitos(e.target.value)}
+                    placeholder="Ex.: GPCA01, GPCA02"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -362,6 +390,19 @@ export function ActivityFormDialog({
                     rows={2}
                     placeholder="O que o aluno deve conseguir fazer ao final da aula"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="notasInstrutor">Notas para o Instrutor</FieldLabel>
+                  <Textarea
+                    value={notasInstrutor}
+                    onChange={(e) => setNotasInstrutor(e.target.value)}
+                    rows={6}
+                    placeholder={`Linguagem: ...\nMediação: ...\nSensibilidade: ...\nConexão com família: ...\nRegistro: ...`}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Orientações sobre <strong>Linguagem</strong>, <strong>Mediação</strong>, <strong>Sensibilidade</strong>, <strong>Conexão com família</strong> e <strong>Registro</strong>.
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -427,6 +468,16 @@ export function ActivityFormDialog({
                     value={descricaoConteudo}
                     onChange={(e) => setDescricaoConteudo(e.target.value)}
                     rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="metodologias">Metodologias</FieldLabel>
+                  <Textarea
+                    value={metodologias}
+                    onChange={(e) => setMetodologias(e.target.value)}
+                    rows={4}
+                    placeholder="Ex.: aula expositiva dialogada, aprendizagem baseada em problemas, gamificação, estudo de caso, prática supervisionada..."
                   />
                 </div>
 
@@ -543,16 +594,18 @@ export function ActivityFormDialog({
                 <div className="space-y-3 rounded-md border bg-muted/30 p-4">
                   <FieldLabel field="formularios">Formulários a disparar nesta aula</FieldLabel>
                   <FormularioCheckbox
-                    checked={formularios.relatorioProfessor}
-                    onChange={(v) => setFormularios((f) => ({ ...f, relatorioProfessor: v }))}
+                    checked={true}
+                    onChange={() => {}}
                     label="📋 Relatório do Professor"
-                    desc="Sempre recomendado. Pós-aula, dentro de 24h."
+                    desc="Obrigatório em toda aula. Pós-aula, dentro de 24h."
+                    locked
                   />
                   <FormularioCheckbox
-                    checked={formularios.autoavaliacaoAluno}
-                    onChange={(v) => setFormularios((f) => ({ ...f, autoavaliacaoAluno: v }))}
+                    checked={true}
+                    onChange={() => {}}
                     label="🎓 Autoavaliação do Aluno"
-                    desc="Aluno avalia o que aprendeu (carinha + texto curto)."
+                    desc="Obrigatório em toda aula. Aluno avalia o que aprendeu (carinha + texto curto)."
+                    locked
                   />
                   <FormularioCheckbox
                     checked={formularios.diagnosticoPre}
@@ -833,16 +886,6 @@ function IdentificacaoFields({
             </div>
           </>
         )}
-
-        <div className="space-y-2">
-          <FieldLabel field="professor" required>Professor responsável</FieldLabel>
-          <Input
-            value={professor}
-            onChange={(e) => setProfessor(e.target.value)}
-            placeholder="Ex.: Prof. Ana Souza"
-          />
-        </div>
-
         <div className="space-y-2">
           <FieldLabel field="prazo">Prazo de referência</FieldLabel>
           <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
@@ -866,21 +909,27 @@ function FormularioCheckbox({
   onChange,
   label,
   desc,
+  locked,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   label: string;
   desc: string;
+  locked?: boolean;
 }) {
   return (
-    <label className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50 transition-colors">
+    <label className={`flex items-start gap-3 rounded-md p-2 transition-colors ${locked ? "opacity-90 cursor-not-allowed bg-muted/40" : "cursor-pointer hover:bg-muted/50"}`}>
       <Checkbox
         checked={checked}
-        onCheckedChange={(v) => onChange(v === true)}
+        disabled={locked}
+        onCheckedChange={(v) => !locked && onChange(v === true)}
         className="mt-0.5"
       />
       <div className="flex-1">
-        <div className="text-sm font-medium">{label}</div>
+        <div className="text-sm font-medium flex items-center gap-2">
+          {label}
+          {locked && <span className="text-[10px] uppercase tracking-wide text-muted-foreground border rounded px-1 py-0.5">obrigatório</span>}
+        </div>
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
     </label>
