@@ -432,6 +432,14 @@ export function CourseDetailDialog({
           </div>
         )}
       </DialogContent>
+
+      <ActivityViewDialog
+        atividade={viewing}
+        curso={curso ?? undefined}
+        habilidades={Array.from(habilidadeMap.values())}
+        role={user.role}
+        onOpenChange={(o) => !o && setViewing(null)}
+      />
     </Dialog>
   );
 }
