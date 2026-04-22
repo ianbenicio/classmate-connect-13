@@ -67,6 +67,9 @@ export function CourseDetailDialog({
   onTurmaClick,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
+  const [viewing, setViewing] = useState<Atividade | null>(null);
+  const user = useCurrentUser();
+  const isAluno = user.role === "aluno";
   const agendamentos = useAgendamentos();
 
   const turmasDoCurso = useMemo(
