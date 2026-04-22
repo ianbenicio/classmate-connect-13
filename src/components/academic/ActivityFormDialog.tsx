@@ -208,6 +208,10 @@ export function ActivityFormDialog({
     const tipoFinal: AtividadeTipo = isEdit ? editing!.tipo : tipo;
     const isAula = tipoFinal === 0;
 
+    const formulariosFinais: FormulariosConfig = isAula
+      ? { ...formularios, relatorioProfessor: true, autoavaliacaoAluno: true }
+      : formularios;
+
     const atividade: Atividade = isEdit
       ? {
           ...editing!,
@@ -220,14 +224,16 @@ export function ActivityFormDialog({
           // Aula
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
-          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
+          notasInstrutor: isAula ? notasInstrutor || undefined : undefined,
           preRequisitos: isAula ? preRequisitos || undefined : undefined,
           niveisAlvo: isAula ? niveisAlvo : undefined,
           criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          metodologias: isAula ? metodologias || undefined : undefined,
           roteiro: isAula ? roteiro : undefined,
           materiais: isAula ? materiais : undefined,
           referencias: isAula ? referencias || undefined : undefined,
-          formularios: isAula ? formularios : undefined,
+          formularios: isAula ? formulariosFinais : undefined,
           rubricas: isAula ? rubricas : undefined,
           // Tarefa
           instrucoes: !isAula ? instrucoes : undefined,
@@ -251,14 +257,16 @@ export function ActivityFormDialog({
           habilidadeIds,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
-          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
+          notasInstrutor: isAula ? notasInstrutor || undefined : undefined,
           preRequisitos: isAula ? preRequisitos || undefined : undefined,
           niveisAlvo: isAula ? niveisAlvo : undefined,
           criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          metodologias: isAula ? metodologias || undefined : undefined,
           roteiro: isAula ? roteiro : undefined,
           materiais: isAula ? materiais : undefined,
           referencias: isAula ? referencias || undefined : undefined,
-          formularios: isAula ? formularios : undefined,
+          formularios: isAula ? formulariosFinais : undefined,
           rubricas: isAula ? rubricas : undefined,
           instrucoes: !isAula ? instrucoes : undefined,
         };
