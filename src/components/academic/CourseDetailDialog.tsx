@@ -411,7 +411,10 @@ export function CourseDetailDialog({
                                 <button
                                   key={id}
                                   type="button"
-                                  onClick={() => onSkillClick(h)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSkillClick(h);
+                                  }}
                                   className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full hover:bg-primary/20 transition-colors"
                                 >
                                   {h.sigla}
