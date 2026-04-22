@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -18,14 +20,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SkillSelector } from "./SkillSelector";
+import { FieldVisibilityBadge } from "./FieldVisibilityBadge";
+import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   formatCodigoAtividade,
+  DEFAULT_FORMULARIOS,
+  FIELD_VISIBILITY,
   type Atividade,
   type AtividadeTipo,
   type Curso,
   type Grupo,
   type Habilidade,
+  type FormulariosConfig,
+  type RoteiroBloco,
+  type MaterialAula,
+  type CriterioAvaliacao,
+  type HabilidadeNivelAlvo,
 } from "@/lib/academic-types";
 
 interface Props {
@@ -34,11 +45,31 @@ interface Props {
   cursos: Curso[];
   grupos: Record<string, Grupo[]>;
   habilidades: Habilidade[];
-  /** undefined => criação; com valor => edição */
   editing?: Atividade;
-  /** tipo padrão na criação */
   defaultTipo?: AtividadeTipo;
   onSave: (atividade: Atividade) => void;
+}
+
+/** Pequeno wrapper: Label + badge de visibilidade. */
+function FieldLabel({
+  children,
+  field,
+  required,
+}: {
+  children: React.ReactNode;
+  field: keyof typeof FIELD_VISIBILITY;
+  required?: boolean;
+}) {
+  const vis = FIELD_VISIBILITY[field];
+  return (
+    <div className="flex items-center gap-2">
+      <Label>
+        {children}
+        {required && " *"}
+      </Label>
+      {vis && <FieldVisibilityBadge visibility={vis} />}
+    </div>
+  );
 }
 
 export function ActivityFormDialog({
@@ -53,18 +84,38 @@ export function ActivityFormDialog({
 }: Props) {
   const isEdit = !!editing;
 
+  // Identificação
   const [tipo, setTipo] = useState<AtividadeTipo>(defaultTipo);
   const [nome, setNome] = useState("");
   const [cursoId, setCursoId] = useState(cursos[0]?.id ?? "");
   const [grupo, setGrupo] = useState("");
   const [prazo, setPrazo] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [professor, setProfessor] = useState("");
+
+  // Pedagógico
   const [objetivoResultados, setObjetivoResultados] = useState("");
+  const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
+  const [niveisAlvo, setNiveisAlvo] = useState<HabilidadeNivelAlvo[]>([]);
+  const [posicaoModulo, setPosicaoModulo] = useState("");
+  const [preRequisitos, setPreRequisitos] = useState("");
+  const [criteriosSucesso, setCriteriosSucesso] = useState("");
+
+  // Conteúdo & Materiais
   const [descricaoConteudo, setDescricaoConteudo] = useState("");
+  const [roteiro, setRoteiro] = useState<RoteiroBloco[]>([]);
+  const [materiais, setMateriais] = useState<MaterialAula[]>([]);
+  const [referencias, setReferencias] = useState("");
+
+  // Avaliação & Formulários
+  const [formularios, setFormularios] = useState<FormulariosConfig>(DEFAULT_FORMULARIOS);
+  const [rubricas, setRubricas] = useState<CriterioAvaliacao[]>([]);
+
+  // Pais / Tarefa
   const [sugestoesPais, setSugestoesPais] = useState("");
   const [instrucoes, setInstrucoes] = useState("");
-  const [professor, setProfessor] = useState("");
-  const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
+
+  const [tab, setTab] = useState("identificacao");
 
   useEffect(() => {
     if (!open) return;
@@ -75,12 +126,21 @@ export function ActivityFormDialog({
       setGrupo(editing.grupo);
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
+      setProfessor(editing.professor ?? "");
       setObjetivoResultados(editing.objetivoResultados);
+      setHabilidadeIds(editing.habilidadeIds);
+      setNiveisAlvo(editing.niveisAlvo ?? []);
+      setPosicaoModulo(editing.posicaoModulo ?? "");
+      setPreRequisitos(editing.preRequisitos ?? "");
+      setCriteriosSucesso(editing.criteriosSucesso ?? "");
       setDescricaoConteudo(editing.descricaoConteudo ?? "");
+      setRoteiro(editing.roteiro ?? []);
+      setMateriais(editing.materiais ?? []);
+      setReferencias(editing.referencias ?? "");
+      setFormularios(editing.formularios ?? DEFAULT_FORMULARIOS);
+      setRubricas(editing.rubricas ?? []);
       setSugestoesPais(editing.sugestoesPais ?? "");
       setInstrucoes(editing.instrucoes ?? "");
-      setProfessor(editing.professor ?? "");
-      setHabilidadeIds(editing.habilidadeIds);
     } else {
       setTipo(defaultTipo);
       setNome("");
@@ -88,14 +148,35 @@ export function ActivityFormDialog({
       setGrupo("");
       setPrazo("");
       setDescricao("");
+      setProfessor("");
       setObjetivoResultados("");
+      setHabilidadeIds([]);
+      setNiveisAlvo([]);
+      setPosicaoModulo("");
+      setPreRequisitos("");
+      setCriteriosSucesso("");
       setDescricaoConteudo("");
+      setRoteiro([]);
+      setMateriais([]);
+      setReferencias("");
+      setFormularios(DEFAULT_FORMULARIOS);
+      setRubricas([]);
       setSugestoesPais("");
       setInstrucoes("");
-      setProfessor("");
-      setHabilidadeIds([]);
     }
+    setTab("identificacao");
   }, [open, editing, defaultTipo, cursos]);
+
+  // Sincroniza niveisAlvo quando habilidades mudam (mantém o que ainda é válido)
+  useEffect(() => {
+    setNiveisAlvo((prev) => {
+      const filtered = prev.filter((n) => habilidadeIds.includes(n.habilidadeId));
+      const novos = habilidadeIds
+        .filter((id) => !filtered.some((n) => n.habilidadeId === id))
+        .map((id) => ({ habilidadeId: id, nivelAlvo: 3 }));
+      return [...filtered, ...novos];
+    });
+  }, [habilidadeIds]);
 
   const cursoSelecionado = cursos.find((c) => c.id === cursoId);
   const gruposDisponiveis = grupos[cursoId] ?? [];
@@ -103,27 +184,41 @@ export function ActivityFormDialog({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !cursoId || !grupo || !descricao || !professor.trim()) {
-      toast.error("Preencha os campos obrigatórios (incluindo Professor responsável).");
+      toast.error("Preencha os campos obrigatórios na aba Identificação.");
+      setTab("identificacao");
       return;
     }
+
+    const tipoFinal: AtividadeTipo = isEdit ? editing!.tipo : tipo;
+    const isAula = tipoFinal === 0;
 
     const atividade: Atividade = isEdit
       ? {
           ...editing!,
           nome,
-          grupo: editing!.grupo,
           prazo,
           descricao,
           objetivoResultados,
           professor: professor.trim(),
           habilidadeIds,
-          descricaoConteudo: editing!.tipo === 0 ? descricaoConteudo : undefined,
-          sugestoesPais: editing!.tipo === 0 ? sugestoesPais : undefined,
-          instrucoes: editing!.tipo === 1 ? instrucoes : undefined,
+          // Aula
+          descricaoConteudo: isAula ? descricaoConteudo : undefined,
+          sugestoesPais: isAula ? sugestoesPais : undefined,
+          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          preRequisitos: isAula ? preRequisitos || undefined : undefined,
+          niveisAlvo: isAula ? niveisAlvo : undefined,
+          criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          roteiro: isAula ? roteiro : undefined,
+          materiais: isAula ? materiais : undefined,
+          referencias: isAula ? referencias || undefined : undefined,
+          formularios: isAula ? formularios : undefined,
+          rubricas: isAula ? rubricas : undefined,
+          // Tarefa
+          instrucoes: !isAula ? instrucoes : undefined,
         }
       : {
           id: crypto.randomUUID(),
-          tipo,
+          tipo: tipoFinal,
           nome,
           codigo: formatCodigoAtividade(
             cursoSelecionado?.cod ?? "XXX",
@@ -138,9 +233,18 @@ export function ActivityFormDialog({
           criadoPor: "Prof. Logado",
           professor: professor.trim(),
           habilidadeIds,
-          descricaoConteudo: tipo === 0 ? descricaoConteudo : undefined,
-          sugestoesPais: tipo === 0 ? sugestoesPais : undefined,
-          instrucoes: tipo === 1 ? instrucoes : undefined,
+          descricaoConteudo: isAula ? descricaoConteudo : undefined,
+          sugestoesPais: isAula ? sugestoesPais : undefined,
+          posicaoModulo: isAula ? posicaoModulo || undefined : undefined,
+          preRequisitos: isAula ? preRequisitos || undefined : undefined,
+          niveisAlvo: isAula ? niveisAlvo : undefined,
+          criteriosSucesso: isAula ? criteriosSucesso || undefined : undefined,
+          roteiro: isAula ? roteiro : undefined,
+          materiais: isAula ? materiais : undefined,
+          referencias: isAula ? referencias || undefined : undefined,
+          formularios: isAula ? formularios : undefined,
+          rubricas: isAula ? rubricas : undefined,
+          instrucoes: !isAula ? instrucoes : undefined,
         };
 
     onSave(atividade);
@@ -149,10 +253,36 @@ export function ActivityFormDialog({
   };
 
   const tipoAtual = isEdit ? editing!.tipo : tipo;
+  const isAula = tipoAtual === 0;
+
+  // ---------- Helpers de listas dinâmicas ----------
+  const addRoteiro = () =>
+    setRoteiro((r) => [
+      ...r,
+      { id: crypto.randomUUID(), titulo: "", duracaoMin: undefined, descricao: "" },
+    ]);
+  const updRoteiro = (id: string, patch: Partial<RoteiroBloco>) =>
+    setRoteiro((r) => r.map((b) => (b.id === id ? { ...b, ...patch } : b)));
+  const delRoteiro = (id: string) => setRoteiro((r) => r.filter((b) => b.id !== id));
+
+  const addMaterial = () =>
+    setMateriais((m) => [
+      ...m,
+      { id: crypto.randomUUID(), tipo: "link", titulo: "", url: "" },
+    ]);
+  const updMaterial = (id: string, patch: Partial<MaterialAula>) =>
+    setMateriais((m) => m.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  const delMaterial = (id: string) => setMateriais((m) => m.filter((x) => x.id !== id));
+
+  const addRubrica = () =>
+    setRubricas((r) => [...r, { id: crypto.randomUUID(), descricao: "", peso: 1 }]);
+  const updRubrica = (id: string, patch: Partial<CriterioAvaliacao>) =>
+    setRubricas((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  const delRubrica = (id: string) => setRubricas((r) => r.filter((x) => x.id !== id));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Editar Atividade" : "Nova Atividade"}
@@ -160,171 +290,403 @@ export function ActivityFormDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Tipo *</Label>
-              <Select
-                value={String(tipoAtual)}
-                onValueChange={(v) => setTipo(Number(v) as AtividadeTipo)}
-                disabled={isEdit}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">Aula</SelectItem>
-                  <SelectItem value="1">Tarefa</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {isAula ? (
+            <Tabs value={tab} onValueChange={setTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-5 h-auto">
+                <TabsTrigger value="identificacao" className="text-xs">📌 Ident.</TabsTrigger>
+                <TabsTrigger value="pedagogico" className="text-xs">🎯 Pedag.</TabsTrigger>
+                <TabsTrigger value="conteudo" className="text-xs">📚 Conteúdo</TabsTrigger>
+                <TabsTrigger value="avaliacao" className="text-xs">📝 Avaliação</TabsTrigger>
+                <TabsTrigger value="pais" className="text-xs">👨‍👩 Pais</TabsTrigger>
+              </TabsList>
 
-            <div className="space-y-2">
-              <Label>Nome *</Label>
-              <Input
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Ex.: Introdução ao Photoshop"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Curso *</Label>
-              <Select
-                value={cursoId}
-                onValueChange={(v) => {
-                  setCursoId(v);
-                  setGrupo("");
-                }}
-                disabled={isEdit}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cursos.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Grupo *</Label>
-              <Select
-                value={grupo}
-                onValueChange={setGrupo}
-                disabled={isEdit}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  {gruposDisponiveis.map((g) => (
-                    <SelectItem key={g.cod} value={g.cod}>
-                      <span className="font-mono text-xs mr-2">{g.cod}</span>
-                      {g.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {isEdit && (
-              <>
-                <div className="space-y-2">
-                  <Label>Código</Label>
-                  <Input value={editing!.codigo} readOnly />
-                </div>
-                <div className="space-y-2">
-                  <Label>Criado por</Label>
-                  <Input value={editing!.criadoPor} readOnly />
-                </div>
-              </>
-            )}
-
-            <div className="space-y-2">
-              <Label>Professor responsável *</Label>
-              <Input
-                value={professor}
-                onChange={(e) => setProfessor(e.target.value)}
-                placeholder="Ex.: Prof. Ana Souza"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Prazo de referência</Label>
-              <Input
-                type="date"
-                value={prazo}
-                onChange={(e) => setPrazo(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Descrição Geral *</Label>
-            <Textarea
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Objetivo / Resultados Esperados</Label>
-            <Textarea
-              value={objetivoResultados}
-              onChange={(e) => setObjetivoResultados(e.target.value)}
-              rows={2}
-            />
-          </div>
-
-          {tipoAtual === 0 && (
-            <div className="rounded-md border-l-4 border-primary bg-muted/40 p-4 space-y-4">
-              <h4 className="font-semibold text-sm">🎓 Específico de Aula</h4>
-              <div className="space-y-2">
-                <Label>Descrição de Conteúdo</Label>
-                <Textarea
-                  value={descricaoConteudo}
-                  onChange={(e) => setDescricaoConteudo(e.target.value)}
-                  rows={3}
+              {/* ============ IDENTIFICAÇÃO ============ */}
+              <TabsContent value="identificacao" className="space-y-4">
+                <IdentificacaoFields
+                  isEdit={isEdit}
+                  editing={editing}
+                  tipo={tipo}
+                  setTipo={setTipo}
+                  nome={nome}
+                  setNome={setNome}
+                  cursoId={cursoId}
+                  setCursoId={setCursoId}
+                  grupo={grupo}
+                  setGrupo={setGrupo}
+                  cursos={cursos}
+                  gruposDisponiveis={gruposDisponiveis}
+                  professor={professor}
+                  setProfessor={setProfessor}
+                  prazo={prazo}
+                  setPrazo={setPrazo}
+                  descricao={descricao}
+                  setDescricao={setDescricao}
                 />
-              </div>
+              </TabsContent>
+
+              {/* ============ PEDAGÓGICO ============ */}
+              <TabsContent value="pedagogico" className="space-y-4">
+                <div className="space-y-2">
+                  <FieldLabel field="objetivoResultados">Objetivo / Resultados Esperados</FieldLabel>
+                  <Textarea
+                    value={objetivoResultados}
+                    onChange={(e) => setObjetivoResultados(e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <FieldLabel field="posicaoModulo">Posição no Módulo</FieldLabel>
+                    <Input
+                      value={posicaoModulo}
+                      onChange={(e) => setPosicaoModulo(e.target.value)}
+                      placeholder="Ex.: 3 de 8"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FieldLabel field="preRequisitos">Pré-requisitos</FieldLabel>
+                    <Input
+                      value={preRequisitos}
+                      onChange={(e) => setPreRequisitos(e.target.value)}
+                      placeholder="Ex.: GPCA01, GPCA02"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="criteriosSucesso">Critérios de Sucesso</FieldLabel>
+                  <Textarea
+                    value={criteriosSucesso}
+                    onChange={(e) => setCriteriosSucesso(e.target.value)}
+                    rows={2}
+                    placeholder="O que o aluno deve conseguir fazer ao final da aula"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="habilidadeIds">Habilidades Trabalhadas</FieldLabel>
+                  <SkillSelector
+                    habilidades={habilidades}
+                    selectedIds={habilidadeIds}
+                    onChange={setHabilidadeIds}
+                  />
+                </div>
+
+                {habilidadeIds.length > 0 && (
+                  <div className="space-y-2 rounded-md border bg-muted/30 p-3">
+                    <FieldLabel field="niveisAlvo">Nível-alvo por Habilidade (1–5)</FieldLabel>
+                    <p className="text-xs text-muted-foreground">
+                      1=Nunca ouvi falar · 2=Conheço · 3=Sei aplicar · 4=Domino · 5=Posso ensinar
+                    </p>
+                    <div className="space-y-2">
+                      {niveisAlvo.map((n) => {
+                        const hab = habilidades.find((h) => h.id === n.habilidadeId);
+                        return (
+                          <div key={n.habilidadeId} className="flex items-center gap-2">
+                            <span className="flex-1 text-sm">
+                              <span className="font-mono text-xs mr-2">{hab?.sigla}</span>
+                              {hab?.descricao}
+                            </span>
+                            <Select
+                              value={String(n.nivelAlvo)}
+                              onValueChange={(v) =>
+                                setNiveisAlvo((prev) =>
+                                  prev.map((x) =>
+                                    x.habilidadeId === n.habilidadeId
+                                      ? { ...x, nivelAlvo: Number(v) }
+                                      : x,
+                                  ),
+                                )
+                              }
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {[1, 2, 3, 4, 5].map((lvl) => (
+                                  <SelectItem key={lvl} value={String(lvl)}>
+                                    {lvl}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* ============ CONTEÚDO & MATERIAIS ============ */}
+              <TabsContent value="conteudo" className="space-y-4">
+                <div className="space-y-2">
+                  <FieldLabel field="descricaoConteudo">Descrição de Conteúdo</FieldLabel>
+                  <Textarea
+                    value={descricaoConteudo}
+                    onChange={(e) => setDescricaoConteudo(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <FieldLabel field="roteiro">Roteiro da Aula</FieldLabel>
+                    <Button type="button" size="sm" variant="outline" onClick={addRoteiro}>
+                      <Plus className="h-3 w-3 mr-1" /> Bloco
+                    </Button>
+                  </div>
+                  {roteiro.length === 0 && (
+                    <p className="text-xs text-muted-foreground italic">Sem blocos. Adicione etapas com tempo estimado.</p>
+                  )}
+                  {roteiro.map((b, i) => (
+                    <div key={b.id} className="rounded-md border p-3 space-y-2 bg-card">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}.</span>
+                        <Input
+                          placeholder="Título do bloco"
+                          value={b.titulo}
+                          onChange={(e) => updRoteiro(b.id, { titulo: e.target.value })}
+                          className="flex-1"
+                        />
+                        <Input
+                          type="number"
+                          placeholder="min"
+                          value={b.duracaoMin ?? ""}
+                          onChange={(e) =>
+                            updRoteiro(b.id, {
+                              duracaoMin: e.target.value ? Number(e.target.value) : undefined,
+                            })
+                          }
+                          className="w-20"
+                        />
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => delRoteiro(b.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                      <Textarea
+                        placeholder="Descrição (opcional)"
+                        value={b.descricao ?? ""}
+                        onChange={(e) => updRoteiro(b.id, { descricao: e.target.value })}
+                        rows={2}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <FieldLabel field="materiais">Materiais Necessários</FieldLabel>
+                    <Button type="button" size="sm" variant="outline" onClick={addMaterial}>
+                      <Plus className="h-3 w-3 mr-1" /> Material
+                    </Button>
+                  </div>
+                  {materiais.map((m) => (
+                    <div key={m.id} className="flex items-center gap-2 rounded-md border p-2 bg-card">
+                      <Select
+                        value={m.tipo}
+                        onValueChange={(v) => updMaterial(m.id, { tipo: v as MaterialAula["tipo"] })}
+                      >
+                        <SelectTrigger className="w-32">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="link">🔗 Link</SelectItem>
+                          <SelectItem value="arquivo">📄 Arquivo</SelectItem>
+                          <SelectItem value="software">💻 Software</SelectItem>
+                          <SelectItem value="fisico">📦 Físico</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder="Título"
+                        value={m.titulo}
+                        onChange={(e) => updMaterial(m.id, { titulo: e.target.value })}
+                        className="flex-1"
+                      />
+                      <Input
+                        placeholder="URL (opcional)"
+                        value={m.url ?? ""}
+                        onChange={(e) => updMaterial(m.id, { url: e.target.value })}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => delMaterial(m.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <FieldLabel field="referencias">Referências</FieldLabel>
+                  <Textarea
+                    value={referencias}
+                    onChange={(e) => setReferencias(e.target.value)}
+                    rows={2}
+                    placeholder="Vídeos, artigos, livros para aprofundar"
+                  />
+                </div>
+              </TabsContent>
+
+              {/* ============ AVALIAÇÃO & FORMULÁRIOS ============ */}
+              <TabsContent value="avaliacao" className="space-y-4">
+                <div className="space-y-3 rounded-md border bg-muted/30 p-4">
+                  <FieldLabel field="formularios">Formulários a disparar nesta aula</FieldLabel>
+                  <FormularioCheckbox
+                    checked={formularios.relatorioProfessor}
+                    onChange={(v) => setFormularios((f) => ({ ...f, relatorioProfessor: v }))}
+                    label="📋 Relatório do Professor"
+                    desc="Sempre recomendado. Pós-aula, dentro de 24h."
+                  />
+                  <FormularioCheckbox
+                    checked={formularios.autoavaliacaoAluno}
+                    onChange={(v) => setFormularios((f) => ({ ...f, autoavaliacaoAluno: v }))}
+                    label="🎓 Autoavaliação do Aluno"
+                    desc="Aluno avalia o que aprendeu (carinha + texto curto)."
+                  />
+                  <FormularioCheckbox
+                    checked={formularios.diagnosticoPre}
+                    onChange={(v) => setFormularios((f) => ({ ...f, diagnosticoPre: v }))}
+                    label="📊 Diagnóstico PRÉ"
+                    desc="Marque se for a 1ª aula do módulo. Sugere tarefa para coordenação aprovar."
+                  />
+                  <FormularioCheckbox
+                    checked={formularios.diagnosticoPos}
+                    onChange={(v) => setFormularios((f) => ({ ...f, diagnosticoPos: v }))}
+                    label="📈 Diagnóstico PÓS"
+                    desc="Marque se for a última aula do módulo. Compara com o PRÉ."
+                  />
+                  <FormularioCheckbox
+                    checked={formularios.perfilAluno}
+                    onChange={(v) => setFormularios((f) => ({ ...f, perfilAluno: v }))}
+                    label="👤 Perfil do Aluno"
+                    desc="Disparo manual. Use na entrada do aluno ou quando solicitado."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <FieldLabel field="rubricas">Rubricas / Critérios de Avaliação</FieldLabel>
+                    <Button type="button" size="sm" variant="outline" onClick={addRubrica}>
+                      <Plus className="h-3 w-3 mr-1" /> Critério
+                    </Button>
+                  </div>
+                  {rubricas.length === 0 && (
+                    <p className="text-xs text-muted-foreground italic">
+                      Sem critérios. Adicione descritores que orientam o relatório do professor.
+                    </p>
+                  )}
+                  {rubricas.map((r, i) => (
+                    <div key={r.id} className="flex items-center gap-2 rounded-md border p-2 bg-card">
+                      <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}.</span>
+                      <Input
+                        placeholder="Descrição do critério"
+                        value={r.descricao}
+                        onChange={(e) => updRubrica(r.id, { descricao: e.target.value })}
+                        className="flex-1"
+                      />
+                      <Input
+                        type="number"
+                        placeholder="peso"
+                        value={r.peso ?? ""}
+                        onChange={(e) =>
+                          updRubrica(r.id, {
+                            peso: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                        className="w-20"
+                      />
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => delRubrica(r.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
+              {/* ============ PAIS ============ */}
+              <TabsContent value="pais" className="space-y-4">
+                <div className="space-y-2">
+                  <FieldLabel field="sugestoesPais">Sugestões para Pais</FieldLabel>
+                  <Textarea
+                    value={sugestoesPais}
+                    onChange={(e) => setSugestoesPais(e.target.value)}
+                    rows={4}
+                    placeholder="O que pais podem fazer em casa para reforçar esta aula"
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
+          ) : (
+            // ===== TIPO = TAREFA — layout simples =====
+            <div className="space-y-4">
+              <IdentificacaoFields
+                isEdit={isEdit}
+                editing={editing}
+                tipo={tipo}
+                setTipo={setTipo}
+                nome={nome}
+                setNome={setNome}
+                cursoId={cursoId}
+                setCursoId={setCursoId}
+                grupo={grupo}
+                setGrupo={setGrupo}
+                cursos={cursos}
+                gruposDisponiveis={gruposDisponiveis}
+                professor={professor}
+                setProfessor={setProfessor}
+                prazo={prazo}
+                setPrazo={setPrazo}
+                descricao={descricao}
+                setDescricao={setDescricao}
+              />
+
               <div className="space-y-2">
-                <Label>Sugestões para Pais</Label>
+                <FieldLabel field="objetivoResultados">Objetivo / Resultados Esperados</FieldLabel>
                 <Textarea
-                  value={sugestoesPais}
-                  onChange={(e) => setSugestoesPais(e.target.value)}
+                  value={objetivoResultados}
+                  onChange={(e) => setObjetivoResultados(e.target.value)}
                   rows={2}
                 />
               </div>
-            </div>
-          )}
 
-          {tipoAtual === 1 && (
-            <div className="rounded-md border-l-4 border-primary bg-muted/40 p-4 space-y-4">
-              <h4 className="font-semibold text-sm">📝 Específico de Tarefa</h4>
+              <div className="rounded-md border-l-4 border-primary bg-muted/40 p-4 space-y-4">
+                <h4 className="font-semibold text-sm">📝 Específico de Tarefa</h4>
+                <div className="space-y-2">
+                  <Label>Instruções / Critérios de Entrega</Label>
+                  <Textarea
+                    value={instrucoes}
+                    onChange={(e) => setInstrucoes(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label>Instruções / Critérios de Entrega</Label>
-                <Textarea
-                  value={instrucoes}
-                  onChange={(e) => setInstrucoes(e.target.value)}
-                  rows={3}
+                <Label>Habilidades Relacionadas</Label>
+                <SkillSelector
+                  habilidades={habilidades}
+                  selectedIds={habilidadeIds}
+                  onChange={setHabilidadeIds}
                 />
               </div>
             </div>
           )}
-
-          <div className="space-y-2">
-            <Label>Habilidades Relacionadas</Label>
-            <SkillSelector
-              habilidades={habilidades}
-              selectedIds={habilidadeIds}
-              onChange={setHabilidadeIds}
-            />
-          </div>
 
           <p className="text-xs text-muted-foreground border-l-2 border-muted pl-3">
             Esta atividade fica disponível na biblioteca do curso. Para que ela
@@ -333,11 +695,7 @@ export function ActivityFormDialog({
           </p>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit">💾 Salvar</Button>
@@ -345,5 +703,186 @@ export function ActivityFormDialog({
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ===========================================================
+// Subcomponentes
+// ===========================================================
+
+interface IdentificacaoFieldsProps {
+  isEdit: boolean;
+  editing?: Atividade;
+  tipo: AtividadeTipo;
+  setTipo: (t: AtividadeTipo) => void;
+  nome: string;
+  setNome: (s: string) => void;
+  cursoId: string;
+  setCursoId: (s: string) => void;
+  grupo: string;
+  setGrupo: (s: string) => void;
+  cursos: Curso[];
+  gruposDisponiveis: Grupo[];
+  professor: string;
+  setProfessor: (s: string) => void;
+  prazo: string;
+  setPrazo: (s: string) => void;
+  descricao: string;
+  setDescricao: (s: string) => void;
+}
+
+function IdentificacaoFields({
+  isEdit,
+  editing,
+  tipo,
+  setTipo,
+  nome,
+  setNome,
+  cursoId,
+  setCursoId,
+  grupo,
+  setGrupo,
+  cursos,
+  gruposDisponiveis,
+  professor,
+  setProfessor,
+  prazo,
+  setPrazo,
+  descricao,
+  setDescricao,
+}: IdentificacaoFieldsProps) {
+  const tipoAtual = isEdit ? editing!.tipo : tipo;
+  return (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Tipo *</Label>
+          <Select
+            value={String(tipoAtual)}
+            onValueChange={(v) => setTipo(Number(v) as AtividadeTipo)}
+            disabled={isEdit}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Aula</SelectItem>
+              <SelectItem value="1">Tarefa</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <FieldLabel field="nome" required>Nome</FieldLabel>
+          <Input
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            placeholder="Ex.: Introdução ao Photoshop"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Curso *</Label>
+          <Select
+            value={cursoId}
+            onValueChange={(v) => {
+              setCursoId(v);
+              setGrupo("");
+            }}
+            disabled={isEdit}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              {cursos.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Grupo / Módulo *</Label>
+          <Select value={grupo} onValueChange={setGrupo} disabled={isEdit}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              {gruposDisponiveis.map((g) => (
+                <SelectItem key={g.cod} value={g.cod}>
+                  <span className="font-mono text-xs mr-2">{g.cod}</span>
+                  {g.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {isEdit && (
+          <>
+            <div className="space-y-2">
+              <FieldLabel field="codigo">Código</FieldLabel>
+              <Input value={editing!.codigo} readOnly />
+            </div>
+            <div className="space-y-2">
+              <Label>Criado por</Label>
+              <Input value={editing!.criadoPor} readOnly />
+            </div>
+          </>
+        )}
+
+        <div className="space-y-2">
+          <FieldLabel field="professor" required>Professor responsável</FieldLabel>
+          <Input
+            value={professor}
+            onChange={(e) => setProfessor(e.target.value)}
+            placeholder="Ex.: Prof. Ana Souza"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <FieldLabel field="prazo">Prazo de referência</FieldLabel>
+          <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <FieldLabel field="descricao" required>Descrição Geral</FieldLabel>
+        <Textarea
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          rows={3}
+        />
+      </div>
+    </>
+  );
+}
+
+function FormularioCheckbox({
+  checked,
+  onChange,
+  label,
+  desc,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  desc: string;
+}) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer rounded-md p-2 hover:bg-muted/50 transition-colors">
+      <Checkbox
+        checked={checked}
+        onCheckedChange={(v) => onChange(v === true)}
+        className="mt-0.5"
+      />
+      <div className="flex-1">
+        <div className="text-sm font-medium">{label}</div>
+        <div className="text-xs text-muted-foreground">{desc}</div>
+      </div>
+    </label>
   );
 }

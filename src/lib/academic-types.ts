@@ -127,6 +127,48 @@ export interface Aluno {
 
 // ---------- Atividade (template) ----------
 
+/** Perfis que podem visualizar um campo da atividade. */
+export type PerfilAcesso = "professor" | "coordenacao" | "aluno" | "pais";
+
+/** Nível-alvo por habilidade para uma aula (escala 1-5 do diagnóstico). */
+export interface HabilidadeNivelAlvo {
+  habilidadeId: string;
+  nivelAlvo: number; // 1..5
+}
+
+/** Bloco do roteiro da aula. */
+export interface RoteiroBloco {
+  id: string;
+  titulo: string;
+  duracaoMin?: number;
+  descricao?: string;
+}
+
+/** Material/recurso da aula. */
+export interface MaterialAula {
+  id: string;
+  tipo: "link" | "arquivo" | "software" | "fisico";
+  titulo: string;
+  url?: string;
+  observacao?: string;
+}
+
+/** Critério/rubrica de avaliação. */
+export interface CriterioAvaliacao {
+  id: string;
+  descricao: string;
+  peso?: number; // opcional
+}
+
+/** Configuração de quais formulários a aula dispara. */
+export interface FormulariosConfig {
+  relatorioProfessor: boolean; // default true
+  autoavaliacaoAluno: boolean;
+  diagnosticoPre: boolean; // 1ª aula do módulo
+  diagnosticoPos: boolean; // última aula do módulo
+  perfilAluno: boolean; // disparo manual
+}
+
 export interface Atividade {
   id: string;
   tipo: AtividadeTipo;
@@ -141,13 +183,64 @@ export interface Atividade {
   professor: string; // professor responsável pela atividade
   habilidadeIds: string[];
 
-  // Aula-only
+  // Aula-only — básico (legado)
   descricaoConteudo?: string;
   sugestoesPais?: string;
+
+  // Aula-only — Pedagógico (novo)
+  posicaoModulo?: string; // ex.: "3 de 8"
+  preRequisitos?: string; // texto livre / códigos
+  niveisAlvo?: HabilidadeNivelAlvo[];
+  criteriosSucesso?: string; // o que o aluno deve conseguir fazer
+
+  // Aula-only — Conteúdo & Materiais (novo)
+  roteiro?: RoteiroBloco[];
+  materiais?: MaterialAula[];
+  referencias?: string; // links/textos
+
+  // Aula-only — Avaliação & Formulários (novo)
+  formularios?: FormulariosConfig;
+  rubricas?: CriterioAvaliacao[];
 
   // Tarefa-only
   instrucoes?: string;
 }
+
+/** Default seguro para FormulariosConfig (relatório do professor sempre ligado). */
+export const DEFAULT_FORMULARIOS: FormulariosConfig = {
+  relatorioProfessor: true,
+  autoavaliacaoAluno: false,
+  diagnosticoPre: false,
+  diagnosticoPos: false,
+  perfilAluno: false,
+};
+
+/** Visibilidade padrão de cada campo da Aula por perfil. */
+export const FIELD_VISIBILITY: Record<string, PerfilAcesso[]> = {
+  // Identificação
+  nome: ["professor", "coordenacao", "aluno", "pais"],
+  codigo: ["professor", "coordenacao"],
+  professor: ["professor", "coordenacao", "aluno", "pais"],
+  prazo: ["professor", "coordenacao", "aluno", "pais"],
+  descricao: ["professor", "coordenacao", "aluno", "pais"],
+  // Pedagógico
+  objetivoResultados: ["professor", "coordenacao", "aluno", "pais"],
+  habilidadeIds: ["professor", "coordenacao"],
+  niveisAlvo: ["professor", "coordenacao"],
+  posicaoModulo: ["professor", "coordenacao", "aluno"],
+  preRequisitos: ["professor", "coordenacao"],
+  criteriosSucesso: ["professor", "coordenacao", "aluno"],
+  // Conteúdo & Materiais
+  descricaoConteudo: ["professor", "coordenacao", "aluno", "pais"],
+  roteiro: ["professor", "coordenacao"],
+  materiais: ["professor", "coordenacao", "aluno"],
+  referencias: ["professor", "coordenacao", "aluno"],
+  // Avaliação & Formulários
+  formularios: ["professor", "coordenacao"],
+  rubricas: ["professor", "coordenacao"],
+  // Pais
+  sugestoesPais: ["professor", "coordenacao", "pais"],
+};
 
 // ---------- Agendamento ----------
 // Atribuição de uma ou mais atividades de um curso a uma turma,
