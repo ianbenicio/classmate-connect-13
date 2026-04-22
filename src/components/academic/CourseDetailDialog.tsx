@@ -335,7 +335,16 @@ export function CourseDetailDialog({
                     return (
                       <article
                         key={a.id}
-                        className="bg-card border rounded-lg p-4"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setViewing(a)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setViewing(a);
+                          }
+                        }}
+                        className="cursor-pointer bg-card border rounded-lg p-4 hover:border-primary/40 hover:bg-accent/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40"
                       >
                         <div className="flex items-start justify-between gap-4 mb-2">
                           <div className="flex-1 min-w-0">
@@ -360,24 +369,32 @@ export function CourseDetailDialog({
                               {a.descricao}
                             </p>
                           </div>
-                          <div className="flex gap-1 flex-shrink-0">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => onEdit(a)}
-                              aria-label="Editar"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => onDelete(a)}
-                              aria-label="Remover"
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
+                          {!isAluno && (
+                            <div className="flex gap-1 flex-shrink-0">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onEdit(a);
+                                }}
+                                aria-label="Editar"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(a);
+                                }}
+                                aria-label="Remover"
+                              >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-2">
