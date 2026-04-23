@@ -24,7 +24,7 @@ import {
   type Curso,
   type Turma,
 } from "@/lib/academic-types";
-import { SEED_ALUNOS } from "@/lib/academic-seed";
+import { alunosStore } from "@/lib/alunos-store";
 import { toast } from "sonner";
 
 interface Props {
@@ -65,7 +65,7 @@ export function RegistrarRelatorioDialog({
 
     // Notifica alunos + professor que o relatório foi registrado
     if (turma && curso) {
-      const alunos = SEED_ALUNOS.filter((al) => al.turmaId === turma.id);
+      const alunos = alunosStore.getAll().filter((al) => al.turmaId === turma.id);
       const base = {
         titulo: `Relatório registrado — ${turma.cod}`,
         mensagem: `${curso.nome} · ${turma.nome} · ${dataFmt} ${agendamento.inicio}–${agendamento.fim} — relatório registrado.`,

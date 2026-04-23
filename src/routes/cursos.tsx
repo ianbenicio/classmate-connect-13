@@ -20,7 +20,6 @@ import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import {
-  SEED_ALUNOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
 } from "@/lib/academic-seed";
@@ -39,6 +38,7 @@ import { useAgendamentos } from "@/lib/agendamentos-store";
 import { cursosStore, useCursos } from "@/lib/cursos-store";
 import { turmasStore, useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
+import { useAlunos } from "@/lib/alunos-store";
 
 export const Route = createFileRoute("/cursos")({
   head: () => ({
@@ -62,7 +62,7 @@ export const Route = createFileRoute("/cursos")({
 function CursosPage() {
   const cursos = useCursos();
   const turmas = useTurmas();
-  const [alunos] = useState(SEED_ALUNOS);
+  const alunos = useAlunos();
   const atividades = useAtividades();
   const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
 
