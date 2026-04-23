@@ -127,56 +127,7 @@ function CursosPage() {
     }
   }, [cursos, cursoSelecionado]);
 
-  // Progresso de aulas por curso: soma de aulas concluídas em todas as turmas
-  // / (total de aulas do curso × número de turmas).
-  const progressoPorCurso = useMemo(() => {
-    const aulasIdsPorCurso = new Map<string, Set<string>>();
-    for (const a of atividades) {
-      if (a.tipo !== 0) continue;
-      let set = aulasIdsPorCurso.get(a.cursoId);
-      if (!set) {
-        set = new Set();
-        aulasIdsPorCurso.set(a.cursoId, set);
-      }
-      set.add(a.id);
-    }
-    const turmaToCurso = new Map(turmas.map((t) => [t.id, t.cursoId]));
-    const dadasPorCursoTurma = new Map<string, Map<string, Set<string>>>();
-    for (const ag of agendamentos) {
-      if (ag.status !== "concluido") continue;
-      const cursoId = turmaToCurso.get(ag.turmaId);
-      if (!cursoId) continue;
-      const aulasSet = aulasIdsPorCurso.get(cursoId);
-      if (!aulasSet) continue;
-      let porTurma = dadasPorCursoTurma.get(cursoId);
-      if (!porTurma) {
-        porTurma = new Map();
-        dadasPorCursoTurma.set(cursoId, porTurma);
-      }
-      let s = porTurma.get(ag.turmaId);
-      if (!s) {
-        s = new Set();
-        porTurma.set(ag.turmaId, s);
-      }
-      for (const aid of ag.atividadeIds) {
-        if (aulasSet.has(aid)) s.add(aid);
-      }
-    }
-    const result = new Map<string, { dadas: number; total: number; pct: number }>();
-    for (const c of cursos) {
-      const totalAulas = aulasIdsPorCurso.get(c.id)?.size ?? 0;
-      const numTurmas = turmasPorCurso.get(c.id) ?? 0;
-      const total = totalAulas * numTurmas;
-      let dadas = 0;
-      const porTurma = dadasPorCursoTurma.get(c.id);
-      if (porTurma) {
-        for (const s of porTurma.values()) dadas += s.size;
-      }
-      const pct = total > 0 ? Math.round((dadas / total) * 100) : 0;
-      result.set(c.id, { dadas, total, pct });
-    }
-    return result;
-  }, [atividades, agendamentos, cursos, turmas, turmasPorCurso]);
+
 
   const handleSaveCurso = (curso: Curso) => {
     cursosStore.upsert(curso);
