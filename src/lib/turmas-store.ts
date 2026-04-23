@@ -5,6 +5,7 @@ import { SEED_TURMAS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
+import { alunosStore } from "./alunos-store";
 
 let turmas: Turma[] = [];
 let initialized = false;
