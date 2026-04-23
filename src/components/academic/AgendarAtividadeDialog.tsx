@@ -45,7 +45,8 @@ import {
 } from "@/lib/academic-types";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
-import { SEED_ALUNOS, SEED_GRUPOS } from "@/lib/academic-seed";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { alunosStore } from "@/lib/alunos-store";
 import { authStore } from "@/lib/auth-store";
 import { toast } from "sonner";
 
@@ -470,7 +471,7 @@ export function AgendarAtividadeDialog({
     ) as string[];
     const professor = professoresUnicos.join(" / ") || undefined;
 
-    const alunosDaTurma = SEED_ALUNOS.filter(
+    const alunosDaTurma = alunosStore.getAll().filter(
       (al) => al.turmaId === turmaSelecionada.id,
     );
     const allNotifs = [];
