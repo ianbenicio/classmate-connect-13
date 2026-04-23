@@ -62,9 +62,9 @@ interface BuildOpts {
 }
 
 function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
-  const turma = SEED_TURMAS.find((t) => t.id === a.turmaId);
+  const turma = turmasStore.getAll().find((t) => t.id === a.turmaId);
   if (!turma) return [];
-  const curso = SEED_CURSOS.find((c) => c.id === turma.cursoId);
+  const curso = cursosStore.getAll().find((c) => c.id === turma.cursoId);
   const dataFmt = format(new Date(`${a.data}T00:00:00`), "PPP", { locale: ptBR });
   const ctx = `${curso?.nome ?? ""} · ${turma.nome} · ${dataFmt} ${a.inicio}–${a.fim}${
     a.professor ? ` · ${a.professor}` : ""
@@ -85,7 +85,7 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
   const out: Notificacao[] = [];
 
   // Alunos da turma — só os que ainda não receberam essa notificação.
-  const alunos = SEED_ALUNOS.filter((al) => al.turmaId === turma.id);
+  const alunos = alunosStore.getAll().filter((al) => al.turmaId === turma.id);
   for (const al of alunos) {
     const key = k(al.id, a.id, opts.kind);
     if (generated.has(key)) continue;
