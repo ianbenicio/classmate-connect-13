@@ -51,7 +51,7 @@ function turmaToRow(t: Turma) {
     nome: t.nome,
     cod: t.cod,
     data: t.data,
-    horarios: t.horarios as unknown as object[],
+    horarios: t.horarios as never,
     descricao: t.descricao ?? null,
   };
 }
