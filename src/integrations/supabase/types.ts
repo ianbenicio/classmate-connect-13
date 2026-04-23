@@ -659,6 +659,35 @@ export type Database = {
         }
         Relationships: []
       }
+      viewer_dependentes: {
+        Row: {
+          aluno_id: string
+          created_at: string
+          id: string
+          viewer_user_id: string
+        }
+        Insert: {
+          aluno_id: string
+          created_at?: string
+          id?: string
+          viewer_user_id: string
+        }
+        Update: {
+          aluno_id?: string
+          created_at?: string
+          id?: string
+          viewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "viewer_dependentes_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -672,9 +701,13 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_viewer_of: {
+        Args: { _aluno_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      app_role: "admin" | "coordenacao" | "professor" | "aluno"
+      app_role: "admin" | "coordenacao" | "professor" | "aluno" | "viewer"
       atividade_tipo: "aula" | "tarefa"
       dia_semana: "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom"
       status_agendamento: "pendente" | "concluido"
@@ -805,7 +838,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "coordenacao", "professor", "aluno"],
+      app_role: ["admin", "coordenacao", "professor", "aluno", "viewer"],
       atividade_tipo: ["aula", "tarefa"],
       dia_semana: ["seg", "ter", "qua", "qui", "sex", "sab", "dom"],
       status_agendamento: ["pendente", "concluido"],
