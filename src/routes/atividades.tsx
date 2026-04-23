@@ -55,6 +55,7 @@ export const Route = createFileRoute("/atividades")({
 
 function AtividadesPage() {
   const cursos = useCursos();
+  const turmas = useTurmas();
   const atividades = useAtividades();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
@@ -232,7 +233,7 @@ function AtividadesPage() {
         open={pendentesOpen}
         onOpenChange={setPendentesOpen}
         cursos={cursos}
-        turmas={SEED_TURMAS}
+        turmas={turmas}
         atividades={atividades}
       />
 
