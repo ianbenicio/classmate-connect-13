@@ -329,16 +329,34 @@ export interface Agendamento {
   turmaId: string;
   data: string; // ISO date "YYYY-MM-DD"
   diaSemana: DiaSemana;
-  inicio: string; // "HH:MM"
-  fim: string; // "HH:MM"
+  inicio: string; // "HH:MM" — início efetivo do agendamento (já considerando o bloco)
+  fim: string; // "HH:MM" — fim efetivo (início + N blocos)
   atividadeIds: string[];
   status: StatusAgendamento;
-  criadoEm: string; // ISO datetime
-  concluidoEm?: string; // ISO datetime
+  criadoEm: string;
+  concluidoEm?: string;
   observacao?: string;
-  professor?: string; // snapshot do professor responsável (da atividade)
-  criadoPorUserId?: string; // id do usuário que criou o agendamento
-  criadoPorNome?: string; // nome (snapshot)
+  professor?: string;
+  criadoPorUserId?: string;
+  criadoPorNome?: string;
+
+  // ----- Blocos -----
+  /** Índice do primeiro bloco ocupado dentro do slot da turma (0 = início). */
+  blocoIndex?: number;
+  /** Quantidade de blocos consecutivos consumidos neste agendamento. */
+  blocosTotal?: number;
+  /** Início do slot original da turma (usado p/ calcular ocupação). */
+  slotInicio?: string;
+  /** Fim do slot original da turma. */
+  slotFim?: string;
+
+  // ----- Multi-dia (atividade dividida em várias partes) -----
+  /** Id que liga as várias partes da MESMA atividade em dias diferentes. */
+  parteGrupoId?: string;
+  /** Número desta parte (1-based). */
+  parteNum?: number;
+  /** Total de partes do grupo. */
+  partesTotal?: number;
 }
 
 // ---------- Notificação ----------
