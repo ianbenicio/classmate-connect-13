@@ -368,12 +368,14 @@ function SlotChip({
         headerClass,
         compact && "p-0.5 pl-1 space-y-0.5",
       )}
+      style={useTurmaColor ? colors.chip : undefined}
       title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
     >
-      {/* Barra lateral identificadora da turma (cor única) */}
+      {/* Barra lateral identificadora da turma (cor do curso + variação) */}
       <span
         aria-hidden
-        className={cn("absolute left-0 top-0 bottom-0 w-1", turmaBar)}
+        className="absolute left-0 top-0 bottom-0 w-1"
+        style={colors.bar}
       />
       {/* Cabeçalho clicável: abre dialog de detalhes da turma/dia */}
       <button
