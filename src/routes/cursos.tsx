@@ -115,6 +115,34 @@ function CursosPage() {
     return map;
   }, [atividades, cursos]);
 
+  // Conjunto de atividades (aulas) consideradas "dadas" por curso —
+  // quando ao menos um aluno tem presença=true.
+  const aulasDadasPorCurso = useMemo(() => {
+    const aulaIdsPorCurso = new Map<string, Set<string>>();
+    for (const a of atividades) {
+      if (a.tipo !== 0) continue;
+      let s = aulaIdsPorCurso.get(a.cursoId);
+      if (!s) {
+        s = new Set();
+        aulaIdsPorCurso.set(a.cursoId, s);
+      }
+      s.add(a.id);
+    }
+    const dadasPorCurso = new Map<string, Set<string>>();
+    for (const c of cursos) dadasPorCurso.set(c.id, new Set());
+    for (const al of alunos) {
+      if (!al.cursoId) continue;
+      const validos = aulaIdsPorCurso.get(al.cursoId);
+      if (!validos) continue;
+      const dadas = dadasPorCurso.get(al.cursoId)!;
+      for (const r of al.aulas ?? []) {
+        if (r.presente && validos.has(r.atividadeId)) dadas.add(r.atividadeId);
+      }
+    }
+    return dadasPorCurso;
+  }, [atividades, alunos, cursos]);
+
+
   const agendamentos = useAgendamentos();
 
   useEffect(() => {
