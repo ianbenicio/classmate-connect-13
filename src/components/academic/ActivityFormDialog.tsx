@@ -232,6 +232,7 @@ export function ActivityFormDialog({
           objetivoResultados,
           professor: professor.trim(),
           habilidadeIds,
+          cargaHorariaMin: cargaHorariaMinFinal,
           // Aula
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
@@ -266,6 +267,7 @@ export function ActivityFormDialog({
           criadoPor: "Prof. Logado",
           professor: professor.trim(),
           habilidadeIds,
+          cargaHorariaMin: cargaHorariaMinFinal,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
           resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
