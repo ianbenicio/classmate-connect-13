@@ -280,19 +280,6 @@ function CursosPage() {
                     {cont.tarefas} tarefas
                   </span>
                 </div>
-                {prog.total > 0 && (
-                  <div className="mt-3 pt-3 border-t">
-                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
-                      <span className="uppercase tracking-wide font-medium">
-                        Aulas dadas
-                      </span>
-                      <span className="font-mono">
-                        {prog.dadas}/{prog.total} ({prog.pct}%)
-                      </span>
-                    </div>
-                    <Progress value={prog.pct} className="h-1.5" />
-                  </div>
-                )}
               </button>
             );
           })}
