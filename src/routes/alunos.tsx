@@ -29,7 +29,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { GraduationCap, Pencil, Plus, Search, Trash2, X } from "lucide-react";
-import { SEED_ATIVIDADES, SEED_CURSOS, SEED_TURMAS } from "@/lib/academic-seed";
+import { SEED_ATIVIDADES } from "@/lib/academic-seed";
+import { useCursos } from "@/lib/cursos-store";
+import { useTurmas } from "@/lib/turmas-store";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { AlunoFormDialog } from "@/components/academic/AlunoFormDialog";
 import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
@@ -58,8 +60,8 @@ export const Route = createFileRoute("/alunos")({
 
 function AlunosPage() {
   const alunos = useAlunos();
-  const cursos = SEED_CURSOS;
-  const turmas = SEED_TURMAS;
+  const cursos = useCursos();
+  const turmas = useTurmas();
 
   const [busca, setBusca] = useState("");
   const [cursoFiltro, setCursoFiltro] = useState<string>("todos");
