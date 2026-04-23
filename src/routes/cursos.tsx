@@ -197,7 +197,7 @@ function CursosPage() {
           {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             const numTurmas = turmasPorCurso.get(c.id) ?? 0;
-            const prog = progressoPorCurso.get(c.id) ?? { dadas: 0, total: 0, pct: 0 };
+            
             return (
               <button
                 key={c.id}
