@@ -273,25 +273,6 @@ function CursosPage() {
                     {cont.tarefas} tarefas
                   </span>
                 </div>
-                {totalAulas > 0 && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setQuadroCurso(c);
-                    }}
-                    className="mt-3 w-full text-left group"
-                    title="Ver Quadro de Aulas"
-                  >
-                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
-                      <span className="uppercase tracking-wide">Aulas dadas</span>
-                      <span className="font-mono group-hover:text-primary transition-colors">
-                        {dadas}/{totalAulas} ({pct}%)
-                      </span>
-                    </div>
-                    <Progress value={pct} className="h-1.5 group-hover:opacity-80 transition-opacity" />
-                  </button>
-                )}
               </div>
             );
           })}
