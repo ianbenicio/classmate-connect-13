@@ -35,18 +35,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "Academia" },
       { name: "description", content: "Academia Flow é um sistema de gestão acadêmica para coordenadores e professores." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
+      { property: "og:title", content: "Academia" },
       { property: "og:description", content: "Academia Flow é um sistema de gestão acadêmica para coordenadores e professores." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:title", content: "Academia" },
       { name: "twitter:description", content: "Academia Flow é um sistema de gestão acadêmica para coordenadores e professores." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83038f05-54e8-4415-b2e4-26ce05af6b6a/id-preview-6e647922--27db7949-b3d8-462b-a4d0-c85949e081ed.lovable.app-1776694402612.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/83038f05-54e8-4415-b2e4-26ce05af6b6a/id-preview-6e647922--27db7949-b3d8-462b-a4d0-c85949e081ed.lovable.app-1776694402612.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/516c9d90-8c48-4eed-9734-213b1de8f03b" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/516c9d90-8c48-4eed-9734-213b1de8f03b" },
     ],
     links: [
       {
