@@ -89,6 +89,8 @@ function CursosPage() {
 
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
 
+  const [quadroCurso, setQuadroCurso] = useState<Curso | null>(null);
+
   const habilidadeMap = useMemo(
     () => new Map(habilidades.map((h) => [h.id, h])),
     [habilidades],
