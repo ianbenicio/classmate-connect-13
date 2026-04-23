@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,12 @@ import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DIAS_SEMANA,
+  addMinutesToHHMM,
+  blocosPorTurno,
+  formatMinutos,
+  getDuracaoAulaMin,
+  getTurnoDiarioMin,
+  type Curso,
   type DiaSemana,
   type HorarioSlot,
   type Turma,
@@ -30,6 +36,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   cursoId: string;
+  curso?: Curso;
   editing?: Turma;
   onSave: (turma: Turma) => void;
 }
@@ -38,6 +45,7 @@ export function TurmaFormDialog({
   open,
   onOpenChange,
   cursoId,
+  curso,
   editing,
   onSave,
 }: Props) {
@@ -47,24 +55,55 @@ export function TurmaFormDialog({
   const [horarios, setHorarios] = useState<HorarioSlot[]>([]);
   const [descricao, setDescricao] = useState("");
 
+  const turnoMin = curso ? getTurnoDiarioMin(curso) : 0;
+  const aulaMin = curso ? getDuracaoAulaMin(curso) : 0;
+  const blocosDia = curso ? blocosPorTurno(curso) : 0;
+  const cursoOk = !!curso && turnoMin > 0;
+
+  /** Recalcula `fim` baseado em `inicio + turnoMin` do curso. */
+  const ajustarFim = useMemo(
+    () =>
+      (slot: Pick<HorarioSlot, "inicio" | "fim" | "diaSemana">): HorarioSlot => ({
+        ...slot,
+        fim:
+          turnoMin > 0
+            ? addMinutesToHHMM(slot.inicio, turnoMin)
+            : slot.fim,
+      }),
+    [turnoMin],
+  );
+
   useEffect(() => {
     if (!open) return;
     setNome(editing?.nome ?? "");
     setCod(editing?.cod ?? "");
     setData(editing?.data ?? "");
-    setHorarios(editing?.horarios ?? []);
+    // Migração automática: ao abrir, força os slots a respeitarem o turno do curso.
+    const base = editing?.horarios ?? [];
+    setHorarios(turnoMin > 0 ? base.map(ajustarFim) : base);
     setDescricao(editing?.descricao ?? "");
-  }, [open, editing]);
+  }, [open, editing, turnoMin, ajustarFim]);
 
-  const addHorario = () =>
-    setHorarios((prev) => [
-      ...prev,
-      { diaSemana: "seg", inicio: "08:00", fim: "10:00" },
-    ]);
+  const addHorario = () => {
+    const novo: HorarioSlot = ajustarFim({
+      diaSemana: "seg",
+      inicio: "08:00",
+      fim: "09:00",
+    });
+    setHorarios((prev) => [...prev, novo]);
+  };
 
   const updateHorario = (i: number, patch: Partial<HorarioSlot>) =>
     setHorarios((prev) =>
-      prev.map((h, idx) => (idx === i ? { ...h, ...patch } : h)),
+      prev.map((h, idx) => {
+        if (idx !== i) return h;
+        const merged = { ...h, ...patch };
+        // Se mudou início, recalcula fim.
+        if (patch.inicio !== undefined && turnoMin > 0) {
+          merged.fim = addMinutesToHHMM(merged.inicio, turnoMin);
+        }
+        return merged;
+      }),
     );
 
   const removeHorario = (i: number) =>
@@ -72,12 +111,18 @@ export function TurmaFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!cursoOk) {
+      toast.error(
+        "Defina o 'Turno diário' do curso antes de cadastrar turmas.",
+      );
+      return;
+    }
     if (!nome.trim() || !cod.trim()) {
       toast.error("Nome e Cod são obrigatórios.");
       return;
     }
-    if (horarios.some((h) => !h.inicio || !h.fim)) {
-      toast.error("Preencha início e fim de todos os horários.");
+    if (horarios.some((h) => !h.inicio)) {
+      toast.error("Preencha o horário de início de todos os slots.");
       return;
     }
     onSave({
@@ -86,7 +131,7 @@ export function TurmaFormDialog({
       nome: nome.trim(),
       cod: cod.trim().toUpperCase(),
       data: data || new Date().toISOString().slice(0, 10),
-      horarios,
+      horarios: horarios.map(ajustarFim),
       alunosIds: editing?.alunosIds ?? [],
       descricao: descricao.trim() || undefined,
     });
@@ -101,6 +146,20 @@ export function TurmaFormDialog({
           <DialogTitle>{editing ? "Editar Turma" : "Nova Turma"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!cursoOk && (
+            <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+              ⚠️ Este curso ainda não tem o <strong>Turno diário</strong>{" "}
+              definido. Edite o curso e configure o turno antes de criar turmas.
+            </div>
+          )}
+          {cursoOk && (
+            <div className="rounded-md border bg-muted/30 p-2 text-[11px] text-muted-foreground">
+              Turno do curso: <strong>{formatMinutos(turnoMin)}</strong> ·{" "}
+              dividido em <strong>{blocosDia} aula(s)</strong> de{" "}
+              <strong>{formatMinutos(aulaMin)}</strong>. O fim de cada slot é
+              calculado automaticamente.
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2 col-span-2">
               <Label>Nome *</Label>
@@ -136,6 +195,7 @@ export function TurmaFormDialog({
                   size="sm"
                   variant="outline"
                   onClick={addHorario}
+                  disabled={!cursoOk}
                 >
                   <Plus /> Adicionar
                 </Button>
@@ -188,15 +248,15 @@ export function TurmaFormDialog({
                       </div>
                       <div className="space-y-1">
                         <Label className="text-[10px] uppercase text-muted-foreground">
-                          Fim
+                          Fim (auto)
                         </Label>
                         <Input
                           type="time"
                           value={h.fim}
-                          onChange={(e) =>
-                            updateHorario(i, { fim: e.target.value })
-                          }
-                          className="w-[110px]"
+                          readOnly
+                          disabled
+                          className="w-[110px] bg-muted/50"
+                          title={`Calculado: início + ${formatMinutos(turnoMin)}`}
                         />
                       </div>
                       <Button
@@ -232,7 +292,9 @@ export function TurmaFormDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit">💾 Salvar</Button>
+            <Button type="submit" disabled={!cursoOk}>
+              💾 Salvar
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
