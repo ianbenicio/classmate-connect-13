@@ -461,6 +461,8 @@ function MonthView({
   onDayClick,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   refDate: Date;
   turmas: Turma[];
@@ -469,6 +471,8 @@ function MonthView({
   onDayClick: (d: Date) => void;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const monthStart = startOfMonth(refDate);
   const monthEnd = endOfMonth(refDate);
