@@ -61,9 +61,28 @@ function alunoToRow(a: Aluno) {
 }
 
 async function loadFromDb() {
+  // Paginar presenças para contornar o limite padrão de 1000 linhas do PostgREST.
+  async function fetchAllPresencas() {
+    const pageSize = 1000;
+    let from = 0;
+    const all: Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }> = [];
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { data, error } = await supabase
+        .from("presencas" as never)
+        .select("aluno_id, atividade_id, presente, observacao")
+        .range(from, from + pageSize - 1);
+      if (error) return { data: all, error };
+      const rows = (data ?? []) as typeof all;
+      all.push(...rows);
+      if (rows.length < pageSize) break;
+      from += pageSize;
+    }
+    return { data: all, error: null as null };
+  }
   const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([
     supabase.from("alunos").select("*").order("nome"),
-    supabase.from("presencas" as never).select("aluno_id, atividade_id, presente, observacao"),
+    fetchAllPresencas(),
   ]);
   if (error) {
     console.error("[alunos] load error", error);
