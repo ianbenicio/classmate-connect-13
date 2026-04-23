@@ -331,7 +331,8 @@ function SlotChip({
     headerEstadoSrc,
     now,
   );
-  const headerClass = slotChipClasses(headerEstado, turma.cursoId);
+  const headerClass = slotChipClasses(headerEstado, turma.id);
+  const turmaBar = turmaColor(turma.id).bar;
 
   const handleHeaderClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -347,12 +348,17 @@ function SlotChip({
   return (
     <div
       className={cn(
-        "rounded-md border p-1 space-y-1",
+        "relative rounded-md border p-1 pl-1.5 space-y-1 overflow-hidden",
         headerClass,
-        compact && "p-0.5 space-y-0.5",
+        compact && "p-0.5 pl-1 space-y-0.5",
       )}
       title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
     >
+      {/* Barra lateral identificadora da turma (cor única) */}
+      <span
+        aria-hidden
+        className={cn("absolute left-0 top-0 bottom-0 w-1", turmaBar)}
+      />
       {/* Cabeçalho clicável: abre dialog de detalhes da turma/dia */}
       <button
         type="button"
