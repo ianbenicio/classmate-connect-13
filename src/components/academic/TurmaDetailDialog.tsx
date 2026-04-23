@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   Users,
   Mail,
@@ -30,6 +32,7 @@ import {
   agendamentosStore,
   useAgendamentos,
 } from "@/lib/agendamentos-store";
+import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { toast } from "sonner";
 
 interface Props {
@@ -47,10 +50,35 @@ export function TurmaDetailDialog({
   atividades,
   onOpenChange,
 }: Props) {
+  const [quadroOpen, setQuadroOpen] = useState(false);
   const allAgendamentos = useAgendamentos();
   const alunosDaTurma = turma
     ? alunos.filter((a) => a.turmaId === turma.id)
     : [];
+
+  // Aulas "dadas" pela turma = aulas do curso com ≥1 aluno da turma com presença=true.
+  const { aulasDadasIds, totalAulas, dadas, pct } = useMemo(() => {
+    if (!turma || !curso) {
+      return { aulasDadasIds: new Set<string>(), totalAulas: 0, dadas: 0, pct: 0 };
+    }
+    const aulasCursoIds = new Set(
+      atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0).map((a) => a.id),
+    );
+    const dadasSet = new Set<string>();
+    for (const al of alunosDaTurma) {
+      for (const r of al.aulas ?? []) {
+        if (r.presente && aulasCursoIds.has(r.atividadeId)) dadasSet.add(r.atividadeId);
+      }
+    }
+    const total = aulasCursoIds.size;
+    const d = dadasSet.size;
+    return {
+      aulasDadasIds: dadasSet,
+      totalAulas: total,
+      dadas: d,
+      pct: total > 0 ? Math.round((d / total) * 100) : 0,
+    };
+  }, [turma, curso, atividades, alunosDaTurma]);
 
   const agendaDaTurma = turma
     ? allAgendamentos
@@ -130,6 +158,28 @@ export function TurmaDetailDialog({
             </div>
           )}
         </section>
+
+        {totalAulas > 0 && (
+          <section className="mt-3">
+            <button
+              type="button"
+              onClick={() => setQuadroOpen(true)}
+              className="w-full text-left group border rounded-md p-3 bg-muted/20 hover:bg-muted/40 hover:border-primary/40 transition-colors"
+              title="Ver Quadro de Aulas"
+            >
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="uppercase tracking-wide font-medium text-muted-foreground inline-flex items-center gap-1.5">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Aulas dadas
+                </span>
+                <span className="font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                  {dadas}/{totalAulas} ({pct}%)
+                </span>
+              </div>
+              <Progress value={pct} className="h-2" />
+            </button>
+          </section>
+        )}
 
         <section className="mt-2">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
@@ -269,6 +319,14 @@ export function TurmaDetailDialog({
           )}
         </section>
       </DialogContent>
+
+      <QuadroAulasDialog
+        open={quadroOpen}
+        onOpenChange={setQuadroOpen}
+        curso={curso ?? null}
+        atividades={atividades}
+        aulasDadasIds={aulasDadasIds}
+      />
     </Dialog>
   );
 }
