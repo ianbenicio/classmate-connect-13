@@ -75,7 +75,11 @@ async function loadFromDb() {
 }
 
 async function ensureInit(): Promise<void> {
-  if (initialized) return;
+  if (initialized) {
+    await loadFromDb();
+    emit();
+    return;
+  }
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -72,6 +72,20 @@ function AtividadesPage() {
       return { curso: c, aulas, tarefas, total: ativs.length };
     });
   }, [cursos, atividades]);
+
+  useEffect(() => {
+    if (!selectedCurso) return;
+    const nextCurso = cursos.find(
+      (c) => c.id === selectedCurso.id || c.cod === selectedCurso.cod,
+    );
+    if (!nextCurso) {
+      setSelectedCurso(null);
+      return;
+    }
+    if (nextCurso.id !== selectedCurso.id) {
+      setSelectedCurso(nextCurso);
+    }
+  }, [cursos, selectedCurso]);
 
   const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas.length, 0);
   const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas.length, 0);
