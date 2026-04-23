@@ -593,6 +593,11 @@ export function AgendarAtividadeDialog({
                 <p className="text-xs text-destructive">
                   A turma não tem horário neste dia.
                 </p>
+              ) : lockTurmaEHorario && slotAtual ? (
+                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
+                  <Clock className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                  {formatHorarioSlot(slotAtual)}
+                </div>
               ) : (
                 <Select value={slotIdx} onValueChange={(v) => { setSlotIdx(v); setBlocoSelecionado(""); }} disabled={lockTurmaEHorario}>
                   <SelectTrigger>
