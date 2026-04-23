@@ -225,7 +225,8 @@ function StateBadge({ estado }: { estado: SlotEstado }) {
   }
 }
 
-function slotChipClasses(estado: SlotEstado, turmaId: string) {
+/** Classe (apenas estados especiais). vazio_futuro/passado usam cor inline da turma. */
+function slotChipClasses(estado: SlotEstado): string {
   switch (estado) {
     case "agendado":
       return "border-primary/50 bg-primary/10 text-foreground";
@@ -239,7 +240,7 @@ function slotChipClasses(estado: SlotEstado, turmaId: string) {
       return "border-muted bg-muted/30 text-muted-foreground";
     case "vazio_futuro":
     default:
-      return turmaChipClass(turmaId);
+      return "";
   }
 }
 
@@ -344,8 +345,10 @@ function SlotChip({
     headerEstadoSrc,
     now,
   );
-  const headerClass = slotChipClasses(headerEstado, turma.id);
-  const turmaBar = turmaColor(turma.id).bar;
+  const headerClass = slotChipClasses(headerEstado);
+  const colors = turmaColor(turma, curso);
+  // Aplica a cor da turma só quando o estado não tem cor própria (vazio_futuro).
+  const useTurmaColor = headerEstado === "vazio_futuro";
 
   const handleHeaderClick = (e: React.MouseEvent) => {
     e.stopPropagation();
