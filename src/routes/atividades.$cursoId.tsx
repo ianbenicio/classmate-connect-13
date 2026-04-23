@@ -43,7 +43,8 @@ import {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades/$cursoId")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
+    await cursosStore.ensureInit();
     const curso = cursosStore.getAll().find((c) => c.id === params.cursoId);
     if (!curso) throw notFound();
     return { curso };

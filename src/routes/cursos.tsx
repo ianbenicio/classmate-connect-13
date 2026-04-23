@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -112,6 +112,20 @@ function CursosPage() {
   }, [atividades, cursos]);
 
   const agendamentos = useAgendamentos();
+
+  useEffect(() => {
+    if (!cursoSelecionado) return;
+    const nextCurso = cursos.find(
+      (c) => c.id === cursoSelecionado.id || c.cod === cursoSelecionado.cod,
+    );
+    if (!nextCurso) {
+      setCursoSelecionado(null);
+      return;
+    }
+    if (nextCurso.id !== cursoSelecionado.id) {
+      setCursoSelecionado(nextCurso);
+    }
+  }, [cursos, cursoSelecionado]);
 
   // Progresso de aulas por curso: soma de aulas concluídas em todas as turmas
   // / (total de aulas do curso × número de turmas).
