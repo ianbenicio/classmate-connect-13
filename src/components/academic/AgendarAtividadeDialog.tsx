@@ -716,8 +716,8 @@ export function AgendarAtividadeDialog({
               )}
 
               {sugestaoMultidia && sugestaoMultidia.length > 1 && (
-                <div className="rounded-md border-l-2 border-amber-500 bg-amber-500/5 p-2 text-xs space-y-1">
-                  <div className="font-medium text-amber-700 dark:text-amber-400">
+                <div className="rounded-md border-l-2 border-primary bg-primary/5 p-2 text-xs space-y-1">
+                  <div className="font-medium text-primary">
                     🔀 Atividade será dividida em {sugestaoMultidia.length} partes:
                   </div>
                   {sugestaoMultidia.map((p, i) => (
