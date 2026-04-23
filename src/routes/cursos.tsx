@@ -19,6 +19,8 @@ import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
+import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
+import { Progress } from "@/components/ui/progress";
 import {
   SEED_GRUPOS,
   SEED_HABILIDADES,
@@ -87,6 +89,8 @@ function CursosPage() {
 
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
 
+  const [quadroCurso, setQuadroCurso] = useState<Curso | null>(null);
+
   const habilidadeMap = useMemo(
     () => new Map(habilidades.map((h) => [h.id, h])),
     [habilidades],
@@ -110,6 +114,34 @@ function CursosPage() {
     }
     return map;
   }, [atividades, cursos]);
+
+  // Conjunto de atividades (aulas) consideradas "dadas" por curso —
+  // quando ao menos um aluno tem presença=true.
+  const aulasDadasPorCurso = useMemo(() => {
+    const aulaIdsPorCurso = new Map<string, Set<string>>();
+    for (const a of atividades) {
+      if (a.tipo !== 0) continue;
+      let s = aulaIdsPorCurso.get(a.cursoId);
+      if (!s) {
+        s = new Set();
+        aulaIdsPorCurso.set(a.cursoId, s);
+      }
+      s.add(a.id);
+    }
+    const dadasPorCurso = new Map<string, Set<string>>();
+    for (const c of cursos) dadasPorCurso.set(c.id, new Set());
+    for (const al of alunos) {
+      if (!al.cursoId) continue;
+      const validos = aulaIdsPorCurso.get(al.cursoId);
+      if (!validos) continue;
+      const dadas = dadasPorCurso.get(al.cursoId)!;
+      for (const r of al.aulas ?? []) {
+        if (r.presente && validos.has(r.atividadeId)) dadas.add(r.atividadeId);
+      }
+    }
+    return dadasPorCurso;
+  }, [atividades, alunos, cursos]);
+
 
   const agendamentos = useAgendamentos();
 
@@ -197,13 +229,23 @@ function CursosPage() {
           {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             const numTurmas = turmasPorCurso.get(c.id) ?? 0;
-            
+            const dadas = aulasDadasPorCurso.get(c.id)?.size ?? 0;
+            const totalAulas = cont.aulas;
+            const pct = totalAulas > 0 ? Math.round((dadas / totalAulas) * 100) : 0;
+
             return (
-              <button
+              <div
                 key={c.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 onClick={() => setCursoSelecionado(c)}
-                className="text-left bg-card border rounded-lg p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setCursoSelecionado(c);
+                  }
+                }}
+                className="cursor-pointer text-left bg-card border rounded-lg p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all focus:outline-none focus:ring-2 focus:ring-primary/40"
               >
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline">{c.cod}</Badge>
@@ -231,7 +273,26 @@ function CursosPage() {
                     {cont.tarefas} tarefas
                   </span>
                 </div>
-              </button>
+                {totalAulas > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setQuadroCurso(c);
+                    }}
+                    className="mt-3 w-full text-left group"
+                    title="Ver Quadro de Aulas"
+                  >
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                      <span className="uppercase tracking-wide">Aulas dadas</span>
+                      <span className="font-mono group-hover:text-primary transition-colors">
+                        {dadas}/{totalAulas} ({pct}%)
+                      </span>
+                    </div>
+                    <Progress value={pct} className="h-1.5 group-hover:opacity-80 transition-opacity" />
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
@@ -269,6 +330,7 @@ function CursosPage() {
         }}
         onDeleteTurma={(t) => setConfirmDeleteTurma(t)}
         onTurmaClick={(t) => setTurmaDetalhe(t)}
+        onShowQuadro={(c) => setQuadroCurso(c)}
       />
 
       <ActivityFormDialog
@@ -364,6 +426,18 @@ function CursosPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <QuadroAulasDialog
+        open={!!quadroCurso}
+        onOpenChange={(open) => !open && setQuadroCurso(null)}
+        curso={quadroCurso}
+        atividades={atividades}
+        aulasDadasIds={
+          quadroCurso
+            ? aulasDadasPorCurso.get(quadroCurso.id) ?? new Set()
+            : new Set()
+        }
+      />
     </div>
   );
 }

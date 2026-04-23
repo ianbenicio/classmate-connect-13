@@ -30,9 +30,11 @@ import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/lib/auth-store";
 import { isCoordenacao } from "@/lib/users";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import { useAlunos } from "@/lib/alunos-store";
 import { SkillsRadarChart } from "./SkillsRadarChart";
 import { StarRating } from "./StarRating";
 import { AvaliacaoAulaDialog } from "./AvaliacaoAulaDialog";
+import { QuadroAulasDialog } from "./QuadroAulasDialog";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import {
   endSlotDate,
@@ -64,7 +66,9 @@ export function AlunoDetailDialog({
   const canSeePerfil = isCoordenacao(currentUser);
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
+  const todosAlunos = useAlunos();
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
+  const [quadroOpen, setQuadroOpen] = useState(false);
 
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
@@ -150,7 +154,21 @@ export function AlunoDetailDialog({
     return m;
   }, [aluno]);
 
-  // Estatísticas
+  // Aulas que a turma do aluno já recebeu (alguma presen\u00e7a=true entre os colegas).
+  const aulasDadasTurmaIds = useMemo(() => {
+    const set = new Set<string>();
+    if (!aluno?.turmaId) return set;
+    const aulaIds = new Set(aulasCurso.map((a) => a.id));
+    for (const al of todosAlunos) {
+      if (al.turmaId !== aluno.turmaId) continue;
+      for (const r of al.aulas ?? []) {
+        if (r.presente && aulaIds.has(r.atividadeId)) set.add(r.atividadeId);
+      }
+    }
+    return set;
+  }, [aluno, todosAlunos, aulasCurso]);
+
+  // Estatísticas — denominador = total de aulas do curso.
   const freqStats = useMemo(() => {
     if (!aluno) return { presentes: 0, faltas: 0, total: 0, pct: 0 };
     let p = 0;
@@ -159,14 +177,14 @@ export function AlunoDetailDialog({
       if (r.presente) p++;
       else f++;
     }
-    const total = p + f;
+    const totalCurso = aulasCurso.length;
     return {
       presentes: p,
       faltas: f,
-      total,
-      pct: total > 0 ? Math.round((p / total) * 100) : 0,
+      total: totalCurso,
+      pct: totalCurso > 0 ? Math.round((p / totalCurso) * 100) : 0,
     };
-  }, [aluno]);
+  }, [aluno, aulasCurso]);
 
   const tarefasStats = useMemo(() => {
     if (!aluno) return { entregues: 0, pendentes: 0, total: 0, pct: 0 };
@@ -455,16 +473,23 @@ export function AlunoDetailDialog({
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Coluna FREQUÊNCIA */}
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
-                      <GraduationCap className="h-3.5 w-3.5" />
-                      Frequência
-                    </h4>
-                    <span className="text-[11px] font-mono text-muted-foreground">
-                      {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
-                    </span>
-                  </div>
-                  <Progress value={freqStats.pct} className="h-2 mb-2" />
+                  <button
+                    type="button"
+                    onClick={() => setQuadroOpen(true)}
+                    className="w-full text-left group"
+                    title="Abrir Quadro de Aulas"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
+                        <GraduationCap className="h-3.5 w-3.5" />
+                        Frequência
+                      </h4>
+                      <span className="text-[11px] font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                        {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
+                      </span>
+                    </div>
+                    <Progress value={freqStats.pct} className="h-2 mb-2 group-hover:opacity-80 transition-opacity" />
+                  </button>
                   {aulasCurso.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">
                       Nenhuma aula no curso.
@@ -696,6 +721,15 @@ export function AlunoDetailDialog({
           curso={curso}
         />
       )}
+
+      <QuadroAulasDialog
+        open={quadroOpen}
+        onOpenChange={setQuadroOpen}
+        curso={curso ?? null}
+        atividades={atividades}
+        aluno={aluno}
+        aulasDadasIds={aulasDadasTurmaIds}
+      />
     </Dialog>
   );
 }
