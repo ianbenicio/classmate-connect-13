@@ -358,6 +358,10 @@ export function ActivityFormDialog({
                   setPrazo={setPrazo}
                   descricao={descricao}
                   setDescricao={setDescricao}
+                  cargaHoras={cargaHoras}
+                  setCargaHoras={setCargaHoras}
+                  cargaMin={cargaMin}
+                  setCargaMin={setCargaMin}
                 />
               </TabsContent>
 
