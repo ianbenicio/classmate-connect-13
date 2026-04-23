@@ -151,18 +151,38 @@ export function ScheduleCalendar({
   );
 }
 
-// ---------- Cores por curso (usado só na legenda) ----------
-const CURSO_COLORS: Record<string, string> = {
-  "c-mp": "bg-blue-500/15 text-blue-700 border-blue-500/30 dark:text-blue-300",
-  "c-gp":
-    "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-300",
-  "c-ad":
-    "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-300",
-  "c-rb":
-    "bg-fuchsia-500/15 text-fuchsia-700 border-fuchsia-500/30 dark:text-fuchsia-300",
-};
-function cursoChipClass(cursoId: string) {
-  return CURSO_COLORS[cursoId] || "bg-muted text-foreground border-border";
+// ---------- Cores por TURMA ----------
+// Paleta fixa de 16 tons (bg suave + borda + texto + barra sólida).
+// A cor é estável: derivada de hash(id da turma) → índice da paleta.
+const TURMA_PALETTE: { chip: string; bar: string }[] = [
+  { chip: "bg-blue-500/15 text-blue-700 border-blue-500/40 dark:text-blue-300", bar: "bg-blue-500" },
+  { chip: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40 dark:text-emerald-300", bar: "bg-emerald-500" },
+  { chip: "bg-amber-500/15 text-amber-700 border-amber-500/40 dark:text-amber-300", bar: "bg-amber-500" },
+  { chip: "bg-fuchsia-500/15 text-fuchsia-700 border-fuchsia-500/40 dark:text-fuchsia-300", bar: "bg-fuchsia-500" },
+  { chip: "bg-rose-500/15 text-rose-700 border-rose-500/40 dark:text-rose-300", bar: "bg-rose-500" },
+  { chip: "bg-cyan-500/15 text-cyan-700 border-cyan-500/40 dark:text-cyan-300", bar: "bg-cyan-500" },
+  { chip: "bg-violet-500/15 text-violet-700 border-violet-500/40 dark:text-violet-300", bar: "bg-violet-500" },
+  { chip: "bg-orange-500/15 text-orange-700 border-orange-500/40 dark:text-orange-300", bar: "bg-orange-500" },
+  { chip: "bg-lime-500/15 text-lime-700 border-lime-500/40 dark:text-lime-300", bar: "bg-lime-500" },
+  { chip: "bg-pink-500/15 text-pink-700 border-pink-500/40 dark:text-pink-300", bar: "bg-pink-500" },
+  { chip: "bg-teal-500/15 text-teal-700 border-teal-500/40 dark:text-teal-300", bar: "bg-teal-500" },
+  { chip: "bg-indigo-500/15 text-indigo-700 border-indigo-500/40 dark:text-indigo-300", bar: "bg-indigo-500" },
+  { chip: "bg-yellow-500/15 text-yellow-700 border-yellow-500/40 dark:text-yellow-300", bar: "bg-yellow-500" },
+  { chip: "bg-sky-500/15 text-sky-700 border-sky-500/40 dark:text-sky-300", bar: "bg-sky-500" },
+  { chip: "bg-red-500/15 text-red-700 border-red-500/40 dark:text-red-300", bar: "bg-red-500" },
+  { chip: "bg-green-500/15 text-green-700 border-green-500/40 dark:text-green-300", bar: "bg-green-500" },
+];
+
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+export function turmaColor(turmaId: string) {
+  return TURMA_PALETTE[hashStr(turmaId) % TURMA_PALETTE.length];
+}
+function turmaChipClass(turmaId: string) {
+  return turmaColor(turmaId).chip;
 }
 
 // ---------- Estados visuais por estado de slot ----------
@@ -192,7 +212,7 @@ function StateBadge({ estado }: { estado: SlotEstado }) {
   }
 }
 
-function slotChipClasses(estado: SlotEstado, cursoId: string) {
+function slotChipClasses(estado: SlotEstado, turmaId: string) {
   switch (estado) {
     case "agendado":
       return "border-primary/50 bg-primary/10 text-foreground";
@@ -206,7 +226,7 @@ function slotChipClasses(estado: SlotEstado, cursoId: string) {
       return "border-muted bg-muted/30 text-muted-foreground";
     case "vazio_futuro":
     default:
-      return cursoChipClass(cursoId);
+      return turmaChipClass(turmaId);
   }
 }
 
