@@ -220,15 +220,211 @@ function Legend() {
   );
 }
 
-// helper pra achar agendamento exato do slot
-function findAg(
+// helper pra achar TODOS os agendamentos de um slot (turma × data × slotInicio)
+function findAgsDoSlot(
   ags: Agendamento[],
   turmaId: string,
   dataKey: string,
-  inicio: string,
-) {
-  return ags.find(
-    (a) => a.turmaId === turmaId && a.data === dataKey && a.inicio === inicio,
+  slotInicioRef: string,
+): Agendamento[] {
+  return ags.filter(
+    (a) =>
+      a.turmaId === turmaId &&
+      a.data === dataKey &&
+      (a.slotInicio ?? a.inicio) === slotInicioRef,
+  );
+}
+
+// ====================================================================
+// SlotChip — chip do calendário com cabeçalho + 1 coluna por bloco
+// ====================================================================
+function SlotChip({
+  turma,
+  curso,
+  date,
+  slotInicio,
+  slotFim,
+  diaSemana,
+  agsDoSlot,
+  compact = false,
+  onSlotClick,
+  onRegistrarRelatorio,
+}: {
+  turma: Turma;
+  curso: Curso | undefined;
+  date: Date;
+  slotInicio: string;
+  slotFim: string;
+  diaSemana: DiaSemana;
+  agsDoSlot: Agendamento[];
+  compact?: boolean;
+  onSlotClick?: (p: SlotClickPayload) => void;
+  onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+}) {
+  const currentUser = useCurrentUser();
+  const now = new Date();
+  const dataKey = format(date, "yyyy-MM-dd");
+  const duracaoAulaMin = curso ? getDuracaoAulaMin(curso) : 60;
+  const totalBlocos = slotBlocosCount(
+    { inicio: slotInicio, fim: slotFim },
+    duracaoAulaMin,
+  );
+
+  // Mapa blocoIndex → agendamento que ocupa aquele bloco
+  const agByBloco = new Map<number, Agendamento>();
+  for (const a of agsDoSlot) {
+    const start = a.blocoIndex ?? 0;
+    const len = Math.max(1, a.blocosTotal ?? 1);
+    for (let k = 0; k < len; k++) agByBloco.set(start + k, a);
+  }
+
+  const headerEstadoSrc =
+    agsDoSlot.find((a) => a.status !== "concluido") ?? agsDoSlot[0];
+  const headerEstado = computeSlotEstado(
+    dataKey,
+    slotFim,
+    headerEstadoSrc,
+    now,
+  );
+  const headerClass = slotChipClasses(headerEstado, turma.cursoId);
+
+  return (
+    <div
+      className={cn(
+        "rounded-md border p-1 space-y-1",
+        headerClass,
+        compact && "p-0.5 space-y-0.5",
+      )}
+      title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
+    >
+      {/* Cabeçalho: indicador + cod turma + horário */}
+      <div className="flex items-center gap-1 px-0.5">
+        <StateBadge estado={headerEstado} />
+        <span className={cn("font-semibold truncate", compact ? "text-[10px]" : "text-xs")}>
+          {turma.cod}
+        </span>
+        <span className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}>
+          {slotInicio}
+        </span>
+      </div>
+
+      {/* Grid de blocos: 1 coluna por bloco */}
+      <div
+        className="grid gap-0.5"
+        style={{ gridTemplateColumns: `repeat(${totalBlocos}, minmax(0, 1fr))` }}
+      >
+        {Array.from({ length: totalBlocos }).map((_, idx) => {
+          const ag = agByBloco.get(idx);
+          const blocoStart = blocoInicio({ inicio: slotInicio }, idx, duracaoAulaMin);
+          const blocoEnd = blocoFim({ inicio: slotInicio }, idx, duracaoAulaMin);
+
+          // Estado deste bloco específico
+          const estadoBloco = computeSlotEstado(dataKey, blocoEnd, ag, now);
+          const clickable = isClickable(estadoBloco);
+
+          // Se tem agendamento, mostra prof + botão relatório
+          if (ag) {
+            const isOwner =
+              currentUser.role === "admin" ||
+              ag.criadoPorUserId === currentUser.id;
+            const podeRegistrar =
+              isOwner &&
+              (estadoBloco === "agendado" || estadoBloco === "atrasado");
+            const profLabel = ag.criadoPorNome ?? ag.professor ?? "—";
+
+            return (
+              <div
+                key={idx}
+                className={cn(
+                  "rounded border flex items-center gap-1 px-1 py-0.5 min-w-0",
+                  estadoBloco === "concluido"
+                    ? "bg-emerald-500/20 border-emerald-500/40"
+                    : estadoBloco === "atrasado"
+                      ? "bg-amber-500/20 border-amber-500/40"
+                      : estadoBloco === "expirado"
+                        ? "bg-muted border-muted-foreground/30 opacity-70"
+                        : "bg-primary/15 border-primary/40",
+                )}
+                title={`${blocoStart}–${blocoEnd} · ${profLabel} — ${ESTADO_LABEL[estadoBloco]}`}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!clickable) return;
+                    onSlotClick?.({
+                      turma,
+                      date,
+                      inicio: slotInicio,
+                      fim: slotFim,
+                      diaSemana,
+                      estado: estadoBloco,
+                      agendamento: ag,
+                      blocoIndex: idx,
+                    });
+                  }}
+                  className="flex items-center gap-1 min-w-0 flex-1 text-left hover:brightness-110"
+                >
+                  <FileText
+                    className={cn(
+                      "h-3 w-3 shrink-0",
+                      estadoBloco === "concluido"
+                        ? "text-emerald-700 dark:text-emerald-300"
+                        : "text-primary",
+                    )}
+                  />
+                  <span className={cn("truncate", compact ? "text-[9px]" : "text-[10px]")}>
+                    {profLabel}
+                  </span>
+                </button>
+                {podeRegistrar && onRegistrarRelatorio && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRegistrarRelatorio(ag, turma);
+                    }}
+                    className="shrink-0 inline-flex items-center justify-center h-4 w-4 rounded hover:bg-foreground/10"
+                    aria-label="Registrar relatório"
+                    title="Registrar relatório"
+                  >
+                    <Send className="h-2.5 w-2.5" />
+                  </button>
+                )}
+              </div>
+            );
+          }
+
+          // Bloco vazio — clicável para agendar (ou desabilitado se passou)
+          return (
+            <button
+              key={idx}
+              type="button"
+              disabled={!clickable}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!clickable) return;
+                onSlotClick?.({
+                  turma,
+                  date,
+                  inicio: slotInicio,
+                  fim: slotFim,
+                  diaSemana,
+                  estado: estadoBloco,
+                  agendamento: undefined,
+                  blocoIndex: idx,
+                });
+              }}
+              className={cn(
+                "rounded border border-dashed bg-background/40 hover:bg-background/70 transition-colors min-h-[18px]",
+                !clickable && "opacity-50 cursor-not-allowed",
+              )}
+              title={`${blocoStart}–${blocoEnd} — ${ESTADO_LABEL[estadoBloco]}`}
+            />
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -242,6 +438,7 @@ function MonthView({
   agendamentos,
   onDayClick,
   onSlotClick,
+  onRegistrarRelatorio,
 }: {
   refDate: Date;
   turmas: Turma[];
@@ -249,6 +446,7 @@ function MonthView({
   agendamentos: Agendamento[];
   onDayClick: (d: Date) => void;
   onSlotClick?: (p: SlotClickPayload) => void;
+  onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
 }) {
   const monthStart = startOfMonth(refDate);
   const monthEnd = endOfMonth(refDate);
@@ -263,7 +461,6 @@ function MonthView({
   }
 
   const weekdayLabels = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-  const now = new Date();
 
   return (
     <div className="bg-card border rounded-lg overflow-hidden">
@@ -305,41 +502,23 @@ function MonthView({
                   {format(d, "d")}
                 </span>
               </div>
-              <div className="space-y-0.5 overflow-hidden">
+              <div className="space-y-1 overflow-hidden">
                 {items.slice(0, 3).map((it, i) => {
-                  const ag = findAg(agendamentos, it.turma.id, dayKey, it.inicio);
-                  const estado = computeSlotEstado(dayKey, it.fim, ag, now);
-                  const clickable = isClickable(estado);
+                  const ags = findAgsDoSlot(agendamentos, it.turma.id, dayKey, it.inicio);
                   return (
-                    <button
+                    <SlotChip
                       key={i}
-                      type="button"
-                      disabled={!clickable}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (!clickable) return;
-                        onSlotClick?.({
-                          turma: it.turma,
-                          date: d,
-                          inicio: it.inicio,
-                          fim: it.fim,
-                          diaSemana: diaSemanaFromDate(d),
-                          estado,
-                          agendamento: ag,
-                        });
-                      }}
-                      className={cn(
-                        "text-[10px] leading-tight px-1 py-0.5 rounded border truncate w-full text-left flex items-center gap-1 hover:brightness-110",
-                        slotChipClasses(estado, it.turma.cursoId),
-                        !clickable && "opacity-60 cursor-not-allowed hover:brightness-100",
-                      )}
-                      title={`${it.turma.cod} · ${it.inicio}–${it.fim} — ${ESTADO_LABEL[estado]}`}
-                    >
-                      <StateBadge estado={estado} />
-                      <span className="truncate">
-                        {it.inicio} {it.turma.cod}
-                      </span>
-                    </button>
+                      turma={it.turma}
+                      curso={cursoMap.get(it.turma.cursoId)}
+                      date={d}
+                      slotInicio={it.inicio}
+                      slotFim={it.fim}
+                      diaSemana={diaSemanaFromDate(d)}
+                      agsDoSlot={ags}
+                      compact
+                      onSlotClick={onSlotClick}
+                      onRegistrarRelatorio={onRegistrarRelatorio}
+                    />
                   );
                 })}
                 {items.length > 3 && (
@@ -375,12 +554,14 @@ function WeekView({
   cursoMap,
   agendamentos,
   onSlotClick,
+  onRegistrarRelatorio,
 }: {
   refDate: Date;
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
+  onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
 }) {
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
@@ -417,14 +598,6 @@ function WeekView({
     return map;
   }, [turmas]);
 
-  const agByKey = useMemo(() => {
-    const map = new Map<string, Agendamento>();
-    for (const a of agendamentos) {
-      map.set(`${a.turmaId}|${a.data}|${a.inicio}`, a);
-    }
-    return map;
-  }, [agendamentos]);
-
   return (
     <div className="bg-card border rounded-lg overflow-hidden">
       <div className="px-4 py-3 border-b flex items-center justify-between">
@@ -460,8 +633,10 @@ function WeekView({
               hour={h}
               weekDates={weekDates}
               byDay={byDay}
-              agByKey={agByKey}
+              cursoMap={cursoMap}
+              agendamentos={agendamentos}
               onSlotClick={onSlotClick}
+              onRegistrarRelatorio={onRegistrarRelatorio}
             />
           ))}
         </div>
@@ -474,17 +649,20 @@ function FragmentRow({
   hour,
   weekDates,
   byDay,
-  agByKey,
+  cursoMap,
+  agendamentos,
   onSlotClick,
+  onRegistrarRelatorio,
 }: {
   hour: number;
   weekDates: Date[];
   byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
-  agByKey: Map<string, Agendamento>;
+  cursoMap: Map<string, Curso>;
+  agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
+  onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
-  const now = new Date();
   return (
     <>
       <div className="border-b border-r px-1.5 py-1 text-[10px] text-muted-foreground bg-muted/20 text-right">
@@ -503,39 +681,20 @@ function FragmentRow({
             className="border-b border-r p-1 min-h-[44px] space-y-1"
           >
             {items.map((it, idx) => {
-              const ag = agByKey.get(`${it.turma.id}|${dayKey}|${it.inicio}`);
-              const estado = computeSlotEstado(dayKey, it.fim, ag, now);
-              const clickable = isClickable(estado);
+              const ags = findAgsDoSlot(agendamentos, it.turma.id, dayKey, it.inicio);
               return (
-                <button
+                <SlotChip
                   key={idx}
-                  type="button"
-                  disabled={!clickable}
-                  onClick={() => {
-                    if (!clickable) return;
-                    onSlotClick?.({
-                      turma: it.turma,
-                      date,
-                      inicio: it.inicio,
-                      fim: it.fim,
-                      diaSemana: d.value,
-                      estado,
-                      agendamento: ag,
-                    });
-                  }}
-                  className={cn(
-                    "text-[10px] leading-tight px-1.5 py-1 rounded border truncate w-full text-left flex items-center gap-1 hover:brightness-110 cursor-pointer",
-                    slotChipClasses(estado, it.turma.cursoId),
-                    !clickable && "opacity-60 cursor-not-allowed hover:brightness-100",
-                  )}
-                  title={`${it.turma.cod} · ${it.inicio}–${it.fim} — ${ESTADO_LABEL[estado]}`}
-                >
-                  <StateBadge estado={estado} />
-                  <span className="font-semibold truncate">{it.turma.cod}</span>
-                  <span className="opacity-70 ml-auto shrink-0">
-                    {it.inicio}
-                  </span>
-                </button>
+                  turma={it.turma}
+                  curso={cursoMap.get(it.turma.cursoId)}
+                  date={date}
+                  slotInicio={it.inicio}
+                  slotFim={it.fim}
+                  diaSemana={d.value}
+                  agsDoSlot={ags}
+                  onSlotClick={onSlotClick}
+                  onRegistrarRelatorio={onRegistrarRelatorio}
+                />
               );
             })}
           </div>
