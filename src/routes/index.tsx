@@ -149,6 +149,20 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            onRegistrarRelatorio={(agendamento, turma) => {
+              const curso = cursoMap.get(turma.cursoId);
+              if (!curso) return;
+              const podeRegistrar =
+                currentUser.role === "admin" ||
+                agendamento.criadoPorUserId === currentUser.id;
+              if (!podeRegistrar) {
+                toast.info(
+                  `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
+                );
+                return;
+              }
+              setRelatorioCtx({ agendamento, turma, curso });
+            }}
             onSlotClick={({ turma, date, inicio, fim, diaSemana, estado, agendamento }) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
