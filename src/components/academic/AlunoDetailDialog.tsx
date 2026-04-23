@@ -66,7 +66,9 @@ export function AlunoDetailDialog({
   const canSeePerfil = isCoordenacao(currentUser);
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
+  const todosAlunos = useAlunos();
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
+  const [quadroOpen, setQuadroOpen] = useState(false);
 
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
