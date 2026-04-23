@@ -14,6 +14,73 @@ export interface Curso {
   cod: string;
   nome: string;
   descricao?: string;
+  /** Carga horária total prevista do curso, em minutos. 0 = não controlada. */
+  cargaHorariaTotalMin?: number;
+  /** Duração padrão de uma aula deste curso, em minutos. Default 60. */
+  duracaoAulaMin?: number;
+}
+
+/** Helpers de carga horária / blocos. */
+export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number {
+  const v = curso.duracaoAulaMin ?? 0;
+  return v > 0 ? v : 60;
+}
+
+/** Duração de um slot da turma em minutos. */
+export function slotDuracaoMin(slot: Pick<HorarioSlot, "inicio" | "fim">): number {
+  const [hi, mi] = slot.inicio.split(":").map((n) => parseInt(n, 10));
+  const [hf, mf] = slot.fim.split(":").map((n) => parseInt(n, 10));
+  return hf * 60 + mf - (hi * 60 + mi);
+}
+
+/** Quantos blocos cabem num slot (arredonda pra baixo). */
+export function slotBlocosCount(
+  slot: Pick<HorarioSlot, "inicio" | "fim">,
+  duracaoAulaMin: number,
+): number {
+  if (duracaoAulaMin <= 0) return 1;
+  return Math.max(1, Math.floor(slotDuracaoMin(slot) / duracaoAulaMin));
+}
+
+/** Hora de início do bloco N dentro do slot (HH:MM). */
+export function blocoInicio(
+  slot: Pick<HorarioSlot, "inicio">,
+  blocoIndex: number,
+  duracaoAulaMin: number,
+): string {
+  const [hi, mi] = slot.inicio.split(":").map((n) => parseInt(n, 10));
+  const total = hi * 60 + mi + blocoIndex * duracaoAulaMin;
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/** Hora de fim do bloco N (início + duracao). */
+export function blocoFim(
+  slot: Pick<HorarioSlot, "inicio">,
+  blocoIndex: number,
+  duracaoAulaMin: number,
+): string {
+  return blocoInicio(slot, blocoIndex + 1, duracaoAulaMin);
+}
+
+/** Quantos blocos uma atividade consome. 0 → 0 (livre, não bloqueia). */
+export function atividadeBlocos(
+  cargaHorariaMin: number,
+  duracaoAulaMin: number,
+): number {
+  if (!cargaHorariaMin || cargaHorariaMin <= 0) return 0;
+  return Math.max(1, Math.ceil(cargaHorariaMin / duracaoAulaMin));
+}
+
+/** Formata minutos como "1h15" ou "45min". */
+export function formatMinutos(min: number): string {
+  if (!min || min <= 0) return "—";
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (h === 0) return `${m}min`;
+  if (m === 0) return `${h}h`;
+  return `${h}h${String(m).padStart(2, "0")}`;
 }
 
 // ---------- Grupo / Módulo ----------
@@ -206,6 +273,10 @@ export interface Atividade {
 
   // Tarefa-only
   instrucoes?: string;
+
+  /** Carga horária (em minutos) que a atividade consome ao ser agendada.
+   *  0 ou ausente → "livre", não consome blocos do slot. */
+  cargaHorariaMin?: number;
 }
 
 /** Default seguro para FormulariosConfig (relatório do professor sempre ligado). */
@@ -225,6 +296,7 @@ export const FIELD_VISIBILITY: Record<string, PerfilAcesso[]> = {
   professor: ["professor", "coordenacao", "aluno", "pais"],
   prazo: ["professor", "coordenacao", "aluno", "pais"],
   descricao: ["professor", "coordenacao", "aluno", "pais"],
+  cargaHorariaMin: ["professor", "coordenacao", "aluno", "pais"],
   // Pedagógico
   objetivoResultados: ["professor", "coordenacao", "aluno", "pais"],
   resultadosEsperados: ["professor", "coordenacao", "aluno", "pais"],
@@ -257,16 +329,34 @@ export interface Agendamento {
   turmaId: string;
   data: string; // ISO date "YYYY-MM-DD"
   diaSemana: DiaSemana;
-  inicio: string; // "HH:MM"
-  fim: string; // "HH:MM"
+  inicio: string; // "HH:MM" — início efetivo do agendamento (já considerando o bloco)
+  fim: string; // "HH:MM" — fim efetivo (início + N blocos)
   atividadeIds: string[];
   status: StatusAgendamento;
-  criadoEm: string; // ISO datetime
-  concluidoEm?: string; // ISO datetime
+  criadoEm: string;
+  concluidoEm?: string;
   observacao?: string;
-  professor?: string; // snapshot do professor responsável (da atividade)
-  criadoPorUserId?: string; // id do usuário que criou o agendamento
-  criadoPorNome?: string; // nome (snapshot)
+  professor?: string;
+  criadoPorUserId?: string;
+  criadoPorNome?: string;
+
+  // ----- Blocos -----
+  /** Índice do primeiro bloco ocupado dentro do slot da turma (0 = início). */
+  blocoIndex?: number;
+  /** Quantidade de blocos consecutivos consumidos neste agendamento. */
+  blocosTotal?: number;
+  /** Início do slot original da turma (usado p/ calcular ocupação). */
+  slotInicio?: string;
+  /** Fim do slot original da turma. */
+  slotFim?: string;
+
+  // ----- Multi-dia (atividade dividida em várias partes) -----
+  /** Id que liga as várias partes da MESMA atividade em dias diferentes. */
+  parteGrupoId?: string;
+  /** Número desta parte (1-based). */
+  parteNum?: number;
+  /** Total de partes do grupo. */
+  partesTotal?: number;
 }
 
 // ---------- Notificação ----------

@@ -92,6 +92,8 @@ export function ActivityFormDialog({
   const [prazo, setPrazo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [professor, setProfessor] = useState("");
+  const [cargaHoras, setCargaHoras] = useState("0");
+  const [cargaMin, setCargaMin] = useState("0");
 
   // Pedagógico
   const [objetivoResultados, setObjetivoResultados] = useState("");
@@ -129,6 +131,9 @@ export function ActivityFormDialog({
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
+      const carga = editing.cargaHorariaMin ?? 0;
+      setCargaHoras(String(Math.floor(carga / 60)));
+      setCargaMin(String(carga % 60));
       setObjetivoResultados(editing.objetivoResultados);
       setResultadosEsperados(editing.resultadosEsperados ?? "");
       setNotasInstrutor(editing.notasInstrutor ?? "");
@@ -159,6 +164,8 @@ export function ActivityFormDialog({
       setPrazo("");
       setDescricao("");
       setProfessor("");
+      setCargaHoras("0");
+      setCargaMin("0");
       setObjetivoResultados("");
       setResultadosEsperados("");
       setNotasInstrutor("");
@@ -212,6 +219,10 @@ export function ActivityFormDialog({
       ? { ...formularios, relatorioProfessor: true, autoavaliacaoAluno: true }
       : formularios;
 
+    const cargaHorariaMinFinal =
+      (parseInt(cargaHoras || "0", 10) || 0) * 60 +
+      (parseInt(cargaMin || "0", 10) || 0);
+
     const atividade: Atividade = isEdit
       ? {
           ...editing!,
@@ -221,6 +232,7 @@ export function ActivityFormDialog({
           objetivoResultados,
           professor: professor.trim(),
           habilidadeIds,
+          cargaHorariaMin: cargaHorariaMinFinal,
           // Aula
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
@@ -255,6 +267,7 @@ export function ActivityFormDialog({
           criadoPor: "Prof. Logado",
           professor: professor.trim(),
           habilidadeIds,
+          cargaHorariaMin: cargaHorariaMinFinal,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
           sugestoesPais: isAula ? sugestoesPais : undefined,
           resultadosEsperados: isAula ? resultadosEsperados || undefined : undefined,
@@ -345,6 +358,10 @@ export function ActivityFormDialog({
                   setPrazo={setPrazo}
                   descricao={descricao}
                   setDescricao={setDescricao}
+                  cargaHoras={cargaHoras}
+                  setCargaHoras={setCargaHoras}
+                  cargaMin={cargaMin}
+                  setCargaMin={setCargaMin}
                 />
               </TabsContent>
 
@@ -707,6 +724,10 @@ export function ActivityFormDialog({
                 setPrazo={setPrazo}
                 descricao={descricao}
                 setDescricao={setDescricao}
+                cargaHoras={cargaHoras}
+                setCargaHoras={setCargaHoras}
+                cargaMin={cargaMin}
+                setCargaMin={setCargaMin}
               />
 
               <div className="space-y-2">
@@ -782,6 +803,10 @@ interface IdentificacaoFieldsProps {
   setPrazo: (s: string) => void;
   descricao: string;
   setDescricao: (s: string) => void;
+  cargaHoras: string;
+  setCargaHoras: (s: string) => void;
+  cargaMin: string;
+  setCargaMin: (s: string) => void;
 }
 
 function IdentificacaoFields({
@@ -803,8 +828,15 @@ function IdentificacaoFields({
   setPrazo,
   descricao,
   setDescricao,
+  cargaHoras,
+  setCargaHoras,
+  cargaMin,
+  setCargaMin,
 }: IdentificacaoFieldsProps) {
   const tipoAtual = isEdit ? editing!.tipo : tipo;
+  // Suprime warning de prop não usada localmente; professor é gerenciado pelo pai.
+  void professor;
+  void setProfessor;
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -889,6 +921,34 @@ function IdentificacaoFields({
         <div className="space-y-2">
           <FieldLabel field="prazo">Prazo de referência</FieldLabel>
           <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <FieldLabel field="cargaHorariaMin">Carga horária da atividade</FieldLabel>
+          <div className="flex items-end gap-2 max-w-md">
+            <div className="flex-1 space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Horas</Label>
+              <Input
+                type="number"
+                min={0}
+                value={cargaHoras}
+                onChange={(e) => setCargaHoras(e.target.value)}
+              />
+            </div>
+            <div className="flex-1 space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Minutos</Label>
+              <Input
+                type="number"
+                min={0}
+                max={59}
+                value={cargaMin}
+                onChange={(e) => setCargaMin(e.target.value)}
+              />
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground">
+            Tempo que esta atividade ocupa quando agendada. <strong>0</strong> = livre (não consome blocos).
+          </p>
         </div>
       </div>
 

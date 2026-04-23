@@ -17,6 +17,8 @@ export type Database = {
       agendamentos: {
         Row: {
           atividade_ids: Json
+          bloco_index: number
+          blocos_total: number
           concluido_em: string | null
           created_at: string
           criado_por_nome: string | null
@@ -27,6 +29,9 @@ export type Database = {
           id: string
           inicio: string
           observacao: string | null
+          parte_grupo_id: string | null
+          parte_num: number
+          partes_total: number
           professor: string | null
           status: Database["public"]["Enums"]["status_agendamento"]
           turma_id: string
@@ -34,6 +39,8 @@ export type Database = {
         }
         Insert: {
           atividade_ids?: Json
+          bloco_index?: number
+          blocos_total?: number
           concluido_em?: string | null
           created_at?: string
           criado_por_nome?: string | null
@@ -44,6 +51,9 @@ export type Database = {
           id?: string
           inicio: string
           observacao?: string | null
+          parte_grupo_id?: string | null
+          parte_num?: number
+          partes_total?: number
           professor?: string | null
           status?: Database["public"]["Enums"]["status_agendamento"]
           turma_id: string
@@ -51,6 +61,8 @@ export type Database = {
         }
         Update: {
           atividade_ids?: Json
+          bloco_index?: number
+          blocos_total?: number
           concluido_em?: string | null
           created_at?: string
           criado_por_nome?: string | null
@@ -61,6 +73,9 @@ export type Database = {
           id?: string
           inicio?: string
           observacao?: string | null
+          parte_grupo_id?: string | null
+          parte_num?: number
+          partes_total?: number
           professor?: string | null
           status?: Database["public"]["Enums"]["status_agendamento"]
           turma_id?: string
@@ -171,6 +186,7 @@ export type Database = {
       }
       atividades: {
         Row: {
+          carga_horaria_min: number
           codigo: string
           created_at: string
           criado_por: string | null
@@ -201,6 +217,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          carga_horaria_min?: number
           codigo: string
           created_at?: string
           criado_por?: string | null
@@ -231,6 +248,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          carga_horaria_min?: number
           codigo?: string
           created_at?: string
           criado_por?: string | null
@@ -330,25 +348,31 @@ export type Database = {
       }
       cursos: {
         Row: {
+          carga_horaria_total_min: number
           cod: string
           created_at: string
           descricao: string | null
+          duracao_aula_min: number
           id: string
           nome: string
           updated_at: string
         }
         Insert: {
+          carga_horaria_total_min?: number
           cod: string
           created_at?: string
           descricao?: string | null
+          duracao_aula_min?: number
           id?: string
           nome: string
           updated_at?: string
         }
         Update: {
+          carga_horaria_total_min?: number
           cod?: string
           created_at?: string
           descricao?: string | null
+          duracao_aula_min?: number
           id?: string
           nome?: string
           updated_at?: string

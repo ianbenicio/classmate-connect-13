@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { format, parse, startOfDay } from "date-fns";
+import { addDays, format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon, Clock, Layers } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -28,15 +28,22 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
+  atividadeBlocos,
+  blocoFim,
+  blocoInicio,
   diaSemanaFromDate,
   formatHorarioSlot,
+  formatMinutos,
+  getDuracaoAulaMin,
   getGrupoNome,
+  slotBlocosCount,
+  type Agendamento,
   type Atividade,
   type Curso,
   type HorarioSlot,
   type Turma,
 } from "@/lib/academic-types";
-import { agendamentosStore } from "@/lib/agendamentos-store";
+import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { SEED_ALUNOS, SEED_GRUPOS } from "@/lib/academic-seed";
 import { authStore } from "@/lib/auth-store";
@@ -46,17 +53,22 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   curso: Curso;
-  /** Atividades disponíveis (do curso) */
   atividades: Atividade[];
-  /** Turmas do curso */
   turmas: Turma[];
-  /** Atividades pré-selecionadas */
   defaultAtividadeIds?: string[];
-  /** Turma pré-selecionada */
   defaultTurmaId?: string;
-  /** Data e slot pré-selecionados (vindo do calendário) */
-  defaultData?: string; // YYYY-MM-DD
+  defaultData?: string;
   defaultSlot?: HorarioSlot;
+}
+
+/** Bloco proposto/sugerido em uma data específica. */
+interface ParteSugestao {
+  data: string; // YYYY-MM-DD
+  slot: HorarioSlot;
+  blocoIndex: number;
+  blocosTotal: number;
+  inicio: string;
+  fim: string;
 }
 
 export function AgendarAtividadeDialog({
@@ -74,9 +86,12 @@ export function AgendarAtividadeDialog({
   const [date, setDate] = useState<Date | undefined>();
   const [slotIdx, setSlotIdx] = useState<string>("");
   const [grupo, setGrupo] = useState<string>("");
-  const [atividadeIds, setAtividadeIds] =
-    useState<string[]>(defaultAtividadeIds);
+  const [atividadeIds, setAtividadeIds] = useState<string[]>(defaultAtividadeIds);
   const [observacao, setObservacao] = useState("");
+  const [blocoSelecionado, setBlocoSelecionado] = useState<string>("");
+
+  const todosAgendamentos = useAgendamentos();
+  const duracaoAulaMin = getDuracaoAulaMin(curso);
 
   useEffect(() => {
     if (!open) return;
@@ -86,13 +101,12 @@ export function AgendarAtividadeDialog({
     setGrupo("");
     setAtividadeIds(defaultAtividadeIds);
     setObservacao("");
-    // defaultAtividadeIds intencionalmente fora para evitar loop quando pai passa array novo
+    setBlocoSelecionado("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, defaultTurmaId, defaultData, turmas]);
 
   const turmaSelecionada = turmas.find((t) => t.id === turmaId);
 
-  // Slots disponíveis = horários da turma cujo diaSemana corresponde à data escolhida
   const slotsDisponiveis = useMemo(() => {
     if (!turmaSelecionada || !date) return [];
     const dia = diaSemanaFromDate(date);
@@ -101,7 +115,6 @@ export function AgendarAtividadeDialog({
       .filter(({ slot }) => slot.diaSemana === dia);
   }, [turmaSelecionada, date]);
 
-  // Pré-seleciona slot pelo defaultSlot na abertura
   useEffect(() => {
     if (!open || !defaultSlot || !turmaSelecionada) return;
     const idx = turmaSelecionada.horarios.findIndex(
@@ -113,7 +126,6 @@ export function AgendarAtividadeDialog({
     if (idx >= 0) setSlotIdx(String(idx));
   }, [open, defaultSlot, turmaSelecionada]);
 
-  // Auto-seleciona se há um único slot disponível
   useEffect(() => {
     if (slotsDisponiveis.length === 1) {
       setSlotIdx(String(slotsDisponiveis[0].idx));
@@ -145,125 +157,345 @@ export function AgendarAtividadeDialog({
     [ativsDoGrupo],
   );
 
-  const aulaId = atividadeIds.find((id) =>
-    aulasDoGrupo.some((a) => a.id === id),
-  ) ?? "";
-  const tarefaId = atividadeIds.find((id) =>
-    tarefasDoGrupo.some((a) => a.id === id),
-  ) ?? "";
+  const aulaId = atividadeIds.find((id) => aulasDoGrupo.some((a) => a.id === id)) ?? "";
+  const tarefaId = atividadeIds.find((id) => tarefasDoGrupo.some((a) => a.id === id)) ?? "";
 
-  // Reseta seleção ao trocar grupo
   useEffect(() => {
     setAtividadeIds([]);
+    setBlocoSelecionado("");
   }, [grupo]);
 
   const setAula = (id: string) => {
     setAtividadeIds((prev) => {
-      const semAulas = prev.filter(
-        (x) => !aulasDoGrupo.some((a) => a.id === x),
-      );
+      const semAulas = prev.filter((x) => !aulasDoGrupo.some((a) => a.id === x));
       return id ? [...semAulas, id] : semAulas;
     });
+    setBlocoSelecionado("");
   };
   const setTarefa = (id: string) => {
     setAtividadeIds((prev) => {
-      const semTarefas = prev.filter(
-        (x) => !tarefasDoGrupo.some((a) => a.id === x),
-      );
+      const semTarefas = prev.filter((x) => !tarefasDoGrupo.some((a) => a.id === x));
       return id ? [...semTarefas, id] : semTarefas;
     });
+    setBlocoSelecionado("");
   };
 
+  // ---------- Cálculo de blocos ----------
+  const ativsSelecionadas = useMemo(
+    () => atividades.filter((a) => atividadeIds.includes(a.id)),
+    [atividades, atividadeIds],
+  );
+
+  /** Carga horária total da seleção. */
+  const cargaTotalMin = useMemo(
+    () => ativsSelecionadas.reduce((s, a) => s + (a.cargaHorariaMin ?? 0), 0),
+    [ativsSelecionadas],
+  );
+
+  /** Quantos blocos a seleção precisa ocupar (0 = livre). */
+  const blocosNecessarios = useMemo(
+    () => atividadeBlocos(cargaTotalMin, duracaoAulaMin),
+    [cargaTotalMin, duracaoAulaMin],
+  );
+
+  const slotAtual = slotIdx !== "" && turmaSelecionada
+    ? turmaSelecionada.horarios[Number(slotIdx)]
+    : undefined;
+
+  /** Blocos já ocupados em uma data+slot específicos. */
+  const ocupacaoNoSlot = (
+    data: string,
+    slot: HorarioSlot,
+    turma: Turma,
+  ): Set<number> => {
+    const ocupados = new Set<number>();
+    for (const ag of todosAgendamentos) {
+      if (ag.turmaId !== turma.id) continue;
+      if (ag.data !== data) continue;
+      if (ag.slotInicio !== slot.inicio || ag.slotFim !== slot.fim) {
+        // Compatibilidade: agendamentos antigos sem slotInicio usam inicio/fim do slot inteiro
+        if (ag.inicio === slot.inicio && ag.fim === slot.fim && ag.blocoIndex === undefined) {
+          // ocupa todos os blocos
+          const total = slotBlocosCount(slot, duracaoAulaMin);
+          for (let i = 0; i < total; i++) ocupados.add(i);
+        }
+        continue;
+      }
+      const startB = ag.blocoIndex ?? 0;
+      const lenB = ag.blocosTotal ?? 1;
+      for (let i = 0; i < lenB; i++) ocupados.add(startB + i);
+    }
+    return ocupados;
+  };
+
+  /** Lista de blocos livres no slot atual. */
+  const blocosLivresAtual = useMemo(() => {
+    if (!turmaSelecionada || !slotAtual || !date) return [];
+    const total = slotBlocosCount(slotAtual, duracaoAulaMin);
+    const dataIso = format(date, "yyyy-MM-dd");
+    const ocupados = ocupacaoNoSlot(dataIso, slotAtual, turmaSelecionada);
+    const livres: number[] = [];
+    for (let i = 0; i < total; i++) if (!ocupados.has(i)) livres.push(i);
+    return livres;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turmaSelecionada, slotAtual, date, todosAgendamentos, duracaoAulaMin]);
+
+  const totalBlocosSlot = slotAtual ? slotBlocosCount(slotAtual, duracaoAulaMin) : 0;
+
+  /** Encontra a maior sequência consecutiva de blocos livres começando em cada índice. */
+  const opcoesDeBlocoInicial = useMemo(() => {
+    if (!slotAtual) return [];
+    const livreSet = new Set(blocosLivresAtual);
+    const opcoes: { idx: number; cabe: boolean; restantes: number }[] = [];
+    for (const idx of blocosLivresAtual) {
+      let cabem = 0;
+      for (let i = 0; i < blocosNecessarios; i++) {
+        if (livreSet.has(idx + i)) cabem++;
+        else break;
+      }
+      opcoes.push({
+        idx,
+        cabe: cabem >= blocosNecessarios,
+        restantes: blocosNecessarios > 0 ? Math.min(cabem, blocosNecessarios) : 1,
+      });
+    }
+    return opcoes;
+  }, [blocosLivresAtual, slotAtual, blocosNecessarios]);
+
+  // Auto-selecionar o primeiro bloco livre ao trocar de slot/atividade
+  useEffect(() => {
+    if (!slotAtual || blocoSelecionado !== "") return;
+    if (blocosLivresAtual.length > 0) {
+      setBlocoSelecionado(String(blocosLivresAtual[0]));
+    }
+  }, [slotAtual, blocosLivresAtual, blocoSelecionado]);
+
+  /** Sugere partes adicionais em dias futuros se a atividade não couber neste dia. */
+  const sugestaoMultidia = useMemo((): ParteSugestao[] | null => {
+    if (!turmaSelecionada || !slotAtual || !date || blocosNecessarios === 0) return null;
+    const blocoIdx = blocoSelecionado !== "" ? Number(blocoSelecionado) : -1;
+    if (blocoIdx < 0) return null;
+
+    // Quantos blocos cabem a partir do bloco selecionado neste dia?
+    const livreSet = new Set(blocosLivresAtual);
+    let consecutivos = 0;
+    for (let i = 0; i < blocosNecessarios; i++) {
+      if (livreSet.has(blocoIdx + i)) consecutivos++;
+      else break;
+    }
+    if (consecutivos >= blocosNecessarios) return null; // cabe inteiro
+
+    const dataIso = format(date, "yyyy-MM-dd");
+    const partes: ParteSugestao[] = [
+      {
+        data: dataIso,
+        slot: slotAtual,
+        blocoIndex: blocoIdx,
+        blocosTotal: consecutivos,
+        inicio: blocoInicio(slotAtual, blocoIdx, duracaoAulaMin),
+        fim: blocoFim(slotAtual, blocoIdx + consecutivos - 1, duracaoAulaMin),
+      },
+    ];
+    let restantes = blocosNecessarios - consecutivos;
+
+    // Procurar próximos dias da turma com blocos livres (até 60 dias)
+    let cursor = addDays(date, 1);
+    const limite = addDays(date, 60);
+    while (restantes > 0 && cursor <= limite) {
+      const ds = diaSemanaFromDate(cursor);
+      const dataC = format(cursor, "yyyy-MM-dd");
+      for (const slot of turmaSelecionada.horarios) {
+        if (slot.diaSemana !== ds) continue;
+        const total = slotBlocosCount(slot, duracaoAulaMin);
+        const ocup = ocupacaoNoSlot(dataC, slot, turmaSelecionada);
+        // Maior sequência livre começando do início
+        let melhor = { idx: 0, len: 0 };
+        let cur = { idx: 0, len: 0 };
+        for (let i = 0; i < total; i++) {
+          if (!ocup.has(i)) {
+            if (cur.len === 0) cur.idx = i;
+            cur.len++;
+            if (cur.len > melhor.len) melhor = { ...cur };
+          } else cur = { idx: 0, len: 0 };
+        }
+        if (melhor.len > 0) {
+          const usar = Math.min(melhor.len, restantes);
+          partes.push({
+            data: dataC,
+            slot,
+            blocoIndex: melhor.idx,
+            blocosTotal: usar,
+            inicio: blocoInicio(slot, melhor.idx, duracaoAulaMin),
+            fim: blocoFim(slot, melhor.idx + usar - 1, duracaoAulaMin),
+          });
+          restantes -= usar;
+          if (restantes <= 0) break;
+        }
+      }
+      cursor = addDays(cursor, 1);
+    }
+    return partes;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    turmaSelecionada,
+    slotAtual,
+    date,
+    blocosNecessarios,
+    blocoSelecionado,
+    blocosLivresAtual,
+    duracaoAulaMin,
+    todosAgendamentos,
+  ]);
+
+  const cobreCargaCompleta = sugestaoMultidia
+    ? sugestaoMultidia.reduce((s, p) => s + p.blocosTotal, 0) >= blocosNecessarios
+    : true;
+
+  // ---------- Submit ----------
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!turmaSelecionada) return toast.error("Selecione uma turma.");
     if (!date) return toast.error("Selecione uma data.");
     if (date < startOfDay(new Date()))
       return toast.error("Não é possível agendar em datas passadas.");
-    if (slotIdx === "") return toast.error("Selecione um horário.");
+    if (slotIdx === "" || !slotAtual) return toast.error("Selecione um horário.");
     if (!grupo) return toast.error("Selecione um grupo.");
     if (atividadeIds.length === 0)
-      return toast.error("Escolha ao menos uma atividade (aula ou tarefa).");
+      return toast.error("Escolha ao menos uma atividade.");
 
-    const slot = turmaSelecionada.horarios[Number(slotIdx)];
     const dataIso = format(date, "yyyy-MM-dd");
-    // Professor vem da(s) atividade(s) selecionada(s) — turma não tem professor.
-    const ativsSelPrev = atividades.filter((a) => atividadeIds.includes(a.id));
     const professoresUnicos = Array.from(
-      new Set(ativsSelPrev.map((a) => a.professor).filter(Boolean)),
+      new Set(ativsSelecionadas.map((a) => a.professor).filter(Boolean)),
     ) as string[];
     const professor = professoresUnicos.join(" / ") || undefined;
-
     const currentUser = authStore.get();
-    agendamentosStore.add({
+    const criadoEm = new Date().toISOString();
+
+    // ----- Caso 1: atividade livre (cargaHoraria=0) -----
+    if (blocosNecessarios === 0) {
+      const novo: Agendamento = {
+        id: crypto.randomUUID(),
+        turmaId: turmaSelecionada.id,
+        data: dataIso,
+        diaSemana: slotAtual.diaSemana,
+        inicio: slotAtual.inicio,
+        fim: slotAtual.fim,
+        slotInicio: slotAtual.inicio,
+        slotFim: slotAtual.fim,
+        blocoIndex: 0,
+        blocosTotal: totalBlocosSlot || 1,
+        atividadeIds,
+        status: "pendente",
+        criadoEm,
+        observacao: observacao.trim() || undefined,
+        professor,
+        criadoPorUserId: currentUser.id,
+        criadoPorNome: currentUser.nome,
+      };
+      agendamentosStore.add(novo);
+      gerarNotificacoes([novo]);
+      toast.success("Atividade agendada (livre).");
+      onOpenChange(false);
+      return;
+    }
+
+    // ----- Caso 2: usa blocos -----
+    if (blocoSelecionado === "") return toast.error("Selecione um bloco.");
+    if (!sugestaoMultidia) return toast.error("Não foi possível calcular o agendamento.");
+    if (!cobreCargaCompleta)
+      return toast.error(
+        `Faltam blocos livres nos próximos 60 dias para cobrir a carga horária. Reduza a carga ou crie mais slots na turma.`,
+      );
+
+    const parteGrupoId = sugestaoMultidia.length > 1 ? crypto.randomUUID() : undefined;
+    const novos: Agendamento[] = sugestaoMultidia.map((p, i) => ({
       id: crypto.randomUUID(),
       turmaId: turmaSelecionada.id,
-      data: dataIso,
-      diaSemana: slot.diaSemana,
-      inicio: slot.inicio,
-      fim: slot.fim,
+      data: p.data,
+      diaSemana: p.slot.diaSemana,
+      inicio: p.inicio,
+      fim: p.fim,
+      slotInicio: p.slot.inicio,
+      slotFim: p.slot.fim,
+      blocoIndex: p.blocoIndex,
+      blocosTotal: p.blocosTotal,
       atividadeIds,
       status: "pendente",
-      criadoEm: new Date().toISOString(),
+      criadoEm,
       observacao: observacao.trim() || undefined,
       professor,
       criadoPorUserId: currentUser.id,
       criadoPorNome: currentUser.nome,
-    });
+      parteGrupoId,
+      parteNum: i + 1,
+      partesTotal: sugestaoMultidia.length,
+    }));
+    novos.forEach((a) => agendamentosStore.add(a));
+    gerarNotificacoes(novos);
+    toast.success(
+      sugestaoMultidia.length > 1
+        ? `Agendado em ${sugestaoMultidia.length} partes.`
+        : "Atividade agendada.",
+    );
+    onOpenChange(false);
+  };
 
-    // Notificações: alunos da turma + professor
-    const ativsSel = atividades.filter((a) => atividadeIds.includes(a.id));
-    const partes = ativsSel
+  const gerarNotificacoes = (novos: Agendamento[]) => {
+    if (!turmaSelecionada) return;
+    const ativs = atividades.filter((a) => atividadeIds.includes(a.id));
+    const partes = ativs
       .map((a) => `${a.tipo === 0 ? "Aula" : "Tarefa"}: ${a.nome}`)
       .join(" · ");
-    const titulo = `Atividade agendada — ${turmaSelecionada.cod}`;
-    const mensagem = `${curso.nome} · ${turmaSelecionada.nome} · ${format(
-      date,
-      "PPP",
-      { locale: ptBR },
-    )} ${slot.inicio}–${slot.fim}${professor ? ` · ${professor}` : ""}${
-      partes ? ` — ${partes}` : ""
-    }`;
-    const base = {
-      titulo,
-      mensagem,
-      cursoId: curso.id,
-      turmaId: turmaSelecionada.id,
-      data: dataIso,
-      inicio: slot.inicio,
-      fim: slot.fim,
-      professor,
-      atividadeIds,
-      criadoEm: new Date().toISOString(),
-      lida: false,
-    };
+    const professoresUnicos = Array.from(
+      new Set(ativs.map((a) => a.professor).filter(Boolean)),
+    ) as string[];
+    const professor = professoresUnicos.join(" / ") || undefined;
+
     const alunosDaTurma = SEED_ALUNOS.filter(
       (al) => al.turmaId === turmaSelecionada.id,
     );
-    const notifs = [
-      ...alunosDaTurma.map((al) => ({
-        ...base,
-        id: crypto.randomUUID(),
-        destinatarioTipo: "aluno" as const,
-        destinatarioId: al.id,
-      })),
-      ...(professor
-        ? [
-            {
-              ...base,
-              id: crypto.randomUUID(),
-              destinatarioTipo: "professor" as const,
-              destinatarioId: professor,
-            },
-          ]
-        : []),
-    ];
-    notificacoesStore.addMany(notifs);
-
-    toast.success(
-      `Atividade agendada! ${notifs.length} notificação(ões) gerada(s).`,
-    );
-    onOpenChange(false);
+    const allNotifs = [];
+    for (const ag of novos) {
+      const sufixo =
+        novos.length > 1 ? ` (parte ${ag.parteNum}/${ag.partesTotal})` : "";
+      const titulo = `Atividade agendada — ${turmaSelecionada.cod}${sufixo}`;
+      const dataFmt = format(parse(ag.data, "yyyy-MM-dd", new Date()), "PPP", {
+        locale: ptBR,
+      });
+      const mensagem = `${curso.nome} · ${turmaSelecionada.nome} · ${dataFmt} ${
+        ag.inicio
+      }–${ag.fim}${professor ? ` · ${professor}` : ""}${partes ? ` — ${partes}` : ""}`;
+      const base = {
+        titulo,
+        mensagem,
+        cursoId: curso.id,
+        turmaId: turmaSelecionada.id,
+        data: ag.data,
+        inicio: ag.inicio,
+        fim: ag.fim,
+        professor,
+        atividadeIds,
+        criadoEm: new Date().toISOString(),
+        lida: false,
+      };
+      for (const al of alunosDaTurma) {
+        allNotifs.push({
+          ...base,
+          id: crypto.randomUUID(),
+          destinatarioTipo: "aluno" as const,
+          destinatarioId: al.id,
+        });
+      }
+      if (professor) {
+        allNotifs.push({
+          ...base,
+          id: crypto.randomUUID(),
+          destinatarioTipo: "professor" as const,
+          destinatarioId: professor,
+        });
+      }
+    }
+    notificacoesStore.addMany(allNotifs);
   };
 
   return (
@@ -272,7 +504,7 @@ export function AgendarAtividadeDialog({
         <DialogHeader>
           <DialogTitle>Agendar atividade</DialogTitle>
           <DialogDescription>
-            Curso: <strong>{curso.nome}</strong>
+            Curso: <strong>{curso.nome}</strong> · Bloco padrão: {formatMinutos(duracaoAulaMin)}
           </DialogDescription>
         </DialogHeader>
 
@@ -334,19 +566,15 @@ export function AgendarAtividadeDialog({
             <div className="space-y-2">
               <Label>Horário *</Label>
               {!turmaSelecionada ? (
-                <p className="text-xs text-muted-foreground">
-                  Selecione a turma.
-                </p>
+                <p className="text-xs text-muted-foreground">Selecione a turma.</p>
               ) : !date ? (
-                <p className="text-xs text-muted-foreground">
-                  Selecione a data.
-                </p>
+                <p className="text-xs text-muted-foreground">Selecione a data.</p>
               ) : slotsDisponiveis.length === 0 ? (
                 <p className="text-xs text-destructive">
-                  A turma não tem horário neste dia da semana.
+                  A turma não tem horário neste dia.
                 </p>
               ) : (
-                <Select value={slotIdx} onValueChange={setSlotIdx}>
+                <Select value={slotIdx} onValueChange={(v) => { setSlotIdx(v); setBlocoSelecionado(""); }}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
@@ -369,9 +597,7 @@ export function AgendarAtividadeDialog({
                 Nenhuma atividade cadastrada neste curso ainda.
               </p>
             ) : grupos.length === 0 ? (
-              <p className="text-xs text-muted-foreground">
-                Nenhum grupo disponível.
-              </p>
+              <p className="text-xs text-muted-foreground">Nenhum grupo disponível.</p>
             ) : (
               <Select value={grupo} onValueChange={setGrupo}>
                 <SelectTrigger>
@@ -405,15 +631,13 @@ export function AgendarAtividadeDialog({
                     {aulasDoGrupo.map((a) => (
                       <SelectItem key={a.id} value={a.id}>
                         {a.codigo} · {a.nome}
+                        {a.cargaHorariaMin
+                          ? ` (${formatMinutos(a.cargaHorariaMin)})`
+                          : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {aulasDoGrupo.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    Sem aulas neste grupo.
-                  </p>
-                )}
               </div>
 
               <div className="space-y-2">
@@ -430,16 +654,89 @@ export function AgendarAtividadeDialog({
                     {tarefasDoGrupo.map((a) => (
                       <SelectItem key={a.id} value={a.id}>
                         {a.codigo} · {a.nome}
+                        {a.cargaHorariaMin
+                          ? ` (${formatMinutos(a.cargaHorariaMin)})`
+                          : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {tarefasDoGrupo.length === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    Sem tarefas neste grupo.
-                  </p>
-                )}
               </div>
+            </div>
+          )}
+
+          {/* Bloco picker */}
+          {slotAtual && atividadeIds.length > 0 && blocosNecessarios > 0 && (
+            <div className="space-y-2 rounded-md border p-3 bg-muted/20">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-muted-foreground" />
+                <Label className="m-0">
+                  Bloco inicial · precisa de {blocosNecessarios} bloco(s) ={" "}
+                  {formatMinutos(blocosNecessarios * duracaoAulaMin)}
+                </Label>
+              </div>
+              {blocosLivresAtual.length === 0 ? (
+                <p className="text-xs text-destructive">
+                  Todos os blocos deste horário já estão ocupados.
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {Array.from({ length: totalBlocosSlot }).map((_, idx) => {
+                    const livre = blocosLivresAtual.includes(idx);
+                    const opt = opcoesDeBlocoInicial.find((o) => o.idx === idx);
+                    const isSel = blocoSelecionado === String(idx);
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        disabled={!livre}
+                        onClick={() => setBlocoSelecionado(String(idx))}
+                        className={cn(
+                          "text-xs rounded border px-2 py-1.5 text-left transition-colors",
+                          !livre && "opacity-40 cursor-not-allowed bg-muted",
+                          livre && !isSel && "hover:bg-accent",
+                          isSel && "border-primary bg-primary/10 font-medium",
+                        )}
+                      >
+                        <div className="font-mono">
+                          {blocoInicio(slotAtual, idx, duracaoAulaMin)}–
+                          {blocoFim(slotAtual, idx, duracaoAulaMin)}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          {!livre
+                            ? "ocupado"
+                            : opt && !opt.cabe
+                              ? `cabe ${opt.restantes}/${blocosNecessarios}`
+                              : "livre"}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {sugestaoMultidia && sugestaoMultidia.length > 1 && (
+                <div className="rounded-md border-l-2 border-primary bg-primary/5 p-2 text-xs space-y-1">
+                  <div className="font-medium text-primary">
+                    🔀 Atividade será dividida em {sugestaoMultidia.length} partes:
+                  </div>
+                  {sugestaoMultidia.map((p, i) => (
+                    <div key={i} className="flex items-center gap-2 font-mono">
+                      <span className="text-muted-foreground">{i + 1}.</span>
+                      <span>{format(parse(p.data, "yyyy-MM-dd", new Date()), "dd/MM")}</span>
+                      <span>{p.inicio}–{p.fim}</span>
+                      <span className="text-muted-foreground">
+                        ({formatMinutos(p.blocosTotal * duracaoAulaMin)})
+                      </span>
+                    </div>
+                  ))}
+                  {!cobreCargaCompleta && (
+                    <div className="text-destructive font-medium pt-1">
+                      ⚠️ Não há blocos livres suficientes nos próximos 60 dias.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -461,18 +758,19 @@ export function AgendarAtividadeDialog({
               <div className="inline-flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
                 {format(date, "PPP", { locale: ptBR })} ·{" "}
-                {formatHorarioSlot(turmaSelecionada.horarios[Number(slotIdx)])}{" "}
-                · {turmaSelecionada.nome}
+                {formatHorarioSlot(turmaSelecionada.horarios[Number(slotIdx)])} ·{" "}
+                {turmaSelecionada.nome}
+                {blocosNecessarios > 0 && (
+                  <span className="ml-2 text-muted-foreground">
+                    · carga: {formatMinutos(cargaTotalMin)}
+                  </span>
+                )}
               </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit">📅 Agendar</Button>
