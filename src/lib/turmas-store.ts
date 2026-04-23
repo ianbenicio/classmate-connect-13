@@ -89,6 +89,11 @@ async function ensureInit(): Promise<void> {
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;
+      // Recalcula alunosIds de cada turma sempre que alunos mudarem.
+      alunosStore.subscribe(() => {
+        turmas = turmas.map((t) => ({ ...t, alunosIds: alunosIdsForTurma(t.id) }));
+        emit();
+      });
       emit();
     });
   }
