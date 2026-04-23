@@ -516,6 +516,64 @@ export type Database = {
           },
         ]
       }
+      presencas: {
+        Row: {
+          agendamento_id: string | null
+          aluno_id: string
+          atividade_id: string
+          created_at: string
+          id: string
+          observacao: string | null
+          presente: boolean
+          registrado_por_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agendamento_id?: string | null
+          aluno_id: string
+          atividade_id: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          presente?: boolean
+          registrado_por_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agendamento_id?: string | null
+          aluno_id?: string
+          atividade_id?: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          presente?: boolean
+          registrado_por_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presencas_agendamento_id_fkey"
+            columns: ["agendamento_id"]
+            isOneToOne: false
+            referencedRelation: "agendamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presencas_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presencas_atividade_id_fkey"
+            columns: ["atividade_id"]
+            isOneToOne: false
+            referencedRelation: "atividades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string

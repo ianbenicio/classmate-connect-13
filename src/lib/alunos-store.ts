@@ -61,12 +61,28 @@ function alunoToRow(a: Aluno) {
 }
 
 async function loadFromDb() {
-  const { data, error } = await supabase.from("alunos").select("*").order("nome");
+  const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([
+    supabase.from("alunos").select("*").order("nome"),
+    supabase.from("presencas" as never).select("aluno_id, atividade_id, presente, observacao"),
+  ]);
   if (error) {
     console.error("[alunos] load error", error);
     return;
   }
-  alunos = (data ?? []).map(rowToAluno);
+  if (presErr) {
+    console.error("[presencas] load error", presErr);
+  }
+  const presByAluno = new Map<string, { atividadeId: string; presente: boolean; observacao?: string }[]>();
+  for (const p of (presData ?? []) as Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }>) {
+    const arr = presByAluno.get(p.aluno_id) ?? [];
+    arr.push({ atividadeId: p.atividade_id, presente: !!p.presente, observacao: p.observacao ?? undefined });
+    presByAluno.set(p.aluno_id, arr);
+  }
+  alunos = (data ?? []).map((r) => {
+    const a = rowToAluno(r);
+    a.aulas = presByAluno.get(r.id) ?? [];
+    return a;
+  });
 }
 
 async function ensureInit(): Promise<void> {
