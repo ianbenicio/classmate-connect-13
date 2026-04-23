@@ -828,8 +828,15 @@ function IdentificacaoFields({
   setPrazo,
   descricao,
   setDescricao,
+  cargaHoras,
+  setCargaHoras,
+  cargaMin,
+  setCargaMin,
 }: IdentificacaoFieldsProps) {
   const tipoAtual = isEdit ? editing!.tipo : tipo;
+  // Suprime warning de prop não usada localmente; professor é gerenciado pelo pai.
+  void professor;
+  void setProfessor;
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -914,6 +921,34 @@ function IdentificacaoFields({
         <div className="space-y-2">
           <FieldLabel field="prazo">Prazo de referência</FieldLabel>
           <Input type="date" value={prazo} onChange={(e) => setPrazo(e.target.value)} />
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <FieldLabel field="cargaHorariaMin">Carga horária da atividade</FieldLabel>
+          <div className="flex items-end gap-2 max-w-md">
+            <div className="flex-1 space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Horas</Label>
+              <Input
+                type="number"
+                min={0}
+                value={cargaHoras}
+                onChange={(e) => setCargaHoras(e.target.value)}
+              />
+            </div>
+            <div className="flex-1 space-y-1">
+              <Label className="text-[10px] text-muted-foreground">Minutos</Label>
+              <Input
+                type="number"
+                min={0}
+                max={59}
+                value={cargaMin}
+                onChange={(e) => setCargaMin(e.target.value)}
+              />
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground">
+            Tempo que esta atividade ocupa quando agendada. <strong>0</strong> = livre (não consome blocos).
+          </p>
         </div>
       </div>
 
