@@ -83,6 +83,7 @@ export function AgendarAtividadeDialog({
   defaultTurmaId,
   defaultData,
   defaultSlot,
+  lockTurmaEHorario = false,
 }: Props) {
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
