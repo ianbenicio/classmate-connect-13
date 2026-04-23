@@ -20,6 +20,14 @@ const TABELAS = [
 
 export type ExportTabela = (typeof TABELAS)[number];
 
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
 export interface DbExportPayload {
   meta: {
     geradoEm: string;
@@ -28,8 +36,8 @@ export interface DbExportPayload {
     fonte: "lovable-cloud";
     geradoPorUserId: string;
   };
-  tabelas: Record<ExportTabela, Record<string, unknown>[]>;
-  contagens: Record<ExportTabela, number>;
+  tabelas: { [k in ExportTabela]: { [key: string]: JsonValue }[] };
+  contagens: { [k in ExportTabela]: number };
 }
 
 export const exportDbSnapshot = createServerFn({ method: "POST" })
