@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download, FileText, Trash2, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,6 +28,7 @@ import {
   RELATORIO_TIPO_LABEL,
 } from "@/lib/relatorios-store";
 import { downloadExportJSON } from "@/lib/data-export";
+import { downloadDbJSON, downloadDbCSVZip } from "@/lib/db-export";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/coordenacao")({
@@ -45,6 +46,8 @@ function CoordenacaoPage() {
   const user = useCurrentUser();
   const relatorios = useRelatorios();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
+  const [exportandoJson, setExportandoJson] = useState(false);
+  const [exportandoCsv, setExportandoCsv] = useState(false);
 
   if (user.role !== "admin") {
     return (
@@ -108,6 +111,40 @@ function CoordenacaoPage() {
     });
   };
 
+  const handleExportDbJson = async () => {
+    setExportandoJson(true);
+    try {
+      const { filename, sizeBytes, payload } = await downloadDbJSON();
+      const total = Object.values(payload.contagens).reduce((s, n) => s + n, 0);
+      toast.success(`Banco exportado: ${filename}`, {
+        description: `${total} registros · ${(sizeBytes / 1024).toFixed(1)} KB`,
+      });
+    } catch (e) {
+      toast.error("Falha ao exportar banco", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setExportandoJson(false);
+    }
+  };
+
+  const handleExportDbCsv = async () => {
+    setExportandoCsv(true);
+    try {
+      const { filename, sizeBytes, payload } = await downloadDbCSVZip();
+      const total = Object.values(payload.contagens).reduce((s, n) => s + n, 0);
+      toast.success(`CSVs exportados: ${filename}`, {
+        description: `${total} registros · ${(sizeBytes / 1024).toFixed(1)} KB`,
+      });
+    } catch (e) {
+      toast.error("Falha ao exportar CSVs", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setExportandoCsv(false);
+    }
+  };
+
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
       <header className="flex items-start justify-between gap-4 flex-wrap">
@@ -119,10 +156,40 @@ function CoordenacaoPage() {
             Histórico de relatórios gerados pelo sistema.
           </p>
         </div>
-        <Button onClick={handleGerarAgora}>
-          <FileText /> Gerar exportação completa
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={handleGerarAgora} variant="outline">
+            <FileText /> Snapshot do app (seed)
+          </Button>
+          <Button
+            onClick={handleExportDbJson}
+            disabled={exportandoJson || exportandoCsv}
+          >
+            {exportandoJson ? <Loader2 className="animate-spin" /> : <Database />}
+            Exportar banco (JSON)
+          </Button>
+          <Button
+            onClick={handleExportDbCsv}
+            disabled={exportandoJson || exportandoCsv}
+            variant="secondary"
+          >
+            {exportandoCsv ? <Loader2 className="animate-spin" /> : <FileArchive />}
+            Exportar banco (CSV .zip)
+          </Button>
+        </div>
       </header>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Sobre as exportações</CardTitle>
+          <CardDescription className="text-xs leading-relaxed">
+            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as tabelas
+            (cursos, turmas, alunos, atividades, agendamentos, avaliações, relatórios, notificações,
+            habilidades). Use o JSON para reimportar em outro sistema; o ZIP de CSVs para abrir no
+            Excel/Sheets/DuckDB. <strong>Snapshot do app:</strong> dados em memória do seed — útil só
+            como backup do estado da sessão.
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
