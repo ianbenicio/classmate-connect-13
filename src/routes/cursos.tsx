@@ -27,12 +27,14 @@ import {
   SEED_HABILIDADES,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
-import type {
-  Atividade,
-  AtividadeTipo,
-  Curso,
-  Habilidade,
-  Turma,
+import {
+  addMinutesToHHMM,
+  getTurnoDiarioMin,
+  type Atividade,
+  type AtividadeTipo,
+  type Curso,
+  type Habilidade,
+  type Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
