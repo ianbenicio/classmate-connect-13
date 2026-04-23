@@ -42,12 +42,22 @@ interface SlotClickPayload {
   blocoIndex?: number;
 }
 
+interface CellHeaderClickPayload {
+  turma: Turma;
+  date: Date;
+  inicio: string;
+  fim: string;
+  diaSemana: DiaSemana;
+}
+
 interface Props {
   turmas: Turma[];
   cursos: Curso[];
   agendamentos: Agendamento[];
   onSlotClick?: (payload: SlotClickPayload) => void;
   onRegistrarRelatorio?: (agendamento: Agendamento, turma: Turma) => void;
+  onCellHeaderClick?: (payload: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (agendamento: Agendamento, turma: Turma) => void;
 }
 
 function turmasNoDia(turmas: Turma[], date: Date) {
