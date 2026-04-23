@@ -18,12 +18,45 @@ export interface Curso {
   cargaHorariaTotalMin?: number;
   /** Duração padrão de uma aula deste curso, em minutos. Default 60. */
   duracaoAulaMin?: number;
+  /**
+   * Duração do turno diário de aula (em minutos). Define o tamanho de cada
+   * slot semanal da turma. O turno é dividido em N blocos de duracaoAulaMin.
+   * Ex.: 150 (2h30) com duracaoAulaMin=75 (1h15) → 2 aulas por dia.
+   */
+  turnoDiarioMin?: number;
 }
 
 /** Helpers de carga horária / blocos. */
 export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number {
   const v = curso.duracaoAulaMin ?? 0;
   return v > 0 ? v : 60;
+}
+
+/** Duração do turno diário (em minutos). Default = duracaoAulaMin. */
+export function getTurnoDiarioMin(
+  curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">,
+): number {
+  const v = curso.turnoDiarioMin ?? 0;
+  return v > 0 ? v : getDuracaoAulaMin(curso);
+}
+
+/** Soma minutos a um horário "HH:MM" e retorna "HH:MM". */
+export function addMinutesToHHMM(hhmm: string, addMin: number): string {
+  const [h, m] = hhmm.split(":").map((n) => parseInt(n, 10));
+  const total = h * 60 + m + addMin;
+  const hh = Math.floor(total / 60) % 24;
+  const mm = ((total % 60) + 60) % 60;
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+/** Quantas aulas (blocos) cabem num turno do curso. */
+export function blocosPorTurno(
+  curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">,
+): number {
+  const turno = getTurnoDiarioMin(curso);
+  const aula = getDuracaoAulaMin(curso);
+  if (aula <= 0) return 1;
+  return Math.max(1, Math.floor(turno / aula));
 }
 
 /** Duração de um slot da turma em minutos. */
