@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download, FileText, Trash2, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,6 +28,7 @@ import {
   RELATORIO_TIPO_LABEL,
 } from "@/lib/relatorios-store";
 import { downloadExportJSON } from "@/lib/data-export";
+import { downloadDbJSON, downloadDbCSVZip } from "@/lib/db-export";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/coordenacao")({
@@ -45,6 +46,8 @@ function CoordenacaoPage() {
   const user = useCurrentUser();
   const relatorios = useRelatorios();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
+  const [exportandoJson, setExportandoJson] = useState(false);
+  const [exportandoCsv, setExportandoCsv] = useState(false);
 
   if (user.role !== "admin") {
     return (
@@ -106,6 +109,40 @@ function CoordenacaoPage() {
     toast.success(`Relatório gerado: ${filename}`, {
       description: `${(sizeBytes / 1024).toFixed(1)} KB`,
     });
+  };
+
+  const handleExportDbJson = async () => {
+    setExportandoJson(true);
+    try {
+      const { filename, sizeBytes, payload } = await downloadDbJSON();
+      const total = Object.values(payload.contagens).reduce((s, n) => s + n, 0);
+      toast.success(`Banco exportado: ${filename}`, {
+        description: `${total} registros · ${(sizeBytes / 1024).toFixed(1)} KB`,
+      });
+    } catch (e) {
+      toast.error("Falha ao exportar banco", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setExportandoJson(false);
+    }
+  };
+
+  const handleExportDbCsv = async () => {
+    setExportandoCsv(true);
+    try {
+      const { filename, sizeBytes, payload } = await downloadDbCSVZip();
+      const total = Object.values(payload.contagens).reduce((s, n) => s + n, 0);
+      toast.success(`CSVs exportados: ${filename}`, {
+        description: `${total} registros · ${(sizeBytes / 1024).toFixed(1)} KB`,
+      });
+    } catch (e) {
+      toast.error("Falha ao exportar CSVs", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setExportandoCsv(false);
+    }
   };
 
   return (
