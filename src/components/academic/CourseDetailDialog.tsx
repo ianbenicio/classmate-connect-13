@@ -51,6 +51,7 @@ interface Props {
   onEditTurma: (t: Turma) => void;
   onDeleteTurma: (t: Turma) => void;
   onTurmaClick: (t: Turma) => void;
+  onShowQuadro?: (c: Curso) => void;
 }
 
 export function CourseDetailDialog({
