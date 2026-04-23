@@ -206,6 +206,9 @@ export function CourseDetailDialog({
               </span>
               <span className="font-mono text-muted-foreground">
                 {progressoCurso.dadas}/{progressoCurso.total} aulas ({progressoCurso.pct}%)
+                {progressoCurso.minTotal > 0 && (
+                  <> · {formatMinutos(progressoCurso.minDadas)}/{formatMinutos(progressoCurso.minTotal)}</>
+                )}
               </span>
             </div>
             <Progress value={progressoCurso.pct} className="h-2" />
