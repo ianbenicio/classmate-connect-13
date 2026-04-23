@@ -12,18 +12,23 @@ import {
   subMonths,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, Send } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   computeSlotEstado,
   diaSemanaFromDate,
+  getDuracaoAulaMin,
+  slotBlocosCount,
+  blocoInicio,
+  blocoFim,
   type Agendamento,
   type Curso,
   type DiaSemana,
   type SlotEstado,
   type Turma,
 } from "@/lib/academic-types";
+import { useCurrentUser } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {
@@ -34,6 +39,7 @@ interface SlotClickPayload {
   diaSemana: DiaSemana;
   estado: SlotEstado;
   agendamento?: Agendamento;
+  blocoIndex?: number;
 }
 
 interface Props {
@@ -41,6 +47,7 @@ interface Props {
   cursos: Curso[];
   agendamentos: Agendamento[];
   onSlotClick?: (payload: SlotClickPayload) => void;
+  onRegistrarRelatorio?: (agendamento: Agendamento, turma: Turma) => void;
 }
 
 function turmasNoDia(turmas: Turma[], date: Date) {
