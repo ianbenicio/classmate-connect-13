@@ -73,7 +73,15 @@ function turmasNoDia(turmas: Turma[], date: Date) {
   return items.sort((a, b) => a.inicio.localeCompare(b.inicio));
 }
 
-export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, onRegistrarRelatorio }: Props) {
+export function ScheduleCalendar({
+  turmas,
+  cursos,
+  agendamentos,
+  onSlotClick,
+  onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
+}: Props) {
   const [refDate, setRefDate] = useState(new Date());
 
   const cursoMap = useMemo(
@@ -120,6 +128,8 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, on
           onDayClick={(d) => setRefDate(d)}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
+          onCellHeaderClick={onCellHeaderClick}
+          onRemoverAgendamento={onRemoverAgendamento}
         />
       </TabsContent>
 
@@ -131,6 +141,8 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, on
           agendamentos={agendamentos}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
+          onCellHeaderClick={onCellHeaderClick}
+          onRemoverAgendamento={onRemoverAgendamento}
         />
       </TabsContent>
 
