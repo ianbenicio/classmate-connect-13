@@ -92,6 +92,8 @@ export function ActivityFormDialog({
   const [prazo, setPrazo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [professor, setProfessor] = useState("");
+  const [cargaHoras, setCargaHoras] = useState("0");
+  const [cargaMin, setCargaMin] = useState("0");
 
   // Pedagógico
   const [objetivoResultados, setObjetivoResultados] = useState("");
