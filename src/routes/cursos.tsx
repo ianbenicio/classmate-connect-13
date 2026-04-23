@@ -362,6 +362,7 @@ function CursosPage() {
           open={turmaFormOpen}
           onOpenChange={setTurmaFormOpen}
           cursoId={cursoSelecionado.id}
+          curso={cursoSelecionado}
           editing={editingTurma}
           onSave={handleSaveTurma}
         />
