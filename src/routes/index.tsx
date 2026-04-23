@@ -20,7 +20,8 @@ import { useAlunos } from "@/lib/alunos-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
-import { useAgendamentos } from "@/lib/agendamentos-store";
+import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
+import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useCurrentUser } from "@/lib/auth-store";
 import type { Agendamento, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
@@ -63,6 +64,12 @@ function DashboardPage() {
     agendamento: Agendamento;
     turma: Turma;
     curso: Curso;
+  } | null>(null);
+  const [diaDetailCtx, setDiaDetailCtx] = useState<{
+    curso: Curso;
+    turma: Turma;
+    date: Date;
+    slot: HorarioSlot;
   } | null>(null);
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
