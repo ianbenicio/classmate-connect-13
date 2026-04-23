@@ -22,6 +22,7 @@ import {
   formatMinutos,
   getDuracaoAulaMin,
   getGrupoNome,
+  type Aluno,
   type Atividade,
   type Curso,
   type Habilidade,
@@ -29,7 +30,6 @@ import {
 } from "@/lib/academic-types";
 import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { Progress } from "@/components/ui/progress";
-import { useAgendamentos } from "@/lib/agendamentos-store";
 import { ActivityViewDialog } from "./ActivityViewDialog";
 import { useCurrentUser } from "@/lib/auth-store";
 
@@ -39,6 +39,7 @@ interface Props {
   curso: Curso | null;
   atividades: Atividade[];
   turmas: Turma[];
+  alunos: Aluno[];
   habilidadeMap: Map<string, Habilidade>;
   onOpenChange: (open: boolean) => void;
   onNew: (tipoDefault: 0 | 1) => void;
@@ -56,6 +57,7 @@ export function CourseDetailDialog({
   curso,
   atividades,
   turmas,
+  alunos,
   habilidadeMap,
   onOpenChange,
   onNew,
@@ -72,7 +74,6 @@ export function CourseDetailDialog({
   const [viewing, setViewing] = useState<Atividade | null>(null);
   const user = useCurrentUser();
   const isAluno = user.role === "aluno";
-  const agendamentos = useAgendamentos();
 
   const turmasDoCurso = useMemo(
     () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
@@ -91,23 +92,28 @@ export function CourseDetailDialog({
 
   const totalAulasCurso = useMemo(() => aulasDoCurso.length, [aulasDoCurso]);
 
-  // Mapa turmaId -> Set de atividadeIds já concluídas (apenas aulas)
+  // Aulas dadas por turma derivadas das presenças reais dos alunos.
+  // Uma aula conta como "dada" para a turma quando ao menos um aluno
+  // daquela turma tem registro de presença=true para a atividade.
   const aulasDadasPorTurma = useMemo(() => {
     const aulaIds = new Set(aulasDoCurso.map((a) => a.id));
     const map = new Map<string, Set<string>>();
-    for (const ag of agendamentos) {
-      if (ag.status !== "concluido") continue;
-      let set = map.get(ag.turmaId);
+    for (const al of alunos) {
+      if (!al.turmaId) continue;
+      const turmaIsCurso = turmasDoCurso.some((t) => t.id === al.turmaId);
+      if (!turmaIsCurso) continue;
+      let set = map.get(al.turmaId);
       if (!set) {
         set = new Set();
-        map.set(ag.turmaId, set);
+        map.set(al.turmaId, set);
       }
-      for (const aid of ag.atividadeIds) {
-        if (aulaIds.has(aid)) set.add(aid);
+      for (const aula of al.aulas ?? []) {
+        if (!aula.presente) continue;
+        if (aulaIds.has(aula.atividadeId)) set.add(aula.atividadeId);
       }
     }
     return map;
-  }, [agendamentos, doCurso]);
+  }, [alunos, aulasDoCurso, turmasDoCurso]);
 
   const progressoCurso = useMemo(() => {
     if (!curso || totalAulasCurso === 0 || turmasDoCurso.length === 0) {
