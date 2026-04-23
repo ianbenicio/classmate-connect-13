@@ -1,5 +1,6 @@
 // Helpers de cliente: chama a server function, gera JSON e ZIP de CSVs.
 import JSZip from "jszip";
+import { supabase } from "@/integrations/supabase/client";
 import { exportDbSnapshot, type DbExportPayload } from "./db-export.functions";
 
 function timestampSlug(iso: string): string {
@@ -44,7 +45,13 @@ function toCSV(rows: unknown[]): string {
 }
 
 async function fetchPayload(): Promise<DbExportPayload> {
-  return exportDbSnapshot();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) {
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
+  return exportDbSnapshot({
+    headers: { Authorization: `Bearer ${session.access_token}` },
+  });
 }
 
 /** Baixa o snapshot completo do banco como JSON. */
