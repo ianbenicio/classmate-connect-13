@@ -319,6 +319,14 @@ export function TurmaDetailDialog({
           )}
         </section>
       </DialogContent>
+
+      <QuadroAulasDialog
+        open={quadroOpen}
+        onOpenChange={setQuadroOpen}
+        curso={curso ?? null}
+        atividades={atividades}
+        aulasDadasIds={aulasDadasIds}
+      />
     </Dialog>
   );
 }
