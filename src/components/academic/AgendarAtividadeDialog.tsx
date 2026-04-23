@@ -514,7 +514,7 @@ export function AgendarAtividadeDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Turma *</Label>
-            <Select value={turmaId} onValueChange={setTurmaId}>
+            <Select value={turmaId} onValueChange={setTurmaId} disabled={lockTurmaEHorario}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
