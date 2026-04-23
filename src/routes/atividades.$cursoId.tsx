@@ -31,13 +31,10 @@ import {
   Users,
 } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
-import {
-  SEED_ATIVIDADES,
-  SEED_CURSOS,
-  SEED_GRUPOS,
-  SEED_HABILIDADES,
-  SEED_TURMAS,
-} from "@/lib/academic-seed";
+import { SEED_GRUPOS, SEED_HABILIDADES } from "@/lib/academic-seed";
+import { cursosStore } from "@/lib/cursos-store";
+import { useTurmas } from "@/lib/turmas-store";
+import { atividadesStore, useAtividades } from "@/lib/atividades-store";
 import {
   type Atividade,
   type AtividadeTipo,
@@ -47,7 +44,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades/$cursoId")({
   loader: ({ params }) => {
-    const curso = SEED_CURSOS.find((c) => c.id === params.cursoId);
+    const curso = cursosStore.getAll().find((c) => c.id === params.cursoId);
     if (!curso) throw notFound();
     return { curso };
   },
@@ -84,15 +81,16 @@ export const Route = createFileRoute("/atividades/$cursoId")({
 function CursoAtividadesPage() {
   const { curso } = Route.useLoaderData();
 
-  const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
+  const atividades = useAtividades();
+  const turmas = useTurmas();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
 
   const turmasDoCurso = useMemo(
-    () => SEED_TURMAS.filter((t) => t.cursoId === curso.id),
-    [curso.id],
+    () => turmas.filter((t) => t.cursoId === curso.id),
+    [turmas, curso.id],
   );
 
   const gruposCurso = useMemo(
@@ -109,16 +107,11 @@ function CursoAtividadesPage() {
   }, [atividades, curso.id]);
 
   const handleSave = (atividade: Atividade) => {
-    setAtividades((prev) => {
-      const exists = prev.some((a) => a.id === atividade.id);
-      return exists
-        ? prev.map((a) => (a.id === atividade.id ? atividade : a))
-        : [atividade, ...prev];
-    });
+    atividadesStore.upsert(atividade);
   };
 
   const handleDelete = (a: Atividade) => {
-    setAtividades((prev) => prev.filter((x) => x.id !== a.id));
+    atividadesStore.remove(a.id);
     toast.success("Atividade removida");
     setConfirmDelete(null);
   };
