@@ -541,6 +541,7 @@ export function AgendarAtividadeDialog({
                   <Button
                     type="button"
                     variant="outline"
+                    disabled={lockTurmaEHorario}
                     className={cn(
                       "w-full justify-start text-left font-normal",
                       !date && "text-muted-foreground",
