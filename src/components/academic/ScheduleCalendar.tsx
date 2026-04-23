@@ -544,6 +544,8 @@ function MonthView({
                       compact
                       onSlotClick={onSlotClick}
                       onRegistrarRelatorio={onRegistrarRelatorio}
+                      onCellHeaderClick={onCellHeaderClick}
+                      onRemoverAgendamento={onRemoverAgendamento}
                     />
                   );
                 })}
