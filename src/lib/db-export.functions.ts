@@ -57,8 +57,8 @@ export const exportDbSnapshot = createServerFn({ method: "POST" })
       throw new Response("Acesso restrito a administradores.", { status: 403 });
     }
 
-    const tabelas = {} as Record<ExportTabela, Record<string, unknown>[]>;
-    const contagens = {} as Record<ExportTabela, number>;
+    const tabelas = {} as DbExportPayload["tabelas"];
+    const contagens = {} as DbExportPayload["contagens"];
 
     for (const t of TABELAS) {
       // Usa supabaseAdmin (service role) para bypass de RLS — já validamos admin acima.
@@ -71,7 +71,7 @@ export const exportDbSnapshot = createServerFn({ method: "POST" })
           status: 500,
         });
       }
-      const linhas = (data ?? []) as Record<string, unknown>[];
+      const linhas = (data ?? []) as { [key: string]: JsonValue }[];
       tabelas[t] = linhas;
       contagens[t] = linhas.length;
     }
