@@ -1,9 +1,10 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsBell } from "@/components/NotificationsBell";
-import { UserSwitcher } from "@/components/UserSwitcher";
+import { AuthMenu } from "@/components/AuthMenu";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 import { useCurrentUser } from "@/lib/auth-store";
+import { AuthProvider } from "@/lib/auth";
 
 import appCss from "../styles.css?url";
 
@@ -74,6 +75,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  return (
+    <AuthProvider>
+      <AppShell />
+    </AuthProvider>
+  );
+}
+
+function AppShell() {
   useAgendamentoScanner();
   const user = useCurrentUser();
   return (
@@ -123,8 +132,8 @@ function RootComponent() {
               </Link>
             )}
           </nav>
-          <UserSwitcher />
           <NotificationsBell />
+          <AuthMenu />
         </div>
       </header>
       <Outlet />
