@@ -172,6 +172,25 @@ function CursosPage() {
         : [...prev, curso];
     });
     if (cursoSelecionado?.id === curso.id) setCursoSelecionado(curso);
+
+    // Migra automaticamente as turmas deste curso: recalcula o `fim` de
+    // cada slot com base no novo turnoDiarioMin do curso.
+    const turno = getTurnoDiarioMin(curso);
+    if (turno > 0) {
+      setTurmas((prev) =>
+        prev.map((t) =>
+          t.cursoId === curso.id
+            ? {
+                ...t,
+                horarios: t.horarios.map((h) => ({
+                  ...h,
+                  fim: addMinutesToHHMM(h.inicio, turno),
+                })),
+              }
+            : t,
+        ),
+      );
+    }
   };
 
   const handleSave = (atividade: Atividade) => {
