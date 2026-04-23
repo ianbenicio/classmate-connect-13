@@ -59,6 +59,8 @@ interface Props {
   defaultTurmaId?: string;
   defaultData?: string;
   defaultSlot?: HorarioSlot;
+  /** Quando true (origem: calendário), trava turma, data e horário. */
+  lockTurmaEHorario?: boolean;
 }
 
 /** Bloco proposto/sugerido em uma data específica. */
@@ -81,6 +83,7 @@ export function AgendarAtividadeDialog({
   defaultTurmaId,
   defaultData,
   defaultSlot,
+  lockTurmaEHorario = false,
 }: Props) {
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
@@ -511,7 +514,7 @@ export function AgendarAtividadeDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label>Turma *</Label>
-            <Select value={turmaId} onValueChange={setTurmaId}>
+            <Select value={turmaId} onValueChange={setTurmaId} disabled={lockTurmaEHorario}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
@@ -538,6 +541,7 @@ export function AgendarAtividadeDialog({
                   <Button
                     type="button"
                     variant="outline"
+                    disabled={lockTurmaEHorario}
                     className={cn(
                       "w-full justify-start text-left font-normal",
                       !date && "text-muted-foreground",
@@ -574,7 +578,7 @@ export function AgendarAtividadeDialog({
                   A turma não tem horário neste dia.
                 </p>
               ) : (
-                <Select value={slotIdx} onValueChange={(v) => { setSlotIdx(v); setBlocoSelecionado(""); }}>
+                <Select value={slotIdx} onValueChange={(v) => { setSlotIdx(v); setBlocoSelecionado(""); }} disabled={lockTurmaEHorario}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>

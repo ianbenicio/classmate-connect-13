@@ -334,6 +334,7 @@ function DashboardPage() {
           defaultTurmaId={agendarCtx.turma.id}
           defaultData={agendarCtx.data}
           defaultSlot={agendarCtx.slot}
+          lockTurmaEHorario
         />
       )}
 
