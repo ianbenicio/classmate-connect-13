@@ -11,12 +11,10 @@ import {
   CalendarClock,
   CalendarDays,
 } from "lucide-react";
-import {
-  SEED_ATIVIDADES,
-  SEED_CURSOS,
-  SEED_TURMAS,
-} from "@/lib/academic-seed";
 import { useAlunos } from "@/lib/alunos-store";
+import { useCursos } from "@/lib/cursos-store";
+import { useTurmas } from "@/lib/turmas-store";
+import { useAtividades } from "@/lib/atividades-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
@@ -47,9 +45,9 @@ export const Route = createFileRoute("/")({
 });
 
 function DashboardPage() {
-  const cursos = SEED_CURSOS;
-  const turmas = SEED_TURMAS;
-  const atividades = SEED_ATIVIDADES;
+  const cursos = useCursos();
+  const turmas = useTurmas();
+  const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
   const currentUser = useCurrentUser();
