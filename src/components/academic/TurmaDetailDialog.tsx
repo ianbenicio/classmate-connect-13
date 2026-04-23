@@ -159,6 +159,28 @@ export function TurmaDetailDialog({
           )}
         </section>
 
+        {totalAulas > 0 && (
+          <section className="mt-3">
+            <button
+              type="button"
+              onClick={() => setQuadroOpen(true)}
+              className="w-full text-left group border rounded-md p-3 bg-muted/20 hover:bg-muted/40 hover:border-primary/40 transition-colors"
+              title="Ver Quadro de Aulas"
+            >
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="uppercase tracking-wide font-medium text-muted-foreground inline-flex items-center gap-1.5">
+                  <BookOpen className="h-3.5 w-3.5" />
+                  Aulas dadas
+                </span>
+                <span className="font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                  {dadas}/{totalAulas} ({pct}%)
+                </span>
+              </div>
+              <Progress value={pct} className="h-2" />
+            </button>
+          </section>
+        )}
+
         <section className="mt-2">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
             <CalendarCheck className="h-3.5 w-3.5" />
