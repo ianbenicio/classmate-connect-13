@@ -120,12 +120,28 @@ export function AgendarAtividadeDialog({
 
   useEffect(() => {
     if (!open || !defaultSlot || !turmaSelecionada) return;
-    const idx = turmaSelecionada.horarios.findIndex(
+    // 1) Match exato (diaSemana + inicio + fim)
+    let idx = turmaSelecionada.horarios.findIndex(
       (h) =>
         h.diaSemana === defaultSlot.diaSemana &&
         h.inicio === defaultSlot.inicio &&
         h.fim === defaultSlot.fim,
     );
+    // 2) Fallback: match por diaSemana + inicio (a turma pode ter o slot
+    //    com fim ligeiramente diferente do que veio do calendário/curso)
+    if (idx < 0) {
+      idx = turmaSelecionada.horarios.findIndex(
+        (h) =>
+          h.diaSemana === defaultSlot.diaSemana &&
+          h.inicio === defaultSlot.inicio,
+      );
+    }
+    // 3) Fallback final: primeiro slot do mesmo diaSemana
+    if (idx < 0) {
+      idx = turmaSelecionada.horarios.findIndex(
+        (h) => h.diaSemana === defaultSlot.diaSemana,
+      );
+    }
     if (idx >= 0) setSlotIdx(String(idx));
   }, [open, defaultSlot, turmaSelecionada]);
 
@@ -577,6 +593,11 @@ export function AgendarAtividadeDialog({
                 <p className="text-xs text-destructive">
                   A turma não tem horário neste dia.
                 </p>
+              ) : lockTurmaEHorario && slotAtual ? (
+                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
+                  <Clock className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                  {formatHorarioSlot(slotAtual)}
+                </div>
               ) : (
                 <Select value={slotIdx} onValueChange={(v) => { setSlotIdx(v); setBlocoSelecionado(""); }} disabled={lockTurmaEHorario}>
                   <SelectTrigger>
