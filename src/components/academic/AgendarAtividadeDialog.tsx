@@ -59,6 +59,8 @@ interface Props {
   defaultTurmaId?: string;
   defaultData?: string;
   defaultSlot?: HorarioSlot;
+  /** Quando true (origem: calendário), trava turma, data e horário. */
+  lockTurmaEHorario?: boolean;
 }
 
 /** Bloco proposto/sugerido em uma data específica. */
