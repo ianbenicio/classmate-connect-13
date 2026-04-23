@@ -273,6 +273,10 @@ export interface Atividade {
 
   // Tarefa-only
   instrucoes?: string;
+
+  /** Carga horária (em minutos) que a atividade consome ao ser agendada.
+   *  0 ou ausente → "livre", não consome blocos do slot. */
+  cargaHorariaMin?: number;
 }
 
 /** Default seguro para FormulariosConfig (relatório do professor sempre ligado). */
@@ -292,6 +296,7 @@ export const FIELD_VISIBILITY: Record<string, PerfilAcesso[]> = {
   professor: ["professor", "coordenacao", "aluno", "pais"],
   prazo: ["professor", "coordenacao", "aluno", "pais"],
   descricao: ["professor", "coordenacao", "aluno", "pais"],
+  cargaHorariaMin: ["professor", "coordenacao", "aluno", "pais"],
   // Pedagógico
   objetivoResultados: ["professor", "coordenacao", "aluno", "pais"],
   resultadosEsperados: ["professor", "coordenacao", "aluno", "pais"],
