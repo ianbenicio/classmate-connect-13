@@ -111,15 +111,29 @@ export function CourseDetailDialog({
 
   const progressoCurso = useMemo(() => {
     if (!curso || totalAulasCurso === 0 || turmasDoCurso.length === 0) {
-      return { dadas: 0, total: 0, pct: 0 };
+      return { dadas: 0, total: 0, pct: 0, minDadas: 0, minTotal: 0 };
     }
     let dadas = 0;
+    let minDadas = 0;
+    const ativMap = new Map(aulasDoCurso.map((a) => [a.id, a]));
     for (const t of turmasDoCurso) {
-      dadas += aulasDadasPorTurma.get(t.id)?.size ?? 0;
+      const set = aulasDadasPorTurma.get(t.id);
+      if (!set) continue;
+      dadas += set.size;
+      for (const id of set) {
+        minDadas += ativMap.get(id)?.cargaHorariaMin ?? getDuracaoAulaMin(curso);
+      }
     }
     const total = totalAulasCurso * turmasDoCurso.length;
-    return { dadas, total, pct: Math.round((dadas / total) * 100) };
-  }, [curso, totalAulasCurso, turmasDoCurso, aulasDadasPorTurma]);
+    const minTotal = (curso.cargaHorariaTotalMin ?? 0) * turmasDoCurso.length;
+    return {
+      dadas,
+      total,
+      pct: Math.round((dadas / total) * 100),
+      minDadas,
+      minTotal,
+    };
+  }, [curso, totalAulasCurso, turmasDoCurso, aulasDadasPorTurma, aulasDoCurso]);
 
   const filtradas = useMemo(() => {
     return doCurso.filter((a) => {
