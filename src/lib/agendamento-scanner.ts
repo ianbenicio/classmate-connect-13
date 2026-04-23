@@ -18,7 +18,9 @@ import {
   type Agendamento,
   type Notificacao,
 } from "./academic-types";
-import { SEED_ALUNOS, SEED_CURSOS, SEED_TURMAS } from "./academic-seed";
+import { alunosStore } from "./alunos-store";
+import { cursosStore } from "./cursos-store";
+import { turmasStore } from "./turmas-store";
 
 const DEDUP_KEY = "app.scannerDedup";
 
