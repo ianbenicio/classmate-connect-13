@@ -156,10 +156,40 @@ function CoordenacaoPage() {
             Histórico de relatórios gerados pelo sistema.
           </p>
         </div>
-        <Button onClick={handleGerarAgora}>
-          <FileText /> Gerar exportação completa
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={handleGerarAgora} variant="outline">
+            <FileText /> Snapshot do app (seed)
+          </Button>
+          <Button
+            onClick={handleExportDbJson}
+            disabled={exportandoJson || exportandoCsv}
+          >
+            {exportandoJson ? <Loader2 className="animate-spin" /> : <Database />}
+            Exportar banco (JSON)
+          </Button>
+          <Button
+            onClick={handleExportDbCsv}
+            disabled={exportandoJson || exportandoCsv}
+            variant="secondary"
+          >
+            {exportandoCsv ? <Loader2 className="animate-spin" /> : <FileArchive />}
+            Exportar banco (CSV .zip)
+          </Button>
+        </div>
       </header>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Sobre as exportações</CardTitle>
+          <CardDescription className="text-xs leading-relaxed">
+            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as tabelas
+            (cursos, turmas, alunos, atividades, agendamentos, avaliações, relatórios, notificações,
+            habilidades). Use o JSON para reimportar em outro sistema; o ZIP de CSVs para abrir no
+            Excel/Sheets/DuckDB. <strong>Snapshot do app:</strong> dados em memória do seed — útil só
+            como backup do estado da sessão.
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
