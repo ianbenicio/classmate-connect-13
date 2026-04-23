@@ -20,13 +20,10 @@ import {
   ChevronRight,
   ClipboardCheck,
 } from "lucide-react";
-import {
-  SEED_ATIVIDADES,
-  SEED_CURSOS,
-  SEED_GRUPOS,
-  SEED_HABILIDADES,
-  SEED_TURMAS,
-} from "@/lib/academic-seed";
+import { SEED_GRUPOS, SEED_HABILIDADES } from "@/lib/academic-seed";
+import { useCursos } from "@/lib/cursos-store";
+import { useTurmas } from "@/lib/turmas-store";
+import { atividadesStore, useAtividades } from "@/lib/atividades-store";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
 import { PendingReportsDialog } from "@/components/academic/PendingReportsDialog";
@@ -57,8 +54,9 @@ export const Route = createFileRoute("/atividades")({
 });
 
 function AtividadesPage() {
-  const cursos = SEED_CURSOS;
-  const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
+  const cursos = useCursos();
+  const turmas = useTurmas();
+  const atividades = useAtividades();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
@@ -79,12 +77,7 @@ function AtividadesPage() {
   const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas.length, 0);
 
   const handleSave = (atividade: Atividade) => {
-    setAtividades((prev) => {
-      const exists = prev.some((a) => a.id === atividade.id);
-      return exists
-        ? prev.map((a) => (a.id === atividade.id ? atividade : a))
-        : [atividade, ...prev];
-    });
+    atividadesStore.upsert(atividade);
     toast.success("Atividade salva");
   };
 
@@ -100,7 +93,7 @@ function AtividadesPage() {
   };
 
   const handleDelete = (a: Atividade) => {
-    setAtividades((prev) => prev.filter((x) => x.id !== a.id));
+    atividadesStore.remove(a.id);
     toast.success("Atividade removida");
     setConfirmDelete(null);
   };
@@ -240,7 +233,7 @@ function AtividadesPage() {
         open={pendentesOpen}
         onOpenChange={setPendentesOpen}
         cursos={cursos}
-        turmas={SEED_TURMAS}
+        turmas={turmas}
         atividades={atividades}
       />
 
