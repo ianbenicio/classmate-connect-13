@@ -5,6 +5,7 @@ import { SEED_TURMAS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
+import { alunosStore } from "./alunos-store";
 
 let turmas: Turma[] = [];
 let initialized = false;
@@ -25,11 +26,12 @@ type TurmaRow = {
   descricao: string | null;
 };
 
-// Vínculo aluno↔turma do SEED, indexado pelo UUID da turma.
-// Alunos ainda em memória; mantemos para a UI continuar funcionando.
-const seedAlunosByTurmaUuid = new Map<string, string[]>(
-  SEED_TURMAS.map((t) => [toUuid(t.id), t.alunosIds]),
-);
+function alunosIdsForTurma(turmaUuid: string): string[] {
+  return alunosStore
+    .getAll()
+    .filter((a) => a.turmaId === turmaUuid)
+    .map((a) => a.id);
+}
 
 function rowToTurma(r: TurmaRow): Turma {
   return {
@@ -39,7 +41,7 @@ function rowToTurma(r: TurmaRow): Turma {
     cod: r.cod,
     data: r.data,
     horarios: (Array.isArray(r.horarios) ? r.horarios : []) as HorarioSlot[],
-    alunosIds: seedAlunosByTurmaUuid.get(r.id) ?? [],
+    alunosIds: alunosIdsForTurma(r.id),
     descricao: r.descricao ?? undefined,
   };
 }
@@ -87,6 +89,11 @@ async function ensureInit(): Promise<void> {
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;
+      // Recalcula alunosIds de cada turma sempre que alunos mudarem.
+      alunosStore.subscribe(() => {
+        turmas = turmas.map((t) => ({ ...t, alunosIds: alunosIdsForTurma(t.id) }));
+        emit();
+      });
       emit();
     });
   }
