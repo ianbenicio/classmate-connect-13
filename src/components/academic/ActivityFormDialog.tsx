@@ -724,6 +724,10 @@ export function ActivityFormDialog({
                 setPrazo={setPrazo}
                 descricao={descricao}
                 setDescricao={setDescricao}
+                cargaHoras={cargaHoras}
+                setCargaHoras={setCargaHoras}
+                cargaMin={cargaMin}
+                setCargaMin={setCargaMin}
               />
 
               <div className="space-y-2">
@@ -799,6 +803,10 @@ interface IdentificacaoFieldsProps {
   setPrazo: (s: string) => void;
   descricao: string;
   setDescricao: (s: string) => void;
+  cargaHoras: string;
+  setCargaHoras: (s: string) => void;
+  cargaMin: string;
+  setCargaMin: (s: string) => void;
 }
 
 function IdentificacaoFields({
