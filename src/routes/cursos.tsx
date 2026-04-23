@@ -21,11 +21,8 @@ import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import {
   SEED_ALUNOS,
-  SEED_ATIVIDADES,
-  SEED_CURSOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
-  SEED_TURMAS,
 } from "@/lib/academic-seed";
 import {
   addMinutesToHHMM,
@@ -39,6 +36,9 @@ import {
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import { cursosStore, useCursos } from "@/lib/cursos-store";
+import { turmasStore, useTurmas } from "@/lib/turmas-store";
+import { atividadesStore, useAtividades } from "@/lib/atividades-store";
 
 export const Route = createFileRoute("/cursos")({
   head: () => ({
@@ -60,10 +60,10 @@ export const Route = createFileRoute("/cursos")({
 });
 
 function CursosPage() {
-  const [cursos, setCursos] = useState<Curso[]>(SEED_CURSOS);
-  const [turmas, setTurmas] = useState<Turma[]>(SEED_TURMAS);
+  const cursos = useCursos();
+  const turmas = useTurmas();
   const [alunos] = useState(SEED_ALUNOS);
-  const [atividades, setAtividades] = useState<Atividade[]>(SEED_ATIVIDADES);
+  const atividades = useAtividades();
   const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
 
   const [cursoSelecionado, setCursoSelecionado] = useState<Curso | null>(null);
@@ -165,60 +165,44 @@ function CursosPage() {
   }, [atividades, agendamentos, cursos, turmas, turmasPorCurso]);
 
   const handleSaveCurso = (curso: Curso) => {
-    setCursos((prev) => {
-      const exists = prev.some((c) => c.id === curso.id);
-      return exists
-        ? prev.map((c) => (c.id === curso.id ? curso : c))
-        : [...prev, curso];
-    });
+    cursosStore.upsert(curso);
     if (cursoSelecionado?.id === curso.id) setCursoSelecionado(curso);
 
     // Migra automaticamente as turmas deste curso: recalcula o `fim` de
     // cada slot com base no novo turnoDiarioMin do curso.
     const turno = getTurnoDiarioMin(curso);
     if (turno > 0) {
-      setTurmas((prev) =>
-        prev.map((t) =>
-          t.cursoId === curso.id
-            ? {
-                ...t,
-                horarios: t.horarios.map((h) => ({
-                  ...h,
-                  fim: addMinutesToHHMM(h.inicio, turno),
-                })),
-              }
-            : t,
-        ),
+      const next = turmasStore.getAll().map((t) =>
+        t.cursoId === curso.id
+          ? {
+              ...t,
+              horarios: t.horarios.map((h) => ({
+                ...h,
+                fim: addMinutesToHHMM(h.inicio, turno),
+              })),
+            }
+          : t,
       );
+      turmasStore.setMany(next);
     }
   };
 
   const handleSave = (atividade: Atividade) => {
-    setAtividades((prev) => {
-      const exists = prev.some((a) => a.id === atividade.id);
-      return exists
-        ? prev.map((a) => (a.id === atividade.id ? atividade : a))
-        : [atividade, ...prev];
-    });
+    atividadesStore.upsert(atividade);
   };
 
   const handleDelete = (a: Atividade) => {
-    setAtividades((prev) => prev.filter((x) => x.id !== a.id));
+    atividadesStore.remove(a.id);
     toast.success("Atividade removida");
     setConfirmDelete(null);
   };
 
   const handleSaveTurma = (turma: Turma) => {
-    setTurmas((prev) => {
-      const exists = prev.some((t) => t.id === turma.id);
-      return exists
-        ? prev.map((t) => (t.id === turma.id ? turma : t))
-        : [...prev, turma];
-    });
+    turmasStore.upsert(turma);
   };
 
   const handleDeleteTurma = (t: Turma) => {
-    setTurmas((prev) => prev.filter((x) => x.id !== t.id));
+    turmasStore.remove(t.id);
     toast.success("Turma removida");
     setConfirmDeleteTurma(null);
   };
