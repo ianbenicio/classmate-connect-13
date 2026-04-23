@@ -151,39 +151,52 @@ export function ScheduleCalendar({
   );
 }
 
-// ---------- Cores por TURMA ----------
-// Paleta fixa de 16 tons (bg suave + borda + texto + barra sólida).
-// A cor é estável: derivada de hash(id da turma) → índice da paleta.
-const TURMA_PALETTE: { chip: string; bar: string }[] = [
-  { chip: "bg-blue-500/15 text-blue-700 border-blue-500/40 dark:text-blue-300", bar: "bg-blue-500" },
-  { chip: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40 dark:text-emerald-300", bar: "bg-emerald-500" },
-  { chip: "bg-amber-500/15 text-amber-700 border-amber-500/40 dark:text-amber-300", bar: "bg-amber-500" },
-  { chip: "bg-fuchsia-500/15 text-fuchsia-700 border-fuchsia-500/40 dark:text-fuchsia-300", bar: "bg-fuchsia-500" },
-  { chip: "bg-rose-500/15 text-rose-700 border-rose-500/40 dark:text-rose-300", bar: "bg-rose-500" },
-  { chip: "bg-cyan-500/15 text-cyan-700 border-cyan-500/40 dark:text-cyan-300", bar: "bg-cyan-500" },
-  { chip: "bg-violet-500/15 text-violet-700 border-violet-500/40 dark:text-violet-300", bar: "bg-violet-500" },
-  { chip: "bg-orange-500/15 text-orange-700 border-orange-500/40 dark:text-orange-300", bar: "bg-orange-500" },
-  { chip: "bg-lime-500/15 text-lime-700 border-lime-500/40 dark:text-lime-300", bar: "bg-lime-500" },
-  { chip: "bg-pink-500/15 text-pink-700 border-pink-500/40 dark:text-pink-300", bar: "bg-pink-500" },
-  { chip: "bg-teal-500/15 text-teal-700 border-teal-500/40 dark:text-teal-300", bar: "bg-teal-500" },
-  { chip: "bg-indigo-500/15 text-indigo-700 border-indigo-500/40 dark:text-indigo-300", bar: "bg-indigo-500" },
-  { chip: "bg-yellow-500/15 text-yellow-700 border-yellow-500/40 dark:text-yellow-300", bar: "bg-yellow-500" },
-  { chip: "bg-sky-500/15 text-sky-700 border-sky-500/40 dark:text-sky-300", bar: "bg-sky-500" },
-  { chip: "bg-red-500/15 text-red-700 border-red-500/40 dark:text-red-300", bar: "bg-red-500" },
-  { chip: "bg-green-500/15 text-green-700 border-green-500/40 dark:text-green-300", bar: "bg-green-500" },
-];
+// ---------- Cores por CURSO + variação por TURMA ----------
+// Cada curso tem um "hue" base. As turmas do mesmo curso recebem variações
+// determinísticas de matiz/saturação/luminosidade derivadas do hash do id.
+const CURSO_HUES: Record<string, number> = {
+  MP: 220, // azul
+  GP: 150, // verde
+  AD: 35,  // âmbar
+  RB: 295, // fúcsia
+};
+const FALLBACK_HUES = [0, 200, 270, 110, 50, 320, 180, 25];
 
 function hashStr(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return h;
 }
-export function turmaColor(turmaId: string) {
-  return TURMA_PALETTE[hashStr(turmaId) % TURMA_PALETTE.length];
+
+function cursoHue(curso: { id: string; cod?: string } | undefined, fallbackId: string): number {
+  if (curso?.cod && CURSO_HUES[curso.cod] !== undefined) return CURSO_HUES[curso.cod];
+  const key = curso?.id ?? fallbackId;
+  return FALLBACK_HUES[hashStr(key) % FALLBACK_HUES.length];
 }
-function turmaChipClass(turmaId: string) {
-  return turmaColor(turmaId).chip;
+
+/** Estilos inline para chip de turma — base do curso + variação por turma. */
+export function turmaColor(
+  turma: { id: string; cursoId: string },
+  curso?: { id: string; cod?: string },
+) {
+  const hue = cursoHue(curso, turma.cursoId);
+  const h = hashStr(turma.id);
+  const dh = (h % 25) - 12;            // -12..+12 matiz
+  const dl = ((h >> 5) % 31) - 15;     // -15..+15 luminosidade
+  const ds = ((h >> 10) % 21) - 10;    // -10..+10 saturação
+  const finalHue = (hue + dh + 360) % 360;
+  const sat = Math.max(45, Math.min(85, 65 + ds));
+  const lum = Math.max(40, Math.min(70, 55 + dl));
+  return {
+    bar: { backgroundColor: `hsl(${finalHue} ${sat}% ${lum}%)` } as React.CSSProperties,
+    chip: {
+      backgroundColor: `hsl(${finalHue} ${sat}% ${lum}% / 0.15)`,
+      borderColor: `hsl(${finalHue} ${sat}% ${lum}% / 0.5)`,
+      color: `hsl(${finalHue} ${Math.min(90, sat + 10)}% ${Math.max(28, lum - 22)}%)`,
+    } as React.CSSProperties,
+  };
 }
+
 
 // ---------- Estados visuais por estado de slot ----------
 const ESTADO_LABEL: Record<SlotEstado, string> = {
@@ -212,7 +225,8 @@ function StateBadge({ estado }: { estado: SlotEstado }) {
   }
 }
 
-function slotChipClasses(estado: SlotEstado, turmaId: string) {
+/** Classe (apenas estados especiais). vazio_futuro/passado usam cor inline da turma. */
+function slotChipClasses(estado: SlotEstado): string {
   switch (estado) {
     case "agendado":
       return "border-primary/50 bg-primary/10 text-foreground";
@@ -226,7 +240,7 @@ function slotChipClasses(estado: SlotEstado, turmaId: string) {
       return "border-muted bg-muted/30 text-muted-foreground";
     case "vazio_futuro":
     default:
-      return turmaChipClass(turmaId);
+      return "";
   }
 }
 
@@ -331,8 +345,10 @@ function SlotChip({
     headerEstadoSrc,
     now,
   );
-  const headerClass = slotChipClasses(headerEstado, turma.id);
-  const turmaBar = turmaColor(turma.id).bar;
+  const headerClass = slotChipClasses(headerEstado);
+  const colors = turmaColor(turma, curso);
+  // Aplica a cor da turma só quando o estado não tem cor própria (vazio_futuro).
+  const useTurmaColor = headerEstado === "vazio_futuro";
 
   const handleHeaderClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -352,12 +368,14 @@ function SlotChip({
         headerClass,
         compact && "p-0.5 pl-1 space-y-0.5",
       )}
+      style={useTurmaColor ? colors.chip : undefined}
       title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
     >
-      {/* Barra lateral identificadora da turma (cor única) */}
+      {/* Barra lateral identificadora da turma (cor do curso + variação) */}
       <span
         aria-hidden
-        className={cn("absolute left-0 top-0 bottom-0 w-1", turmaBar)}
+        className="absolute left-0 top-0 bottom-0 w-1"
+        style={colors.bar}
       />
       {/* Cabeçalho clicável: abre dialog de detalhes da turma/dia */}
       <button
