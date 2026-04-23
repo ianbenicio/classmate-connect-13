@@ -20,7 +20,6 @@ import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import {
-  SEED_ALUNOS,
   SEED_GRUPOS,
   SEED_HABILIDADES,
 } from "@/lib/academic-seed";
