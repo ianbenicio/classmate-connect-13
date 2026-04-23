@@ -20,7 +20,8 @@ import { useAlunos } from "@/lib/alunos-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
-import { useAgendamentos } from "@/lib/agendamentos-store";
+import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
+import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useCurrentUser } from "@/lib/auth-store";
 import type { Agendamento, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
@@ -63,6 +64,12 @@ function DashboardPage() {
     agendamento: Agendamento;
     turma: Turma;
     curso: Curso;
+  } | null>(null);
+  const [diaDetailCtx, setDiaDetailCtx] = useState<{
+    curso: Curso;
+    turma: Turma;
+    date: Date;
+    slot: HorarioSlot;
   } | null>(null);
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
@@ -149,6 +156,33 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            onCellHeaderClick={({ turma, date, inicio, fim, diaSemana }) => {
+              const curso = cursoMap.get(turma.cursoId);
+              if (!curso) return;
+              setDiaDetailCtx({
+                curso,
+                turma,
+                date,
+                slot: { diaSemana, inicio, fim },
+              });
+            }}
+            onRemoverAgendamento={(agendamento, turma) => {
+              const isOwner =
+                currentUser.role === "admin" ||
+                agendamento.criadoPorUserId === currentUser.id;
+              if (!isOwner) {
+                toast.info("Apenas o professor que agendou pode remover.");
+                return;
+              }
+              if (
+                !window.confirm(
+                  "Remover este agendamento? O slot ficará disponível novamente.",
+                )
+              )
+                return;
+              agendamentosStore.remove(agendamento.id);
+              toast.success("Agendamento removido.");
+            }}
             onRegistrarRelatorio={(agendamento, turma) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
@@ -178,21 +212,23 @@ function DashboardPage() {
               }
 
               if ((estado === "agendado" || estado === "atrasado") && agendamento) {
-                const podeRegistrar =
-                  currentUser.role === "admin" ||
-                  agendamento.criadoPorUserId === currentUser.id;
-                if (!podeRegistrar) {
-                  toast.info(
-                    `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
-                  );
-                  return;
-                }
-                setRelatorioCtx({ agendamento, turma, curso });
+                // Clique no slot ocupado abre o dialog de detalhes (menu Ver/Remover/Relatório)
+                setDiaDetailCtx({
+                  curso,
+                  turma,
+                  date,
+                  slot: { diaSemana, inicio, fim },
+                });
                 return;
               }
 
               if (estado === "concluido") {
-                toast.success("Relatório já registrado para este slot.");
+                setDiaDetailCtx({
+                  curso,
+                  turma,
+                  date,
+                  slot: { diaSemana, inicio, fim },
+                });
               }
             }}
           />
@@ -360,6 +396,52 @@ function DashboardPage() {
         curso={relatorioCtx?.curso}
         atividades={atividades}
       />
+
+      {diaDetailCtx && (
+        <TurmaDiaDetailDialog
+          open
+          onOpenChange={(o) => !o && setDiaDetailCtx(null)}
+          curso={diaDetailCtx.curso}
+          turma={diaDetailCtx.turma}
+          date={diaDetailCtx.date}
+          slot={diaDetailCtx.slot}
+          agendamentos={agendamentos}
+          atividades={atividades}
+          onAgendar={(blocoIndex) => {
+            setAgendarCtx({
+              curso: diaDetailCtx.curso,
+              turma: diaDetailCtx.turma,
+              data: format(diaDetailCtx.date, "yyyy-MM-dd"),
+              slot: diaDetailCtx.slot,
+            });
+          }}
+          onRegistrarRelatorio={(agendamento) => {
+            setRelatorioCtx({
+              agendamento,
+              turma: diaDetailCtx.turma,
+              curso: diaDetailCtx.curso,
+            });
+          }}
+          onRemoverAgendamento={(agendamento) => {
+            const isOwner =
+              currentUser.role === "admin" ||
+              agendamento.criadoPorUserId === currentUser.id;
+            if (!isOwner) {
+              toast.info("Apenas o professor que agendou pode remover.");
+              return;
+            }
+            if (
+              !window.confirm(
+                "Remover este agendamento? O slot ficará disponível novamente.",
+              )
+            )
+              return;
+            agendamentosStore.remove(agendamento.id);
+            toast.success("Agendamento removido.");
+            setDiaDetailCtx(null);
+          }}
+        />
+      )}
     </div>
   );
 }

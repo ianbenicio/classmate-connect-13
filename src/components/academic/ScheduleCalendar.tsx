@@ -42,12 +42,22 @@ interface SlotClickPayload {
   blocoIndex?: number;
 }
 
+interface CellHeaderClickPayload {
+  turma: Turma;
+  date: Date;
+  inicio: string;
+  fim: string;
+  diaSemana: DiaSemana;
+}
+
 interface Props {
   turmas: Turma[];
   cursos: Curso[];
   agendamentos: Agendamento[];
   onSlotClick?: (payload: SlotClickPayload) => void;
   onRegistrarRelatorio?: (agendamento: Agendamento, turma: Turma) => void;
+  onCellHeaderClick?: (payload: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (agendamento: Agendamento, turma: Turma) => void;
 }
 
 function turmasNoDia(turmas: Turma[], date: Date) {
@@ -63,7 +73,15 @@ function turmasNoDia(turmas: Turma[], date: Date) {
   return items.sort((a, b) => a.inicio.localeCompare(b.inicio));
 }
 
-export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, onRegistrarRelatorio }: Props) {
+export function ScheduleCalendar({
+  turmas,
+  cursos,
+  agendamentos,
+  onSlotClick,
+  onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
+}: Props) {
   const [refDate, setRefDate] = useState(new Date());
 
   const cursoMap = useMemo(
@@ -110,6 +128,8 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, on
           onDayClick={(d) => setRefDate(d)}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
+          onCellHeaderClick={onCellHeaderClick}
+          onRemoverAgendamento={onRemoverAgendamento}
         />
       </TabsContent>
 
@@ -121,6 +141,8 @@ export function ScheduleCalendar({ turmas, cursos, agendamentos, onSlotClick, on
           agendamentos={agendamentos}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
+          onCellHeaderClick={onCellHeaderClick}
+          onRemoverAgendamento={onRemoverAgendamento}
         />
       </TabsContent>
 
@@ -249,6 +271,8 @@ function SlotChip({
   compact = false,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   turma: Turma;
   curso: Curso | undefined;
@@ -260,6 +284,8 @@ function SlotChip({
   compact?: boolean;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const currentUser = useCurrentUser();
   const now = new Date();
@@ -270,7 +296,6 @@ function SlotChip({
     duracaoAulaMin,
   );
 
-  // Mapa blocoIndex → agendamento que ocupa aquele bloco
   const agByBloco = new Map<number, Agendamento>();
   for (const a of agsDoSlot) {
     const start = a.blocoIndex ?? 0;
@@ -288,6 +313,17 @@ function SlotChip({
   );
   const headerClass = slotChipClasses(headerEstado, turma.cursoId);
 
+  const handleHeaderClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCellHeaderClick?.({
+      turma,
+      date,
+      inicio: slotInicio,
+      fim: slotFim,
+      diaSemana,
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -297,8 +333,12 @@ function SlotChip({
       )}
       title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
     >
-      {/* Cabeçalho: indicador + cod turma + horário */}
-      <div className="flex items-center gap-1 px-0.5">
+      {/* Cabeçalho clicável: abre dialog de detalhes da turma/dia */}
+      <button
+        type="button"
+        onClick={handleHeaderClick}
+        className="w-full flex items-center gap-1 px-0.5 hover:opacity-80 transition-opacity"
+      >
         <StateBadge estado={headerEstado} />
         <span className={cn("font-semibold truncate", compact ? "text-[10px]" : "text-xs")}>
           {turma.cod}
@@ -306,37 +346,47 @@ function SlotChip({
         <span className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}>
           {slotInicio}
         </span>
-      </div>
+      </button>
 
-      {/* Grid de blocos: 1 coluna por bloco */}
+      {/* Grid de slots: 1 coluna por bloco */}
       <div
-        className="grid gap-0.5"
+        className={cn(
+          "grid gap-0.5",
+          compact ? "gap-0.5" : "gap-1",
+        )}
         style={{ gridTemplateColumns: `repeat(${totalBlocos}, minmax(0, 1fr))` }}
       >
         {Array.from({ length: totalBlocos }).map((_, idx) => {
           const ag = agByBloco.get(idx);
           const blocoStart = blocoInicio({ inicio: slotInicio }, idx, duracaoAulaMin);
           const blocoEnd = blocoFim({ inicio: slotInicio }, idx, duracaoAulaMin);
-
-          // Estado deste bloco específico
           const estadoBloco = computeSlotEstado(dataKey, blocoEnd, ag, now);
           const clickable = isClickable(estadoBloco);
 
-          // Se tem agendamento, mostra prof + botão relatório
           if (ag) {
             const isOwner =
               currentUser.role === "admin" ||
               ag.criadoPorUserId === currentUser.id;
+            const startOfDay = new Date(`${dataKey}T00:00:00`);
+            const slotEnd24 = new Date(
+              new Date(`${dataKey}T${blocoEnd}:00`).getTime() +
+                24 * 60 * 60 * 1000,
+            );
+            const dentroJanelaRelatorio =
+              now >= startOfDay && now <= slotEnd24;
             const podeRegistrar =
               isOwner &&
-              (estadoBloco === "agendado" || estadoBloco === "atrasado");
+              dentroJanelaRelatorio &&
+              ag.status !== "concluido";
             const profLabel = ag.criadoPorNome ?? ag.professor ?? "—";
+            // Código resumido da 1ª atividade
+            const codigoAula = ag.atividadeIds[0]?.slice(0, 8) ?? "";
 
             return (
               <div
                 key={idx}
                 className={cn(
-                  "rounded border flex items-center gap-1 px-1 py-0.5 min-w-0",
+                  "rounded border flex flex-col gap-0.5 p-1 min-w-0",
                   estadoBloco === "concluido"
                     ? "bg-emerald-500/20 border-emerald-500/40"
                     : estadoBloco === "atrasado"
@@ -349,6 +399,7 @@ function SlotChip({
               >
                 <button
                   type="button"
+                  disabled={!clickable}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!clickable) return;
@@ -363,7 +414,10 @@ function SlotChip({
                       blocoIndex: idx,
                     });
                   }}
-                  className="flex items-center gap-1 min-w-0 flex-1 text-left hover:brightness-110"
+                  className={cn(
+                    "flex items-center gap-1 min-w-0 text-left",
+                    clickable && "hover:brightness-110",
+                  )}
                 >
                   <FileText
                     className={cn(
@@ -373,10 +427,15 @@ function SlotChip({
                         : "text-primary",
                     )}
                   />
-                  <span className={cn("truncate", compact ? "text-[9px]" : "text-[10px]")}>
+                  <span className={cn("truncate font-medium", compact ? "text-[9px]" : "text-[10px]")}>
                     {profLabel}
                   </span>
                 </button>
+                {!compact && codigoAula && (
+                  <span className="text-[9px] font-mono text-muted-foreground truncate px-0.5">
+                    {codigoAula}
+                  </span>
+                )}
                 {podeRegistrar && onRegistrarRelatorio && (
                   <button
                     type="button"
@@ -384,18 +443,39 @@ function SlotChip({
                       e.stopPropagation();
                       onRegistrarRelatorio(ag, turma);
                     }}
-                    className="shrink-0 inline-flex items-center justify-center h-4 w-4 rounded hover:bg-foreground/10"
-                    aria-label="Registrar relatório"
-                    title="Registrar relatório"
+                    className={cn(
+                      "mt-0.5 inline-flex items-center justify-center gap-1 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors px-1 py-0.5 font-medium",
+                      compact ? "text-[8px]" : "text-[9px]",
+                    )}
+                    aria-label="Registrar Relatório de Aula"
+                    title="Registrar Relatório de Aula"
                   >
                     <Send className="h-2.5 w-2.5" />
+                    Relatório
+                  </button>
+                )}
+                {isOwner && estadoBloco !== "concluido" && onRemoverAgendamento && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoverAgendamento(ag, turma);
+                    }}
+                    className={cn(
+                      "inline-flex items-center justify-center rounded border border-destructive/40 text-destructive hover:bg-destructive/10 transition-colors px-1 py-0.5",
+                      compact ? "text-[8px]" : "text-[9px]",
+                    )}
+                    aria-label="Remover agendamento"
+                    title="Remover agendamento (libera o slot)"
+                  >
+                    Remover
                   </button>
                 )}
               </div>
             );
           }
 
-          // Bloco vazio — clicável para agendar (ou desabilitado se passou)
+          // Bloco vazio — clicável para agendar
           return (
             <button
               key={idx}
@@ -416,11 +496,18 @@ function SlotChip({
                 });
               }}
               className={cn(
-                "rounded border border-dashed bg-background/40 hover:bg-background/70 transition-colors min-h-[18px]",
+                "rounded border border-dashed bg-background/40 hover:bg-background/70 transition-colors flex items-center justify-center",
+                compact ? "min-h-[18px]" : "min-h-[44px]",
                 !clickable && "opacity-50 cursor-not-allowed",
               )}
-              title={`${blocoStart}–${blocoEnd} — ${ESTADO_LABEL[estadoBloco]}`}
-            />
+              title={`${blocoStart}–${blocoEnd} — Disponível`}
+            >
+              {!compact && (
+                <span className="text-[9px] text-muted-foreground">
+                  + Aula {idx + 1}
+                </span>
+              )}
+            </button>
           );
         })}
       </div>
@@ -439,6 +526,8 @@ function MonthView({
   onDayClick,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   refDate: Date;
   turmas: Turma[];
@@ -447,6 +536,8 @@ function MonthView({
   onDayClick: (d: Date) => void;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const monthStart = startOfMonth(refDate);
   const monthEnd = endOfMonth(refDate);
@@ -518,6 +609,8 @@ function MonthView({
                       compact
                       onSlotClick={onSlotClick}
                       onRegistrarRelatorio={onRegistrarRelatorio}
+                      onCellHeaderClick={onCellHeaderClick}
+                      onRemoverAgendamento={onRemoverAgendamento}
                     />
                   );
                 })}
@@ -555,6 +648,8 @@ function WeekView({
   agendamentos,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   refDate: Date;
   turmas: Turma[];
@@ -562,6 +657,8 @@ function WeekView({
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
@@ -637,6 +734,8 @@ function WeekView({
               agendamentos={agendamentos}
               onSlotClick={onSlotClick}
               onRegistrarRelatorio={onRegistrarRelatorio}
+              onCellHeaderClick={onCellHeaderClick}
+              onRemoverAgendamento={onRemoverAgendamento}
             />
           ))}
         </div>
@@ -653,6 +752,8 @@ function FragmentRow({
   agendamentos,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   hour: number;
   weekDates: Date[];
@@ -661,6 +762,8 @@ function FragmentRow({
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
   return (
@@ -694,6 +797,8 @@ function FragmentRow({
                   agsDoSlot={ags}
                   onSlotClick={onSlotClick}
                   onRegistrarRelatorio={onRegistrarRelatorio}
+                  onCellHeaderClick={onCellHeaderClick}
+                  onRemoverAgendamento={onRemoverAgendamento}
                 />
               );
             })}
