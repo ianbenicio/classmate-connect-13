@@ -721,6 +721,15 @@ export function AlunoDetailDialog({
           curso={curso}
         />
       )}
+
+      <QuadroAulasDialog
+        open={quadroOpen}
+        onOpenChange={setQuadroOpen}
+        curso={curso ?? null}
+        atividades={atividades}
+        aluno={aluno}
+        aulasDadasIds={aulasDadasTurmaIds}
+      />
     </Dialog>
   );
 }
