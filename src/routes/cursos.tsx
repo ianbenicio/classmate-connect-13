@@ -19,6 +19,8 @@ import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
+import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
+import { Progress } from "@/components/ui/progress";
 import {
   SEED_GRUPOS,
   SEED_HABILIDADES,
