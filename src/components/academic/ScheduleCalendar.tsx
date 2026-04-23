@@ -583,6 +583,8 @@ function WeekView({
   agendamentos,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   refDate: Date;
   turmas: Turma[];
@@ -590,6 +592,8 @@ function WeekView({
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const weekStart = startOfWeek(refDate, { weekStartsOn: 1 });
   const weekDates = WEEK_DAYS.map((_, i) => addDays(weekStart, i));
@@ -665,6 +669,8 @@ function WeekView({
               agendamentos={agendamentos}
               onSlotClick={onSlotClick}
               onRegistrarRelatorio={onRegistrarRelatorio}
+              onCellHeaderClick={onCellHeaderClick}
+              onRemoverAgendamento={onRemoverAgendamento}
             />
           ))}
         </div>
@@ -681,6 +687,8 @@ function FragmentRow({
   agendamentos,
   onSlotClick,
   onRegistrarRelatorio,
+  onCellHeaderClick,
+  onRemoverAgendamento,
 }: {
   hour: number;
   weekDates: Date[];
@@ -689,6 +697,8 @@ function FragmentRow({
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
+  onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
+  onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
   const hh = String(hour).padStart(2, "0");
   return (
@@ -722,6 +732,8 @@ function FragmentRow({
                   agsDoSlot={ags}
                   onSlotClick={onSlotClick}
                   onRegistrarRelatorio={onRegistrarRelatorio}
+                  onCellHeaderClick={onCellHeaderClick}
+                  onRemoverAgendamento={onRemoverAgendamento}
                 />
               );
             })}
