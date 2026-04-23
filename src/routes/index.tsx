@@ -156,6 +156,33 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            onCellHeaderClick={({ turma, date, inicio, fim, diaSemana }) => {
+              const curso = cursoMap.get(turma.cursoId);
+              if (!curso) return;
+              setDiaDetailCtx({
+                curso,
+                turma,
+                date,
+                slot: { diaSemana, inicio, fim },
+              });
+            }}
+            onRemoverAgendamento={(agendamento, turma) => {
+              const isOwner =
+                currentUser.role === "admin" ||
+                agendamento.criadoPorUserId === currentUser.id;
+              if (!isOwner) {
+                toast.info("Apenas o professor que agendou pode remover.");
+                return;
+              }
+              if (
+                !window.confirm(
+                  "Remover este agendamento? O slot ficará disponível novamente.",
+                )
+              )
+                return;
+              agendamentosStore.remove(agendamento.id);
+              toast.success("Agendamento removido.");
+            }}
             onRegistrarRelatorio={(agendamento, turma) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
@@ -185,21 +212,23 @@ function DashboardPage() {
               }
 
               if ((estado === "agendado" || estado === "atrasado") && agendamento) {
-                const podeRegistrar =
-                  currentUser.role === "admin" ||
-                  agendamento.criadoPorUserId === currentUser.id;
-                if (!podeRegistrar) {
-                  toast.info(
-                    `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
-                  );
-                  return;
-                }
-                setRelatorioCtx({ agendamento, turma, curso });
+                // Clique no slot ocupado abre o dialog de detalhes (menu Ver/Remover/Relatório)
+                setDiaDetailCtx({
+                  curso,
+                  turma,
+                  date,
+                  slot: { diaSemana, inicio, fim },
+                });
                 return;
               }
 
               if (estado === "concluido") {
-                toast.success("Relatório já registrado para este slot.");
+                setDiaDetailCtx({
+                  curso,
+                  turma,
+                  date,
+                  slot: { diaSemana, inicio, fim },
+                });
               }
             }}
           />
