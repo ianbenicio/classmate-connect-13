@@ -70,6 +70,7 @@ export function CourseDetailDialog({
   onEditTurma,
   onDeleteTurma,
   onTurmaClick,
+  onShowQuadro,
 }: Props) {
   const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>("todos");
   const [viewing, setViewing] = useState<Atividade | null>(null);
@@ -204,14 +205,19 @@ export function CourseDetailDialog({
           </dl>
         )}
 
-        {/* Progresso geral do curso */}
+        {/* Progresso geral do curso — clicável abre o Quadro de Aulas */}
         {curso && totalAulasCurso > 0 && turmasDoCurso.length > 0 && (
-          <div className="py-3 border-b">
+          <button
+            type="button"
+            onClick={() => onShowQuadro?.(curso)}
+            className="py-3 border-b w-full text-left group hover:bg-muted/30 transition-colors -mx-1 px-1 rounded"
+            title="Abrir Quadro de Aulas"
+          >
             <div className="flex items-center justify-between mb-1.5 text-xs">
               <span className="font-medium text-muted-foreground uppercase tracking-wide">
                 Progresso do curso
               </span>
-              <span className="font-mono text-muted-foreground">
+              <span className="font-mono text-muted-foreground group-hover:text-primary transition-colors">
                 {progressoCurso.dadas}/{progressoCurso.total} aulas ({progressoCurso.pct}%)
                 {progressoCurso.minTotal > 0 && (
                   <> · {formatMinutos(progressoCurso.minDadas)}/{formatMinutos(progressoCurso.minTotal)}</>
@@ -219,7 +225,7 @@ export function CourseDetailDialog({
               </span>
             </div>
             <Progress value={progressoCurso.pct} className="h-2" />
-          </div>
+          </button>
         )}
 
         {/* Turmas */}
