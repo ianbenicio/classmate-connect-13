@@ -355,6 +355,7 @@ export type Database = {
           duracao_aula_min: number
           id: string
           nome: string
+          turno_diario_min: number
           updated_at: string
         }
         Insert: {
@@ -365,6 +366,7 @@ export type Database = {
           duracao_aula_min?: number
           id?: string
           nome: string
+          turno_diario_min?: number
           updated_at?: string
         }
         Update: {
@@ -375,6 +377,7 @@ export type Database = {
           duracao_aula_min?: number
           id?: string
           nome?: string
+          turno_diario_min?: number
           updated_at?: string
         }
         Relationships: []

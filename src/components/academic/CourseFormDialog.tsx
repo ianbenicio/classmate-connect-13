@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import type { Curso } from "@/lib/academic-types";
+import { formatMinutos, type Curso } from "@/lib/academic-types";
 
 interface Props {
   open: boolean;
@@ -28,6 +28,8 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
   const [cargaMin, setCargaMin] = useState<string>("");
   const [duracaoHoras, setDuracaoHoras] = useState<string>("1");
   const [duracaoMin, setDuracaoMin] = useState<string>("0");
+  const [turnoHoras, setTurnoHoras] = useState<string>("1");
+  const [turnoMin, setTurnoMin] = useState<string>("0");
 
   useEffect(() => {
     if (open) {
@@ -40,8 +42,33 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       const dur = editing?.duracaoAulaMin ?? 60;
       setDuracaoHoras(String(Math.floor(dur / 60)));
       setDuracaoMin(String(dur % 60));
+      const turno = editing?.turnoDiarioMin ?? dur;
+      setTurnoHoras(String(Math.floor(turno / 60)));
+      setTurnoMin(String(turno % 60));
     }
   }, [open, editing]);
+
+  const duracaoTotal = useMemo(
+    () =>
+      (parseInt(duracaoHoras || "0", 10) || 0) * 60 +
+      (parseInt(duracaoMin || "0", 10) || 0),
+    [duracaoHoras, duracaoMin],
+  );
+
+  const turnoTotal = useMemo(
+    () =>
+      (parseInt(turnoHoras || "0", 10) || 0) * 60 +
+      (parseInt(turnoMin || "0", 10) || 0),
+    [turnoHoras, turnoMin],
+  );
+
+  const blocosCalculados = useMemo(() => {
+    if (turnoTotal <= 0 || duracaoTotal <= 0) return 0;
+    return Math.floor(turnoTotal / duracaoTotal);
+  }, [turnoTotal, duracaoTotal]);
+
+  const turnoDivisivel =
+    turnoTotal > 0 && duracaoTotal > 0 && turnoTotal % duracaoTotal === 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,11 +79,16 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
     const cargaTotalMin =
       (parseInt(cargaHoras || "0", 10) || 0) * 60 +
       (parseInt(cargaMin || "0", 10) || 0);
-    const duracaoTotal =
-      (parseInt(duracaoHoras || "0", 10) || 0) * 60 +
-      (parseInt(duracaoMin || "0", 10) || 0);
     if (duracaoTotal <= 0) {
       toast.error("A duração padrão da aula deve ser maior que zero.");
+      return;
+    }
+    if (turnoTotal <= 0) {
+      toast.error("O turno diário deve ser maior que zero.");
+      return;
+    }
+    if (turnoTotal < duracaoTotal) {
+      toast.error("O turno diário não pode ser menor que a duração da aula.");
       return;
     }
     onSave({
@@ -66,6 +98,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       descricao: descricao.trim() || undefined,
       cargaHorariaTotalMin: cargaTotalMin,
       duracaoAulaMin: duracaoTotal,
+      turnoDiarioMin: turnoTotal,
     });
     toast.success(editing ? "Curso atualizado!" : "Curso criado!");
     onOpenChange(false);
@@ -73,7 +106,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editing ? "Editar Curso" : "Novo Curso"}</DialogTitle>
         </DialogHeader>
@@ -128,6 +161,38 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                 Tempo total previsto do curso. 0 = sem controle.
               </p>
             </div>
+
+            <div className="space-y-2 col-span-2">
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                Turno diário *
+              </Label>
+              <div className="flex items-end gap-2">
+                <div className="flex-1 space-y-1">
+                  <Label className="text-[10px] text-muted-foreground">Horas</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={turnoHoras}
+                    onChange={(e) => setTurnoHoras(e.target.value)}
+                  />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <Label className="text-[10px] text-muted-foreground">Minutos</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={59}
+                    value={turnoMin}
+                    onChange={(e) => setTurnoMin(e.target.value)}
+                  />
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                Quanto dura cada dia de aula deste curso. Define o tamanho dos
+                slots semanais da turma. Ex.: 2h30.
+              </p>
+            </div>
+
             <div className="space-y-2 col-span-2">
               <Label className="text-xs uppercase tracking-wide text-muted-foreground">
                 Duração padrão da aula *
@@ -154,9 +219,30 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                 </div>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                Tamanho de cada bloco de aula. Define como o slot da turma é dividido.
+                Tamanho de cada bloco de aula dentro do turno. Ex.: 1h15.
               </p>
             </div>
+
+            {turnoTotal > 0 && duracaoTotal > 0 && (
+              <div
+                className={`col-span-2 rounded-md border p-2 text-xs ${
+                  turnoDivisivel
+                    ? "bg-primary/5 border-primary/30 text-foreground"
+                    : "bg-destructive/10 border-destructive/30 text-destructive"
+                }`}
+              >
+                Turno <strong>{formatMinutos(turnoTotal)}</strong> ÷ Aula{" "}
+                <strong>{formatMinutos(duracaoTotal)}</strong> ={" "}
+                <strong>{blocosCalculados} aula(s) por dia</strong>
+                {!turnoDivisivel && (
+                  <div className="mt-1 text-[10px]">
+                    ⚠️ A divisão não é exata —{" "}
+                    {turnoTotal - blocosCalculados * duracaoTotal} min de sobra
+                    serão ignorados.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

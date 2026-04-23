@@ -27,12 +27,14 @@ import {
   SEED_HABILIDADES,
   SEED_TURMAS,
 } from "@/lib/academic-seed";
-import type {
-  Atividade,
-  AtividadeTipo,
-  Curso,
-  Habilidade,
-  Turma,
+import {
+  addMinutesToHHMM,
+  getTurnoDiarioMin,
+  type Atividade,
+  type AtividadeTipo,
+  type Curso,
+  type Habilidade,
+  type Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
@@ -170,6 +172,25 @@ function CursosPage() {
         : [...prev, curso];
     });
     if (cursoSelecionado?.id === curso.id) setCursoSelecionado(curso);
+
+    // Migra automaticamente as turmas deste curso: recalcula o `fim` de
+    // cada slot com base no novo turnoDiarioMin do curso.
+    const turno = getTurnoDiarioMin(curso);
+    if (turno > 0) {
+      setTurmas((prev) =>
+        prev.map((t) =>
+          t.cursoId === curso.id
+            ? {
+                ...t,
+                horarios: t.horarios.map((h) => ({
+                  ...h,
+                  fim: addMinutesToHHMM(h.inicio, turno),
+                })),
+              }
+            : t,
+        ),
+      );
+    }
   };
 
   const handleSave = (atividade: Atividade) => {
@@ -341,6 +362,7 @@ function CursosPage() {
           open={turmaFormOpen}
           onOpenChange={setTurmaFormOpen}
           cursoId={cursoSelecionado.id}
+          curso={cursoSelecionado}
           editing={editingTurma}
           onSave={handleSaveTurma}
         />
