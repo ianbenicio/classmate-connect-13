@@ -9,13 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as CursosRouteImport } from './routes/cursos'
 import { Route as CoordenacaoRouteImport } from './routes/coordenacao'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AtividadesRouteImport } from './routes/atividades'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CursosRoute = CursosRouteImport.update({
   id: '/cursos',
   path: '/cursos',
@@ -24,6 +31,11 @@ const CursosRoute = CursosRouteImport.update({
 const CoordenacaoRoute = CoordenacaoRouteImport.update({
   id: '/coordenacao',
   path: '/coordenacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtividadesRoute = AtividadesRouteImport.update({
@@ -51,16 +63,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
+  '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
+  '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRoutesById {
@@ -68,8 +84,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
+  '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRouteTypes {
@@ -78,24 +96,30 @@ export interface FileRouteTypes {
     | '/'
     | '/alunos'
     | '/atividades'
+    | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/reset-password'
     | '/atividades/$cursoId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/alunos'
     | '/atividades'
+    | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/reset-password'
     | '/atividades/$cursoId'
   id:
     | '__root__'
     | '/'
     | '/alunos'
     | '/atividades'
+    | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/reset-password'
     | '/atividades/$cursoId'
   fileRoutesById: FileRoutesById
 }
@@ -103,12 +127,21 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlunosRoute: typeof AlunosRoute
   AtividadesRoute: typeof AtividadesRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CoordenacaoRoute: typeof CoordenacaoRoute
   CursosRoute: typeof CursosRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cursos': {
       id: '/cursos'
       path: '/cursos'
@@ -121,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/coordenacao'
       fullPath: '/coordenacao'
       preLoaderRoute: typeof CoordenacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/atividades': {
@@ -170,9 +210,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlunosRoute: AlunosRoute,
   AtividadesRoute: AtividadesRouteWithChildren,
+  AuthRoute: AuthRoute,
   CoordenacaoRoute: CoordenacaoRoute,
   CursosRoute: CursosRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
