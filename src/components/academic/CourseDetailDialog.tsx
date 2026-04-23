@@ -19,6 +19,8 @@ import {
 import { Users } from "lucide-react";
 import {
   formatHorarios,
+  formatMinutos,
+  getDuracaoAulaMin,
   getGrupoNome,
   type Atividade,
   type Curso,
