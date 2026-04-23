@@ -17,7 +17,6 @@ import { Route as AtividadesRouteImport } from './routes/atividades'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
-import { Route as AtividadesRouteImport } from './routes/atividades.'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -59,11 +58,6 @@ const AtividadesCursoIdRoute = AtividadesCursoIdRouteImport.update({
   path: '/$cursoId',
   getParentRoute: () => AtividadesRoute,
 } as any)
-const AtividadesRoute = AtividadesRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AtividadesRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,17 +67,16 @@ export interface FileRoutesByFullPath {
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/atividades/': typeof AtividadesRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
+  '/atividades': typeof AtividadesRouteWithChildren
   '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/atividades': typeof AtividadesRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRoutesById {
@@ -95,7 +88,6 @@ export interface FileRoutesById {
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/atividades/': typeof AtividadesRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
 export interface FileRouteTypes {
@@ -108,17 +100,16 @@ export interface FileRouteTypes {
     | '/coordenacao'
     | '/cursos'
     | '/reset-password'
-    | '/atividades/'
     | '/atividades/$cursoId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/alunos'
+    | '/atividades'
     | '/auth'
     | '/coordenacao'
     | '/cursos'
     | '/reset-password'
-    | '/atividades'
     | '/atividades/$cursoId'
   id:
     | '__root__'
@@ -129,7 +120,6 @@ export interface FileRouteTypes {
     | '/coordenacao'
     | '/cursos'
     | '/reset-password'
-    | '/atividades/'
     | '/atividades/$cursoId'
   fileRoutesById: FileRoutesById
 }
@@ -201,23 +191,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtividadesCursoIdRouteImport
       parentRoute: typeof AtividadesRoute
     }
-    '/atividades/': {
-      id: '/atividades/'
-      path: '/'
-      fullPath: '/atividades/'
-      preLoaderRoute: typeof AtividadesRouteImport
-      parentRoute: typeof AtividadesRoute
-    }
   }
 }
 
 interface AtividadesRouteChildren {
-  AtividadesRoute: typeof AtividadesRoute
   AtividadesCursoIdRoute: typeof AtividadesCursoIdRoute
 }
 
 const AtividadesRouteChildren: AtividadesRouteChildren = {
-  AtividadesRoute: AtividadesRoute,
   AtividadesCursoIdRoute: AtividadesCursoIdRoute,
 }
 
