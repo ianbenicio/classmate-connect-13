@@ -425,6 +425,18 @@ function CursosPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <QuadroAulasDialog
+        open={!!quadroCurso}
+        onOpenChange={(open) => !open && setQuadroCurso(null)}
+        curso={quadroCurso}
+        atividades={atividades}
+        aulasDadasIds={
+          quadroCurso
+            ? aulasDadasPorCurso.get(quadroCurso.id) ?? new Set()
+            : new Set()
+        }
+      />
     </div>
   );
 }
