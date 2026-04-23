@@ -219,6 +219,10 @@ export function ActivityFormDialog({
       ? { ...formularios, relatorioProfessor: true, autoavaliacaoAluno: true }
       : formularios;
 
+    const cargaHorariaMinFinal =
+      (parseInt(cargaHoras || "0", 10) || 0) * 60 +
+      (parseInt(cargaMin || "0", 10) || 0);
+
     const atividade: Atividade = isEdit
       ? {
           ...editing!,
