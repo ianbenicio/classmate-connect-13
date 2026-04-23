@@ -473,16 +473,23 @@ export function AlunoDetailDialog({
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Coluna FREQUÊNCIA */}
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
-                      <GraduationCap className="h-3.5 w-3.5" />
-                      Frequência
-                    </h4>
-                    <span className="text-[11px] font-mono text-muted-foreground">
-                      {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
-                    </span>
-                  </div>
-                  <Progress value={freqStats.pct} className="h-2 mb-2" />
+                  <button
+                    type="button"
+                    onClick={() => setQuadroOpen(true)}
+                    className="w-full text-left group"
+                    title="Abrir Quadro de Aulas"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="text-[11px] font-semibold uppercase tracking-wide flex items-center gap-1.5">
+                        <GraduationCap className="h-3.5 w-3.5" />
+                        Frequência
+                      </h4>
+                      <span className="text-[11px] font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                        {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
+                      </span>
+                    </div>
+                    <Progress value={freqStats.pct} className="h-2 mb-2 group-hover:opacity-80 transition-opacity" />
+                  </button>
                   {aulasCurso.length === 0 ? (
                     <p className="text-xs text-muted-foreground italic">
                       Nenhuma aula no curso.
