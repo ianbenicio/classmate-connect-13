@@ -229,13 +229,23 @@ function CursosPage() {
           {cursos.map((c) => {
             const cont = contagemPorCurso.get(c.id) ?? { aulas: 0, tarefas: 0 };
             const numTurmas = turmasPorCurso.get(c.id) ?? 0;
-            
+            const dadas = aulasDadasPorCurso.get(c.id)?.size ?? 0;
+            const totalAulas = cont.aulas;
+            const pct = totalAulas > 0 ? Math.round((dadas / totalAulas) * 100) : 0;
+
             return (
-              <button
+              <div
                 key={c.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 onClick={() => setCursoSelecionado(c)}
-                className="text-left bg-card border rounded-lg p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setCursoSelecionado(c);
+                  }
+                }}
+                className="cursor-pointer text-left bg-card border rounded-lg p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all focus:outline-none focus:ring-2 focus:ring-primary/40"
               >
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline">{c.cod}</Badge>
@@ -263,7 +273,26 @@ function CursosPage() {
                     {cont.tarefas} tarefas
                   </span>
                 </div>
-              </button>
+                {totalAulas > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setQuadroCurso(c);
+                    }}
+                    className="mt-3 w-full text-left group"
+                    title="Ver Quadro de Aulas"
+                  >
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                      <span className="uppercase tracking-wide">Aulas dadas</span>
+                      <span className="font-mono group-hover:text-primary transition-colors">
+                        {dadas}/{totalAulas} ({pct}%)
+                      </span>
+                    </div>
+                    <Progress value={pct} className="h-1.5 group-hover:opacity-80 transition-opacity" />
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
