@@ -33,7 +33,7 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
+
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { cursosStore, useCursos } from "@/lib/cursos-store";
 import { turmasStore, useTurmas } from "@/lib/turmas-store";
@@ -290,6 +290,7 @@ function CursosPage() {
         curso={cursoSelecionado}
         atividades={atividades}
         turmas={turmas}
+        alunos={alunos}
         habilidadeMap={habilidadeMap}
         onOpenChange={(open) => !open && setCursoSelecionado(null)}
         onNew={(tipo) => {
