@@ -131,6 +131,9 @@ export function ActivityFormDialog({
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
+      const carga = editing.cargaHorariaMin ?? 0;
+      setCargaHoras(String(Math.floor(carga / 60)));
+      setCargaMin(String(carga % 60));
       setObjetivoResultados(editing.objetivoResultados);
       setResultadosEsperados(editing.resultadosEsperados ?? "");
       setNotasInstrutor(editing.notasInstrutor ?? "");
@@ -161,6 +164,8 @@ export function ActivityFormDialog({
       setPrazo("");
       setDescricao("");
       setProfessor("");
+      setCargaHoras("0");
+      setCargaMin("0");
       setObjetivoResultados("");
       setResultadosEsperados("");
       setNotasInstrutor("");
