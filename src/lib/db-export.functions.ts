@@ -28,7 +28,7 @@ export interface DbExportPayload {
     fonte: "lovable-cloud";
     geradoPorUserId: string;
   };
-  tabelas: Record<ExportTabela, unknown[]>;
+  tabelas: Record<ExportTabela, Record<string, unknown>[]>;
   contagens: Record<ExportTabela, number>;
 }
 
@@ -49,7 +49,7 @@ export const exportDbSnapshot = createServerFn({ method: "POST" })
       throw new Response("Acesso restrito a administradores.", { status: 403 });
     }
 
-    const tabelas = {} as Record<ExportTabela, unknown[]>;
+    const tabelas = {} as Record<ExportTabela, Record<string, unknown>[]>;
     const contagens = {} as Record<ExportTabela, number>;
 
     for (const t of TABELAS) {
@@ -63,8 +63,9 @@ export const exportDbSnapshot = createServerFn({ method: "POST" })
           status: 500,
         });
       }
-      tabelas[t] = data ?? [];
-      contagens[t] = (data ?? []).length;
+      const linhas = (data ?? []) as Record<string, unknown>[];
+      tabelas[t] = linhas;
+      contagens[t] = linhas.length;
     }
 
     return {
