@@ -99,7 +99,7 @@ function AppShell() {
               activeProps={{ className: "text-foreground font-medium" }}
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              Painel
+              Início
             </Link>
             <Link
               to="/cursos"
