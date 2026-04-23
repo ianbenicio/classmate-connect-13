@@ -154,7 +154,21 @@ export function AlunoDetailDialog({
     return m;
   }, [aluno]);
 
-  // Estatísticas
+  // Aulas que a turma do aluno já recebeu (alguma presen\u00e7a=true entre os colegas).
+  const aulasDadasTurmaIds = useMemo(() => {
+    const set = new Set<string>();
+    if (!aluno?.turmaId) return set;
+    const aulaIds = new Set(aulasCurso.map((a) => a.id));
+    for (const al of todosAlunos) {
+      if (al.turmaId !== aluno.turmaId) continue;
+      for (const r of al.aulas ?? []) {
+        if (r.presente && aulaIds.has(r.atividadeId)) set.add(r.atividadeId);
+      }
+    }
+    return set;
+  }, [aluno, todosAlunos, aulasCurso]);
+
+  // Estatísticas — denominador = total de aulas do curso.
   const freqStats = useMemo(() => {
     if (!aluno) return { presentes: 0, faltas: 0, total: 0, pct: 0 };
     let p = 0;
@@ -163,14 +177,14 @@ export function AlunoDetailDialog({
       if (r.presente) p++;
       else f++;
     }
-    const total = p + f;
+    const totalCurso = aulasCurso.length;
     return {
       presentes: p,
       faltas: f,
-      total,
-      pct: total > 0 ? Math.round((p / total) * 100) : 0,
+      total: totalCurso,
+      pct: totalCurso > 0 ? Math.round((p / totalCurso) * 100) : 0,
     };
-  }, [aluno]);
+  }, [aluno, aulasCurso]);
 
   const tarefasStats = useMemo(() => {
     if (!aluno) return { entregues: 0, pendentes: 0, total: 0, pct: 0 };
