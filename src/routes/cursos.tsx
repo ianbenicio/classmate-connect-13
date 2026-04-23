@@ -330,6 +330,7 @@ function CursosPage() {
         }}
         onDeleteTurma={(t) => setConfirmDeleteTurma(t)}
         onTurmaClick={(t) => setTurmaDetalhe(t)}
+        onShowQuadro={(c) => setQuadroCurso(c)}
       />
 
       <ActivityFormDialog
