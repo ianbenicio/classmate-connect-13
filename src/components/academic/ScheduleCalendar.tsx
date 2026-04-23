@@ -348,13 +348,12 @@ function SlotChip({
         </span>
       </button>
 
-      {/* Grid de slots: 1 coluna por bloco */}
+      {/* Stack vertical de blocos: 1 linha por bloco (estende altura da célula) */}
       <div
         className={cn(
-          "grid gap-0.5",
+          "flex flex-col",
           compact ? "gap-0.5" : "gap-1",
         )}
-        style={{ gridTemplateColumns: `repeat(${totalBlocos}, minmax(0, 1fr))` }}
       >
         {Array.from({ length: totalBlocos }).map((_, idx) => {
           const ag = agByBloco.get(idx);

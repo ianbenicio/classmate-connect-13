@@ -120,12 +120,28 @@ export function AgendarAtividadeDialog({
 
   useEffect(() => {
     if (!open || !defaultSlot || !turmaSelecionada) return;
-    const idx = turmaSelecionada.horarios.findIndex(
+    // 1) Match exato (diaSemana + inicio + fim)
+    let idx = turmaSelecionada.horarios.findIndex(
       (h) =>
         h.diaSemana === defaultSlot.diaSemana &&
         h.inicio === defaultSlot.inicio &&
         h.fim === defaultSlot.fim,
     );
+    // 2) Fallback: match por diaSemana + inicio (a turma pode ter o slot
+    //    com fim ligeiramente diferente do que veio do calendário/curso)
+    if (idx < 0) {
+      idx = turmaSelecionada.horarios.findIndex(
+        (h) =>
+          h.diaSemana === defaultSlot.diaSemana &&
+          h.inicio === defaultSlot.inicio,
+      );
+    }
+    // 3) Fallback final: primeiro slot do mesmo diaSemana
+    if (idx < 0) {
+      idx = turmaSelecionada.horarios.findIndex(
+        (h) => h.diaSemana === defaultSlot.diaSemana,
+      );
+    }
     if (idx >= 0) setSlotIdx(String(idx));
   }, [open, defaultSlot, turmaSelecionada]);
 
