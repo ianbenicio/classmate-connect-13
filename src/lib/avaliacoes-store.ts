@@ -1,6 +1,14 @@
 // Store de Avaliações com persistência no Supabase (tabela `avaliacoes`).
 // Cobre 3 formulários: relatorio_prof, checklist_aluno, relatorio_aluno.
 // Mantém compat com o tipo antigo `AvaliacaoAula` (tipo 'aula_aluno_legacy').
+//
+// Rastreabilidade:
+// - `criado_por_user_id` é gravado a partir da sessão atual (auditoria)
+// - `dados._snapshot` congela contexto (curso/turma/atividades/habilidades)
+//   no momento do envio, para que relatórios futuros não mudem se o
+//   cadastro for editado.
+// - Quando o `relatorio_prof` é enviado com `presencas`, sincroniza a tabela
+//   `presencas` (1 linha por aluno × atividade do agendamento).
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
@@ -12,6 +20,8 @@ import type {
   RelatorioProfessorDados,
   FormularioTipo,
 } from "./formularios-types";
+import { buildAvaliacaoSnapshot } from "./avaliacao-snapshot";
+import { agendamentosStore } from "./agendamentos-store";
 
 export interface AvaliacaoRecord<T = unknown> {
   id: string;
