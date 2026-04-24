@@ -124,18 +124,33 @@ function atividadeToRow(a: Atividade) {
   };
 }
 
-async function seedIfEmpty() {
-  const rows = SEED_ATIVIDADES.map(atividadeToRow);
-  // Inserir em lotes para evitar payloads grandes
-  const chunkSize = 100;
+// Top-up: insere as linhas do seed que ainda não existem no banco (sem
+// sobrescrever edições existentes). Necessário porque a versão anterior só
+// semeava quando a tabela estava *totalmente* vazia — se um chunk falhou no
+// primeiro seed, grupos inteiros ficavam faltando sem nunca serem recuperados.
+async function topUpSeed(existingIds: Set<string>) {
+  const missing = SEED_ATIVIDADES.filter((a) => !existingIds.has(toUuid(a.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(atividadeToRow);
+  // Continua em chunks pra evitar payload grande, mas agora cada chunk é
+  // independente — uma falha não para os outros.
+  const chunkSize = 50;
+  let inserted = 0;
   for (let i = 0; i < rows.length; i += chunkSize) {
     const chunk = rows.slice(i, i + chunkSize);
-    const { error } = await supabase.from("atividades").upsert(chunk, { onConflict: "id" });
+    const { error } = await supabase
+      .from("atividades")
+      .upsert(chunk, { onConflict: "id", ignoreDuplicates: true });
     if (error) {
-      console.error("[atividades] seed error", error);
-      break;
+      console.error("[atividades] top-up error (chunk)", error);
+      continue;
     }
+    inserted += chunk.length;
   }
+  if (inserted > 0) {
+    console.info(`[atividades] top-up: +${inserted} linhas do seed`);
+  }
+  return inserted > 0;
 }
 
 async function loadFromDb() {
@@ -145,12 +160,14 @@ async function loadFromDb() {
     atividades = [...SEED_ATIVIDADES];
     return;
   }
-  if (!data || data.length === 0) {
-    await seedIfEmpty();
+  const rows = (data ?? []) as AtividadeRow[];
+  const existingIds = new Set(rows.map((r) => r.id));
+  const inserted = await topUpSeed(existingIds);
+  if (inserted) {
     const { data: data2 } = await supabase.from("atividades").select("*").order("codigo");
     atividades = (data2 ?? []).map((r) => rowToAtividade(r as AtividadeRow));
   } else {
-    atividades = data.map((r) => rowToAtividade(r as AtividadeRow));
+    atividades = rows.map((r) => rowToAtividade(r));
   }
 }
 
