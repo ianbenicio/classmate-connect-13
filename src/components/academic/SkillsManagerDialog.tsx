@@ -21,6 +21,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Sparkles, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useHabilidades, habilidadesStore } from "@/lib/habilidades-store";
 import type { Habilidade } from "@/lib/academic-types";
 import { SkillFormDialog } from "./SkillFormDialog";
@@ -36,8 +43,20 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Habilidade | null>(null);
   const [filtro, setFiltro] = useState("");
+  const [grupoFiltro, setGrupoFiltro] = useState<string>("__all__");
+
+  const grupos = Array.from(
+    new Set(habilidades.map((h) => h.grupo).filter((g): g is string => !!g)),
+  ).sort();
 
   const lista = habilidades.filter((h) => {
+    if (grupoFiltro !== "__all__") {
+      if (grupoFiltro === "__none__") {
+        if (h.grupo) return false;
+      } else if (h.grupo !== grupoFiltro) {
+        return false;
+      }
+    }
     if (!filtro) return true;
     const q = filtro.toLowerCase();
     return (
