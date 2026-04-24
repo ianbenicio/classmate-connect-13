@@ -1,6 +1,14 @@
 // Store de Avaliações com persistência no Supabase (tabela `avaliacoes`).
 // Cobre 3 formulários: relatorio_prof, checklist_aluno, relatorio_aluno.
 // Mantém compat com o tipo antigo `AvaliacaoAula` (tipo 'aula_aluno_legacy').
+//
+// Rastreabilidade:
+// - `criado_por_user_id` é gravado a partir da sessão atual (auditoria)
+// - `dados._snapshot` congela contexto (curso/turma/atividades/habilidades)
+//   no momento do envio, para que relatórios futuros não mudem se o
+//   cadastro for editado.
+// - Quando o `relatorio_prof` é enviado com `presencas`, sincroniza a tabela
+//   `presencas` (1 linha por aluno × atividade do agendamento).
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
@@ -12,6 +20,8 @@ import type {
   RelatorioProfessorDados,
   FormularioTipo,
 } from "./formularios-types";
+import { buildAvaliacaoSnapshot } from "./avaliacao-snapshot";
+import { agendamentosStore } from "./agendamentos-store";
 
 export interface AvaliacaoRecord<T = unknown> {
   id: string;
@@ -144,13 +154,28 @@ export const avaliacoesStore = {
       ? this.find(tipo, agendamentoId, alunoId ?? undefined)
       : undefined;
     const id = existing?.id ?? crypto.randomUUID();
+
+    // — usuário atual (auditoria)
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
+    // — snapshot de contexto (congela curso/turma/atividades/habilidades)
+    const dadosObj = (dados ?? {}) as Record<string, unknown>;
+    const habilidadeIds = Object.keys(
+      (dadosObj.habilidadesNotas ?? {}) as Record<string, unknown>,
+    );
+    const snapshot = buildAvaliacaoSnapshot(agendamentoId, habilidadeIds);
+    const dadosComSnapshot = { ...dadosObj, _snapshot: snapshot };
+
     const row = {
       id,
       agendamento_id: agendamentoId ? toUuid(agendamentoId) : null,
       aluno_id: alunoId ? toUuid(alunoId) : null,
       atividade_id: atividadeId ? toUuid(atividadeId) : null,
       tipo,
-      dados: dados as never,
+      dados: dadosComSnapshot as never,
+      criado_por_user_id: authUser?.id ?? null,
     };
     // Atualização otimista local
     const local: AvaliacaoRecord = {
@@ -159,7 +184,7 @@ export const avaliacoesStore = {
       alunoId: row.aluno_id,
       atividadeId: row.atividade_id,
       tipo,
-      dados,
+      dados: dadosComSnapshot,
       criadoEm: existing?.criadoEm ?? new Date().toISOString(),
     };
     registros = existing
@@ -173,6 +198,16 @@ export const avaliacoesStore = {
       console.error("[avaliacoes] save error", error);
       toast.error(`Erro ao salvar avaliação: ${error.message}`);
     }
+
+    // — Sincroniza chamada com a tabela `presencas` quando for relatorio_prof
+    if (tipo === "relatorio_prof" && agendamentoId) {
+      await syncPresencas(
+        agendamentoId,
+        (dadosObj.presencas ?? {}) as Record<string, boolean>,
+        authUser?.id ?? null,
+      );
+    }
+
     return local;
   },
 
@@ -222,4 +257,45 @@ export function useAvaliacoes(): AvaliacaoRecord[] {
     };
   }, []);
   return snap;
+}
+
+/**
+ * Sincroniza a chamada do `relatorio_prof` com a tabela `presencas`.
+ * Cria/atualiza 1 linha por aluno × atividade do agendamento.
+ */
+async function syncPresencas(
+  agendamentoId: string,
+  presencas: Record<string, boolean>,
+  registradoPorUserId: string | null,
+): Promise<void> {
+  const ag = agendamentosStore.getAll().find((g) => g.id === agendamentoId);
+  if (!ag || ag.atividadeIds.length === 0) return;
+  const agUuid = toUuid(agendamentoId);
+
+  const rows = Object.entries(presencas).flatMap(([alunoId, presente]) =>
+    ag.atividadeIds.map((atividadeId) => ({
+      agendamento_id: agUuid,
+      aluno_id: toUuid(alunoId),
+      atividade_id: toUuid(atividadeId),
+      presente,
+      registrado_por_user_id: registradoPorUserId,
+    })),
+  );
+  if (rows.length === 0) return;
+
+  // Como não há unique constraint em (agendamento_id, aluno_id, atividade_id),
+  // fazemos delete+insert da janela do agendamento atual.
+  const { error: delErr } = await supabase
+    .from("presencas")
+    .delete()
+    .eq("agendamento_id", agUuid);
+  if (delErr) {
+    console.error("[presencas] delete error", delErr);
+    return;
+  }
+  const { error: insErr } = await supabase.from("presencas").insert(rows);
+  if (insErr) {
+    console.error("[presencas] insert error", insErr);
+    toast.error(`Erro ao salvar presenças: ${insErr.message}`);
+  }
 }
