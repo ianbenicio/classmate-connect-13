@@ -8,32 +8,21 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Pencil,
-  Plus,
-  Trash2,
-  GraduationCap,
-  ClipboardList,
-  Settings,
-} from "lucide-react";
+import { Pencil, Plus, Trash2, Settings } from "lucide-react";
 import { Users } from "lucide-react";
 import {
   formatHorarios,
   formatMinutos,
   getDuracaoAulaMin,
-  getGrupoNome,
   type Aluno,
   type Atividade,
   type Curso,
   type Habilidade,
   type Turma,
 } from "@/lib/academic-types";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { Progress } from "@/components/ui/progress";
 import { ActivityViewDialog } from "./ActivityViewDialog";
 import { useCurrentUser } from "@/lib/auth-store";
-
-type FiltroTipo = "todos" | "aulas" | "tarefas";
 
 interface Props {
   curso: Curso | null;
