@@ -24,6 +24,7 @@ import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
 import { PendingReportsDialog } from "@/components/academic/PendingReportsDialog";

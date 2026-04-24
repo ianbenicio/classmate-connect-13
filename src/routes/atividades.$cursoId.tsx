@@ -35,6 +35,7 @@ import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { cursosStore } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 import {
   type Atividade,
   type AtividadeTipo,
