@@ -180,7 +180,7 @@ function FormularioCard({
   onDelete: () => void;
 }) {
   const blocos = (f.estrutura as { blocos?: unknown[] }).blocos ?? [];
-  const totalPerguntas = blocos.reduce((acc, b) => {
+  const totalPerguntas = blocos.reduce<number>((acc, b) => {
     const perguntas = (b as { perguntas?: unknown[] }).perguntas ?? [];
     return acc + perguntas.length;
   }, 0);
