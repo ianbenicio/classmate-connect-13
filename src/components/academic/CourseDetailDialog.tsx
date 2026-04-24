@@ -130,23 +130,6 @@ export function CourseDetailDialog({
     };
   }, [curso, totalAulasCurso, turmasDoCurso, aulasDadasPorTurma, aulasDoCurso]);
 
-  const filtradas = useMemo(() => {
-    return doCurso.filter((a) => {
-      if (filtroTipo === "aulas" && a.tipo !== 0) return false;
-      if (filtroTipo === "tarefas" && a.tipo !== 1) return false;
-      return true;
-    });
-  }, [doCurso, filtroTipo]);
-
-  const agrupadas = useMemo(() => {
-    const map = new Map<string, Atividade[]>();
-    for (const a of filtradas) {
-      if (!map.has(a.grupo)) map.set(a.grupo, []);
-      map.get(a.grupo)!.push(a);
-    }
-    return map;
-  }, [filtradas]);
-
   return (
     <Dialog open={!!curso} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
