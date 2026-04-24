@@ -26,6 +26,7 @@ type CursoRow = {
   carga_horaria_total_min: number;
   duracao_aula_min: number;
   turno_diario_min: number;
+  habilidade_ids?: unknown;
 };
 
 function rowToCurso(r: CursoRow): Curso {
@@ -37,6 +38,9 @@ function rowToCurso(r: CursoRow): Curso {
     cargaHorariaTotalMin: r.carga_horaria_total_min,
     duracaoAulaMin: r.duracao_aula_min,
     turnoDiarioMin: r.turno_diario_min,
+    habilidadeIds: Array.isArray(r.habilidade_ids)
+      ? (r.habilidade_ids as string[])
+      : [],
   };
 }
 
@@ -49,6 +53,7 @@ function cursoToRow(c: Curso) {
     carga_horaria_total_min: c.cargaHorariaTotalMin ?? 0,
     duracao_aula_min: c.duracaoAulaMin ?? 60,
     turno_diario_min: c.turnoDiarioMin ?? c.duracaoAulaMin ?? 60,
+    habilidade_ids: (c.habilidadeIds ?? []) as never,
   };
 }
 

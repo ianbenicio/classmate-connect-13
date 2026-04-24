@@ -2,20 +2,20 @@
 
 export type AtividadeTipo = 0 | 1; // 0 = Aula, 1 = Tarefa
 
-/** Tipo da habilidade: 'geral' = ligada ao curso, 'especifica' = ligada à atividade. */
-export type HabilidadeTipo = "geral" | "especifica";
+/** Classificação da habilidade — apenas para qualificar / filtrar.
+ * - "curso": habilidade típica de ser usada como geral do curso.
+ * - "atividade": habilidade típica de ser usada como específica de atividade.
+ * Uma habilidade pode ser usada por vários cursos OU várias atividades —
+ * essa marcação só ajuda a separar visualmente. */
+export type HabilidadeTipo = "curso" | "atividade";
 
 export interface Habilidade {
   id: string;
   sigla: string;
   descricao: string;
   grupo?: string;
-  /** 'geral' (vinculada a um curso) ou 'especifica' (vinculada a uma atividade). */
+  /** Classificação livre — só pra filtrar/identificar. */
   tipo?: HabilidadeTipo;
-  /** Obrigatório quando tipo = 'geral'. */
-  cursoId?: string;
-  /** Obrigatório quando tipo = 'especifica'. */
-  atividadeId?: string;
 }
 
 export interface Curso {
@@ -33,7 +33,12 @@ export interface Curso {
    * Ex.: 150 (2h30) com duracaoAulaMin=75 (1h15) → 2 aulas por dia.
    */
   turnoDiarioMin?: number;
+  /** Habilidades gerais do curso (ids). Apresentadas como característica do curso. */
+  habilidadeIds?: string[];
 }
+
+/** Limite rígido de habilidades por atividade. */
+export const MAX_HABILIDADES_POR_ATIVIDADE = 5;
 
 /** Helpers de carga horária / blocos. */
 export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number {

@@ -31,10 +31,11 @@ import {
   Users,
 } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
-import { SEED_GRUPOS, SEED_HABILIDADES } from "@/lib/academic-seed";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { cursosStore } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 import {
   type Atividade,
   type AtividadeTipo,
@@ -83,6 +84,7 @@ function CursoAtividadesPage() {
   const { curso } = Route.useLoaderData();
 
   const atividades = useAtividades();
+  const habilidades = useHabilidades();
   const turmas = useTurmas();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
@@ -204,7 +206,7 @@ function CursoAtividadesPage() {
         onOpenChange={setFormOpen}
         cursos={[curso]}
         grupos={SEED_GRUPOS}
-        habilidades={SEED_HABILIDADES}
+        habilidades={habilidades}
         editing={editing}
         defaultTipo={defaultTipo}
         onSave={handleSave}

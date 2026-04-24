@@ -52,25 +52,18 @@ export function ChecklistAlunoDialog({
 }: Props) {
   const todasHabilidades = useHabilidades();
 
-  const habilidadesGerais = useMemo(
-    () =>
-      todasHabilidades
-        .filter((h) => h.tipo === "geral" && h.cursoId === curso.id)
-        .slice(0, 8),
-    [todasHabilidades, curso.id],
-  );
+  const habilidadesGerais = useMemo(() => {
+    const ids = new Set(curso.habilidadeIds ?? []);
+    return todasHabilidades.filter((h) => ids.has(h.id)).slice(0, 5);
+  }, [todasHabilidades, curso.habilidadeIds]);
+
   const habilidadesEspecificas = useMemo(() => {
-    const ativIds = atividades
-      .filter((a) => agendamento.atividadeIds.includes(a.id))
-      .map((a) => a.id);
-    return todasHabilidades
-      .filter(
-        (h) =>
-          h.tipo === "especifica" &&
-          h.atividadeId &&
-          ativIds.includes(h.atividadeId),
-      )
-      .slice(0, 8);
+    const ativs = atividades.filter((a) =>
+      agendamento.atividadeIds.includes(a.id),
+    );
+    const ids = new Set<string>();
+    for (const a of ativs) for (const id of a.habilidadeIds ?? []) ids.add(id);
+    return todasHabilidades.filter((h) => ids.has(h.id)).slice(0, 5);
   }, [todasHabilidades, agendamento.atividadeIds, atividades]);
 
   const existing = avaliacoesStore.find<ChecklistAlunoDados>(

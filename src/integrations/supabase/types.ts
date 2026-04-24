@@ -353,6 +353,7 @@ export type Database = {
           created_at: string
           descricao: string | null
           duracao_aula_min: number
+          habilidade_ids: Json
           id: string
           nome: string
           turno_diario_min: number
@@ -364,6 +365,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           duracao_aula_min?: number
+          habilidade_ids?: Json
           id?: string
           nome: string
           turno_diario_min?: number
@@ -375,6 +377,7 @@ export type Database = {
           created_at?: string
           descricao?: string | null
           duracao_aula_min?: number
+          habilidade_ids?: Json
           id?: string
           nome?: string
           turno_diario_min?: number
@@ -419,9 +422,7 @@ export type Database = {
       }
       habilidades: {
         Row: {
-          atividade_id: string | null
           created_at: string
-          curso_id: string | null
           descricao: string
           grupo: string | null
           id: string
@@ -430,9 +431,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          atividade_id?: string | null
           created_at?: string
-          curso_id?: string | null
           descricao: string
           grupo?: string | null
           id?: string
@@ -441,9 +440,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          atividade_id?: string | null
           created_at?: string
-          curso_id?: string | null
           descricao?: string
           grupo?: string | null
           id?: string
@@ -451,22 +448,7 @@ export type Database = {
           tipo?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "habilidades_atividade_id_fkey"
-            columns: ["atividade_id"]
-            isOneToOne: false
-            referencedRelation: "atividades"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "habilidades_curso_id_fkey"
-            columns: ["curso_id"]
-            isOneToOne: false
-            referencedRelation: "cursos"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       notificacoes: {
         Row: {

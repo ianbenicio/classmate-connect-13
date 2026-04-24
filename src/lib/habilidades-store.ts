@@ -1,10 +1,9 @@
-// Singleton store de Habilidades com persistência no Supabase.
-// - Carrega do banco no primeiro uso (ensureInit).
-// - Se a tabela estiver vazia, semeia com SEED_HABILIDADES.
-// - upsert/remove gravam no banco e atualizam cache + listeners.
+// Singleton store de Habilidades — entidades independentes.
+// O campo `tipo` ('curso' | 'atividade') é apenas classificação visual.
+// As habilidades são associadas a cursos via `cursos.habilidade_ids` e
+// a atividades via `atividades.habilidade_ids` (relação N-N).
 import { useEffect, useState } from "react";
 import type { Habilidade, HabilidadeTipo } from "./academic-types";
-import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -24,8 +23,6 @@ type HabilidadeRow = {
   descricao: string;
   grupo: string | null;
   tipo: string;
-  curso_id: string | null;
-  atividade_id: string | null;
 };
 
 function rowToHabilidade(r: HabilidadeRow): Habilidade {
@@ -34,38 +31,18 @@ function rowToHabilidade(r: HabilidadeRow): Habilidade {
     sigla: r.sigla,
     descricao: r.descricao,
     grupo: r.grupo ?? undefined,
-    tipo: (r.tipo as HabilidadeTipo) ?? "geral",
-    cursoId: r.curso_id ?? undefined,
-    atividadeId: r.atividade_id ?? undefined,
+    tipo: (r.tipo as HabilidadeTipo) ?? "curso",
   };
 }
 
 function habilidadeToRow(h: Habilidade) {
-  const tipo: HabilidadeTipo = h.tipo ?? "geral";
   return {
     id: toUuid(h.id),
     sigla: h.sigla,
     descricao: h.descricao,
     grupo: h.grupo ?? null,
-    tipo,
-    curso_id: tipo === "geral" && h.cursoId ? toUuid(h.cursoId) : null,
-    atividade_id:
-      tipo === "especifica" && h.atividadeId ? toUuid(h.atividadeId) : null,
+    tipo: (h.tipo ?? "curso") as string,
   };
-}
-
-async function seedIfEmpty() {
-  // Só semeia se houver pelo menos 1 curso (regra do trigger exige curso_id em geral).
-  const { data: cursos } = await supabase.from("cursos").select("id").limit(1);
-  if (!cursos || cursos.length === 0) return;
-  const cursoId = cursos[0].id;
-  const rows = SEED_HABILIDADES.map((h) =>
-    habilidadeToRow({ ...h, tipo: "geral", cursoId }),
-  );
-  const { error } = await supabase
-    .from("habilidades")
-    .upsert(rows, { onConflict: "id" });
-  if (error) console.error("[habilidades] seed error", error);
 }
 
 async function loadFromDb() {
@@ -75,19 +52,10 @@ async function loadFromDb() {
     .order("sigla");
   if (error) {
     console.error("[habilidades] load error", error);
-    habilidades = [...SEED_HABILIDADES];
+    habilidades = [];
     return;
   }
-  if (!data || data.length === 0) {
-    await seedIfEmpty();
-    const { data: data2 } = await supabase
-      .from("habilidades")
-      .select("*")
-      .order("sigla");
-    habilidades = ((data2 ?? []) as HabilidadeRow[]).map(rowToHabilidade);
-  } else {
-    habilidades = (data as HabilidadeRow[]).map(rowToHabilidade);
-  }
+  habilidades = ((data ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
 }
 
 async function ensureInit(): Promise<void> {
@@ -105,19 +73,8 @@ export const habilidadesStore = {
   getAll(): Habilidade[] {
     return habilidades;
   },
-  byCurso(cursoId: string): Habilidade[] {
-    const id = toUuid(cursoId);
-    return habilidades.filter(
-      (h) => h.tipo === "geral" && (h.cursoId === id || h.cursoId === cursoId),
-    );
-  },
-  byAtividade(atividadeId: string): Habilidade[] {
-    const id = toUuid(atividadeId);
-    return habilidades.filter(
-      (h) =>
-        h.tipo === "especifica" &&
-        (h.atividadeId === id || h.atividadeId === atividadeId),
-    );
+  byTipo(tipo: HabilidadeTipo): Habilidade[] {
+    return habilidades.filter((h) => (h.tipo ?? "curso") === tipo);
   },
   async upsert(h: Habilidade) {
     const row = habilidadeToRow(h);

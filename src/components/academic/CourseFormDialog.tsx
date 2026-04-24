@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { formatMinutos, type Curso } from "@/lib/academic-types";
+import { useHabilidades } from "@/lib/habilidades-store";
+import { SkillSelector } from "./SkillSelector";
 
 interface Props {
   open: boolean;
@@ -38,11 +40,18 @@ function minToSlot(min: number): SlotDraft {
 }
 
 export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props) {
+  const todasHabilidades = useHabilidades();
+  const habilidadesDeCurso = useMemo(
+    () => todasHabilidades.filter((h) => (h.tipo ?? "curso") === "curso"),
+    [todasHabilidades],
+  );
+
   const [cod, setCod] = useState("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [cargaHoras, setCargaHoras] = useState<string>("");
   const [cargaMin, setCargaMin] = useState<string>("");
+  const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
   const [slots, setSlots] = useState<SlotDraft[]>([{ horas: "1", minutos: "0" }]);
 
   useEffect(() => {
@@ -53,6 +62,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       const totalMin = editing?.cargaHorariaTotalMin ?? 0;
       setCargaHoras(String(Math.floor(totalMin / 60)));
       setCargaMin(String(totalMin % 60));
+      setHabilidadeIds(editing?.habilidadeIds ?? []);
 
       // Reconstrói os slots a partir do curso: turnoDiarioMin / duracaoAulaMin.
       const dur = editing?.duracaoAulaMin ?? 60;
@@ -119,6 +129,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       cargaHorariaTotalMin: cargaTotalMin,
       duracaoAulaMin: duracaoAulaMin,
       turnoDiarioMin: turnoTotalMin,
+      habilidadeIds,
     });
     toast.success(editing ? "Curso atualizado!" : "Curso criado!");
     onOpenChange(false);
@@ -261,6 +272,29 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2 rounded-md border p-3 bg-muted/20">
+            <Label className="inline-flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              Habilidades gerais do curso
+            </Label>
+            <p className="text-[11px] text-muted-foreground">
+              Habilidades trabalhadas ao longo do curso. Aparecem como
+              característica do curso e no checklist individual de cada aluno.
+            </p>
+            {habilidadesDeCurso.length === 0 ? (
+              <p className="text-xs text-muted-foreground italic">
+                Nenhuma habilidade classificada como "de curso". Cadastre em
+                Habilidades (no header).
+              </p>
+            ) : (
+              <SkillSelector
+                habilidades={habilidadesDeCurso}
+                selectedIds={habilidadeIds}
+                onChange={setHabilidadeIds}
+              />
+            )}
           </div>
 
           <div className="space-y-2">

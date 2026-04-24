@@ -1,5 +1,6 @@
 // Form dialog para criar/editar uma Habilidade.
-// Campos: Nome (sigla), Descrição, Tipo (geral/especifica) + vínculo (curso ou atividade).
+// Habilidade é uma entidade independente — `tipo` é só classificação.
+// A associação com Curso/Atividade é feita nos próprios formulários deles.
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -21,8 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { habilidadesStore } from "@/lib/habilidades-store";
-import { useCursos } from "@/lib/cursos-store";
-import { useAtividades } from "@/lib/atividades-store";
 import type { Habilidade, HabilidadeTipo } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -33,23 +32,17 @@ interface Props {
 }
 
 export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
-  const cursos = useCursos();
-  const atividades = useAtividades();
   const [sigla, setSigla] = useState("");
   const [descricao, setDescricao] = useState("");
   const [grupo, setGrupo] = useState("");
-  const [tipo, setTipo] = useState<HabilidadeTipo>("geral");
-  const [cursoId, setCursoId] = useState<string>("");
-  const [atividadeId, setAtividadeId] = useState<string>("");
+  const [tipo, setTipo] = useState<HabilidadeTipo>("curso");
 
   useEffect(() => {
     if (open) {
       setSigla(editing?.sigla ?? "");
       setDescricao(editing?.descricao ?? "");
       setGrupo(editing?.grupo ?? "");
-      setTipo(editing?.tipo ?? "geral");
-      setCursoId(editing?.cursoId ?? "");
-      setAtividadeId(editing?.atividadeId ?? "");
+      setTipo(editing?.tipo ?? "curso");
     }
   }, [open, editing]);
 
@@ -62,14 +55,6 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
       toast.error("Descrição é obrigatória.");
       return;
     }
-    if (tipo === "geral" && !cursoId) {
-      toast.error("Habilidade geral precisa de um curso.");
-      return;
-    }
-    if (tipo === "especifica" && !atividadeId) {
-      toast.error("Habilidade específica precisa de uma atividade.");
-      return;
-    }
 
     const h: Habilidade = {
       id: editing?.id ?? crypto.randomUUID(),
@@ -77,8 +62,6 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
       descricao: descricao.trim(),
       grupo: grupo.trim() || undefined,
       tipo,
-      cursoId: tipo === "geral" ? cursoId : undefined,
-      atividadeId: tipo === "especifica" ? atividadeId : undefined,
     };
     await habilidadesStore.upsert(h);
     toast.success(editing ? "Habilidade atualizada." : "Habilidade criada.");
@@ -93,8 +76,9 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
             {editing ? "Editar habilidade" : "Nova habilidade"}
           </DialogTitle>
           <DialogDescription>
-            Habilidades gerais ficam ligadas a um curso. Específicas a uma
-            atividade.
+            O tipo é só uma classificação para identificar onde a habilidade
+            costuma aparecer (em cursos ou em atividades). A associação real é
+            feita ao editar o curso ou a atividade.
           </DialogDescription>
         </DialogHeader>
 
@@ -128,7 +112,7 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Tipo</Label>
+            <Label>Tipo (classificação)</Label>
             <Select
               value={tipo}
               onValueChange={(v) => setTipo(v as HabilidadeTipo)}
@@ -137,49 +121,19 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="geral">
-                  Geral — vinculada ao curso
+                <SelectItem value="curso">
+                  De curso — usada como habilidade geral em cursos
                 </SelectItem>
-                <SelectItem value="especifica">
-                  Específica — vinculada à atividade
+                <SelectItem value="atividade">
+                  De atividade — usada como habilidade específica em aulas
                 </SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-[11px] text-muted-foreground">
+              Só identifica a categoria. A mesma habilidade pode ser reutilizada
+              em vários cursos ou atividades.
+            </p>
           </div>
-
-          {tipo === "geral" ? (
-            <div className="space-y-1.5">
-              <Label>Curso</Label>
-              <Select value={cursoId} onValueChange={setCursoId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um curso" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cursos.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.cod} · {c.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          ) : (
-            <div className="space-y-1.5">
-              <Label>Atividade</Label>
-              <Select value={atividadeId} onValueChange={setAtividadeId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma atividade" />
-                </SelectTrigger>
-                <SelectContent>
-                  {atividades.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>
-                      {a.codigo} · {a.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
         </div>
 
         <DialogFooter>
