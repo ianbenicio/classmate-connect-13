@@ -21,6 +21,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Sparkles, Search } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useHabilidades, habilidadesStore } from "@/lib/habilidades-store";
 import type { Habilidade } from "@/lib/academic-types";
 import { SkillFormDialog } from "./SkillFormDialog";
@@ -36,8 +43,20 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Habilidade | null>(null);
   const [filtro, setFiltro] = useState("");
+  const [grupoFiltro, setGrupoFiltro] = useState<string>("__all__");
+
+  const grupos = Array.from(
+    new Set(habilidades.map((h) => h.grupo).filter((g): g is string => !!g)),
+  ).sort();
 
   const lista = habilidades.filter((h) => {
+    if (grupoFiltro !== "__all__") {
+      if (grupoFiltro === "__none__") {
+        if (h.grupo) return false;
+      } else if (h.grupo !== grupoFiltro) {
+        return false;
+      }
+    }
     if (!filtro) return true;
     const q = filtro.toLowerCase();
     return (
@@ -80,6 +99,20 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                 className="pl-8"
               />
             </div>
+            <Select value={grupoFiltro} onValueChange={setGrupoFiltro}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Grupo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos os grupos</SelectItem>
+                <SelectItem value="__none__">Sem grupo</SelectItem>
+                {grupos.map((g) => (
+                  <SelectItem key={g} value={g}>
+                    {g}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button onClick={handleNova}>
               <Plus /> Nova
             </Button>
