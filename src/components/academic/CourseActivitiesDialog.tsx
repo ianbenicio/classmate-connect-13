@@ -63,10 +63,23 @@ export function CourseActivitiesDialog({
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
       : [];
+    const gruposCurso = curso ? (SEED_GRUPOS[curso.id] ?? []) : [];
+    if (curso) {
+      // Diagnóstico temporário — remover após confirmar fix do dropdown de grupo.
+      // eslint-disable-next-line no-console
+      console.log("[DEBUG-GRUPOS]", {
+        cursoCod: curso.cod,
+        cursoId: curso.id,
+        gruposEncontrados: gruposCurso.length,
+        seedGruposKeys: Object.keys(SEED_GRUPOS),
+        atividadesDesteCurso: list.length,
+        gruposNasAtividades: Array.from(new Set(list.map((a) => a.grupo))),
+      });
+    }
     return {
       aulas: list.filter((a) => a.tipo === 0),
       tarefas: list.filter((a) => a.tipo === 1),
-      gruposCurso: curso ? (SEED_GRUPOS[curso.id] ?? []) : [],
+      gruposCurso,
     };
   }, [curso, atividades]);
 
