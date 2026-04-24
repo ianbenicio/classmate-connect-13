@@ -89,7 +89,6 @@ export function AlunoDetailDialog({
     const buckets = new Map<string, number[]>();
     for (const av of avaliacoes) {
       if (av.alunoId !== aluno.id) continue;
-      if (av.tipo !== "checklist_aluno" && av.tipo !== "avaliacao_aluno") continue;
       const dados = av.dados as { habilidadesNotas?: Record<string, number> } | null;
       const notas = dados?.habilidadesNotas;
       if (!notas) continue;
