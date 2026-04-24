@@ -274,6 +274,29 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
             </div>
           </div>
 
+          <div className="space-y-2 rounded-md border p-3 bg-muted/20">
+            <Label className="inline-flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              Habilidades gerais do curso
+            </Label>
+            <p className="text-[11px] text-muted-foreground">
+              Habilidades trabalhadas ao longo do curso. Aparecem como
+              característica do curso e no checklist individual de cada aluno.
+            </p>
+            {habilidadesDeCurso.length === 0 ? (
+              <p className="text-xs text-muted-foreground italic">
+                Nenhuma habilidade classificada como "de curso". Cadastre em
+                Habilidades (no header).
+              </p>
+            ) : (
+              <SkillSelector
+                habilidades={habilidadesDeCurso}
+                selectedIds={habilidadeIds}
+                onChange={setHabilidadeIds}
+              />
+            )}
+          </div>
+
           <div className="space-y-2">
             <Label>Descrição</Label>
             <Textarea

@@ -21,10 +21,7 @@ import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { Progress } from "@/components/ui/progress";
-import {
-  SEED_GRUPOS,
-  SEED_HABILIDADES,
-} from "@/lib/academic-seed";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
 import {
   addMinutesToHHMM,
   getTurnoDiarioMin,
@@ -41,6 +38,7 @@ import { cursosStore, useCursos } from "@/lib/cursos-store";
 import { turmasStore, useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
 import { useAlunos } from "@/lib/alunos-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 
 export const Route = createFileRoute("/cursos")({
   head: () => ({
@@ -66,7 +64,7 @@ function CursosPage() {
   const turmas = useTurmas();
   const alunos = useAlunos();
   const atividades = useAtividades();
-  const [habilidades] = useState<Habilidade[]>(SEED_HABILIDADES);
+  const habilidades = useHabilidades();
 
   const [cursoSelecionado, setCursoSelecionado] = useState<Curso | null>(null);
 
