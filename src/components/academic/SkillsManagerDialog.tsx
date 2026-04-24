@@ -22,8 +22,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Plus, Pencil, Trash2, Sparkles, Search } from "lucide-react";
 import { useHabilidades, habilidadesStore } from "@/lib/habilidades-store";
-import { useCursos } from "@/lib/cursos-store";
-import { useAtividades } from "@/lib/atividades-store";
 import type { Habilidade } from "@/lib/academic-types";
 import { SkillFormDialog } from "./SkillFormDialog";
 
@@ -34,25 +32,18 @@ interface Props {
 
 export function SkillsManagerDialog({ open, onOpenChange }: Props) {
   const habilidades = useHabilidades();
-  const cursos = useCursos();
-  const atividades = useAtividades();
   const [editing, setEditing] = useState<Habilidade | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Habilidade | null>(null);
   const [filtro, setFiltro] = useState("");
-  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "geral" | "especifica">(
+  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "curso" | "atividade">(
     "todos",
   );
 
-  const cursoNome = (id?: string) =>
-    cursos.find((c) => c.id === id)?.nome ?? "—";
-  const atividadeNome = (id?: string) => {
-    const a = atividades.find((x) => x.id === id);
-    return a ? `${a.codigo} · ${a.nome}` : "—";
-  };
-
   const lista = habilidades
-    .filter((h) => (tipoFiltro === "todos" ? true : h.tipo === tipoFiltro))
+    .filter((h) =>
+      tipoFiltro === "todos" ? true : (h.tipo ?? "curso") === tipoFiltro,
+    )
     .filter((h) => {
       if (!filtro) return true;
       const q = filtro.toLowerCase();
@@ -97,14 +88,18 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
               />
             </div>
             <div className="flex gap-1">
-              {(["todos", "geral", "especifica"] as const).map((t) => (
+              {(["todos", "curso", "atividade"] as const).map((t) => (
                 <Button
                   key={t}
                   size="sm"
                   variant={tipoFiltro === t ? "default" : "outline"}
                   onClick={() => setTipoFiltro(t)}
                 >
-                  {t === "todos" ? "Todas" : t === "geral" ? "Gerais" : "Específicas"}
+                  {t === "todos"
+                    ? "Todas"
+                    : t === "curso"
+                      ? "De curso"
+                      : "De atividade"}
                 </Button>
               ))}
             </div>
@@ -129,8 +124,14 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                       <Badge variant="secondary" className="font-mono">
                         {h.sigla}
                       </Badge>
-                      <Badge variant={h.tipo === "geral" ? "default" : "outline"}>
-                        {h.tipo === "geral" ? "Geral" : "Específica"}
+                      <Badge
+                        variant={
+                          (h.tipo ?? "curso") === "curso" ? "default" : "outline"
+                        }
+                      >
+                        {(h.tipo ?? "curso") === "curso"
+                          ? "De curso"
+                          : "De atividade"}
                       </Badge>
                       {h.grupo && (
                         <span className="text-xs text-muted-foreground">
@@ -139,11 +140,6 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                       )}
                     </div>
                     <p className="text-sm leading-snug">{h.descricao}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {h.tipo === "geral"
-                        ? `Curso: ${cursoNome(h.cursoId)}`
-                        : `Atividade: ${atividadeNome(h.atividadeId)}`}
-                    </p>
                   </div>
                   <div className="flex flex-col gap-1">
                     <Button
