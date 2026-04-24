@@ -31,7 +31,7 @@ import { useCurrentUser } from "@/lib/auth-store";
 import { isCoordenacao } from "@/lib/users";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAlunos } from "@/lib/alunos-store";
-import { SkillsRadarChart } from "./SkillsRadarChart";
+import { useHabilidades } from "@/lib/habilidades-store";
 import { StarRating } from "./StarRating";
 import { AvaliacaoAulaDialog } from "./AvaliacaoAulaDialog";
 import { QuadroAulasDialog } from "./QuadroAulasDialog";
@@ -67,8 +67,43 @@ export function AlunoDetailDialog({
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
   const todosAlunos = useAlunos();
+  const todasHabilidades = useHabilidades();
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
   const [quadroOpen, setQuadroOpen] = useState(false);
+
+  // Habilidades do curso do aluno
+  const habilidadesCurso = useMemo(() => {
+    if (!curso) return [];
+    const ids = new Set(curso.habilidadeIds ?? []);
+    return todasHabilidades.filter((h) => ids.has(h.id));
+  }, [curso, todasHabilidades]);
+
+  /**
+   * Médias 1–5 por habilidade calculadas a partir das avaliações do tipo
+   * `checklist_aluno` / `avaliacao_aluno` que registram `habilidadesNotas`.
+   * Quando ainda não há dados, devolve `null` para mostrar barra vazia.
+   */
+  const notasHabilidades = useMemo(() => {
+    const out = new Map<string, { media: number | null; n: number }>();
+    if (!aluno) return out;
+    const buckets = new Map<string, number[]>();
+    for (const av of avaliacoes) {
+      if (av.alunoId !== aluno.id) continue;
+      const dados = av.dados as { habilidadesNotas?: Record<string, number> } | null;
+      const notas = dados?.habilidadesNotas;
+      if (!notas) continue;
+      for (const [habId, nota] of Object.entries(notas)) {
+        if (typeof nota !== "number" || nota < 1 || nota > 5) continue;
+        if (!buckets.has(habId)) buckets.set(habId, []);
+        buckets.get(habId)!.push(nota);
+      }
+    }
+    for (const [habId, vals] of buckets) {
+      const soma = vals.reduce((a, b) => a + b, 0);
+      out.set(habId, { media: soma / vals.length, n: vals.length });
+    }
+    return out;
+  }, [avaliacoes, aluno]);
 
   const atividadeMap = useMemo(
     () => new Map(atividades.map((a) => [a.id, a])),
@@ -596,23 +631,49 @@ export function AlunoDetailDialog({
               </h3>
 
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Coluna HABILIDADES — gráfico spiderweb */}
+                {/* Coluna HABILIDADES — lista do curso com progressão 1-5 */}
                 <div>
                   <h4 className="text-[11px] font-semibold uppercase tracking-wide mb-2">
-                    Habilidades
+                    Habilidades do curso
                   </h4>
-                  <SkillsRadarChart
-                    axes={[
-                      { label: "Foco", value: 0 },
-                      { label: "Criatividade", value: 0 },
-                      { label: "Equipe", value: 0 },
-                      { label: "Técnica", value: 0 },
-                      { label: "Comunicação", value: 0 },
-                    ]}
-                  />
-                  <p className="text-[10px] text-muted-foreground italic text-center mt-1">
-                    Habilidades a definir.
-                  </p>
+                  {habilidadesCurso.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      Nenhuma habilidade cadastrada para este curso.
+                    </p>
+                  ) : (
+                    <ul className="space-y-2.5">
+                      {habilidadesCurso.map((h) => {
+                        const reg = notasHabilidades.get(h.id);
+                        const media = reg?.media ?? null;
+                        const pct = media != null ? (media / 5) * 100 : 0;
+                        return (
+                          <li key={h.id} className="space-y-1">
+                            <div className="flex items-baseline gap-2">
+                              <Badge
+                                variant="secondary"
+                                className="font-mono text-[10px] shrink-0"
+                              >
+                                {h.sigla}
+                              </Badge>
+                              <span className="text-xs flex-1 min-w-0 truncate">
+                                {h.nome ?? h.descricao}
+                              </span>
+                              <span className="text-[11px] font-mono tabular-nums text-muted-foreground shrink-0">
+                                {media != null ? media.toFixed(1) : "—"}
+                                <span className="text-muted-foreground/60">/5</span>
+                              </span>
+                            </div>
+                            <Progress value={pct} className="h-1.5" />
+                            {reg && reg.n > 0 && (
+                              <p className="text-[10px] text-muted-foreground">
+                                {reg.n} avaliaç{reg.n === 1 ? "ão" : "ões"}
+                              </p>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </div>
 
                 {/* Coluna TAREFAS AVALIADAS — 5 estrelas */}
