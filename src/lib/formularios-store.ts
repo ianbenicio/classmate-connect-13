@@ -141,7 +141,10 @@ export const formulariosStore = {
     if (patch.descricao !== undefined) dbPatch.descricao = patch.descricao?.trim() || null;
     if (patch.destinatario !== undefined) dbPatch.destinatario = patch.destinatario;
     if (patch.estrutura !== undefined) dbPatch.estrutura = patch.estrutura;
-    const { error } = await supabase.from("formularios").update(dbPatch).eq("id", id);
+    const { error } = await supabase
+      .from("formularios")
+      .update(dbPatch as never)
+      .eq("id", id);
     if (error) {
       console.error("[formularios] update error", error);
       toast.error(`Erro ao atualizar: ${error.message}`);
