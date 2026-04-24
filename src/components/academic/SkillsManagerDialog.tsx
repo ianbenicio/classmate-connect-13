@@ -61,6 +61,7 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
     const q = filtro.toLowerCase();
     return (
       h.sigla.toLowerCase().includes(q) ||
+      (h.nome ?? "").toLowerCase().includes(q) ||
       h.descricao.toLowerCase().includes(q) ||
       (h.grupo ?? "").toLowerCase().includes(q)
     );
@@ -134,13 +135,18 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                       <Badge variant="secondary" className="font-mono">
                         {h.sigla}
                       </Badge>
+                      {h.nome && (
+                        <span className="text-sm font-medium">{h.nome}</span>
+                      )}
                       {h.grupo && (
                         <span className="text-xs text-muted-foreground">
                           {h.grupo}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm leading-snug">{h.descricao}</p>
+                    <p className="text-sm leading-snug text-muted-foreground">
+                      {h.descricao}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-1">
                     <Button

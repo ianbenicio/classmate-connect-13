@@ -5,6 +5,8 @@ export type AtividadeTipo = 0 | 1; // 0 = Aula, 1 = Tarefa
 export interface Habilidade {
   id: string;
   sigla: string;
+  /** Nome curto/título da habilidade (ex.: "Disciplina e foco sustentado"). */
+  nome?: string;
   descricao: string;
   grupo?: string;
 }

@@ -20,8 +20,9 @@ export function SkillDetailDialog({ habilidade, onOpenChange }: Props) {
         {habilidade && (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 flex-wrap">
                 <Badge variant="secondary">{habilidade.sigla}</Badge>
+                {habilidade.nome && <span>{habilidade.nome}</span>}
                 {habilidade.grupo && (
                   <span className="text-sm text-muted-foreground font-normal">
                     {habilidade.grupo}

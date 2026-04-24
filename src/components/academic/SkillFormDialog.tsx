@@ -26,12 +26,14 @@ interface Props {
 
 export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
   const [sigla, setSigla] = useState("");
+  const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [grupo, setGrupo] = useState("");
 
   useEffect(() => {
     if (open) {
       setSigla(editing?.sigla ?? "");
+      setNome(editing?.nome ?? "");
       setDescricao(editing?.descricao ?? "");
       setGrupo(editing?.grupo ?? "");
     }
@@ -50,6 +52,7 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
     const h: Habilidade = {
       id: editing?.id ?? crypto.randomUUID(),
       sigla: sigla.trim().toUpperCase(),
+      nome: nome.trim() || undefined,
       descricao: descricao.trim(),
       grupo: grupo.trim() || undefined,
     };
@@ -78,7 +81,16 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
               id="sk-sigla"
               value={sigla}
               onChange={(e) => setSigla(e.target.value)}
-              placeholder="ex.: COM-01"
+              placeholder="ex.: H01"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="sk-nome">Nome</Label>
+            <Input
+              id="sk-nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="ex.: Disciplina e foco sustentado"
             />
           </div>
           <div className="space-y-1.5">

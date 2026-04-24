@@ -19,6 +19,7 @@ function emit() {
 type HabilidadeRow = {
   id: string;
   sigla: string;
+  nome: string | null;
   descricao: string;
   grupo: string | null;
 };
@@ -27,6 +28,7 @@ function rowToHabilidade(r: HabilidadeRow): Habilidade {
   return {
     id: r.id,
     sigla: r.sigla,
+    nome: r.nome ?? undefined,
     descricao: r.descricao,
     grupo: r.grupo ?? undefined,
   };
@@ -36,6 +38,7 @@ function habilidadeToRow(h: Habilidade) {
   return {
     id: toUuid(h.id),
     sigla: h.sigla,
+    nome: h.nome?.trim() ? h.nome.trim() : null,
     descricao: h.descricao,
     grupo: h.grupo ?? null,
     // coluna `tipo` ainda existe no DB (NOT NULL com default) — mandamos
