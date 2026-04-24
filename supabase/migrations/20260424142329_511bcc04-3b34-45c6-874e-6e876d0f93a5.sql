@@ -1,0 +1,1 @@
+ALTER TABLE public.habilidades ADD COLUMN IF NOT EXISTS nome text;

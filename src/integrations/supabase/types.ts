@@ -426,6 +426,7 @@ export type Database = {
           descricao: string
           grupo: string | null
           id: string
+          nome: string | null
           sigla: string
           tipo: string
           updated_at: string
@@ -435,6 +436,7 @@ export type Database = {
           descricao: string
           grupo?: string | null
           id?: string
+          nome?: string | null
           sigla: string
           tipo?: string
           updated_at?: string
@@ -444,6 +446,7 @@ export type Database = {
           descricao?: string
           grupo?: string | null
           id?: string
+          nome?: string | null
           sigla?: string
           tipo?: string
           updated_at?: string
