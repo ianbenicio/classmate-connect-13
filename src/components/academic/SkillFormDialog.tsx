@@ -81,7 +81,16 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
               id="sk-sigla"
               value={sigla}
               onChange={(e) => setSigla(e.target.value)}
-              placeholder="ex.: COM-01"
+              placeholder="ex.: H01"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="sk-nome">Nome</Label>
+            <Input
+              id="sk-nome"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              placeholder="ex.: Disciplina e foco sustentado"
             />
           </div>
           <div className="space-y-1.5">
