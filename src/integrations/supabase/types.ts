@@ -385,6 +385,45 @@ export type Database = {
         }
         Relationships: []
       }
+      formularios: {
+        Row: {
+          created_at: string
+          criado_por_user_id: string | null
+          descricao: string | null
+          destinatario: string
+          estrutura: Json
+          id: string
+          is_system: boolean
+          nome: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criado_por_user_id?: string | null
+          descricao?: string | null
+          destinatario: string
+          estrutura?: Json
+          id?: string
+          is_system?: boolean
+          nome: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criado_por_user_id?: string | null
+          descricao?: string | null
+          destinatario?: string
+          estrutura?: Json
+          id?: string
+          is_system?: boolean
+          nome?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       grupos: {
         Row: {
           cod: string
