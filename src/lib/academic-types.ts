@@ -2,20 +2,11 @@
 
 export type AtividadeTipo = 0 | 1; // 0 = Aula, 1 = Tarefa
 
-/** Classificação da habilidade — apenas para qualificar / filtrar.
- * - "curso": habilidade típica de ser usada como geral do curso.
- * - "atividade": habilidade típica de ser usada como específica de atividade.
- * Uma habilidade pode ser usada por vários cursos OU várias atividades —
- * essa marcação só ajuda a separar visualmente. */
-export type HabilidadeTipo = "curso" | "atividade";
-
 export interface Habilidade {
   id: string;
   sigla: string;
   descricao: string;
   grupo?: string;
-  /** Classificação livre — só pra filtrar/identificar. */
-  tipo?: HabilidadeTipo;
 }
 
 export interface Curso {
