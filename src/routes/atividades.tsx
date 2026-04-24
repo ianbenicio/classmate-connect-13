@@ -57,6 +57,7 @@ function AtividadesPage() {
   const cursos = useCursos();
   const turmas = useTurmas();
   const atividades = useAtividades();
+  const habilidades = useHabilidades();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);

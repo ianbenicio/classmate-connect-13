@@ -83,6 +83,7 @@ function CursoAtividadesPage() {
   const { curso } = Route.useLoaderData();
 
   const atividades = useAtividades();
+  const habilidades = useHabilidades();
   const turmas = useTurmas();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
