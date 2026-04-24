@@ -12,7 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { formatMinutos, type Curso } from "@/lib/academic-types";
+import {
+  formatMinutos,
+  MAX_HABILIDADES_POR_CURSO,
+  type Curso,
+} from "@/lib/academic-types";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { SkillSelector } from "./SkillSelector";
 
@@ -41,10 +45,6 @@ function minToSlot(min: number): SlotDraft {
 
 export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props) {
   const todasHabilidades = useHabilidades();
-  const habilidadesDeCurso = useMemo(
-    () => todasHabilidades.filter((h) => (h.tipo ?? "curso") === "curso"),
-    [todasHabilidades],
-  );
 
   const [cod, setCod] = useState("");
   const [nome, setNome] = useState("");
@@ -119,6 +119,10 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
     }
     if (!slotsIguais) {
       toast.error("Todos os slots devem ter a mesma duração.");
+      return;
+    }
+    if (habilidadeIds.length > MAX_HABILIDADES_POR_CURSO) {
+      toast.error(`Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`);
       return;
     }
     onSave({
@@ -280,21 +284,34 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               Habilidades gerais do curso
             </Label>
             <p className="text-[11px] text-muted-foreground">
-              Habilidades trabalhadas ao longo do curso. Aparecem como
-              característica do curso e no checklist individual de cada aluno.
+              Escolha até <strong>{MAX_HABILIDADES_POR_CURSO}</strong>{" "}
+              habilidades trabalhadas ao longo do curso. Aparecem como
+              característica do curso e ficam disponíveis para vincular às
+              atividades.
             </p>
-            {habilidadesDeCurso.length === 0 ? (
+            {todasHabilidades.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">
-                Nenhuma habilidade classificada como "de curso". Cadastre em
-                Habilidades (no header).
+                Nenhuma habilidade cadastrada. Cadastre em Habilidades (no
+                header).
               </p>
             ) : (
               <SkillSelector
-                habilidades={habilidadesDeCurso}
+                habilidades={todasHabilidades}
                 selectedIds={habilidadeIds}
-                onChange={setHabilidadeIds}
+                onChange={(ids) => {
+                  if (ids.length > MAX_HABILIDADES_POR_CURSO) {
+                    toast.error(
+                      `Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`,
+                    );
+                    return;
+                  }
+                  setHabilidadeIds(ids);
+                }}
               />
             )}
+            <p className="text-[11px] text-muted-foreground">
+              {habilidadeIds.length}/{MAX_HABILIDADES_POR_CURSO} selecionadas
+            </p>
           </div>
 
           <div className="space-y-2">

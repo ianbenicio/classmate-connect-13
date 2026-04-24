@@ -36,23 +36,16 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Habilidade | null>(null);
   const [filtro, setFiltro] = useState("");
-  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "curso" | "atividade">(
-    "todos",
-  );
 
-  const lista = habilidades
-    .filter((h) =>
-      tipoFiltro === "todos" ? true : (h.tipo ?? "curso") === tipoFiltro,
-    )
-    .filter((h) => {
-      if (!filtro) return true;
-      const q = filtro.toLowerCase();
-      return (
-        h.sigla.toLowerCase().includes(q) ||
-        h.descricao.toLowerCase().includes(q) ||
-        (h.grupo ?? "").toLowerCase().includes(q)
-      );
-    });
+  const lista = habilidades.filter((h) => {
+    if (!filtro) return true;
+    const q = filtro.toLowerCase();
+    return (
+      h.sigla.toLowerCase().includes(q) ||
+      h.descricao.toLowerCase().includes(q) ||
+      (h.grupo ?? "").toLowerCase().includes(q)
+    );
+  });
 
   const handleNova = () => {
     setEditing(null);
@@ -72,8 +65,8 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
               <Sparkles className="h-5 w-5 text-primary" /> Habilidades
             </DialogTitle>
             <DialogDescription>
-              Gerencie habilidades gerais (por curso) e específicas (por
-              atividade).
+              Cadastre habilidades. Vincule-as a cursos (até 8) e a atividades
+              (até 5) nos respectivos formulários.
             </DialogDescription>
           </DialogHeader>
 
@@ -86,22 +79,6 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                 placeholder="Buscar..."
                 className="pl-8"
               />
-            </div>
-            <div className="flex gap-1">
-              {(["todos", "curso", "atividade"] as const).map((t) => (
-                <Button
-                  key={t}
-                  size="sm"
-                  variant={tipoFiltro === t ? "default" : "outline"}
-                  onClick={() => setTipoFiltro(t)}
-                >
-                  {t === "todos"
-                    ? "Todas"
-                    : t === "curso"
-                      ? "De curso"
-                      : "De atividade"}
-                </Button>
-              ))}
             </div>
             <Button onClick={handleNova}>
               <Plus /> Nova
@@ -123,15 +100,6 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="secondary" className="font-mono">
                         {h.sigla}
-                      </Badge>
-                      <Badge
-                        variant={
-                          (h.tipo ?? "curso") === "curso" ? "default" : "outline"
-                        }
-                      >
-                        {(h.tipo ?? "curso") === "curso"
-                          ? "De curso"
-                          : "De atividade"}
                       </Badge>
                       {h.grupo && (
                         <span className="text-xs text-muted-foreground">

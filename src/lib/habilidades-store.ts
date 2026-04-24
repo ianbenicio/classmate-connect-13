@@ -1,9 +1,8 @@
 // Singleton store de Habilidades — entidades independentes.
-// O campo `tipo` ('curso' | 'atividade') é apenas classificação visual.
-// As habilidades são associadas a cursos via `cursos.habilidade_ids` e
-// a atividades via `atividades.habilidade_ids` (relação N-N).
+// Habilidades são associadas a cursos via `cursos.habilidade_ids` e a
+// atividades via `atividades.habilidade_ids` (relação N-N).
 import { useEffect, useState } from "react";
-import type { Habilidade, HabilidadeTipo } from "./academic-types";
+import type { Habilidade } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -22,7 +21,6 @@ type HabilidadeRow = {
   sigla: string;
   descricao: string;
   grupo: string | null;
-  tipo: string;
 };
 
 function rowToHabilidade(r: HabilidadeRow): Habilidade {
@@ -31,7 +29,6 @@ function rowToHabilidade(r: HabilidadeRow): Habilidade {
     sigla: r.sigla,
     descricao: r.descricao,
     grupo: r.grupo ?? undefined,
-    tipo: (r.tipo as HabilidadeTipo) ?? "curso",
   };
 }
 
@@ -41,7 +38,9 @@ function habilidadeToRow(h: Habilidade) {
     sigla: h.sigla,
     descricao: h.descricao,
     grupo: h.grupo ?? null,
-    tipo: (h.tipo ?? "curso") as string,
+    // coluna `tipo` ainda existe no DB (NOT NULL com default) — mandamos
+    // valor neutro pra satisfazer o schema sem expor isso na UI.
+    tipo: "curso" as string,
   };
 }
 
@@ -72,9 +71,6 @@ async function ensureInit(): Promise<void> {
 export const habilidadesStore = {
   getAll(): Habilidade[] {
     return habilidades;
-  },
-  byTipo(tipo: HabilidadeTipo): Habilidade[] {
-    return habilidades.filter((h) => (h.tipo ?? "curso") === tipo);
   },
   async upsert(h: Habilidade) {
     const row = habilidadeToRow(h);
