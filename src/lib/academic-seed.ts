@@ -8,6 +8,7 @@ import {
   type Habilidade,
   type Turma,
 } from "./academic-types";
+import { toUuid } from "./db-mapping";
 
 // ====================================================================
 // CURSOS
@@ -152,7 +153,12 @@ export const SEED_HABILIDADES: Habilidade[] = [
 // GRUPOS (Módulos) por curso.
 // O `cod` compõe o código da atividade: <CURSO_COD><GRUPO_COD><NN>.
 // ====================================================================
-export const SEED_GRUPOS: Record<string, Grupo[]> = {
+// Chaves indexadas tanto pelo id textual do seed ("c-ad") quanto pelo UUID
+// determinístico correspondente (toUuid("c-ad")). Isso permite que os
+// consumidores usem qualquer uma das formas — necessário porque os stores
+// (cursos/atividades) persistem em UUID no Supabase, enquanto alguns
+// componentes ainda referenciam o seed id localmente.
+const SEED_GRUPOS_BY_SEED_ID: Record<string, Grupo[]> = {
   "c-mp": [
     { cod: "C", nome: "Criativo" },
     { cod: "P", nome: "Pro-Player" },
@@ -185,6 +191,13 @@ export const SEED_GRUPOS: Record<string, Grupo[]> = {
     { cod: "AC", nome: "Artigo Científico e Produção Acadêmica" },
   ],
 };
+
+export const SEED_GRUPOS: Record<string, Grupo[]> = Object.fromEntries(
+  Object.entries(SEED_GRUPOS_BY_SEED_ID).flatMap(([seedId, grupos]) => [
+    [seedId, grupos],
+    [toUuid(seedId), grupos],
+  ]),
+);
 
 // ====================================================================
 // ATIVIDADES — catálogo de Aulas (tipo 0) e Tarefas (tipo 1) por curso.

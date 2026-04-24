@@ -4,7 +4,7 @@
 // - upsert/remove gravam no banco e atualizam cache + listeners.
 import { useEffect, useState } from "react";
 import type { Curso } from "./academic-types";
-import { SEED_CURSOS } from "./academic-seed";
+import { SEED_CURSOS, SEED_GRUPOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -61,6 +61,41 @@ async function seedIfEmpty() {
   const rows = SEED_CURSOS.map(cursoToRow);
   const { error } = await supabase.from("cursos").upsert(rows, { onConflict: "id" });
   if (error) console.error("[cursos] seed error", error);
+  await seedGruposIfEmpty();
+}
+
+// Semeia public.grupos a partir de SEED_GRUPOS (indexado por seed-id textual
+// como "c-ad"; os stores gravam cursos com UUID determinístico via toUuid).
+// Usa o próprio toUuid para derivar o id do grupo a partir de curso_id+cod,
+// mantendo a relação estável e idempotente.
+async function seedGruposIfEmpty() {
+  const { count, error: countErr } = await supabase
+    .from("grupos")
+    .select("id", { count: "exact", head: true });
+  if (countErr) {
+    console.error("[grupos] count error", countErr);
+    return;
+  }
+  if ((count ?? 0) > 0) return;
+
+  const rows: { id: string; curso_id: string; cod: string; nome: string }[] = [];
+  for (const curso of SEED_CURSOS) {
+    const cursoUuid = toUuid(curso.id);
+    const grupos = SEED_GRUPOS[curso.id] ?? [];
+    for (const g of grupos) {
+      rows.push({
+        id: toUuid(`grupo-${curso.id}-${g.cod}`),
+        curso_id: cursoUuid,
+        cod: g.cod,
+        nome: g.nome,
+      });
+    }
+  }
+  if (rows.length === 0) return;
+  const { error } = await supabase
+    .from("grupos")
+    .upsert(rows, { onConflict: "id" });
+  if (error) console.error("[grupos] seed error", error);
 }
 
 async function loadFromDb() {
