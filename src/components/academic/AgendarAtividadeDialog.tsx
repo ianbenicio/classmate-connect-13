@@ -633,7 +633,7 @@ export function AgendarAtividadeDialog({
                   {grupos.map((g) => (
                     <SelectItem key={g} value={g}>
                       <span className="font-mono text-xs mr-2">{g}</span>
-                      {getGrupoNome(SEED_GRUPOS, curso.id, g)}
+                      {getGrupoNome(SEED_GRUPOS, curso.cod, g)}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -31,7 +31,7 @@ import {
   Users,
 } from "lucide-react";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { SEED_GRUPOS, getGruposDoCurso } from "@/lib/academic-seed";
 import { cursosStore } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
@@ -97,8 +97,8 @@ function CursoAtividadesPage() {
   );
 
   const gruposCurso = useMemo(
-    () => SEED_GRUPOS[curso.id] ?? [],
-    [curso.id],
+    () => getGruposDoCurso(curso),
+    [curso],
   );
 
   const { aulas, tarefas } = useMemo(() => {

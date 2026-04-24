@@ -153,18 +153,22 @@ export const SEED_HABILIDADES: Habilidade[] = [
 // GRUPOS (Módulos) por curso.
 // O `cod` compõe o código da atividade: <CURSO_COD><GRUPO_COD><NN>.
 // ====================================================================
-// Chaves indexadas tanto pelo id textual do seed ("c-ad") quanto pelo UUID
-// determinístico correspondente (toUuid("c-ad")). Isso permite que os
-// consumidores usem qualquer uma das formas — necessário porque os stores
-// (cursos/atividades) persistem em UUID no Supabase, enquanto alguns
-// componentes ainda referenciam o seed id localmente.
-const SEED_GRUPOS_BY_SEED_ID: Record<string, Grupo[]> = {
-  "c-mp": [
+// SEED_GRUPOS é indexado por *múltiplas* formas de identificar o curso:
+//  - curso.cod ("MP", "GP", "AD", "RB") — canônico, estável e imutável
+//  - seed id textual ("c-mp", "c-gp", ...) — compat com código legado
+//  - toUuid(seed-id) — compat para cursos seedados via cursosStore
+//
+// A motivação: o curso no banco pode ter sido criado com um UUID arbitrário
+// (ex.: criação manual via UI antes do toUuid existir), então chavear por
+// UUID determinístico não é confiável. O `cod` é a única chave garantida
+// a bater, então idealmente use-o nos consumidores.
+const SEED_GRUPOS_BY_COD: Record<string, Grupo[]> = {
+  MP: [
     { cod: "C", nome: "Criativo" },
     { cod: "P", nome: "Pro-Player" },
     { cod: "EV", nome: "Evento" },
   ],
-  "c-gp": [
+  GP: [
     { cod: "CA", nome: "Canva e Adobe Express" },
     { cod: "FG", nome: "Fundamentos do Game" },
     { cod: "PA", nome: "Pacote Adobe" },
@@ -174,7 +178,7 @@ const SEED_GRUPOS_BY_SEED_ID: Record<string, Grupo[]> = {
     { cod: "P2", nome: "Pro Player 2" },
     { cod: "IN", nome: "Inglês para Cyber Atletas" },
   ],
-  "c-ad": [
+  AD: [
     { cod: "GP", nome: "Game Play" },
     { cod: "PP", nome: "Pro Player" },
     { cod: "DS", nome: "Design" },
@@ -184,7 +188,7 @@ const SEED_GRUPOS_BY_SEED_ID: Record<string, Grupo[]> = {
     { cod: "TO", nome: "Ferramentas Adobe e Vídeo" },
     { cod: "BF", nome: "Briefing Final / Fechamento" },
   ],
-  "c-rb": [
+  RB: [
     { cod: "MD", nome: "Metodologia de Design" },
     { cod: "EP", nome: "Eletrônica e Prototipagem" },
     { cod: "3D", nome: "Modelagem 3D e Fabricação" },
@@ -192,12 +196,36 @@ const SEED_GRUPOS_BY_SEED_ID: Record<string, Grupo[]> = {
   ],
 };
 
+// Mapa cod → seed-id (usado para manter as chaves legadas funcionando).
+const COD_TO_SEED_ID: Record<string, string> = {
+  MP: "c-mp",
+  GP: "c-gp",
+  AD: "c-ad",
+  RB: "c-rb",
+};
+
 export const SEED_GRUPOS: Record<string, Grupo[]> = Object.fromEntries(
-  Object.entries(SEED_GRUPOS_BY_SEED_ID).flatMap(([seedId, grupos]) => [
-    [seedId, grupos],
-    [toUuid(seedId), grupos],
-  ]),
+  Object.entries(SEED_GRUPOS_BY_COD).flatMap(([cod, grupos]) => {
+    const seedId = COD_TO_SEED_ID[cod];
+    return [
+      [cod, grupos],
+      ...(seedId ? [[seedId, grupos] as const, [toUuid(seedId), grupos] as const] : []),
+    ];
+  }),
 );
+
+/**
+ * Retorna os grupos/módulos de um curso. Tenta `curso.cod` primeiro (chave
+ * canônica), cai para `curso.id` como fallback. Sempre prefira este helper
+ * ao acesso direto em SEED_GRUPOS[curso.id], que falha se o curso tiver
+ * sido criado com UUID não determinístico.
+ */
+export function getGruposDoCurso(
+  curso: { id: string; cod: string } | null | undefined,
+): Grupo[] {
+  if (!curso) return [];
+  return SEED_GRUPOS[curso.cod] ?? SEED_GRUPOS[curso.id] ?? [];
+}
 
 // ====================================================================
 // ATIVIDADES — catálogo de Aulas (tipo 0) e Tarefas (tipo 1) por curso.

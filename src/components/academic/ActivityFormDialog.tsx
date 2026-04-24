@@ -203,7 +203,10 @@ export function ActivityFormDialog({
   }, [habilidadeIds]);
 
   const cursoSelecionado = cursos.find((c) => c.id === cursoId);
-  const gruposDisponiveis = grupos[cursoId] ?? [];
+  // Lookup robusto: tenta curso.cod primeiro (chave canônica), cai pro id
+  // como fallback. Necessário porque cursos antigos podem ter UUID arbitrário.
+  const gruposDisponiveis =
+    (cursoSelecionado && grupos[cursoSelecionado.cod]) ?? grupos[cursoId] ?? [];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

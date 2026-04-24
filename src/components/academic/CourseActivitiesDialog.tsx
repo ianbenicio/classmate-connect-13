@@ -33,7 +33,7 @@ import {
   type Grupo,
   type Habilidade,
 } from "@/lib/academic-types";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { SEED_GRUPOS, getGruposDoCurso } from "@/lib/academic-seed";
 import { useCurrentUser } from "@/lib/auth-store";
 import { ActivityViewDialog } from "./ActivityViewDialog";
 
@@ -63,23 +63,10 @@ export function CourseActivitiesDialog({
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
       : [];
-    const gruposCurso = curso ? (SEED_GRUPOS[curso.id] ?? []) : [];
-    if (curso) {
-      // Diagnóstico temporário — remover após confirmar fix do dropdown de grupo.
-      // eslint-disable-next-line no-console
-      console.log("[DEBUG-GRUPOS]", {
-        cursoCod: curso.cod,
-        cursoId: curso.id,
-        gruposEncontrados: gruposCurso.length,
-        seedGruposKeys: Object.keys(SEED_GRUPOS),
-        atividadesDesteCurso: list.length,
-        gruposNasAtividades: Array.from(new Set(list.map((a) => a.grupo))),
-      });
-    }
     return {
       aulas: list.filter((a) => a.tipo === 0),
       tarefas: list.filter((a) => a.tipo === 1),
-      gruposCurso,
+      gruposCurso: getGruposDoCurso(curso),
     };
   }, [curso, atividades]);
 
