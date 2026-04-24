@@ -27,6 +27,7 @@ import {
   formatCodigoAtividade,
   DEFAULT_FORMULARIOS,
   FIELD_VISIBILITY,
+  MAX_HABILIDADES_POR_ATIVIDADE,
   type Atividade,
   type AtividadeTipo,
   type Curso,
@@ -209,6 +210,13 @@ export function ActivityFormDialog({
     if (!nome || !cursoId || !grupo || !descricao) {
       toast.error("Preencha os campos obrigatórios na aba Identificação.");
       setTab("identificacao");
+      return;
+    }
+    if (habilidadeIds.length > MAX_HABILIDADES_POR_ATIVIDADE) {
+      toast.error(
+        `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades por atividade.`,
+      );
+      setTab("pedagogico");
       return;
     }
 
@@ -423,12 +431,33 @@ export function ActivityFormDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <FieldLabel field="habilidadeIds">Habilidades Trabalhadas</FieldLabel>
+                  <FieldLabel field="habilidadeIds">
+                    Habilidades Trabalhadas
+                  </FieldLabel>
+                  <p className="text-xs text-muted-foreground">
+                    Escolha até <strong>{MAX_HABILIDADES_POR_ATIVIDADE}</strong>{" "}
+                    habilidades. Apenas habilidades classificadas como "de
+                    atividade" são listadas.
+                  </p>
                   <SkillSelector
-                    habilidades={habilidades}
+                    habilidades={habilidades.filter(
+                      (h) => (h.tipo ?? "curso") === "atividade",
+                    )}
                     selectedIds={habilidadeIds}
-                    onChange={setHabilidadeIds}
+                    onChange={(ids) => {
+                      if (ids.length > MAX_HABILIDADES_POR_ATIVIDADE) {
+                        toast.error(
+                          `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`,
+                        );
+                        return;
+                      }
+                      setHabilidadeIds(ids);
+                    }}
                   />
+                  <p className="text-[11px] text-muted-foreground">
+                    {habilidadeIds.length}/{MAX_HABILIDADES_POR_ATIVIDADE}{" "}
+                    selecionadas
+                  </p>
                 </div>
 
                 {habilidadeIds.length > 0 && (

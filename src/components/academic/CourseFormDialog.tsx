@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { formatMinutos, type Curso } from "@/lib/academic-types";
+import { useHabilidades } from "@/lib/habilidades-store";
+import { SkillSelector } from "./SkillSelector";
 
 interface Props {
   open: boolean;
@@ -38,11 +40,18 @@ function minToSlot(min: number): SlotDraft {
 }
 
 export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props) {
+  const todasHabilidades = useHabilidades();
+  const habilidadesDeCurso = useMemo(
+    () => todasHabilidades.filter((h) => (h.tipo ?? "curso") === "curso"),
+    [todasHabilidades],
+  );
+
   const [cod, setCod] = useState("");
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [cargaHoras, setCargaHoras] = useState<string>("");
   const [cargaMin, setCargaMin] = useState<string>("");
+  const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
   const [slots, setSlots] = useState<SlotDraft[]>([{ horas: "1", minutos: "0" }]);
 
   useEffect(() => {
@@ -53,6 +62,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       const totalMin = editing?.cargaHorariaTotalMin ?? 0;
       setCargaHoras(String(Math.floor(totalMin / 60)));
       setCargaMin(String(totalMin % 60));
+      setHabilidadeIds(editing?.habilidadeIds ?? []);
 
       // Reconstrói os slots a partir do curso: turnoDiarioMin / duracaoAulaMin.
       const dur = editing?.duracaoAulaMin ?? 60;
@@ -119,6 +129,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       cargaHorariaTotalMin: cargaTotalMin,
       duracaoAulaMin: duracaoAulaMin,
       turnoDiarioMin: turnoTotalMin,
+      habilidadeIds,
     });
     toast.success(editing ? "Curso atualizado!" : "Curso criado!");
     onOpenChange(false);
