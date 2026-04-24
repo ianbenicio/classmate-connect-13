@@ -54,7 +54,7 @@ export function ChecklistAlunoDialog({
 
   const habilidadesGerais = useMemo(() => {
     const ids = new Set(curso.habilidadeIds ?? []);
-    return todasHabilidades.filter((h) => ids.has(h.id)).slice(0, 5);
+    return todasHabilidades.filter((h) => ids.has(h.id));
   }, [todasHabilidades, curso.habilidadeIds]);
 
   const habilidadesEspecificas = useMemo(() => {
@@ -63,7 +63,7 @@ export function ChecklistAlunoDialog({
     );
     const ids = new Set<string>();
     for (const a of ativs) for (const id of a.habilidadeIds ?? []) ids.add(id);
-    return todasHabilidades.filter((h) => ids.has(h.id)).slice(0, 5);
+    return todasHabilidades.filter((h) => ids.has(h.id));
   }, [todasHabilidades, agendamento.atividadeIds, atividades]);
 
   const existing = avaliacoesStore.find<ChecklistAlunoDados>(
