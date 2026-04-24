@@ -61,6 +61,7 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
     const q = filtro.toLowerCase();
     return (
       h.sigla.toLowerCase().includes(q) ||
+      (h.nome ?? "").toLowerCase().includes(q) ||
       h.descricao.toLowerCase().includes(q) ||
       (h.grupo ?? "").toLowerCase().includes(q)
     );
