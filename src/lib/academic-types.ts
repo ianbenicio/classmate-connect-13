@@ -2,11 +2,20 @@
 
 export type AtividadeTipo = 0 | 1; // 0 = Aula, 1 = Tarefa
 
+/** Tipo da habilidade: 'geral' = ligada ao curso, 'especifica' = ligada à atividade. */
+export type HabilidadeTipo = "geral" | "especifica";
+
 export interface Habilidade {
   id: string;
   sigla: string;
   descricao: string;
   grupo?: string;
+  /** 'geral' (vinculada a um curso) ou 'especifica' (vinculada a uma atividade). */
+  tipo?: HabilidadeTipo;
+  /** Obrigatório quando tipo = 'geral'. */
+  cursoId?: string;
+  /** Obrigatório quando tipo = 'especifica'. */
+  atividadeId?: string;
 }
 
 export interface Curso {

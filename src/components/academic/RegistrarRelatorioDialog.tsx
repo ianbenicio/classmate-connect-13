@@ -63,12 +63,9 @@ export function RegistrarRelatorioDialog({
   const handleConfirmar = () => {
     agendamentosStore.marcarConcluido(agendamento.id);
 
-    // Notifica alunos + professor que o relatório foi registrado
     if (turma && curso) {
       const alunos = alunosStore.getAll().filter((al) => al.turmaId === turma.id);
-      const base = {
-        titulo: `Relatório registrado — ${turma.cod}`,
-        mensagem: `${curso.nome} · ${turma.nome} · ${dataFmt} ${agendamento.inicio}–${agendamento.fim} — relatório registrado.`,
+      const baseSlot = {
         cursoId: curso.id,
         turmaId: turma.id,
         data: agendamento.data,
@@ -78,11 +75,57 @@ export function RegistrarRelatorioDialog({
         atividadeIds: agendamento.atividadeIds,
         criadoEm: new Date().toISOString(),
         lida: false,
+      };
+
+      // 1) Notificação "concluído" tradicional
+      const notifConcluido = {
+        ...baseSlot,
+        titulo: `Relatório registrado — ${turma.cod}`,
+        mensagem: `${curso.nome} · ${turma.nome} · ${dataFmt} ${agendamento.inicio}–${agendamento.fim} — relatório registrado.`,
         kind: "concluido" as const,
       };
+
+      // 2) Tarefa-formulário: Relatório do professor
+      const tarefaProf = agendamento.professor
+        ? [
+            {
+              ...baseSlot,
+              id: crypto.randomUUID(),
+              destinatarioTipo: "professor" as const,
+              destinatarioId: agendamento.professor,
+              titulo: `📋 Relatório da aula pendente — ${turma.cod}`,
+              mensagem: `Preencha o relatório da aula de ${dataFmt}.`,
+              kind: "agendado" as const,
+            },
+          ]
+        : [];
+
+      // 3) Tarefas-formulário: Checklist (apenas o prof) + Relatório do aluno (cada aluno)
+      const tarefasChecklist = agendamento.professor
+        ? alunos.map((al) => ({
+            ...baseSlot,
+            id: crypto.randomUUID(),
+            destinatarioTipo: "professor" as const,
+            destinatarioId: agendamento.professor!,
+            titulo: `✅ Checklist pendente — ${al.nome}`,
+            mensagem: `Avalie ${al.nome} na aula de ${dataFmt}.`,
+            kind: "agendado" as const,
+          }))
+        : [];
+
+      const tarefasAluno = alunos.map((al) => ({
+        ...baseSlot,
+        id: crypto.randomUUID(),
+        destinatarioTipo: "aluno" as const,
+        destinatarioId: al.id,
+        titulo: `✨ Como foi sua aula?`,
+        mensagem: `Conte como foi a aula de ${dataFmt} (até 24h).`,
+        kind: "agendado" as const,
+      }));
+
       notificacoesStore.addMany([
         ...alunos.map((al) => ({
-          ...base,
+          ...notifConcluido,
           id: crypto.randomUUID(),
           destinatarioTipo: "aluno" as const,
           destinatarioId: al.id,
@@ -90,17 +133,20 @@ export function RegistrarRelatorioDialog({
         ...(agendamento.professor
           ? [
               {
-                ...base,
+                ...notifConcluido,
                 id: crypto.randomUUID(),
                 destinatarioTipo: "professor" as const,
                 destinatarioId: agendamento.professor,
               },
             ]
           : []),
+        ...tarefaProf,
+        ...tarefasChecklist,
+        ...tarefasAluno,
       ]);
     }
 
-    toast.success("Relatório registrado.");
+    toast.success("Relatório registrado. Tarefas-formulário geradas.");
     onOpenChange(false);
   };
 
