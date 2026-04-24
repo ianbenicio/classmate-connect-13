@@ -132,6 +132,16 @@ function AppShell() {
               Alunos
             </Link>
             {isStaff && (
+              <Link
+                to="/formularios"
+                activeProps={{ className: "text-foreground font-medium" }}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <ClipboardList className="h-3.5 w-3.5" />
+                Formulários
+              </Link>
+            )}
+            {isStaff && (
               <button
                 type="button"
                 onClick={() => setSkillsOpen(true)}
