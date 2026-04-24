@@ -30,6 +30,8 @@ export interface Curso {
 
 /** Limite rígido de habilidades por atividade. */
 export const MAX_HABILIDADES_POR_ATIVIDADE = 5;
+/** Limite rígido de habilidades por curso. */
+export const MAX_HABILIDADES_POR_CURSO = 8;
 
 /** Helpers de carga horária / blocos. */
 export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number {

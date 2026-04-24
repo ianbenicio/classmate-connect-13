@@ -12,7 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { formatMinutos, type Curso } from "@/lib/academic-types";
+import {
+  formatMinutos,
+  MAX_HABILIDADES_POR_CURSO,
+  type Curso,
+} from "@/lib/academic-types";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { SkillSelector } from "./SkillSelector";
 
@@ -41,10 +45,6 @@ function minToSlot(min: number): SlotDraft {
 
 export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props) {
   const todasHabilidades = useHabilidades();
-  const habilidadesDeCurso = useMemo(
-    () => todasHabilidades.filter((h) => (h.tipo ?? "curso") === "curso"),
-    [todasHabilidades],
-  );
 
   const [cod, setCod] = useState("");
   const [nome, setNome] = useState("");
