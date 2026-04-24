@@ -99,6 +99,20 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                 className="pl-8"
               />
             </div>
+            <Select value={grupoFiltro} onValueChange={setGrupoFiltro}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Grupo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos os grupos</SelectItem>
+                <SelectItem value="__none__">Sem grupo</SelectItem>
+                {grupos.map((g) => (
+                  <SelectItem key={g} value={g}>
+                    {g}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button onClick={handleNova}>
               <Plus /> Nova
             </Button>
