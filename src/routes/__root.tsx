@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { ClipboardList, Sparkles } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { NotificationsBell } from "@/components/NotificationsBell";
@@ -131,6 +131,16 @@ function AppShell() {
             >
               Alunos
             </Link>
+            {isStaff && (
+              <Link
+                to="/formularios"
+                activeProps={{ className: "text-foreground font-medium" }}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <ClipboardList className="h-3.5 w-3.5" />
+                Formulários
+              </Link>
+            )}
             {isStaff && (
               <button
                 type="button"

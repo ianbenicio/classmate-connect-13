@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as FormulariosRouteImport } from './routes/formularios'
 import { Route as CursosRouteImport } from './routes/cursos'
 import { Route as CoordenacaoRouteImport } from './routes/coordenacao'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -21,6 +22,11 @@ import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$curs
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormulariosRoute = FormulariosRouteImport.update({
+  id: '/formularios',
+  path: '/formularios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CursosRoute = CursosRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/coordenacao': typeof CoordenacaoRoute
   '/cursos': typeof CursosRoute
+  '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coordenacao'
     | '/cursos'
+    | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CoordenacaoRoute: typeof CoordenacaoRoute
   CursosRoute: typeof CursosRoute
+  FormulariosRoute: typeof FormulariosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -140,6 +153,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formularios': {
+      id: '/formularios'
+      path: '/formularios'
+      fullPath: '/formularios'
+      preLoaderRoute: typeof FormulariosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cursos': {
@@ -213,6 +233,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CoordenacaoRoute: CoordenacaoRoute,
   CursosRoute: CursosRoute,
+  FormulariosRoute: FormulariosRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
