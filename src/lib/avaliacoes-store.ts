@@ -258,3 +258,44 @@ export function useAvaliacoes(): AvaliacaoRecord[] {
   }, []);
   return snap;
 }
+
+/**
+ * Sincroniza a chamada do `relatorio_prof` com a tabela `presencas`.
+ * Cria/atualiza 1 linha por aluno × atividade do agendamento.
+ */
+async function syncPresencas(
+  agendamentoId: string,
+  presencas: Record<string, boolean>,
+  registradoPorUserId: string | null,
+): Promise<void> {
+  const ag = agendamentosStore.getAll().find((g) => g.id === agendamentoId);
+  if (!ag || ag.atividadeIds.length === 0) return;
+  const agUuid = toUuid(agendamentoId);
+
+  const rows = Object.entries(presencas).flatMap(([alunoId, presente]) =>
+    ag.atividadeIds.map((atividadeId) => ({
+      agendamento_id: agUuid,
+      aluno_id: toUuid(alunoId),
+      atividade_id: toUuid(atividadeId),
+      presente,
+      registrado_por_user_id: registradoPorUserId,
+    })),
+  );
+  if (rows.length === 0) return;
+
+  // Como não há unique constraint em (agendamento_id, aluno_id, atividade_id),
+  // fazemos delete+insert da janela do agendamento atual.
+  const { error: delErr } = await supabase
+    .from("presencas")
+    .delete()
+    .eq("agendamento_id", agUuid);
+  if (delErr) {
+    console.error("[presencas] delete error", delErr);
+    return;
+  }
+  const { error: insErr } = await supabase.from("presencas").insert(rows);
+  if (insErr) {
+    console.error("[presencas] insert error", insErr);
+    toast.error(`Erro ao salvar presenças: ${insErr.message}`);
+  }
+}
