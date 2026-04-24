@@ -89,6 +89,11 @@ function RootComponent() {
 function AppShell() {
   useAgendamentoScanner();
   const user = useCurrentUser();
+  const isStaff =
+    user.role === "admin" ||
+    user.role === "coordenacao" ||
+    user.role === "professor";
+  const [skillsOpen, setSkillsOpen] = useState(false);
   return (
     <>
       <header className="border-b bg-card sticky top-0 z-40">
@@ -126,6 +131,16 @@ function AppShell() {
             >
               Alunos
             </Link>
+            {isStaff && (
+              <button
+                type="button"
+                onClick={() => setSkillsOpen(true)}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Habilidades
+              </button>
+            )}
             {user.role === "admin" && (
               <Link
                 to="/coordenacao"
@@ -142,6 +157,7 @@ function AppShell() {
       </header>
       <Outlet />
       <Toaster />
+      <SkillsManagerDialog open={skillsOpen} onOpenChange={setSkillsOpen} />
     </>
   );
 }
