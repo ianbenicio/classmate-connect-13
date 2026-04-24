@@ -154,13 +154,28 @@ export const avaliacoesStore = {
       ? this.find(tipo, agendamentoId, alunoId ?? undefined)
       : undefined;
     const id = existing?.id ?? crypto.randomUUID();
+
+    // — usuário atual (auditoria)
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
+    // — snapshot de contexto (congela curso/turma/atividades/habilidades)
+    const dadosObj = (dados ?? {}) as Record<string, unknown>;
+    const habilidadeIds = Object.keys(
+      (dadosObj.habilidadesNotas ?? {}) as Record<string, unknown>,
+    );
+    const snapshot = buildAvaliacaoSnapshot(agendamentoId, habilidadeIds);
+    const dadosComSnapshot = { ...dadosObj, _snapshot: snapshot };
+
     const row = {
       id,
       agendamento_id: agendamentoId ? toUuid(agendamentoId) : null,
       aluno_id: alunoId ? toUuid(alunoId) : null,
       atividade_id: atividadeId ? toUuid(atividadeId) : null,
       tipo,
-      dados: dados as never,
+      dados: dadosComSnapshot as never,
+      criado_por_user_id: authUser?.id ?? null,
     };
     // Atualização otimista local
     const local: AvaliacaoRecord = {
@@ -169,7 +184,7 @@ export const avaliacoesStore = {
       alunoId: row.aluno_id,
       atividadeId: row.atividade_id,
       tipo,
-      dados,
+      dados: dadosComSnapshot,
       criadoEm: existing?.criadoEm ?? new Date().toISOString(),
     };
     registros = existing
@@ -183,6 +198,16 @@ export const avaliacoesStore = {
       console.error("[avaliacoes] save error", error);
       toast.error(`Erro ao salvar avaliação: ${error.message}`);
     }
+
+    // — Sincroniza chamada com a tabela `presencas` quando for relatorio_prof
+    if (tipo === "relatorio_prof" && agendamentoId) {
+      await syncPresencas(
+        agendamentoId,
+        (dadosObj.presencas ?? {}) as Record<string, boolean>,
+        authUser?.id ?? null,
+      );
+    }
+
     return local;
   },
 
