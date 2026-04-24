@@ -419,30 +419,54 @@ export type Database = {
       }
       habilidades: {
         Row: {
+          atividade_id: string | null
           created_at: string
+          curso_id: string | null
           descricao: string
           grupo: string | null
           id: string
           sigla: string
+          tipo: string
           updated_at: string
         }
         Insert: {
+          atividade_id?: string | null
           created_at?: string
+          curso_id?: string | null
           descricao: string
           grupo?: string | null
           id?: string
           sigla: string
+          tipo?: string
           updated_at?: string
         }
         Update: {
+          atividade_id?: string | null
           created_at?: string
+          curso_id?: string | null
           descricao?: string
           grupo?: string | null
           id?: string
           sigla?: string
+          tipo?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "habilidades_atividade_id_fkey"
+            columns: ["atividade_id"]
+            isOneToOne: false
+            referencedRelation: "atividades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "habilidades_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notificacoes: {
         Row: {
