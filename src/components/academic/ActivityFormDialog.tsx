@@ -207,7 +207,7 @@ export function ActivityFormDialog({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !cursoId || !grupo || !descricao) {
+    if (!nome || !cursoId || (!isEdit && !grupo) || !descricao) {
       toast.error("Preencha os campos obrigatórios na aba Identificação.");
       setTab("identificacao");
       return;
@@ -935,7 +935,7 @@ function IdentificacaoFields({
         </div>
 
         <div className="space-y-2">
-          <Label>Grupo / Módulo *</Label>
+          <Label>Grupo / Módulo{isEdit ? "" : " *"}</Label>
           <Select value={grupo} onValueChange={setGrupo} disabled={isEdit}>
             <SelectTrigger>
               <SelectValue placeholder="Selecione" />
