@@ -20,7 +20,7 @@ import {
   ChevronRight,
   ClipboardCheck,
 } from "lucide-react";
-import { SEED_GRUPOS, SEED_HABILIDADES } from "@/lib/academic-seed";
+import { SEED_GRUPOS } from "@/lib/academic-seed";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
@@ -231,7 +231,7 @@ function AtividadesPage() {
       <CourseActivitiesDialog
         curso={selectedCurso}
         atividades={atividades}
-        habilidades={SEED_HABILIDADES}
+        habilidades={habilidades}
         onOpenChange={(open) => !open && setSelectedCurso(null)}
         onNew={(tipo) => {
           if (!selectedCurso) return;
@@ -256,7 +256,7 @@ function AtividadesPage() {
         onOpenChange={setFormOpen}
         cursos={cursos}
         grupos={SEED_GRUPOS}
-        habilidades={SEED_HABILIDADES}
+        habilidades={habilidades}
         editing={editing}
         defaultTipo={defaultTipo}
         onSave={handleSave}
