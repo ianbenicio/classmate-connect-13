@@ -528,3 +528,49 @@ export const SEED_AGENDAMENTOS: Agendamento[] = [
   { id: "ag-t-mp-7-mpc03-20260324", turmaId: "t-mp-7", data: "2026-03-24", diaSemana: "ter", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-03"], status: "concluido", criadoEm: "2026-03-24T14:00:00.000Z", concluidoEm: "2026-03-24T15:00:00.000Z" },
   { id: "ag-t-mp-7-mpc04-20260407", turmaId: "t-mp-7", data: "2026-04-07", diaSemana: "ter", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-04"], status: "concluido", criadoEm: "2026-04-07T14:00:00.000Z", concluidoEm: "2026-04-07T15:00:00.000Z" },
 ];
+
+// ====================================================================
+// FORMULÁRIOS (templates do sistema)
+// ====================================================================
+// Templates mínimos garantidos no banco — qualquer aula passa a ter os
+// dois formulários básicos disponíveis (relatório do professor e
+// autoavaliação do aluno) sem precisar criar manualmente.
+export interface SeedFormulario {
+  slug: string;
+  nome: string;
+  descricao: string | null;
+  destinatario: "professor" | "aluno";
+  estrutura: Record<string, unknown>;
+  isSystem: boolean;
+}
+
+export const SEED_FORMULARIOS: SeedFormulario[] = [
+  {
+    slug: "relatorio_professor",
+    nome: "Relatório do Professor",
+    descricao: "Registro pós-aula do professor: conteúdo, observações e próximos passos.",
+    destinatario: "professor",
+    estrutura: {
+      blocos: [
+        { id: "conteudo", tipo: "texto_longo", label: "Conteúdo aplicado", obrigatorio: true },
+        { id: "observacoes", tipo: "texto_longo", label: "Observações da turma", obrigatorio: false },
+        { id: "proximos_passos", tipo: "texto_longo", label: "Próximos passos", obrigatorio: false },
+      ],
+    },
+    isSystem: true,
+  },
+  {
+    slug: "autoavaliacao_aluno",
+    nome: "Autoavaliação do Aluno",
+    descricao: "Avaliação rápida do aluno sobre a aula: clareza, dificuldade e comentários.",
+    destinatario: "aluno",
+    estrutura: {
+      blocos: [
+        { id: "clareza", tipo: "escala_1_5", label: "Quão clara foi a aula?", obrigatorio: true },
+        { id: "dificuldade", tipo: "escala_1_5", label: "Nível de dificuldade", obrigatorio: true },
+        { id: "comentario", tipo: "texto_longo", label: "Comentário livre", obrigatorio: false },
+      ],
+    },
+    isSystem: true,
+  },
+];

@@ -133,14 +133,20 @@ export interface Grupo {
   nome: string;
 }
 
-/** Resolve o nome do grupo (módulo) a partir do cod, dentro de um curso. */
+/**
+ * Resolve o nome do grupo (módulo) a partir do cod, dentro de um curso.
+ * @param grupos Mapa de grupos por chave de curso (`curso.cod`).
+ * @param cursoKey Chave do curso usada como índice do mapa — é `curso.cod`,
+ *   NÃO `curso.id`.
+ * @param grupoCod Código do grupo a procurar.
+ */
 export function getGrupoNome(
   grupos: Record<string, Grupo[]>,
-  cursoId: string,
+  cursoKey: string,
   grupoCod: string,
 ): string {
   return (
-    grupos[cursoId]?.find((g) => g.cod === grupoCod)?.nome ?? grupoCod
+    grupos[cursoKey]?.find((g) => g.cod === grupoCod)?.nome ?? grupoCod
   );
 }
 

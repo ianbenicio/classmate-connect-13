@@ -28,6 +28,7 @@ export type Database = {
           fim: string
           id: string
           inicio: string
+          meta: Json
           observacao: string | null
           parte_grupo_id: string | null
           parte_num: number
@@ -50,6 +51,7 @@ export type Database = {
           fim: string
           id?: string
           inicio: string
+          meta?: Json
           observacao?: string | null
           parte_grupo_id?: string | null
           parte_num?: number
@@ -72,6 +74,7 @@ export type Database = {
           fim?: string
           id?: string
           inicio?: string
+          meta?: Json
           observacao?: string | null
           parte_grupo_id?: string | null
           parte_num?: number
@@ -702,6 +705,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      relatorios_exportados: {
+        Row: {
+          conteudo: string
+          created_at: string
+          filename: string
+          formato: string
+          gerado_em: string
+          gerado_por_nome: string | null
+          gerado_por_user_id: string | null
+          id: string
+          size_bytes: number
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          conteudo: string
+          created_at?: string
+          filename: string
+          formato?: string
+          gerado_em?: string
+          gerado_por_nome?: string | null
+          gerado_por_user_id?: string | null
+          id?: string
+          size_bytes?: number
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          filename?: string
+          formato?: string
+          gerado_em?: string
+          gerado_por_nome?: string | null
+          gerado_por_user_id?: string | null
+          id?: string
+          size_bytes?: number
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: []
       }
       turmas: {
         Row: {

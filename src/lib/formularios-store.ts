@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { SEED_FORMULARIOS } from "./academic-seed";
+import { toUuid } from "./db-mapping";
 
 export type FormularioDestinatario = "professor" | "aluno";
 
@@ -56,6 +58,33 @@ function emit() {
   for (const l of listeners) l();
 }
 
+// Top-up: insere os templates de SEED_FORMULARIOS que ainda não existem
+// no banco. Conflito é resolvido por `slug` (chave estável de lookup)
+// — não pelo id, porque a app procura templates por slug.
+async function topUpFormularios(existingSlugs: Set<string>) {
+  if (SEED_FORMULARIOS.length === 0) return false;
+  const missing = SEED_FORMULARIOS.filter((f) => !existingSlugs.has(f.slug));
+  if (missing.length === 0) return false;
+  const rows = missing.map((f) => ({
+    id: toUuid(`form-${f.slug}`),
+    slug: f.slug,
+    nome: f.nome,
+    descricao: f.descricao,
+    destinatario: f.destinatario,
+    estrutura: f.estrutura as never,
+    is_system: f.isSystem,
+  }));
+  const { error } = await supabase
+    .from("formularios")
+    .upsert(rows, { onConflict: "slug", ignoreDuplicates: true });
+  if (error) {
+    console.error("[formularios] top-up error", error);
+    return false;
+  }
+  console.info(`[formularios] top-up: +${missing.length} templates do seed`);
+  return true;
+}
+
 async function loadFromDb() {
   const { data, error } = await supabase
     .from("formularios")
@@ -65,7 +94,18 @@ async function loadFromDb() {
     console.error("[formularios] load error", error);
     return;
   }
-  registros = (data as Row[] | null ?? []).map(rowTo);
+  const rows = (data as Row[] | null) ?? [];
+  const existingSlugs = new Set(rows.map((r) => r.slug));
+  const inserted = await topUpFormularios(existingSlugs);
+  if (inserted) {
+    const { data: data2 } = await supabase
+      .from("formularios")
+      .select("*")
+      .order("nome", { ascending: true });
+    registros = ((data2 as Row[] | null) ?? []).map(rowTo);
+  } else {
+    registros = rows.map(rowTo);
+  }
 }
 
 async function ensureInit(): Promise<void> {

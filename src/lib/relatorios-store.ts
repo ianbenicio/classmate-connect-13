@@ -1,9 +1,13 @@
-// Histórico de relatórios gerados pelo sistema.
-// Persiste em localStorage com pub/sub.
-// Cada relatório guarda o conteúdo (JSON serializado) para poder ser
-// re-baixado depois — não fica só o registro do clique.
-
+// Histórico de relatórios/exportações geradas pelo sistema, persistido em
+// Supabase (tabela `relatorios_exportados`).
+//
+// Importante: NÃO é a tabela `relatorios` (relatórios de aula/agendamento).
+// São conceitos diferentes que coincidem no nome — esta store guarda o
+// histórico de arquivos JSON baixados, com conteúdo serializado para
+// permitir re-download.
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export type RelatorioTipo =
   | "export_completo"
@@ -31,66 +35,135 @@ export interface Relatorio {
   conteudo: string; // JSON serializado (string) — permite re-download
 }
 
-const STORAGE_KEY = "app.relatorios";
+type Row = {
+  id: string;
+  tipo: string;
+  titulo: string;
+  gerado_em: string;
+  gerado_por_user_id: string | null;
+  gerado_por_nome: string | null;
+  formato: string;
+  size_bytes: number;
+  filename: string;
+  conteudo: string;
+};
 
-function readInitial(): Relatorio[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Relatorio[]) : [];
-  } catch {
-    return [];
-  }
+function rowTo(r: Row): Relatorio {
+  return {
+    id: r.id,
+    tipo: (r.tipo as RelatorioTipo) ?? "outro",
+    titulo: r.titulo,
+    geradoEm: r.gerado_em,
+    geradoPorUserId: r.gerado_por_user_id ?? undefined,
+    geradoPorNome: r.gerado_por_nome ?? undefined,
+    formato: "json",
+    sizeBytes: r.size_bytes,
+    filename: r.filename,
+    conteudo: r.conteudo,
+  };
 }
 
-let relatorios: Relatorio[] = readInitial();
+function toRow(r: Relatorio) {
+  return {
+    id: r.id,
+    tipo: r.tipo,
+    titulo: r.titulo,
+    gerado_em: r.geradoEm,
+    gerado_por_user_id: r.geradoPorUserId ?? null,
+    gerado_por_nome: r.geradoPorNome ?? null,
+    formato: r.formato,
+    size_bytes: r.sizeBytes,
+    filename: r.filename,
+    conteudo: r.conteudo,
+  };
+}
+
+let relatorios: Relatorio[] = [];
+let initialized = false;
+let initPromise: Promise<void> | null = null;
 const listeners = new Set<() => void>();
-
-function persist() {
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(relatorios));
-    } catch {
-      // localStorage cheio — silencia
-    }
-  }
-}
 
 function emit() {
   for (const l of listeners) l();
+}
+
+async function loadFromDb() {
+  const { data, error } = await supabase
+    .from("relatorios_exportados")
+    .select("*")
+    .order("gerado_em", { ascending: false });
+  if (error) {
+    console.error("[relatorios] load error", error);
+    return;
+  }
+  relatorios = ((data ?? []) as unknown as Row[]).map(rowTo);
+}
+
+async function ensureInit(): Promise<void> {
+  if (initialized) return;
+  if (!initPromise) {
+    initPromise = loadFromDb().then(() => {
+      initialized = true;
+      emit();
+    });
+  }
+  return initPromise;
 }
 
 export const relatoriosStore = {
   getAll(): Relatorio[] {
     return relatorios;
   },
-  add(r: Relatorio) {
+  async add(r: Relatorio) {
     relatorios = [r, ...relatorios];
-    persist();
     emit();
+    const { error } = await supabase
+      .from("relatorios_exportados")
+      .insert(toRow(r));
+    if (error) {
+      console.error("[relatorios] add error", error);
+      toast.error(`Erro ao registrar relatório: ${error.message}`);
+    }
   },
-  remove(id: string) {
+  async remove(id: string) {
     relatorios = relatorios.filter((r) => r.id !== id);
-    persist();
     emit();
+    const { error } = await supabase
+      .from("relatorios_exportados")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      console.error("[relatorios] remove error", error);
+      toast.error(`Erro ao remover relatório: ${error.message}`);
+    }
   },
-  clear() {
+  async clear() {
+    const ids = relatorios.map((r) => r.id);
     relatorios = [];
-    persist();
     emit();
+    if (ids.length === 0) return;
+    const { error } = await supabase
+      .from("relatorios_exportados")
+      .delete()
+      .in("id", ids);
+    if (error) {
+      console.error("[relatorios] clear error", error);
+      toast.error(`Erro ao limpar relatórios: ${error.message}`);
+    }
   },
   subscribe(fn: () => void) {
     listeners.add(fn);
     return () => listeners.delete(fn);
   },
+  ensureInit,
 };
 
 export function useRelatorios(): Relatorio[] {
   const [snap, setSnap] = useState<Relatorio[]>(relatoriosStore.getAll());
   useEffect(() => {
-    setSnap(relatoriosStore.getAll());
+    void ensureInit();
     const unsub = relatoriosStore.subscribe(() =>
-      setSnap(relatoriosStore.getAll()),
+      setSnap([...relatoriosStore.getAll()]),
     );
     return () => {
       unsub();
