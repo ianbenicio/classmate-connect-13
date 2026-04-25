@@ -29,11 +29,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadProfile = async (uid: string) => {
     const [{ data: profile }, { data: roleRows }] = await Promise.all([
-      supabase.from("profiles" as never).select("display_name").eq("user_id", uid).maybeSingle(),
-      supabase.from("user_roles" as never).select("role").eq("user_id", uid),
+      supabase.from("profiles").select("display_name").eq("user_id", uid).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", uid),
     ]);
-    setDisplayName((profile as { display_name?: string } | null)?.display_name ?? "");
-    setRoles(((roleRows as { role: AppRole }[] | null) ?? []).map((r) => r.role));
+    setDisplayName(profile?.display_name ?? "");
+    setRoles((roleRows ?? []).map((r) => r.role as AppRole));
   };
 
   useEffect(() => {

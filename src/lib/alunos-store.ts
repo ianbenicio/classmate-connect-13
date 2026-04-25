@@ -87,7 +87,7 @@ async function loadFromDb() {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const { data, error } = await supabase
-        .from("presencas" as never)
+        .from("presencas")
         .select("aluno_id, atividade_id, presente, observacao")
         .range(from, from + pageSize - 1);
       if (error) return { data: all, error };
