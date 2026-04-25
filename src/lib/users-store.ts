@@ -130,6 +130,43 @@ export const usersStore = {
     emit();
   },
 
+  /**
+   * Remove o usuário do app: apaga linhas em `user_roles` e `profiles`.
+   *
+   * IMPORTANTE: a linha em `auth.users` permanece — apagar usuários do
+   * sistema de auth exige a service role key, que só roda em ambiente
+   * server-side (Edge Function). Após este remove, o usuário ainda
+   * consegue logar com e-mail/senha, mas o trigger `handle_new_user`
+   * NÃO recria perfil em login (só roda em INSERT). Resultado: ele entra
+   * sem perfil/papéis, ficando efetivamente sem acesso a dados.
+   *
+   * Para apagar de verdade, o admin precisa removê-lo no painel do
+   * Supabase ou via Edge Function dedicada.
+   */
+  async removeUser(userId: string): Promise<void> {
+    // Ordem: roles → profile (FK lógica via user_id; sem cascade SQL).
+    const { error: rolesErr } = await supabase
+      .from("user_roles")
+      .delete()
+      .eq("user_id", userId);
+    if (rolesErr) {
+      console.error("[users] removeUser roles error", rolesErr);
+      toast.error(`Erro ao remover papéis: ${rolesErr.message}`);
+      return;
+    }
+    const { error: profErr } = await supabase
+      .from("profiles")
+      .delete()
+      .eq("user_id", userId);
+    if (profErr) {
+      console.error("[users] removeUser profile error", profErr);
+      toast.error(`Erro ao remover perfil: ${profErr.message}`);
+      return;
+    }
+    users = users.filter((u) => u.userId !== userId);
+    emit();
+  },
+
   async removeRole(userId: string, role: AppRole): Promise<void> {
     const { error } = await supabase
       .from("user_roles")

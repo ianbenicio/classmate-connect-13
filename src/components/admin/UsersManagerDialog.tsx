@@ -24,7 +24,25 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Pencil, Save, ShieldCheck, X, Search, Users as UsersIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Pencil,
+  Save,
+  ShieldCheck,
+  Trash2,
+  X,
+  Search,
+  Users as UsersIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   useUsers,
@@ -53,6 +71,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
   const [filtro, setFiltro] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
+  const [confirmRemove, setConfirmRemove] = useState<UserRow | null>(null);
 
   // Reload ao abrir — papéis podem ter mudado em outra sessão.
   useEffect(() => {
@@ -165,7 +184,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
               {u.email ?? "—"}
             </div>
           </div>
-          <div className="flex gap-1 shrink-0">
+          <div className="flex flex-col gap-1 shrink-0">
             {isEditing ? (
               <>
                 <Button
@@ -188,15 +207,31 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                 </Button>
               </>
             ) : (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-7 w-7"
-                onClick={() => startEdit(u)}
-                title="Editar nome"
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
+              <>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7"
+                  onClick={() => startEdit(u)}
+                  title="Editar nome"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={() => setConfirmRemove(u)}
+                  disabled={isSelf}
+                  title={
+                    isSelf
+                      ? "Você não pode remover a si mesmo"
+                      : "Remover usuário"
+                  }
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -327,6 +362,49 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
           gerenciados pelo Supabase Auth e não podem ser editados aqui.
         </p>
       </DialogContent>
+
+      <AlertDialog
+        open={!!confirmRemove}
+        onOpenChange={(o) => !o && setConfirmRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover usuário?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <span className="block">
+                Apaga o perfil e todos os papéis de{" "}
+                <strong>
+                  {confirmRemove?.displayName || confirmRemove?.email || "?"}
+                </strong>
+                . O usuário perderá acesso aos dados do app.
+              </span>
+              <span className="block text-amber-600 dark:text-amber-400">
+                ⚠️ A conta de login (Supabase Auth) NÃO é apagada por aqui —
+                apenas perfil e papéis. Para remoção total, use o painel
+                do Supabase ou peça ao usuário para excluir a própria
+                conta.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={async () => {
+                if (!confirmRemove) return;
+                const target = confirmRemove;
+                setConfirmRemove(null);
+                await usersStore.removeUser(target.userId);
+                toast.success(
+                  `${target.displayName || target.email || "Usuário"} removido.`,
+                );
+              }}
+            >
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
