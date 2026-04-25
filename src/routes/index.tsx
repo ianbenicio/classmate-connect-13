@@ -20,7 +20,7 @@ import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDi
 import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import type { Agendamento, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -50,7 +50,9 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
-  const currentUser = useCurrentUser();
+  const { user: authUser, hasRole } = useAuth();
+  const isAdmin = hasRole("admin");
+  const currentUserId = authUser?.id ?? null;
 
   const [agendarCtx, setAgendarCtx] = useState<{
     curso: Curso;
@@ -166,8 +168,9 @@ function DashboardPage() {
             }}
             onRemoverAgendamento={(agendamento, turma) => {
               const isOwner =
-                currentUser.role === "admin" ||
-                agendamento.criadoPorUserId === currentUser.id;
+                isAdmin ||
+                (currentUserId !== null &&
+                  agendamento.criadoPorUserId === currentUserId);
               if (!isOwner) {
                 toast.info("Apenas o professor que agendou pode remover.");
                 return;
@@ -185,8 +188,9 @@ function DashboardPage() {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
               const podeRegistrar =
-                currentUser.role === "admin" ||
-                agendamento.criadoPorUserId === currentUser.id;
+                isAdmin ||
+                (currentUserId !== null &&
+                  agendamento.criadoPorUserId === currentUserId);
               if (!podeRegistrar) {
                 toast.info(
                   `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
@@ -422,8 +426,9 @@ function DashboardPage() {
           }}
           onRemoverAgendamento={(agendamento) => {
             const isOwner =
-              currentUser.role === "admin" ||
-              agendamento.criadoPorUserId === currentUser.id;
+              isAdmin ||
+              (currentUserId !== null &&
+                agendamento.criadoPorUserId === currentUserId);
             if (!isOwner) {
               toast.info("Apenas o professor que agendou pode remover.");
               return;

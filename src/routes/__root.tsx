@@ -7,8 +7,7 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
 import { SkillsManagerDialog } from "@/components/academic/SkillsManagerDialog";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
-import { useCurrentUser } from "@/lib/auth-store";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, useAuth } from "@/lib/auth";
 
 import appCss from "../styles.css?url";
 
@@ -88,11 +87,9 @@ function RootComponent() {
 
 function AppShell() {
   useAgendamentoScanner();
-  const user = useCurrentUser();
-  const isStaff =
-    user.role === "admin" ||
-    user.role === "coordenacao" ||
-    user.role === "professor";
+  const { hasRole, isStaff: isStaffFn } = useAuth();
+  const isStaff = isStaffFn();
+  const isCoord = hasRole("admin") || hasRole("coordenacao");
   const [skillsOpen, setSkillsOpen] = useState(false);
   return (
     <>
@@ -151,7 +148,7 @@ function AppShell() {
                 Habilidades
               </button>
             )}
-            {user.role === "admin" && (
+            {isCoord && (
               <Link
                 to="/coordenacao"
                 activeProps={{ className: "text-foreground font-medium" }}

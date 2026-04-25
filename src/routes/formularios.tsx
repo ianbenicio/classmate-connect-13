@@ -39,7 +39,7 @@ import {
   type FormularioDestinatario,
   type FormularioTemplate,
 } from "@/lib/formularios-store";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/formularios")({
   component: FormulariosPage,
@@ -47,11 +47,8 @@ export const Route = createFileRoute("/formularios")({
 
 function FormulariosPage() {
   const formularios = useFormularios();
-  const user = useCurrentUser();
-  const isStaff =
-    user.role === "admin" ||
-    user.role === "coordenacao" ||
-    user.role === "professor";
+  const { isStaff: isStaffFn } = useAuth();
+  const isStaff = isStaffFn();
 
   const [editing, setEditing] = useState<FormularioTemplate | null>(null);
   const [creating, setCreating] = useState(false);

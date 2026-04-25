@@ -22,7 +22,7 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import { RegistrarRelatorioDialog } from "./RegistrarRelatorioDialog";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +42,11 @@ export function PendingReportsDialog({
   atividades,
 }: Props) {
   const agendamentos = useAgendamentos();
-  const currentUser = useCurrentUser();
+  const { user: authUser, hasRole, displayName } = useAuth();
+  const isAdmin = hasRole("admin");
+  const currentUserId = authUser?.id ?? null;
+  const currentUserNome =
+    displayName || (authUser?.user_metadata?.name as string | undefined) || authUser?.email || "—";
   const [selecionado, setSelecionado] = useState<{
     agendamento: Agendamento;
     turma: Turma;
@@ -63,8 +67,8 @@ export function PendingReportsDialog({
     return agendamentos
       .filter((a) => a.status !== "concluido")
       .filter((a) => {
-        if (currentUser.role === "admin") return true;
-        return a.criadoPorUserId === currentUser.id;
+        if (isAdmin) return true;
+        return currentUserId !== null && a.criadoPorUserId === currentUserId;
       })
       .map((a) => ({
         a,
@@ -72,7 +76,7 @@ export function PendingReportsDialog({
       }))
       .filter(({ estado }) => estado === "agendado" || estado === "atrasado")
       .sort((x, y) => `${x.a.data} ${x.a.inicio}`.localeCompare(`${y.a.data} ${y.a.inicio}`));
-  }, [agendamentos, currentUser]);
+  }, [agendamentos, isAdmin, currentUserId]);
 
   return (
     <>
@@ -83,9 +87,9 @@ export function PendingReportsDialog({
               <ClipboardCheck className="h-5 w-5" /> Relatórios pendentes
             </DialogTitle>
             <DialogDescription>
-              {currentUser.role === "admin"
+              {isAdmin
                 ? "Todas as atividades aguardando relatório."
-                : `Atividades agendadas por ${currentUser.nome} aguardando relatório.`}
+                : `Atividades agendadas por ${currentUserNome} aguardando relatório.`}
             </DialogDescription>
           </DialogHeader>
 

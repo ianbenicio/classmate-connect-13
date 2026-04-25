@@ -24,7 +24,7 @@ import {
   type HorarioSlot,
   type Turma,
 } from "@/lib/academic-types";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -54,7 +54,7 @@ export function TurmaDiaDetailDialog({
   onRegistrarRelatorio,
   onRemoverAgendamento,
 }: Props) {
-  const currentUser = useCurrentUser();
+  const { user, hasRole } = useAuth();
   const now = new Date();
   const dataKey = format(date, "yyyy-MM-dd");
   const duracaoAulaMin = getDuracaoAulaMin(curso);
@@ -101,8 +101,7 @@ export function TurmaDiaDetailDialog({
             const fim = blocoFim(slot, idx, duracaoAulaMin);
             const estado = computeSlotEstado(dataKey, fim, ag, now);
             const isOwner = ag
-              ? currentUser.role === "admin" ||
-                ag.criadoPorUserId === currentUser.id
+              ? hasRole("admin") || ag.criadoPorUserId === user?.id
               : false;
 
             // Janela do relatório: do início do dia da aula até 24h após o fim

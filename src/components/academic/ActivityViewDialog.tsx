@@ -14,21 +14,13 @@ import {
   type Habilidade,
   type PerfilAcesso,
 } from "@/lib/academic-types";
-import type { UserRole } from "@/lib/users";
 
 interface Props {
   atividade: Atividade | null;
   curso?: Curso;
   habilidades: Habilidade[];
-  role: UserRole;
+  perfil: PerfilAcesso;
   onOpenChange: (open: boolean) => void;
-}
-
-/** Mapeia role de auth → perfil de visibilidade da atividade. */
-function roleToPerfil(role: UserRole): PerfilAcesso {
-  if (role === "aluno") return "aluno";
-  if (role === "coordenacao" || role === "admin") return "coordenacao";
-  return "professor";
 }
 
 function canSee(field: keyof typeof FIELD_VISIBILITY, perfil: PerfilAcesso) {
@@ -39,11 +31,10 @@ export function ActivityViewDialog({
   atividade,
   curso,
   habilidades,
-  role,
+  perfil,
   onOpenChange,
 }: Props) {
   if (!atividade) return null;
-  const perfil = roleToPerfil(role);
   const isAula = atividade.tipo === 0;
 
   const habs = habilidades.filter((h) => atividade.habilidadeIds.includes(h.id));

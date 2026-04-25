@@ -47,7 +47,7 @@ import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
-import { authStore } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 interface Props {
@@ -99,6 +99,7 @@ export function AgendarAtividadeDialog({
 
   const todosAgendamentos = useAgendamentos();
   const gruposByCursoCod = useGruposByCursoCod();
+  const { user: authUser, displayName } = useAuth();
   const duracaoAulaMin = getDuracaoAulaMin(curso);
 
   // ---------- Reset ao abrir ----------
@@ -346,8 +347,8 @@ export function AgendarAtividadeDialog({
     }
 
     const dataIso = format(date, "yyyy-MM-dd");
-    const currentUser = authStore.get();
     const criadoEm = new Date().toISOString();
+    const criadoPorNome = displayName || authUser?.email || "";
 
     const novos: Agendamento[] = entries.map(({ blocoIndex, assign }) => {
       const ativIds = [assign.aulaId, assign.tarefaId].filter(Boolean) as string[];
@@ -372,8 +373,8 @@ export function AgendarAtividadeDialog({
         criadoEm,
         observacao: observacao.trim() || undefined,
         professor,
-        criadoPorUserId: currentUser.id,
-        criadoPorNome: currentUser.nome,
+        criadoPorUserId: authUser?.id,
+        criadoPorNome,
       };
     });
 

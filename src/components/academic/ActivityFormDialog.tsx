@@ -40,6 +40,7 @@ import {
   type CriterioAvaliacao,
   type HabilidadeNivelAlvo,
 } from "@/lib/academic-types";
+import { useAuth } from "@/lib/auth";
 
 interface Props {
   open: boolean;
@@ -85,6 +86,7 @@ export function ActivityFormDialog({
   onSave,
 }: Props) {
   const isEdit = !!editing;
+  const { user: authUser, displayName } = useAuth();
 
   // Identificação
   const [tipo, setTipo] = useState<AtividadeTipo>(defaultTipo);
@@ -297,7 +299,7 @@ export function ActivityFormDialog({
           descricao,
           objetivoResultados,
           prazo,
-          criadoPor: "Prof. Logado",
+          criadoPor: displayName || authUser?.email || "",
           professor: professor.trim(),
           habilidadeIds,
           cargaHorariaMin: cargaHorariaMinFinal,

@@ -27,8 +27,7 @@ import {
   Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCurrentUser } from "@/lib/auth-store";
-import { isCoordenacao } from "@/lib/users";
+import { useAuth } from "@/lib/auth";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAlunos } from "@/lib/alunos-store";
 import { useHabilidades } from "@/lib/habilidades-store";
@@ -62,8 +61,8 @@ export function AlunoDetailDialog({
   atividades,
   onOpenChange,
 }: Props) {
-  const currentUser = useCurrentUser();
-  const canSeePerfil = isCoordenacao(currentUser);
+  const { hasRole } = useAuth();
+  const canSeePerfil = hasRole("admin") || hasRole("coordenacao");
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
   const todosAlunos = useAlunos();

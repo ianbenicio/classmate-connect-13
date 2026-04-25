@@ -148,6 +148,7 @@ export const formulariosStore = {
     slug?: string;
   }): Promise<FormularioTemplate | null> {
     const slug = (input.slug?.trim() || slugify(input.nome)) || `form_${Date.now()}`;
+    const { data: authData } = await supabase.auth.getUser();
     const row = {
       slug,
       nome: input.nome.trim(),
@@ -155,6 +156,7 @@ export const formulariosStore = {
       destinatario: input.destinatario,
       estrutura: (input.estrutura ?? { blocos: [] }) as never,
       is_system: false,
+      criado_por_user_id: authData.user?.id ?? null,
     };
     const { data, error } = await supabase
       .from("formularios")

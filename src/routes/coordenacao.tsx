@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import {
   downloadRelatorio,
   relatoriosStore,
@@ -43,13 +43,17 @@ const TIPO_BADGE: Record<RelatorioTipo, string> = {
 };
 
 function CoordenacaoPage() {
-  const user = useCurrentUser();
+  const { user: authUser, roles, hasRole, displayName } = useAuth();
   const relatorios = useRelatorios();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
   const [exportandoJson, setExportandoJson] = useState(false);
   const [exportandoCsv, setExportandoCsv] = useState(false);
 
-  if (user.role !== "admin") {
+  const canAccess = hasRole("admin") || hasRole("coordenacao");
+  const userNome =
+    displayName || (authUser?.user_metadata?.name as string | undefined) || authUser?.email || "—";
+
+  if (!canAccess) {
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12">
         <Card>
@@ -58,8 +62,9 @@ function CoordenacaoPage() {
               <ShieldCheck className="h-5 w-5" /> Acesso restrito
             </CardTitle>
             <CardDescription>
-              Esta área é exclusiva para usuários com perfil <b>Admin</b>.
-              Você está logado como <b>{user.nome}</b> ({user.role}).
+              Esta área é exclusiva para usuários com perfil <b>Admin</b> ou{" "}
+              <b>Coordenação</b>. Você está logado como <b>{userNome}</b>
+              {roles.length > 0 && ` (${roles.join(", ")})`}.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -103,8 +108,8 @@ function CoordenacaoPage() {
 
   const handleGerarAgora = async () => {
     const { sizeBytes, filename } = await downloadExportJSON({
-      geradoPorUserId: user.id,
-      geradoPorNome: user.nome,
+      geradoPorUserId: authUser?.id,
+      geradoPorNome: userNome,
     });
     toast.success(`Relatório gerado: ${filename}`, {
       description: `${(sizeBytes / 1024).toFixed(1)} KB`,

@@ -22,7 +22,7 @@ import {
 } from "@/lib/academic-types";
 import { Progress } from "@/components/ui/progress";
 import { ActivityViewDialog } from "./ActivityViewDialog";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 
 interface Props {
   curso: Curso | null;
@@ -62,7 +62,13 @@ export function CourseDetailDialog({
   onShowQuadro,
 }: Props) {
   const [viewing, setViewing] = useState<Atividade | null>(null);
-  const user = useCurrentUser();
+  const { hasRole, isStaff: isStaffFn } = useAuth();
+  const isAluno = hasRole("aluno") && !isStaffFn();
+  const perfil: "aluno" | "professor" | "coordenacao" = isAluno
+    ? "aluno"
+    : hasRole("admin") || hasRole("coordenacao")
+      ? "coordenacao"
+      : "professor";
 
   const turmasDoCurso = useMemo(
     () => (curso ? turmas.filter((t) => t.cursoId === curso.id) : []),
@@ -297,7 +303,7 @@ export function CourseDetailDialog({
         atividade={viewing}
         curso={curso ?? undefined}
         habilidades={Array.from(habilidadeMap.values())}
-        role={user.role}
+        perfil={perfil}
         onOpenChange={(o) => !o && setViewing(null)}
       />
     </Dialog>

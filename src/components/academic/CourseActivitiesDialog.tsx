@@ -34,7 +34,7 @@ import {
   type Habilidade,
 } from "@/lib/academic-types";
 import { useGruposDoCurso } from "@/lib/grupos-store";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import { ActivityViewDialog } from "./ActivityViewDialog";
 
 interface Props {
@@ -56,8 +56,13 @@ export function CourseActivitiesDialog({
   onEdit,
   onDelete,
 }: Props) {
-  const user = useCurrentUser();
-  const isAluno = user.role === "aluno";
+  const { hasRole, isStaff: isStaffFn } = useAuth();
+  const isAluno = hasRole("aluno") && !isStaffFn();
+  const perfil: "aluno" | "professor" | "coordenacao" = isAluno
+    ? "aluno"
+    : hasRole("admin") || hasRole("coordenacao")
+      ? "coordenacao"
+      : "professor";
   const [viewing, setViewing] = useState<Atividade | null>(null);
   const gruposCurso = useGruposDoCurso(curso);
   const { aulas, tarefas } = useMemo(() => {
@@ -129,7 +134,7 @@ export function CourseActivitiesDialog({
         atividade={viewing}
         curso={curso ?? undefined}
         habilidades={habilidades}
-        role={user.role}
+        perfil={perfil}
         onOpenChange={(o) => !o && setViewing(null)}
       />
     </Dialog>

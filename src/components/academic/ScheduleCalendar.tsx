@@ -28,7 +28,7 @@ import {
   type SlotEstado,
   type Turma,
 } from "@/lib/academic-types";
-import { useCurrentUser } from "@/lib/auth-store";
+import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {
@@ -321,7 +321,7 @@ function SlotChip({
   onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
   onRemoverAgendamento?: (a: Agendamento, t: Turma) => void;
 }) {
-  const currentUser = useCurrentUser();
+  const { user: authUser, hasRole } = useAuth();
   const now = new Date();
   const dataKey = format(date, "yyyy-MM-dd");
   const duracaoAulaMin = curso ? getDuracaoAulaMin(curso) : 60;
@@ -408,8 +408,7 @@ function SlotChip({
 
           if (ag) {
             const isOwner =
-              currentUser.role === "admin" ||
-              ag.criadoPorUserId === currentUser.id;
+              hasRole("admin") || ag.criadoPorUserId === authUser?.id;
             const startOfDay = new Date(`${dataKey}T00:00:00`);
             const slotEnd24 = new Date(
               new Date(`${dataKey}T${blocoEnd}:00`).getTime() +
