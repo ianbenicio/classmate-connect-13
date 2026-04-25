@@ -29,7 +29,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { GraduationCap, Pencil, Plus, Search, Trash2, X } from "lucide-react";
-import { SEED_ATIVIDADES } from "@/lib/academic-seed";
+import { useAtividades } from "@/lib/atividades-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
@@ -62,6 +62,7 @@ function AlunosPage() {
   const alunos = useAlunos();
   const cursos = useCursos();
   const turmas = useTurmas();
+  const atividades = useAtividades();
 
   const [busca, setBusca] = useState("");
   const [cursoFiltro, setCursoFiltro] = useState<string>("todos");
@@ -326,7 +327,7 @@ function AlunosPage() {
         aluno={detalhe}
         curso={detalhe ? cursoMap.get(detalhe.cursoId) : undefined}
         turma={detalhe ? turmaMap.get(detalhe.turmaId) : undefined}
-        atividades={SEED_ATIVIDADES}
+        atividades={atividades}
         onOpenChange={(o) => !o && setDetalhe(null)}
       />
 

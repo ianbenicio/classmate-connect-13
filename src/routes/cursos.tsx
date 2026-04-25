@@ -21,7 +21,7 @@ import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
 import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { Progress } from "@/components/ui/progress";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { useGruposByCursoCod } from "@/lib/grupos-store";
 import {
   addMinutesToHHMM,
   getTurnoDiarioMin,
@@ -65,6 +65,7 @@ function CursosPage() {
   const alunos = useAlunos();
   const atividades = useAtividades();
   const habilidades = useHabilidades();
+  const gruposByCursoCod = useGruposByCursoCod();
 
   const [cursoSelecionado, setCursoSelecionado] = useState<Curso | null>(null);
 
@@ -316,7 +317,7 @@ function CursosPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={cursos}
-        grupos={SEED_GRUPOS}
+        grupos={gruposByCursoCod}
         habilidades={habilidades}
         editing={editing}
         defaultTipo={defaultTipo}

@@ -33,7 +33,7 @@ import {
   type Grupo,
   type Habilidade,
 } from "@/lib/academic-types";
-import { SEED_GRUPOS, getGruposDoCurso } from "@/lib/academic-seed";
+import { useGruposDoCurso } from "@/lib/grupos-store";
 import { useCurrentUser } from "@/lib/auth-store";
 import { ActivityViewDialog } from "./ActivityViewDialog";
 
@@ -59,14 +59,14 @@ export function CourseActivitiesDialog({
   const user = useCurrentUser();
   const isAluno = user.role === "aluno";
   const [viewing, setViewing] = useState<Atividade | null>(null);
-  const { aulas, tarefas, gruposCurso } = useMemo(() => {
+  const gruposCurso = useGruposDoCurso(curso);
+  const { aulas, tarefas } = useMemo(() => {
     const list = curso
       ? atividades.filter((a) => a.cursoId === curso.id)
       : [];
     return {
       aulas: list.filter((a) => a.tipo === 0),
       tarefas: list.filter((a) => a.tipo === 1),
-      gruposCurso: getGruposDoCurso(curso),
     };
   }, [curso, atividades]);
 

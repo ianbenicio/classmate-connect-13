@@ -20,7 +20,7 @@ import {
   ChevronRight,
   ClipboardCheck,
 } from "lucide-react";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
@@ -59,6 +59,7 @@ function AtividadesPage() {
   const turmas = useTurmas();
   const atividades = useAtividades();
   const habilidades = useHabilidades();
+  const gruposByCursoCod = useGruposByCursoCod();
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
@@ -257,7 +258,7 @@ function AtividadesPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         cursos={cursos}
-        grupos={SEED_GRUPOS}
+        grupos={gruposByCursoCod}
         habilidades={habilidades}
         editing={editing}
         defaultTipo={defaultTipo}

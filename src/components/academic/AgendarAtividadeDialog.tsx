@@ -45,7 +45,7 @@ import {
 } from "@/lib/academic-types";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
-import { SEED_GRUPOS } from "@/lib/academic-seed";
+import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
 import { authStore } from "@/lib/auth-store";
 import { toast } from "sonner";
@@ -98,6 +98,7 @@ export function AgendarAtividadeDialog({
   const [draftTarefaId, setDraftTarefaId] = useState<string>("");
 
   const todosAgendamentos = useAgendamentos();
+  const gruposByCursoCod = useGruposByCursoCod();
   const duracaoAulaMin = getDuracaoAulaMin(curso);
 
   // ---------- Reset ao abrir ----------
@@ -692,7 +693,7 @@ export function AgendarAtividadeDialog({
                                   {grupos.map((g) => (
                                     <SelectItem key={g} value={g}>
                                       <span className="font-mono text-xs mr-2">{g}</span>
-                                      {getGrupoNome(SEED_GRUPOS, curso.cod, g)}
+                                      {getGrupoNome(gruposByCursoCod, curso.cod, g)}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

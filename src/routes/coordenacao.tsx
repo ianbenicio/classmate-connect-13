@@ -101,8 +101,8 @@ function CoordenacaoPage() {
     );
   }, [relatorios, filtro]);
 
-  const handleGerarAgora = () => {
-    const { sizeBytes, filename } = downloadExportJSON({
+  const handleGerarAgora = async () => {
+    const { sizeBytes, filename } = await downloadExportJSON({
       geradoPorUserId: user.id,
       geradoPorNome: user.nome,
     });
