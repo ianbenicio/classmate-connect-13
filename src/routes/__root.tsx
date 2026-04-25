@@ -1,5 +1,13 @@
-import { useState } from "react";
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useRouterState,
+  useNavigate,
+} from "@tanstack/react-router";
 import { ClipboardList, Sparkles } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
@@ -85,12 +93,48 @@ function RootComponent() {
   );
 }
 
+// Rotas públicas — não exigem autenticação.
+const PUBLIC_ROUTES = new Set<string>(["/auth", "/reset-password"]);
+
 function AppShell() {
   useAgendamentoScanner();
-  const { hasRole, isStaff: isStaffFn } = useAuth();
+  const { hasRole, isStaff: isStaffFn, isAuthenticated, loading } = useAuth();
   const isStaff = isStaffFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
   const [skillsOpen, setSkillsOpen] = useState(false);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const isPublic = PUBLIC_ROUTES.has(pathname);
+
+  // Auth gate: usuário não autenticado em rota privada → /auth.
+  useEffect(() => {
+    if (loading) return;
+    if (!isAuthenticated && !isPublic) {
+      void navigate({ to: "/auth", replace: true });
+    }
+  }, [loading, isAuthenticated, isPublic, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
+        Carregando…
+      </div>
+    );
+  }
+
+  if (!isAuthenticated && !isPublic) {
+    // Aguarda o redirect — evita flash do shell autenticado.
+    return null;
+  }
+
+  if (isPublic) {
+    return (
+      <>
+        <Outlet />
+        <Toaster />
+      </>
+    );
+  }
   return (
     <>
       <header className="border-b bg-card sticky top-0 z-40">
