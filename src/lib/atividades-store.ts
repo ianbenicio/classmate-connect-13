@@ -73,13 +73,19 @@ function rowToAtividade(r: AtividadeRow): Atividade {
     prazo: r.prazo ?? "",
     criadoPor: r.criado_por ?? "",
     professor: r.professor ?? "",
-    habilidadeIds: (Array.isArray(r.habilidade_ids) ? r.habilidade_ids : []) as string[],
+    habilidadeIds: toUuidArray(
+      (Array.isArray(r.habilidade_ids) ? r.habilidade_ids : []) as string[],
+    ),
     descricaoConteudo: r.descricao_conteudo ?? undefined,
     sugestoesPais: r.sugestoes_pais ?? undefined,
     resultadosEsperados: r.resultados_esperados ?? undefined,
     notasInstrutor: r.notas_instrutor ?? undefined,
     preRequisitos: r.pre_requisitos ?? undefined,
-    niveisAlvo: (Array.isArray(r.niveis_alvo) ? r.niveis_alvo : []) as HabilidadeNivelAlvo[],
+    niveisAlvo: (Array.isArray(r.niveis_alvo) ? r.niveis_alvo : [])
+      .map((n) => ({
+        habilidadeId: toUuid((n as HabilidadeNivelAlvo).habilidadeId),
+        nivelAlvo: (n as HabilidadeNivelAlvo).nivelAlvo,
+      })) as HabilidadeNivelAlvo[],
     criteriosSucesso: r.criterios_sucesso ?? undefined,
     metodologias: r.metodologias ?? undefined,
     roteiro: (Array.isArray(r.roteiro) ? r.roteiro : []) as RoteiroBloco[],
@@ -111,7 +117,10 @@ function atividadeToRow(a: Atividade) {
     resultados_esperados: a.resultadosEsperados ?? null,
     notas_instrutor: a.notasInstrutor ?? null,
     pre_requisitos: a.preRequisitos ?? null,
-    niveis_alvo: (a.niveisAlvo ?? []) as never,
+    niveis_alvo: ((a.niveisAlvo ?? []).map((n) => ({
+      habilidadeId: toUuid(n.habilidadeId),
+      nivelAlvo: n.nivelAlvo,
+    }))) as never,
     criterios_sucesso: a.criteriosSucesso ?? null,
     metodologias: a.metodologias ?? null,
     roteiro: (a.roteiro ?? []) as never,

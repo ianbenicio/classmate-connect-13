@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import type { Curso } from "./academic-types";
 import { SEED_CURSOS, SEED_GRUPOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
-import { toUuid } from "./db-mapping";
+import { toUuid, toUuidArray } from "./db-mapping";
 import { toast } from "sonner";
 
 let cursos: Curso[] = [];
@@ -38,9 +38,12 @@ function rowToCurso(r: CursoRow): Curso {
     cargaHorariaTotalMin: r.carga_horaria_total_min,
     duracaoAulaMin: r.duracao_aula_min,
     turnoDiarioMin: r.turno_diario_min,
-    habilidadeIds: Array.isArray(r.habilidade_ids)
-      ? (r.habilidade_ids as string[])
-      : [],
+    // Normaliza para UUID — habilidades-store guarda tudo como UUID
+    // (toUuid de seed-id). Linhas legadas com seed-ids ficam corrigidas no
+    // momento da leitura (toUuid é idempotente p/ UUIDs).
+    habilidadeIds: toUuidArray(
+      Array.isArray(r.habilidade_ids) ? (r.habilidade_ids as string[]) : [],
+    ),
   };
 }
 
@@ -53,7 +56,7 @@ function cursoToRow(c: Curso) {
     carga_horaria_total_min: c.cargaHorariaTotalMin ?? 0,
     duracao_aula_min: c.duracaoAulaMin ?? 60,
     turno_diario_min: c.turnoDiarioMin ?? c.duracaoAulaMin ?? 60,
-    habilidade_ids: (c.habilidadeIds ?? []) as never,
+    habilidade_ids: toUuidArray(c.habilidadeIds) as never,
   };
 }
 
