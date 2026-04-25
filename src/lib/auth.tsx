@@ -3,7 +3,15 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "admin" | "coordenacao" | "professor" | "aluno";
+export type AppRole = "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
+
+export const APP_ROLE_LABELS: Record<AppRole, string> = {
+  admin: "Admin",
+  coordenacao: "Coordenador",
+  professor: "Professor",
+  aluno: "Aluno",
+  viewer: "Viewer",
+};
 
 export interface AuthState {
   user: User | null;

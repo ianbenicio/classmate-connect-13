@@ -8,12 +8,13 @@ import {
   useRouterState,
   useNavigate,
 } from "@tanstack/react-router";
-import { ClipboardList, Sparkles } from "lucide-react";
+import { ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
 import { SkillsManagerDialog } from "@/components/academic/SkillsManagerDialog";
+import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 import { AuthProvider, useAuth } from "@/lib/auth";
 
@@ -101,7 +102,9 @@ function AppShell() {
   const { hasRole, isStaff: isStaffFn, isAuthenticated, loading } = useAuth();
   const isStaff = isStaffFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
+  const isAdmin = hasRole("admin");
   const [skillsOpen, setSkillsOpen] = useState(false);
+  const [usersOpen, setUsersOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const isPublic = PUBLIC_ROUTES.has(pathname);
@@ -192,6 +195,16 @@ function AppShell() {
                 Habilidades
               </button>
             )}
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => setUsersOpen(true)}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Usuários
+              </button>
+            )}
             {isCoord && (
               <Link
                 to="/coordenacao"
@@ -209,6 +222,9 @@ function AppShell() {
       <Outlet />
       <Toaster />
       <SkillsManagerDialog open={skillsOpen} onOpenChange={setSkillsOpen} />
+      {isAdmin && (
+        <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />
+      )}
     </>
   );
 }
