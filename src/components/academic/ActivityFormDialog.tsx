@@ -239,6 +239,11 @@ export function ActivityFormDialog({
       setTab("identificacao");
       return;
     }
+    if (!isEdit && !cursoSelecionado) {
+      toast.error("Curso inválido — selecione um curso da lista.");
+      setTab("identificacao");
+      return;
+    }
     if (habilidadeIds.length > MAX_HABILIDADES_POR_ATIVIDADE) {
       toast.error(
         `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades por atividade.`,
@@ -290,7 +295,7 @@ export function ActivityFormDialog({
           tipo: tipoFinal,
           nome,
           codigo: formatCodigoAtividade(
-            cursoSelecionado?.cod ?? "XXX",
+            cursoSelecionado!.cod,
             grupo,
             Math.floor(Math.random() * 90) + 10,
           ),
