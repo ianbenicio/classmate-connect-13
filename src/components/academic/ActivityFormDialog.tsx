@@ -25,6 +25,7 @@ import { Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   formatCodigoAtividade,
+  getDuracaoAulaMin,
   DEFAULT_FORMULARIOS,
   FIELD_VISIBILITY,
   MAX_HABILIDADES_POR_ATIVIDADE,
@@ -160,13 +161,22 @@ export function ActivityFormDialog({
     } else {
       setTipo(defaultTipo);
       setNome("");
-      setCursoId(cursos[0]?.id ?? "");
+      const cursoPadrao = cursos[0];
+      setCursoId(cursoPadrao?.id ?? "");
       setGrupo("");
       setPrazo("");
       setDescricao("");
       setProfessor("");
-      setCargaHoras("0");
-      setCargaMin("0");
+      // Aulas novas: pré-preenche carga com a duração padrão do curso (pode
+      // ser alterada). Tarefas continuam com 0 (livre).
+      if (defaultTipo === 0 && cursoPadrao) {
+        const dur = getDuracaoAulaMin(cursoPadrao);
+        setCargaHoras(String(Math.floor(dur / 60)));
+        setCargaMin(String(dur % 60));
+      } else {
+        setCargaHoras("0");
+        setCargaMin("0");
+      }
       setObjetivoResultados("");
       setResultadosEsperados("");
       setNotasInstrutor("");
@@ -203,6 +213,18 @@ export function ActivityFormDialog({
   }, [habilidadeIds]);
 
   const cursoSelecionado = cursos.find((c) => c.id === cursoId);
+
+  // Quando o usuário muda o curso ou alterna p/ Aula numa atividade nova,
+  // pré-preenche a carga horária com a duração padrão de aula do curso.
+  // Em edição, não mexemos no que foi salvo.
+  useEffect(() => {
+    if (!open || isEdit) return;
+    if (tipo !== 0 || !cursoSelecionado) return;
+    const dur = getDuracaoAulaMin(cursoSelecionado);
+    setCargaHoras(String(Math.floor(dur / 60)));
+    setCargaMin(String(dur % 60));
+  }, [open, isEdit, tipo, cursoSelecionado]);
+
   // Lookup robusto: tenta curso.cod primeiro (chave canônica), cai pro id
   // como fallback. Necessário porque cursos antigos podem ter UUID arbitrário.
   const gruposDisponiveis =
