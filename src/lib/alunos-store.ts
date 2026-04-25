@@ -1,6 +1,7 @@
 // Singleton store de Alunos com persistência no Supabase.
 import { useEffect, useState } from "react";
 import type { Aluno } from "./academic-types";
+import { SEED_ALUNOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -60,6 +61,23 @@ function alunoToRow(a: Aluno) {
   };
 }
 
+// Top-up: insere os alunos do seed ainda ausentes. O store não tinha
+// mecanismo de seed — SEED_ALUNOS existia mas nunca era persistido.
+async function topUpAlunos(existingIds: Set<string>) {
+  const missing = SEED_ALUNOS.filter((a) => !existingIds.has(toUuid(a.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(alunoToRow);
+  const { error } = await supabase
+    .from("alunos")
+    .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+  if (error) {
+    console.error("[alunos] top-up error", error);
+    return false;
+  }
+  console.info(`[alunos] top-up: +${missing.length} linhas do seed`);
+  return true;
+}
+
 async function loadFromDb() {
   // Paginar presenças para contornar o limite padrão de 1000 linhas do PostgREST.
   async function fetchAllPresencas() {
@@ -91,13 +109,20 @@ async function loadFromDb() {
   if (presErr) {
     console.error("[presencas] load error", presErr);
   }
+  let alunosRows = (data ?? []) as AlunoRow[];
+  const existingIds = new Set(alunosRows.map((r) => r.id));
+  const inserted = await topUpAlunos(existingIds);
+  if (inserted) {
+    const { data: data2 } = await supabase.from("alunos").select("*").order("nome");
+    alunosRows = (data2 ?? []) as AlunoRow[];
+  }
   const presByAluno = new Map<string, { atividadeId: string; presente: boolean; observacao?: string }[]>();
   for (const p of (presData ?? []) as Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }>) {
     const arr = presByAluno.get(p.aluno_id) ?? [];
     arr.push({ atividadeId: p.atividade_id, presente: !!p.presente, observacao: p.observacao ?? undefined });
     presByAluno.set(p.aluno_id, arr);
   }
-  alunos = (data ?? []).map((r) => {
+  alunos = alunosRows.map((r) => {
     const a = rowToAluno(r);
     a.aulas = presByAluno.get(r.id) ?? [];
     return a;

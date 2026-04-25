@@ -57,45 +57,62 @@ function cursoToRow(c: Curso) {
   };
 }
 
-async function seedIfEmpty() {
-  const rows = SEED_CURSOS.map(cursoToRow);
-  const { error } = await supabase.from("cursos").upsert(rows, { onConflict: "id" });
-  if (error) console.error("[cursos] seed error", error);
-  await seedGruposIfEmpty();
+// Top-up: insere linhas do seed que ainda não existem no banco. Evita o
+// problema do seed-if-empty, que só rodava com tabela 100% vazia — se um
+// chunk do primeiro seed falhasse, as linhas perdidas nunca seriam
+// recuperadas. Agora cada load converge para o seed.
+async function topUpCursos(existingIds: Set<string>) {
+  const missing = SEED_CURSOS.filter((c) => !existingIds.has(toUuid(c.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(cursoToRow);
+  const { error } = await supabase
+    .from("cursos")
+    .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+  if (error) {
+    console.error("[cursos] top-up error", error);
+    return false;
+  }
+  console.info(`[cursos] top-up: +${missing.length} linhas do seed`);
+  return true;
 }
 
-// Semeia public.grupos a partir de SEED_GRUPOS (indexado por seed-id textual
-// como "c-ad"; os stores gravam cursos com UUID determinístico via toUuid).
-// Usa o próprio toUuid para derivar o id do grupo a partir de curso_id+cod,
-// mantendo a relação estável e idempotente.
-async function seedGruposIfEmpty() {
-  const { count, error: countErr } = await supabase
-    .from("grupos")
-    .select("id", { count: "exact", head: true });
-  if (countErr) {
-    console.error("[grupos] count error", countErr);
-    return;
-  }
-  if ((count ?? 0) > 0) return;
-
-  const rows: { id: string; curso_id: string; cod: string; nome: string }[] = [];
-  for (const curso of SEED_CURSOS) {
-    const cursoUuid = toUuid(curso.id);
-    const grupos = SEED_GRUPOS[curso.id] ?? [];
-    for (const g of grupos) {
-      rows.push({
-        id: toUuid(`grupo-${curso.id}-${g.cod}`),
-        curso_id: cursoUuid,
+// Semeia public.grupos a partir de SEED_GRUPOS. Usa lookup por curso.cod
+// (chave canônica) pra não depender de UUIDs determinísticos.
+async function topUpGrupos(cursosNoBanco: Curso[]) {
+  const expectedRows: { id: string; curso_id: string; cod: string; nome: string }[] = [];
+  for (const curso of cursosNoBanco) {
+    const gruposDoCurso = SEED_GRUPOS[curso.cod] ?? SEED_GRUPOS[curso.id] ?? [];
+    for (const g of gruposDoCurso) {
+      expectedRows.push({
+        id: toUuid(`grupo-${curso.cod}-${g.cod}`),
+        curso_id: curso.id,
         cod: g.cod,
         nome: g.nome,
       });
     }
   }
-  if (rows.length === 0) return;
+  if (expectedRows.length === 0) return;
+
+  // Descobre quais já existem.
+  const { data: existing, error: selErr } = await supabase
+    .from("grupos")
+    .select("id");
+  if (selErr) {
+    console.error("[grupos] select error", selErr);
+    return;
+  }
+  const existingIds = new Set((existing ?? []).map((r: { id: string }) => r.id));
+  const missing = expectedRows.filter((r) => !existingIds.has(r.id));
+  if (missing.length === 0) return;
+
   const { error } = await supabase
     .from("grupos")
-    .upsert(rows, { onConflict: "id" });
-  if (error) console.error("[grupos] seed error", error);
+    .upsert(missing, { onConflict: "id", ignoreDuplicates: true });
+  if (error) {
+    console.error("[grupos] top-up error", error);
+    return;
+  }
+  console.info(`[grupos] top-up: +${missing.length} linhas do seed`);
 }
 
 async function loadFromDb() {
@@ -105,13 +122,18 @@ async function loadFromDb() {
     cursos = [...SEED_CURSOS];
     return;
   }
-  if (!data || data.length === 0) {
-    await seedIfEmpty();
+  const rows = (data ?? []) as CursoRow[];
+  const existingIds = new Set(rows.map((r) => r.id));
+  const inserted = await topUpCursos(existingIds);
+  if (inserted) {
     const { data: data2 } = await supabase.from("cursos").select("*").order("cod");
     cursos = (data2 ?? []).map(rowToCurso);
   } else {
-    cursos = data.map(rowToCurso);
+    cursos = rows.map(rowToCurso);
   }
+  // Top-up de grupos depende dos cursos já carregados (precisa do curso.id
+  // real do banco, que pode ser UUID arbitrário).
+  await topUpGrupos(cursos);
 }
 
 async function ensureInit(): Promise<void> {

@@ -58,10 +58,22 @@ function turmaToRow(t: Turma) {
   };
 }
 
-async function seedIfEmpty() {
-  const rows = SEED_TURMAS.map(turmaToRow);
-  const { error } = await supabase.from("turmas").upsert(rows, { onConflict: "id" });
-  if (error) console.error("[turmas] seed error", error);
+// Top-up: insere apenas linhas do seed que ainda não existem no banco.
+// Substitui o seed-if-empty antigo, que ficava inerte se o primeiro seed
+// falhasse parcialmente.
+async function topUpTurmas(existingIds: Set<string>) {
+  const missing = SEED_TURMAS.filter((t) => !existingIds.has(toUuid(t.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(turmaToRow);
+  const { error } = await supabase
+    .from("turmas")
+    .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+  if (error) {
+    console.error("[turmas] top-up error", error);
+    return false;
+  }
+  console.info(`[turmas] top-up: +${missing.length} linhas do seed`);
+  return true;
 }
 
 async function loadFromDb() {
@@ -71,12 +83,14 @@ async function loadFromDb() {
     turmas = [...SEED_TURMAS];
     return;
   }
-  if (!data || data.length === 0) {
-    await seedIfEmpty();
+  const rows = (data ?? []) as TurmaRow[];
+  const existingIds = new Set(rows.map((r) => r.id));
+  const inserted = await topUpTurmas(existingIds);
+  if (inserted) {
     const { data: data2 } = await supabase.from("turmas").select("*").order("cod");
     turmas = (data2 ?? []).map(rowToTurma);
   } else {
-    turmas = data.map(rowToTurma);
+    turmas = rows.map(rowToTurma);
   }
 }
 

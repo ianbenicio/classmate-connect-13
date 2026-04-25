@@ -3,6 +3,7 @@
 // atividades via `atividades.habilidade_ids` (relação N-N).
 import { useEffect, useState } from "react";
 import type { Habilidade } from "./academic-types";
+import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -47,6 +48,24 @@ function habilidadeToRow(h: Habilidade) {
   };
 }
 
+// Top-up: insere as habilidades do seed que ainda não existem no banco.
+// O store antes só lia do DB, então se a tabela estivesse vazia ficaria
+// vazia pra sempre — agora converge para SEED_HABILIDADES em cada load.
+async function topUpHabilidades(existingIds: Set<string>) {
+  const missing = SEED_HABILIDADES.filter((h) => !existingIds.has(toUuid(h.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(habilidadeToRow);
+  const { error } = await supabase
+    .from("habilidades")
+    .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
+  if (error) {
+    console.error("[habilidades] top-up error", error);
+    return false;
+  }
+  console.info(`[habilidades] top-up: +${missing.length} linhas do seed`);
+  return true;
+}
+
 async function loadFromDb() {
   const { data, error } = await supabase
     .from("habilidades")
@@ -57,7 +76,18 @@ async function loadFromDb() {
     habilidades = [];
     return;
   }
-  habilidades = ((data ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
+  const rows = (data ?? []) as unknown as HabilidadeRow[];
+  const existingIds = new Set(rows.map((r) => r.id));
+  const inserted = await topUpHabilidades(existingIds);
+  if (inserted) {
+    const { data: data2 } = await supabase
+      .from("habilidades")
+      .select("*")
+      .order("sigla");
+    habilidades = ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
+  } else {
+    habilidades = rows.map(rowToHabilidade);
+  }
 }
 
 async function ensureInit(): Promise<void> {
