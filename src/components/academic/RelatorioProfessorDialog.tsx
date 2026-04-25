@@ -81,6 +81,8 @@ export function RelatorioProfessorDialog({
       initialPres[a.id] = d?.presencas?.[a.id] ?? true;
     });
     setPresencas(initialPres);
+    // Intencional: reset apenas ao abrir/mudar agendamento. `existing` e
+    // `alunosTurma` mudam de referência a cada render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, agendamento.id]);
 

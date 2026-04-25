@@ -497,6 +497,7 @@ export type Database = {
       }
       notificacoes: {
         Row: {
+          agendamento_id: string | null
           atividade_ids: Json | null
           created_at: string
           curso_id: string | null
@@ -515,6 +516,7 @@ export type Database = {
           turma_id: string | null
         }
         Insert: {
+          agendamento_id?: string | null
           atividade_ids?: Json | null
           created_at?: string
           curso_id?: string | null
@@ -533,6 +535,7 @@ export type Database = {
           turma_id?: string | null
         }
         Update: {
+          agendamento_id?: string | null
           atividade_ids?: Json | null
           created_at?: string
           curso_id?: string | null
@@ -551,6 +554,13 @@ export type Database = {
           turma_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "notificacoes_agendamento_id_fkey"
+            columns: ["agendamento_id"]
+            isOneToOne: false
+            referencedRelation: "agendamentos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notificacoes_curso_id_fkey"
             columns: ["curso_id"]

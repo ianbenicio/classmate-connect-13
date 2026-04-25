@@ -84,6 +84,8 @@ export function ChecklistAlunoDialog({
     setComp(d?.comportamento ?? []);
     setEngajamento((d?.engajamento as Nota | null) ?? null);
     setObservacao(d?.observacao ?? "");
+    // Intencional: reset apenas ao abrir/mudar alvo. `existing` é derivado
+    // e re-cria a cada render — incluí-lo clobbar entrada do usuário.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, agendamento.id, aluno.id]);
 

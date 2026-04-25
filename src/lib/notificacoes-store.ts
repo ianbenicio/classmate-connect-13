@@ -30,6 +30,7 @@ type NotifRow = {
   atividade_ids: unknown;
   kind: string | null;
   lida: boolean;
+  agendamento_id: string | null;
   created_at: string;
 };
 
@@ -50,6 +51,7 @@ function rowToNotif(r: NotifRow): Notificacao {
     criadoEm: r.created_at,
     lida: !!r.lida,
     kind: (r.kind as Notificacao["kind"]) ?? undefined,
+    agendamentoId: r.agendamento_id ?? undefined,
   };
 }
 
@@ -70,6 +72,7 @@ function notifToRow(n: Notificacao) {
     atividade_ids: toUuidArray(n.atividadeIds) as never,
     kind: n.kind ?? null,
     lida: n.lida,
+    agendamento_id: n.agendamentoId ? toUuid(n.agendamentoId) : null,
   };
 }
 
@@ -110,7 +113,16 @@ export const notificacoesStore = {
     notificacoes = [...local, ...notificacoes];
     emit();
     const rows = items.map(notifToRow);
-    const { error } = await supabase.from("notificacoes").insert(rows);
+    // Dedup no banco: índice único parcial sobre
+    // (destinatario_ref, agendamento_id, kind) — quando os três estão
+    // preenchidos, duplicatas são silenciosamente ignoradas. Notificações
+    // manuais (sem agendamento_id) inserem normalmente.
+    const { error } = await supabase
+      .from("notificacoes")
+      .upsert(rows, {
+        onConflict: "destinatario_ref,agendamento_id,kind",
+        ignoreDuplicates: true,
+      });
     if (error) {
       console.error("[notificacoes] insert error", error);
       toast.error(`Erro ao registrar notificações: ${error.message}`);

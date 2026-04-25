@@ -98,6 +98,8 @@ export function AvaliacaoAulaDialog({
     });
     setDestaque(d?.destaqueDoDia ?? "");
     setMudaria(d?.oQueMudaria ?? "");
+    // Intencional: reset apenas quando o diálogo abre ou o alvo muda.
+    // `existing` é derivado e mudaria a cada render, refazendo o reset.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, agendamento.id, aluno.id]);
 

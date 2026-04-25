@@ -1,10 +1,13 @@
-// Varredor: detecta agendamentos cujo estado mudou (agendado→atrasado, atrasado→expirado)
-// e gera notificações correspondentes para alunos da turma + professor.
-// Roda quando o app monta e a cada 60s enquanto aberto.
+// Varredor: detecta agendamentos cujo estado mudou (agendado→atrasado,
+// atrasado→expirado) e gera notificações correspondentes para alunos da
+// turma + professor. Roda quando o app monta e a cada 60s enquanto aberto.
 //
-// Idempotência: chave "{agendamentoId}|{kind}" persistida em localStorage para
-// evitar que reloads / re-execuções gerem a mesma notificação várias vezes.
-// Adicionalmente, aluno e professor recebem TEXTOS DIFERENTES:
+// Idempotência: o banco aplica um índice único parcial sobre
+// (destinatario_ref, agendamento_id, kind) — duplicatas são silenciosamente
+// ignoradas via `upsert(..., ignoreDuplicates: true)` em notificacoesStore.
+// Esse contrato vale entre abas, dispositivos e reloads.
+//
+// Aluno e professor recebem TEXTOS DIFERENTES:
 //  - professor → "registre o relatório"
 //  - aluno     → "avalie a aula"
 
@@ -21,37 +24,6 @@ import {
 import { alunosStore } from "./alunos-store";
 import { cursosStore } from "./cursos-store";
 import { turmasStore } from "./turmas-store";
-
-const DEDUP_KEY = "app.scannerDedup";
-
-function loadDedup(): Set<string> {
-  if (typeof window === "undefined") return new Set();
-  try {
-    const raw = window.localStorage.getItem(DEDUP_KEY);
-    return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
-  } catch {
-    return new Set();
-  }
-}
-
-function saveDedup(s: Set<string>) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(DEDUP_KEY, JSON.stringify(Array.from(s)));
-  } catch {
-    // ignora
-  }
-}
-
-const generated: Set<string> = loadDedup();
-
-function k(
-  destinatarioId: string,
-  agendamentoId: string,
-  kind: NonNullable<Notificacao["kind"]>,
-) {
-  return `${destinatarioId}|${agendamentoId}|${kind}`;
-}
 
 interface BuildOpts {
   kind: NonNullable<Notificacao["kind"]>;
@@ -80,16 +52,14 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
     criadoEm: new Date().toISOString(),
     lida: false,
     kind: opts.kind,
+    agendamentoId: a.id,
   };
 
   const out: Notificacao[] = [];
 
-  // Alunos da turma — só os que ainda não receberam essa notificação.
+  // Alunos da turma. Dedup é responsabilidade do banco.
   const alunos = alunosStore.getAll().filter((al) => al.turmaId === turma.id);
   for (const al of alunos) {
-    const key = k(al.id, a.id, opts.kind);
-    if (generated.has(key)) continue;
-    generated.add(key);
     out.push({
       ...baseShared,
       id: crypto.randomUUID(),
@@ -100,20 +70,16 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
     });
   }
 
-  // Professor responsável
+  // Professor responsável.
   if (a.professor) {
-    const key = k(a.professor, a.id, opts.kind);
-    if (!generated.has(key)) {
-      generated.add(key);
-      out.push({
-        ...baseShared,
-        id: crypto.randomUUID(),
-        destinatarioTipo: "professor",
-        destinatarioId: a.professor,
-        titulo: opts.tituloProfessor,
-        mensagem: `${ctx} — ${opts.mensagemProfessor}`,
-      });
-    }
+    out.push({
+      ...baseShared,
+      id: crypto.randomUUID(),
+      destinatarioTipo: "professor",
+      destinatarioId: a.professor,
+      titulo: opts.tituloProfessor,
+      mensagem: `${ctx} — ${opts.mensagemProfessor}`,
+    });
   }
 
   return out;
@@ -151,8 +117,18 @@ export function runScanner(now: Date = new Date()) {
   }
 
   if (novas.length) {
-    notificacoesStore.addMany(novas);
-    saveDedup(generated);
+    void notificacoesStore.addMany(novas);
+  }
+
+  // Limpa chave legada de dedup em localStorage. Deduplicar agora é
+  // responsabilidade do banco (índice único parcial). Pode remover este
+  // bloco após algumas semanas.
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem("app.scannerDedup");
+    } catch {
+      // ignora
+    }
   }
 }
 

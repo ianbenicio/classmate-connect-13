@@ -82,10 +82,13 @@ async function loadFromDb() {
   // Paginar presenças para contornar o limite padrão de 1000 linhas do PostgREST.
   async function fetchAllPresencas() {
     const pageSize = 1000;
-    let from = 0;
+    // Cap absoluto (~500k linhas) — proteção contra loop infinito caso o
+    // backend retorne `pageSize` linhas indefinidamente. Em produção real
+    // qualquer dataset que se aproxime disso deveria mudar para fetch lazy.
+    const MAX_PAGES = 500;
     const all: Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }> = [];
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    for (let page = 0; page < MAX_PAGES; page++) {
+      const from = page * pageSize;
       const { data, error } = await supabase
         .from("presencas")
         .select("aluno_id, atividade_id, presente, observacao")
@@ -93,9 +96,9 @@ async function loadFromDb() {
       if (error) return { data: all, error };
       const rows = (data ?? []) as typeof all;
       all.push(...rows);
-      if (rows.length < pageSize) break;
-      from += pageSize;
+      if (rows.length < pageSize) return { data: all, error: null as null };
     }
+    console.warn(`[alunos] presencas: atingiu cap de ${MAX_PAGES} páginas (${MAX_PAGES * pageSize} linhas) — possível dataset truncado.`);
     return { data: all, error: null as null };
   }
   const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([

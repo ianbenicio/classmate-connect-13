@@ -114,6 +114,8 @@ export function AgendarAtividadeDialog({
     setDraftGrupo("");
     setDraftAulaId("");
     setDraftTarefaId("");
+    // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
+    // muda. Os setters são estáveis e não precisam constar nas deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, defaultTurmaId, defaultData, turmas]);
 
@@ -263,6 +265,8 @@ export function AgendarAtividadeDialog({
         tarefaId: tarefaCandidate?.id ?? "",
       },
     });
+    // Intencional: pré-popular `assignments` apenas quando muda o slot-alvo.
+    // Re-disparar em mudanças de `assignments` faria o estado oscilar.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, slotAtual, totalBlocosSlot, defaultAtividadeIds, atividades, blocosOcupadosExistentes]);
 
