@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useLocalStorage } from "@/lib/use-local-storage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,9 +64,29 @@ function AtividadesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
-  const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
+  const [selectedCursoState, setSelectedCursoState] = useState<Curso | null>(
+    null,
+  );
+  // Persiste só o ID; objeto Curso é re-resolvido após cursos carregarem
+  const [persistedCursoId, setPersistedCursoId] = useLocalStorage<string | null>(
+    "atividades.filtro.cursoId",
+    null,
+  );
+  const selectedCurso = selectedCursoState;
+  const setSelectedCurso = (c: Curso | null) => {
+    setSelectedCursoState(c);
+    setPersistedCursoId(c?.id ?? null);
+  };
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
   const [pendentesOpen, setPendentesOpen] = useState(false);
+
+  // Hidrata seleção persistida assim que cursos carregam
+  useEffect(() => {
+    if (selectedCursoState) return;
+    if (!persistedCursoId) return;
+    const c = cursos.find((x) => x.id === persistedCursoId);
+    if (c) setSelectedCursoState(c);
+  }, [cursos, persistedCursoId, selectedCursoState]);
 
   const porCurso = useMemo(() => {
     return cursos.map((c) => {

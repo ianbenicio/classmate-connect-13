@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useLocalStorage } from "@/lib/use-local-storage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,9 +65,16 @@ function AlunosPage() {
   const turmas = useTurmas();
   const atividades = useAtividades();
 
-  const [busca, setBusca] = useState("");
-  const [cursoFiltro, setCursoFiltro] = useState<string>("todos");
-  const [turmaFiltro, setTurmaFiltro] = useState<string>("todas");
+  // Filtros persistentes — sobrevivem refresh
+  const [busca, setBusca] = useLocalStorage<string>("alunos.filtro.busca", "");
+  const [cursoFiltro, setCursoFiltro] = useLocalStorage<string>(
+    "alunos.filtro.curso",
+    "todos",
+  );
+  const [turmaFiltro, setTurmaFiltro] = useLocalStorage<string>(
+    "alunos.filtro.turma",
+    "todas",
+  );
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Aluno | undefined>();
