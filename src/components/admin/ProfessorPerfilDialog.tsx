@@ -157,24 +157,13 @@ export function ProfessorPerfilDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1">
-              <DialogTitle className="inline-flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-primary" />
-                {professor.nome}
-              </DialogTitle>
-              <DialogDescription className="mt-1">
-                Perfil do professor · {professor.ativo ? "Ativo" : "Inativo"}
-              </DialogDescription>
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="inline-flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            {professor.nome}
+          </DialogTitle>
+          <DialogDescription>
+            Perfil do professor · {professor.ativo ? "Ativo" : "Inativo"}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

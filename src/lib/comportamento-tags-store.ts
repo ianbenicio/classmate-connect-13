@@ -16,6 +16,7 @@ export interface ComportamentoTagEntry {
   tom: "pos" | "neg"; // positivo (verde) ou negativo (âmbar)
   ordem: number;
   ativo: boolean;
+  descricao: string | null; // explicação livre da tag, exibida na UI
 }
 
 // -----------------------------------------------------------------------
@@ -29,6 +30,7 @@ type TagRow = {
   tom: string;
   ordem: number;
   ativo: boolean;
+  descricao: string | null;
 };
 
 // -----------------------------------------------------------------------
@@ -43,6 +45,7 @@ function rowToEntry(r: TagRow): ComportamentoTagEntry {
     tom: r.tom === "neg" ? "neg" : "pos",
     ordem: r.ordem,
     ativo: r.ativo,
+    descricao: r.descricao ?? null,
   };
 }
 
@@ -55,6 +58,7 @@ function entryToRow(e: ComportamentoTagEntry): Omit<TagRow, never> {
     tom: e.tom,
     ordem: e.ordem,
     ativo: e.ativo,
+    descricao: e.descricao,
   };
 }
 

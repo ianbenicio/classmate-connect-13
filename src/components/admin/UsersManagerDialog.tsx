@@ -43,7 +43,9 @@ import {
   Search,
   Users as UsersIcon,
   UserPlus,
+  Info,
 } from "lucide-react";
+import { UserPerfilDialog } from "./UserPerfilDialog";
 import { toast } from "sonner";
 import {
   useUsers,
@@ -75,6 +77,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
   const [draftName, setDraftName] = useState("");
   const [confirmRemove, setConfirmRemove] = useState<UserRow | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [perfilOpen, setPerfilOpen] = useState<UserRow | null>(null);
 
   // Reload ao abrir — papéis podem ter mudado em outra sessão.
   useEffect(() => {
@@ -179,9 +182,14 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
               />
             ) : (
               <div className="flex items-center gap-2">
-                <span className="font-medium truncate">
+                <button
+                  type="button"
+                  onClick={() => setPerfilOpen(u)}
+                  className="font-medium truncate text-left hover:underline focus:outline-none focus:underline"
+                  title="Ver detalhes do usuário"
+                >
                   {u.displayName || <em className="text-muted-foreground">sem nome</em>}
-                </span>
+                </button>
                 {isSelf && (
                   <Badge variant="outline" className="text-[10px]">
                     você
@@ -217,6 +225,15 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
               </>
             ) : (
               <>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7"
+                  onClick={() => setPerfilOpen(u)}
+                  title="Ver detalhes"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </Button>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -428,6 +445,12 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
       <CreateUserDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
+      />
+
+      <UserPerfilDialog
+        open={!!perfilOpen}
+        onOpenChange={(o) => !o && setPerfilOpen(null)}
+        user={perfilOpen}
       />
     </Dialog>
   );

@@ -63,7 +63,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useHabilidades } from "@/lib/habilidades-store";
-import { useAvailableProfessorsUsers, useUsers } from "@/lib/users-store";
+import { useAvailableProfessorsUsers, usersStore, useUsers } from "@/lib/users-store";
 import {
   professoresStore,
   useProfessores,
@@ -148,6 +148,11 @@ function ProfessorFormDialog({
       criadoPorUserId: editing?.criadoPorUserId ?? authUser?.id ?? null,
     };
     await professoresStore.upsert(entry);
+    // Sync reverso: se o professor está vinculado a um usuário, garante que
+    // esse usuário tenha o papel "professor" (idempotente).
+    if (entry.userId) {
+      await usersStore.addRole(entry.userId, "professor");
+    }
     toast.success(editing ? "Professor atualizado." : "Professor cadastrado.");
     onOpenChange(false);
   };
@@ -174,7 +179,10 @@ function ProfessorFormDialog({
 
           <div className="space-y-1.5">
             <Label htmlFor="prof-user">Vínculo com usuário (opcional)</Label>
-            <Select value={userId ?? ""} onValueChange={(v) => setUserId(v || null)}>
+            <Select
+              value={userId ?? "__unlinked"}
+              onValueChange={(v) => setUserId(v === "__unlinked" ? null : v)}
+            >
               <SelectTrigger id="prof-user">
                 <SelectValue
                   placeholder={
@@ -185,7 +193,7 @@ function ProfessorFormDialog({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="__unlinked">
                   (Sem conta / Desvinculado)
                 </SelectItem>
                 {availableUsers.map((u) => (
@@ -342,24 +350,45 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
     "ativos",
   );
 
-  // Sync automático: ao abrir, garante que todo usuário com papel "professor"
-  // tenha um registro em `professores`. Idempotente — não duplica.
+  // Sync automático bidirecional ao abrir:
+  //   1. Cada usuário com papel "professor" → garante registro em `professores`
+  //   2. Cada professor com userId → garante papel "professor" no user
+  // Ambos idempotentes.
   useEffect(() => {
     if (!open) return;
     if (users.length === 0) return; // ainda carregando
     let cancelled = false;
     (async () => {
       const created = await professoresStore.syncFromUsers(users);
-      if (!cancelled && created > 0) {
-        toast.success(
-          `${created} professor(es) sincronizado(s) a partir de Usuários.`,
-        );
+      // Backfill reverso: para cada professor já vinculado a um user,
+      // garante que esse user tenha o papel "professor".
+      let rolesAdded = 0;
+      const userById = new Map(users.map((u) => [u.userId, u]));
+      for (const p of all) {
+        if (!p.userId) continue;
+        const u = userById.get(p.userId);
+        if (u && !u.roles.includes("professor")) {
+          await usersStore.addRole(p.userId, "professor");
+          rolesAdded++;
+        }
+      }
+      if (!cancelled) {
+        if (created > 0) {
+          toast.success(
+            `${created} professor(es) sincronizado(s) a partir de Usuários.`,
+          );
+        }
+        if (rolesAdded > 0) {
+          toast.success(
+            `${rolesAdded} usuário(s) ganharam o papel "professor".`,
+          );
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [open, users]);
+  }, [open, users, all]);
 
   const lista = useMemo(() => {
     return all.filter((p) => {

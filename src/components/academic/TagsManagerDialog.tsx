@@ -67,6 +67,7 @@ function TagFormDialog({
   const [emoji, setEmoji] = useState("");
   const [tom, setTom] = useState<"pos" | "neg">("pos");
   const [ordem, setOrdem] = useState(0);
+  const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -75,6 +76,7 @@ function TagFormDialog({
       setEmoji(editing?.emoji ?? "");
       setTom(editing?.tom ?? "pos");
       setOrdem(editing?.ordem ?? 0);
+      setDescricao(editing?.descricao ?? "");
     }
   }, [open, editing]);
 
@@ -91,6 +93,7 @@ function TagFormDialog({
       tom,
       ordem,
       ativo: editing?.ativo ?? true,
+      descricao: descricao.trim() || null,
     };
     await comportamentoTagsStore.upsert(entry);
     toast.success(editing ? "Tag atualizada." : "Tag criada.");
@@ -134,17 +137,12 @@ function TagFormDialog({
             />
           </div>
 
+          <div className="space-y-1.5">
+            <Label>Emoji</Label>
+            <EmojiPicker value={emoji} onChange={setEmoji} />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="tag-emoji">Emoji</Label>
-              <Input
-                id="tag-emoji"
-                value={emoji}
-                onChange={(e) => setEmoji(e.target.value)}
-                placeholder="🔍"
-                className="text-lg"
-              />
-            </div>
             <div className="space-y-1.5">
               <Label>Tom</Label>
               <Select value={tom} onValueChange={(v) => setTom(v as "pos" | "neg")}>
@@ -152,22 +150,42 @@ function TagFormDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pos">Positivo 🟢</SelectItem>
-                  <SelectItem value="neg">Negativo 🟡</SelectItem>
+                  <SelectItem value="pos">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                      Positivo
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="neg">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                      Negativo
+                    </span>
+                  </SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="tag-ordem">Ordem de exibição</Label>
+              <Input
+                id="tag-ordem"
+                type="number"
+                value={ordem}
+                onChange={(e) => setOrdem(Number(e.target.value))}
+                min={0}
+              />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="tag-ordem">Ordem de exibição</Label>
-            <Input
-              id="tag-ordem"
-              type="number"
-              value={ordem}
-              onChange={(e) => setOrdem(Number(e.target.value))}
-              min={0}
-              className="w-24"
+            <Label htmlFor="tag-descricao">Descrição (opcional)</Label>
+            <textarea
+              id="tag-descricao"
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              placeholder="O que essa tag representa? Quando usar?"
+              rows={2}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
             />
           </div>
         </div>
@@ -316,6 +334,11 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
                         </Badge>
                       )}
                     </div>
+                    {t.descricao && (
+                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                        {t.descricao}
+                      </p>
+                    )}
                     <p className="text-[10px] text-muted-foreground mt-0.5">
                       ordem: {t.ordem}
                     </p>
@@ -396,5 +419,66 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
         </AlertDialogContent>
       </AlertDialog>
     </>
+  );
+}
+
+// =====================================================================
+// EmojiPicker — grade curada de emojis comuns para tags de comportamento
+// =====================================================================
+const EMOJI_OPTIONS = [
+  // Positivos / engajados
+  "🙋", "🤝", "🎯", "💡", "⭐", "🌟", "🚀", "🏆", "👏", "🧠",
+  "📚", "📝", "🔍", "🎨", "🤔", "😊", "😄", "😎", "💪", "✨",
+  // Neutros / observação
+  "🙂", "😐", "👀", "🌱", "🌿", "🪴", "🧩", "🎲", "🎭", "🎤",
+  // Negativos / atenção
+  "🌀", "⚡", "🙊", "😶", "😤", "😴", "😟", "😬", "💢", "🚫",
+];
+
+function EmojiPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (e: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <div className="h-10 w-10 rounded-md border bg-background flex items-center justify-center text-2xl">
+          {value || <span className="text-xs text-muted-foreground">—</span>}
+        </div>
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="ou digite/cole"
+          maxLength={4}
+          className="flex h-9 flex-1 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        />
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="text-xs text-muted-foreground hover:text-foreground px-2"
+            title="Limpar"
+          >
+            limpar
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-10 gap-1 rounded-md border p-2 max-h-32 overflow-y-auto">
+        {EMOJI_OPTIONS.map((e) => (
+          <button
+            key={e}
+            type="button"
+            onClick={() => onChange(e)}
+            className={`h-8 w-8 rounded text-xl hover:bg-muted transition-colors ${value === e ? "bg-primary/15 ring-1 ring-primary" : ""}`}
+            title={e}
+          >
+            {e}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
