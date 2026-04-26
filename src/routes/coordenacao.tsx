@@ -7,6 +7,7 @@ import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
+import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -211,6 +212,8 @@ function CoordenacaoDashboard() {
           <DashboardKPIs />
         </CardContent>
       </Card>
+
+      <CheckInRapidoCard />
 
       <AlertasInteligentes />
 

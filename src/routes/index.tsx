@@ -16,6 +16,7 @@ import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
 import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog";
@@ -158,6 +159,11 @@ function DashboardPage() {
               <div key={s.label}>{card}</div>
             );
           })}
+        </section>
+
+        {/* Check-in rápido — aulas de hoje (#10) */}
+        <section className="mb-10">
+          <CheckInRapidoCard />
         </section>
 
         {/* Calendário */}

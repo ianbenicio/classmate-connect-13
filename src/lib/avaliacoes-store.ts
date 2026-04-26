@@ -211,6 +211,26 @@ export const avaliacoesStore = {
     return local;
   },
 
+  /**
+   * Marca presença/ausência rápida sem precisar abrir o relatório completo.
+   * Usado pelo CheckInRapido (#10). Idempotente — pode ser chamado várias
+   * vezes para o mesmo aluno (upsert).
+   */
+  async marcarPresenca(
+    agendamentoId: string,
+    alunoId: string,
+    presente: boolean,
+  ): Promise<void> {
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    await syncPresencas(
+      agendamentoId,
+      { [alunoId]: presente },
+      authUser?.id ?? null,
+    );
+  },
+
   async remove(id: string) {
     registros = registros.filter((r) => r.id !== id);
     emit();
