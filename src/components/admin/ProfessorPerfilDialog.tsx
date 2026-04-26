@@ -36,6 +36,7 @@ import { formatMinutos } from "@/lib/academic-types";
 import type { Agendamento } from "@/lib/academic-types";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useNotificacoes } from "@/lib/notificacoes-store";
+import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { Progress } from "@/components/ui/progress";
 import { startOfWeek, endOfWeek, parseISO, format, isWithinInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -120,6 +121,23 @@ export function ProfessorPerfilDialog({
         return cmp !== 0 ? cmp : a.inicio.localeCompare(b.inicio);
       });
   }, [agendamentos, professor]);
+
+  // #2.4 — Tags de comportamento recebidas pelo professor, agregadas
+  const allTags = useComportamentoTags();
+  const tagsAgregadas = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const a of avaliacoesProfessor) {
+      for (const t of a.tags ?? []) {
+        counts.set(t, (counts.get(t) ?? 0) + 1);
+      }
+    }
+    return Array.from(counts.entries())
+      .map(([slug, count]) => {
+        const meta = allTags.find((t) => t.value === slug);
+        return { slug, count, meta };
+      })
+      .sort((a, b) => b.count - a.count);
+  }, [avaliacoesProfessor, allTags]);
 
   // #4 — Notificações endereçadas ao professor (filtro por nome)
   const notificacoesProfessor = useMemo(() => {
@@ -469,6 +487,62 @@ export function ProfessorPerfilDialog({
                       tone="purple"
                     />
                   )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* ========== Tags de Comportamento Recebidas (#2.4) ========== */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base inline-flex items-center gap-2">
+                <Star className="h-4 w-4" />
+                Tags de Comportamento
+              </CardTitle>
+              <CardDescription>
+                {tagsAgregadas.length === 0
+                  ? "Nenhuma tag atribuída ainda."
+                  : `${tagsAgregadas.length} tag(s) — atribuídas por alunos, coordenação e admin`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {tagsAgregadas.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">
+                  Aguardando avaliações com tags. Ao avaliar, alunos e coordenação
+                  podem marcar atributos como "didático", "pontual", etc.
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-1.5">
+                  {tagsAgregadas.map(({ slug, count, meta }) => {
+                    const tone = meta?.tom ?? "pos";
+                    return (
+                      <span
+                        key={slug}
+                        title={meta?.descricao ?? undefined}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs",
+                          tone === "pos"
+                            ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                            : "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+                        )}
+                      >
+                        {meta?.emoji && <span>{meta.emoji}</span>}
+                        <span className="font-medium">
+                          {meta?.label ?? slug}
+                        </span>
+                        <span
+                          className={cn(
+                            "ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[10px] font-semibold",
+                            tone === "pos"
+                              ? "bg-emerald-500/20"
+                              : "bg-amber-500/20",
+                          )}
+                        >
+                          {count}
+                        </span>
+                      </span>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

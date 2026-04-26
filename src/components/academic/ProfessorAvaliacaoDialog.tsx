@@ -38,6 +38,7 @@ import {
   useProfessores,
   type ProfessorAvaliacao,
 } from "@/lib/professores-store";
+import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 
 interface Props {
   open: boolean;
@@ -54,10 +55,12 @@ export function ProfessorAvaliacaoDialog({
 }: Props) {
   const { user: authUser, roles } = useAuth();
   const professores = useProfessores();
+  const tagsAvail = useComportamentoTags();
 
   const [professorId, setProfessorId] = useState(defaultProfessorId ?? "");
   const [criterios, setCriterios] = useState<Record<string, number>>({});
   const [comentario, setComentario] = useState("");
+  const [tagsSel, setTagsSel] = useState<string[]>([]);
   const [salvando, setSalvando] = useState(false);
 
   // Inicializa critérios em branco (não avaliado)
@@ -68,7 +71,14 @@ export function ProfessorAvaliacaoDialog({
     }
     setCriterios({});
     setComentario("");
+    setTagsSel([]);
   }, [open, defaultProfessorId]);
+
+  const toggleTag = (slug: string) => {
+    setTagsSel((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
+    );
+  };
 
   const handleCriterioChange = (criterio: string, valor: number) => {
     setCriterios((prev) => ({ ...prev, [criterio]: valor }));
@@ -103,6 +113,7 @@ export function ProfessorAvaliacaoDialog({
       agendamentoId: null, // Pode ser setado ao chamar de AgendarAtividadeDialog
       notas: criterios,
       comentario: comentario.trim() || null,
+      tags: tagsSel,
       criadoEm: new Date().toISOString(),
     };
 
@@ -188,6 +199,42 @@ export function ProfessorAvaliacaoDialog({
               </div>
             ))}
           </div>
+
+          {/* Tags de comportamento (opcional, multi-seleção) */}
+          {tagsAvail.length > 0 && (
+            <div className="space-y-2">
+              <Label>Tags (opcional)</Label>
+              <p className="text-[11px] text-muted-foreground -mt-1">
+                Marque atributos que descrevem o professor.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {tagsAvail
+                  .filter((t) => t.ativo)
+                  .map((t) => {
+                    const sel = tagsSel.includes(t.value);
+                    return (
+                      <button
+                        type="button"
+                        key={t.id}
+                        onClick={() => toggleTag(t.value)}
+                        title={t.descricao ?? undefined}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs transition-colors",
+                          sel
+                            ? t.tom === "pos"
+                              ? "border-emerald-500 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
+                              : "border-amber-500 bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                            : "border-border bg-background hover:bg-muted",
+                        )}
+                      >
+                        {t.emoji && <span>{t.emoji}</span>}
+                        <span>{t.label}</span>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
 
           {/* Comentário opcional */}
           <div className="space-y-2">

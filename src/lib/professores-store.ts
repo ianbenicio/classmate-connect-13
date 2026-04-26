@@ -53,6 +53,8 @@ export interface ProfessorAvaliacao {
    *   { clareza: 1-5, dominio: 1-5, engajamento: 1-5, pontualidade: 1-5 } */
   notas: Record<string, number>;
   comentario: string | null;
+  /** Slugs de comportamento_tags escolhidas pelo avaliador (ex.: ["didatico","participativo"]). */
+  tags: string[];
   criadoEm: string;
 }
 
@@ -85,6 +87,7 @@ type ProfessorAvaliacaoRow = {
   agendamento_id: string | null;
   notas: Record<string, number>;
   comentario: string | null;
+  tags: string[] | null;
   criado_em: string;
 };
 
@@ -138,6 +141,7 @@ function rowToAvaliacao(r: ProfessorAvaliacaoRow): ProfessorAvaliacao {
     agendamentoId: r.agendamento_id,
     notas: r.notas ?? {},
     comentario: r.comentario,
+    tags: r.tags ?? [],
     criadoEm: r.criado_em,
   };
 }
@@ -330,6 +334,7 @@ export const professoresStore = {
       agendamento_id: entry.agendamentoId,
       notas: entry.notas,
       comentario: entry.comentario,
+      tags: entry.tags ?? [],
     };
     const { error } = await supabase
       .from("professor_avaliacoes")
