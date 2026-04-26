@@ -235,6 +235,11 @@ function CoordenacaoDashboard() {
               <BarChart3 /> Extrato de Horas
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link to="/coordenacao/relatorios/comparativo-turmas">
+              <BarChart3 /> Comparativo de Turmas
+            </Link>
+          </Button>
           {isAdmin && (
             <Button variant="outline" onClick={() => setUsersOpen(true)}>
               <Users /> Usuários

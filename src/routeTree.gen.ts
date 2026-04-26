@@ -19,6 +19,7 @@ import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
 import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao.relatorios.extrato-horas-p'
+import { Route as CoordenacaoRelatoriosComparativoTurmasRouteImport } from './routes/coordenacao.relatorios.comparativo-turmas'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -71,6 +72,12 @@ const CoordenacaoRelatoriosExtratoHorasPRoute =
     path: '/relatorios/extrato-horas-p',
     getParentRoute: () => CoordenacaoRoute,
   } as any)
+const CoordenacaoRelatoriosComparativoTurmasRoute =
+  CoordenacaoRelatoriosComparativoTurmasRouteImport.update({
+    id: '/relatorios/comparativo-turmas',
+    path: '/relatorios/comparativo-turmas',
+    getParentRoute: () => CoordenacaoRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRoutesByTo {
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRoutesById {
@@ -107,6 +116,7 @@ export interface FileRoutesById {
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRouteTypes {
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
   id:
     | '__root__'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
   fileRoutesById: FileRoutesById
 }
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoordenacaoRelatoriosExtratoHorasPRouteImport
       parentRoute: typeof CoordenacaoRoute
     }
+    '/coordenacao/relatorios/comparativo-turmas': {
+      id: '/coordenacao/relatorios/comparativo-turmas'
+      path: '/relatorios/comparativo-turmas'
+      fullPath: '/coordenacao/relatorios/comparativo-turmas'
+      preLoaderRoute: typeof CoordenacaoRelatoriosComparativoTurmasRouteImport
+      parentRoute: typeof CoordenacaoRoute
+    }
   }
 }
 
@@ -247,10 +267,13 @@ const AtividadesRouteWithChildren = AtividadesRoute._addFileChildren(
 )
 
 interface CoordenacaoRouteChildren {
+  CoordenacaoRelatoriosComparativoTurmasRoute: typeof CoordenacaoRelatoriosComparativoTurmasRoute
   CoordenacaoRelatoriosExtratoHorasPRoute: typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 
 const CoordenacaoRouteChildren: CoordenacaoRouteChildren = {
+  CoordenacaoRelatoriosComparativoTurmasRoute:
+    CoordenacaoRelatoriosComparativoTurmasRoute,
   CoordenacaoRelatoriosExtratoHorasPRoute:
     CoordenacaoRelatoriosExtratoHorasPRoute,
 }

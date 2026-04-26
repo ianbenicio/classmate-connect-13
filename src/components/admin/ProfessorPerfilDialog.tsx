@@ -40,7 +40,8 @@ import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { Progress } from "@/components/ui/progress";
 import { startOfWeek, endOfWeek, parseISO, format, isWithinInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Bell, ChevronRight } from "lucide-react";
+import { Bell, ChevronRight, Activity } from "lucide-react";
+import { ProfessorTimeline } from "./ProfessorTimeline";
 
 interface Props {
   open: boolean;
@@ -544,6 +545,26 @@ export function ProfessorPerfilDialog({
                   )}
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* ========== Linha do Tempo (#6 espelho) ========== */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base inline-flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Linha do tempo
+              </CardTitle>
+              <CardDescription>
+                Aulas concluídas e avaliações recebidas, do mais recente.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProfessorTimeline
+                professor={professor}
+                agendamentos={agendamentos}
+                avaliacoes={avaliacoesProfessor}
+              />
             </CardContent>
           </Card>
 
