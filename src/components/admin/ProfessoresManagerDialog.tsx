@@ -57,18 +57,22 @@ import {
   Mail,
   Phone,
   Star,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useHabilidades } from "@/lib/habilidades-store";
-import { useAvailableProfessorsUsers } from "@/lib/users-store";
+import { useAvailableProfessorsUsers, useUsers } from "@/lib/users-store";
 import {
   professoresStore,
   useProfessores,
+  useProfessorAvaliacoes,
   type Professor,
 } from "@/lib/professores-store";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 import { formatMinutos } from "@/lib/academic-types";
+import { ProfessorPerfilDialog } from "./ProfessorPerfilDialog";
 
 interface Props {
   open: boolean;
@@ -320,6 +324,10 @@ function ProfessorFormDialog({
 export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
   const all = useProfessores();
   const habilidades = useHabilidades();
+  const users = useUsers();
+  const avaliacoes = useProfessorAvaliacoes();
+  const agendamentos = useAgendamentos();
+
   const habMap = useMemo(
     () => new Map(habilidades.map((h) => [h.id, h])),
     [habilidades],
@@ -328,6 +336,7 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
   const [editing, setEditing] = useState<Professor | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Professor | null>(null);
+  const [perfilAberto, setPerfilAberto] = useState<Professor | null>(null);
   const [filtro, setFiltro] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<"todos" | "ativos" | "inativos">(
     "ativos",
@@ -494,6 +503,15 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
                       <Button
                         size="icon"
                         variant="ghost"
+                        title="Ver perfil"
+                        onClick={() => setPerfilAberto(p)}
+                        aria-label="Ver perfil"
+                      >
+                        <Info className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
                         onClick={() => handleEditar(p)}
                         aria-label="Editar"
                       >
@@ -555,6 +573,20 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Perfil do professor (Fase 4) */}
+      <ProfessorPerfilDialog
+        open={!!perfilAberto}
+        onOpenChange={(o) => !o && setPerfilAberto(null)}
+        professor={perfilAberto}
+        avaliacoes={avaliacoes}
+        agendamentos={agendamentos}
+        userName={
+          perfilAberto?.userId
+            ? users.find((u) => u.userId === perfilAberto.userId)?.displayName
+            : undefined
+        }
+      />
     </>
   );
 }
