@@ -6,7 +6,7 @@
 //
 // É uma visualização read-only. Para editar, use ProfessorFormDialog.
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { X, Mail, Phone, BookOpen, GraduationCap, Eye } from "lucide-react";
+import { X, Mail, Phone, BookOpen, GraduationCap, Eye, Calendar, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Professor } from "@/lib/professores-store";
 import {
@@ -35,6 +35,11 @@ import {
 import { formatMinutos } from "@/lib/academic-types";
 import type { Agendamento } from "@/lib/academic-types";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
+import { useNotificacoes } from "@/lib/notificacoes-store";
+import { Progress } from "@/components/ui/progress";
+import { startOfWeek, endOfWeek, parseISO, format, isWithinInterval } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Bell, ChevronRight } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -57,6 +62,9 @@ export function ProfessorPerfilDialog({
 
   // Get all avaliacoes from store (for skill performance calculation)
   const allAvaliacoes = useAvaliacoes();
+  // Notificações endereçadas a este professor (#4)
+  const allNotificacoes = useNotificacoes();
+  const [expandedNotifId, setExpandedNotifId] = useState<string | null>(null);
 
   // Avaliações específicas deste professor
   const avaliacoesProfessor = useMemo(
@@ -89,6 +97,56 @@ export function ProfessorPerfilDialog({
     }
     return calcularDesempenhoHabilidades(professor, allAvaliacoes, agendamentos);
   }, [professor, allAvaliacoes, agendamentos]);
+
+  // #2 — Aulas desta Semana
+  const aulasSemana = useMemo(() => {
+    const hoje = new Date();
+    const inicioSemana = startOfWeek(hoje, { weekStartsOn: 1 }); // segunda
+    const fimSemana = endOfWeek(hoje, { weekStartsOn: 1 }); // domingo
+    const profNomeKey = professor.nome.trim().toLowerCase();
+    return agendamentos
+      .filter((ag) => {
+        const isProf =
+          ag.professor?.trim().toLowerCase() === profNomeKey ||
+          (ag as any).professor_id === professor.id;
+        if (!isProf) return false;
+        // ag.data é "YYYY-MM-DD"; parseISO trata como meia-noite UTC,
+        // mas pra comparar dia inteiro isso basta.
+        const dataAg = parseISO(ag.data);
+        return isWithinInterval(dataAg, { start: inicioSemana, end: fimSemana });
+      })
+      .sort((a, b) => {
+        const cmp = a.data.localeCompare(b.data);
+        return cmp !== 0 ? cmp : a.inicio.localeCompare(b.inicio);
+      });
+  }, [agendamentos, professor]);
+
+  // #4 — Notificações endereçadas ao professor (filtro por nome)
+  const notificacoesProfessor = useMemo(() => {
+    const profNomeKey = professor.nome.trim().toLowerCase();
+    return allNotificacoes
+      .filter(
+        (n) =>
+          n.destinatarioTipo === "professor" &&
+          n.destinatarioId.trim().toLowerCase() === profNomeKey,
+      )
+      .sort((a, b) => b.criadoEm.localeCompare(a.criadoEm));
+  }, [allNotificacoes, professor.nome]);
+
+  // #3 — scores divididos por tipo de avaliador (alunos vs coordenacao/admin)
+  const scoresAlunos = useMemo(
+    () => calcularScores(avaliacoesProfessor.filter((a) => a.avaliadorTipo === "aluno")),
+    [avaliacoesProfessor],
+  );
+  const scoresStaff = useMemo(
+    () =>
+      calcularScores(
+        avaliacoesProfessor.filter(
+          (a) => a.avaliadorTipo === "coordenacao" || a.avaliadorTipo === "admin",
+        ),
+      ),
+    [avaliacoesProfessor],
+  );
 
   const horasTrabalhadasTotal = Math.round(carga.totalMin / 60 * 10) / 10;
   const horasTrabalhadasConcluidas = Math.round(carga.concluidasMin / 60 * 10) / 10;
@@ -207,6 +265,62 @@ export function ProfessorPerfilDialog({
             </Card>
           )}
 
+          {/* ========== Aulas desta Semana (#2) ========== */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base inline-flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Aulas desta Semana
+              </CardTitle>
+              <CardDescription>
+                {aulasSemana.length === 0
+                  ? "Nenhuma aula agendada esta semana."
+                  : `${aulasSemana.length} aula(s) entre seg–dom`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {aulasSemana.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">
+                  Sem agendamentos para a semana atual.
+                </p>
+              ) : (
+                <ul className="divide-y rounded-md border">
+                  {aulasSemana.map((ag) => {
+                    const dataObj = parseISO(ag.data);
+                    return (
+                      <li
+                        key={ag.id}
+                        className="flex items-center justify-between p-2 text-sm"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium capitalize">
+                            {format(dataObj, "EEE, dd/MM", { locale: ptBR })}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {ag.inicio} – {ag.fim}
+                            {ag.observacao ? ` · ${ag.observacao}` : ""}
+                          </span>
+                        </div>
+                        <Badge
+                          variant={
+                            ag.status === "concluido"
+                              ? "default"
+                              : ag.status === "cancelado"
+                                ? "destructive"
+                                : "secondary"
+                          }
+                          className="text-[10px]"
+                        >
+                          {ag.status}
+                        </Badge>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+
           {/* ========== Carga Horária ========== */}
           <Card>
             <CardHeader className="pb-3">
@@ -318,46 +432,154 @@ export function ProfessorPerfilDialog({
             </Card>
           )}
 
-          {/* ========== Avaliações ========== */}
+          {/* ========== Avaliações Recebidas (#3) ========== */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Avaliações</CardTitle>
+              <CardTitle className="text-base inline-flex items-center gap-2">
+                <Star className="h-4 w-4" />
+                Avaliações Recebidas
+              </CardTitle>
               <CardDescription>
                 {avaliacoesProfessor.length === 0
-                  ? "Sem avaliações registradas (Fase 5 ativa)"
-                  : `${scores.total} avaliação(ões)`}
+                  ? "Nenhuma avaliação registrada ainda."
+                  : `${scores.total} avaliação(ões) — ${scoresAlunos.total} de alunos · ${scoresStaff.total} de staff`}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {avaliacoesProfessor.length === 0 ? (
                 <p className="text-sm text-muted-foreground italic">
-                  As avaliações serão registradas através de Fase 5 (alunos e staff)
+                  Aguardando avaliações de alunos e coordenação.
                 </p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
+                  {/* Média geral consolidada */}
                   {scores.geral !== null && (
-                    <div className="flex items-center justify-between p-2 rounded-md bg-muted/50">
-                      <p className="text-sm">Média Geral:</p>
-                      <p className="text-lg font-semibold">
-                        {scores.geral.toFixed(1)}/5
-                      </p>
-                    </div>
+                    <ScoreBar
+                      label="Média Geral"
+                      value={scores.geral}
+                      bold
+                    />
                   )}
 
-                  {Object.entries(scores.porCriterio).length > 0 && (
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground font-medium">
-                        Por Critério:
-                      </p>
-                      {Object.entries(scores.porCriterio).map(([criterio, score]) => (
-                        <div key={criterio} className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">{criterio}:</span>
-                          <span className="font-medium">{score.toFixed(1)}/5</span>
-                        </div>
-                      ))}
-                    </div>
+                  {/* Por avaliador: alunos */}
+                  {scoresAlunos.total > 0 && (
+                    <SourceBlock
+                      title="Alunos"
+                      count={scoresAlunos.total}
+                      scores={scoresAlunos}
+                      tone="blue"
+                    />
+                  )}
+
+                  {/* Por avaliador: coordenação/admin */}
+                  {scoresStaff.total > 0 && (
+                    <SourceBlock
+                      title="Coordenação / Admin"
+                      count={scoresStaff.total}
+                      scores={scoresStaff}
+                      tone="purple"
+                    />
                   )}
                 </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* ========== Notificações (#4) ========== */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base inline-flex items-center gap-2">
+                <Bell className="h-4 w-4" />
+                Notificações
+              </CardTitle>
+              <CardDescription>
+                {notificacoesProfessor.length === 0
+                  ? "Sem notificações para este professor."
+                  : `${notificacoesProfessor.length} item(ns) — clique para ver detalhes`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {notificacoesProfessor.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">
+                  Nada pendente. Tarefas, formulários e relatórios de aula aparecerão aqui.
+                </p>
+              ) : (
+                <ul className="divide-y rounded-md border">
+                  {notificacoesProfessor.map((n) => {
+                    const expanded = expandedNotifId === n.id;
+                    return (
+                      <li key={n.id} className="text-sm">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedNotifId(expanded ? null : n.id)
+                          }
+                          className="w-full flex items-start gap-2 p-2 hover:bg-muted/40 text-left transition-colors"
+                        >
+                          <ChevronRight
+                            className={cn(
+                              "h-4 w-4 shrink-0 mt-0.5 transition-transform",
+                              expanded && "rotate-90",
+                            )}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span
+                                className={cn(
+                                  "font-medium truncate",
+                                  !n.lida && "text-foreground",
+                                )}
+                              >
+                                {n.titulo}
+                              </span>
+                              {n.kind && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-[10px] capitalize"
+                                >
+                                  {n.kind}
+                                </Badge>
+                              )}
+                              {!n.lida && (
+                                <Badge
+                                  variant="default"
+                                  className="text-[10px]"
+                                >
+                                  nova
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {format(parseISO(n.criadoEm), "dd/MM HH:mm", {
+                                locale: ptBR,
+                              })}
+                              {n.data && ` · aula ${n.data}`}
+                            </p>
+                          </div>
+                        </button>
+                        {expanded && (
+                          <div className="px-9 pb-3 pt-1 space-y-1 border-t bg-muted/20">
+                            <p className="text-xs whitespace-pre-wrap">
+                              {n.mensagem}
+                            </p>
+                            {(n.data || n.inicio || n.fim) && (
+                              <p className="text-xs text-muted-foreground">
+                                <strong>Quando:</strong> {n.data}
+                                {n.inicio && ` ${n.inicio}`}
+                                {n.fim && `–${n.fim}`}
+                              </p>
+                            )}
+                            {n.atividadeIds.length > 0 && (
+                              <p className="text-xs text-muted-foreground">
+                                <strong>Atividades:</strong> {n.atividadeIds.length} item(ns)
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </CardContent>
           </Card>
@@ -375,5 +597,73 @@ export function ProfessorPerfilDialog({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// =====================================================================
+// Helpers de UI para avaliações (#3)
+// =====================================================================
+
+/** Barra horizontal de 0..5 com rótulo e valor numérico. */
+function ScoreBar({
+  label,
+  value,
+  bold = false,
+  tone,
+}: {
+  label: string;
+  value: number;
+  bold?: boolean;
+  tone?: "blue" | "purple";
+}) {
+  const pct = Math.max(0, Math.min(100, (value / 5) * 100));
+  const colorClass =
+    tone === "blue"
+      ? "[&>div]:bg-blue-500"
+      : tone === "purple"
+        ? "[&>div]:bg-purple-500"
+        : "";
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-sm">
+        <span className={cn("text-muted-foreground capitalize", bold && "font-semibold text-foreground")}>
+          {label}
+        </span>
+        <span className={cn("font-mono", bold ? "text-base font-semibold" : "text-xs")}>
+          {value.toFixed(1)}/5
+        </span>
+      </div>
+      <Progress value={pct} className={cn("h-2", colorClass)} />
+    </div>
+  );
+}
+
+/** Bloco de scores agrupado por fonte (alunos, staff). */
+function SourceBlock({
+  title,
+  count,
+  scores,
+  tone,
+}: {
+  title: string;
+  count: number;
+  scores: { geral: number | null; porCriterio: Record<string, number> };
+  tone: "blue" | "purple";
+}) {
+  return (
+    <div className="space-y-2 rounded-md border p-3">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">{title}</p>
+        <span className="text-xs text-muted-foreground">
+          {count} {count === 1 ? "avaliação" : "avaliações"}
+        </span>
+      </div>
+      {scores.geral !== null && (
+        <ScoreBar label="Média" value={scores.geral} tone={tone} />
+      )}
+      {Object.entries(scores.porCriterio).map(([criterio, score]) => (
+        <ScoreBar key={criterio} label={criterio} value={score} tone={tone} />
+      ))}
+    </div>
   );
 }
