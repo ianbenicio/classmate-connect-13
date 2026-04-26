@@ -58,7 +58,7 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
-  const { user: authUser, hasRole } = useAuth();
+  const { user: authUser, hasRole, displayName } = useAuth();
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
 
@@ -130,7 +130,7 @@ function DashboardPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto max-w-6xl px-4 py-8">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">📊 Painel</h1>
+          <h1 className="text-3xl font-bold tracking-tight">📊 {displayName || "Painel"}</h1>
           <p className="text-muted-foreground mt-1">
             Visão geral do sistema acadêmico.
           </p>
