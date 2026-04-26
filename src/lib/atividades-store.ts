@@ -35,6 +35,7 @@ type AtividadeRow = {
   prazo: string | null;
   criado_por: string | null;
   professor: string | null;
+  professor_id: string | null; // NOVO — Fase 6 FK to professores
   habilidade_ids: unknown;
   descricao_conteudo: string | null;
   sugestoes_pais: string | null;
@@ -73,6 +74,7 @@ function rowToAtividade(r: AtividadeRow): Atividade {
     prazo: r.prazo ?? "",
     criadoPor: r.criado_por ?? "",
     professor: r.professor ?? "",
+    professorId: r.professor_id ?? undefined,
     habilidadeIds: toUuidArray(
       (Array.isArray(r.habilidade_ids) ? r.habilidade_ids : []) as string[],
     ),
@@ -111,6 +113,7 @@ function atividadeToRow(a: Atividade) {
     prazo: a.prazo || null,
     criado_por: a.criadoPor || null,
     professor: a.professor || null,
+    professor_id: a.professorId ? toUuid(a.professorId) : null,
     habilidade_ids: toUuidArray(a.habilidadeIds) as never,
     descricao_conteudo: a.descricaoConteudo ?? null,
     sugestoes_pais: a.sugestoesPais ?? null,
@@ -137,8 +140,15 @@ function atividadeToRow(a: Atividade) {
 // sobrescrever edições existentes). Necessário porque a versão anterior só
 // semeava quando a tabela estava *totalmente* vazia — se um chunk falhou no
 // primeiro seed, grupos inteiros ficavam faltando sem nunca serem recuperados.
-async function topUpSeed(existingIds: Set<string>) {
-  const missing = SEED_ATIVIDADES.filter((a) => !existingIds.has(toUuid(a.id)));
+async function topUpSeed(
+  existingIds: Set<string>,
+  existingCodigos: Set<string>,
+) {
+  // Filtra também por `codigo` (UNIQUE) — sem isso, um id de seed novo
+  // para um codigo já existente quebrava o upsert com 409 a cada load.
+  const missing = SEED_ATIVIDADES.filter(
+    (a) => !existingIds.has(toUuid(a.id)) && !existingCodigos.has(a.codigo),
+  );
   if (missing.length === 0) return false;
   const rows = missing.map(atividadeToRow);
   // Continua em chunks pra evitar payload grande, mas agora cada chunk é
@@ -171,7 +181,8 @@ async function loadFromDb() {
   }
   const rows = (data ?? []) as AtividadeRow[];
   const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpSeed(existingIds);
+  const existingCodigos = new Set(rows.map((r) => r.codigo));
+  const inserted = await topUpSeed(existingIds, existingCodigos);
   if (inserted) {
     const { data: data2 } = await supabase.from("atividades").select("*").order("codigo");
     atividades = (data2 ?? []).map((r) => rowToAtividade(r as AtividadeRow));

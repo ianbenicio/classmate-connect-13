@@ -63,10 +63,30 @@ function alunoToRow(a: Aluno) {
 
 // Top-up: insere os alunos do seed ainda ausentes. O store não tinha
 // mecanismo de seed — SEED_ALUNOS existia mas nunca era persistido.
+//
+// FKs (curso_id, turma_id) são ON DELETE SET NULL no schema, mas o INSERT
+// ainda exige que o pai exista. Antes a função tentava inserir cegamente e
+// quebrava com 23503 quando o seed referenciava um curso/turma que ainda
+// não estava no banco (acontecia em primeiros loads ou após resets parciais).
+// Solução: pré-buscamos os ids válidos e anulamos referências órfãs em vez
+// de derrubar o batch inteiro.
 async function topUpAlunos(existingIds: Set<string>) {
   const missing = SEED_ALUNOS.filter((a) => !existingIds.has(toUuid(a.id)));
   if (missing.length === 0) return false;
-  const rows = missing.map(alunoToRow);
+
+  const [{ data: cursoRows }, { data: turmaRows }] = await Promise.all([
+    supabase.from("cursos").select("id"),
+    supabase.from("turmas").select("id"),
+  ]);
+  const validCursoIds = new Set((cursoRows ?? []).map((r: { id: string }) => r.id));
+  const validTurmaIds = new Set((turmaRows ?? []).map((r: { id: string }) => r.id));
+
+  const rows = missing.map((a) => {
+    const row = alunoToRow(a);
+    if (row.curso_id && !validCursoIds.has(row.curso_id)) row.curso_id = null;
+    if (row.turma_id && !validTurmaIds.has(row.turma_id)) row.turma_id = null;
+    return row;
+  });
   const { error } = await supabase
     .from("alunos")
     .upsert(rows, { onConflict: "id", ignoreDuplicates: true });

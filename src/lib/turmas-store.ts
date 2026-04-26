@@ -61,8 +61,25 @@ function turmaToRow(t: Turma) {
 // Top-up: insere apenas linhas do seed que ainda não existem no banco.
 // Substitui o seed-if-empty antigo, que ficava inerte se o primeiro seed
 // falhasse parcialmente.
-async function topUpTurmas(existingIds: Set<string>) {
-  const missing = SEED_TURMAS.filter((t) => !existingIds.has(toUuid(t.id)));
+//
+// Filtros adicionais para evitar erros recorrentes no console:
+// - `cod` é UNIQUE — sem checar isso o upsert tropeçava quando o UUID do
+//   seed mudava entre deploys.
+// - `curso_id` é FK NOT NULL — se o curso pai ainda não existe, o INSERT
+//   quebra com 23503. Pulamos a turma órfã em vez de derrubar o batch.
+async function topUpTurmas(
+  existingIds: Set<string>,
+  existingCods: Set<string>,
+) {
+  const { data: cursoRows } = await supabase.from("cursos").select("id");
+  const validCursoIds = new Set((cursoRows ?? []).map((r: { id: string }) => r.id));
+
+  const missing = SEED_TURMAS.filter(
+    (t) =>
+      !existingIds.has(toUuid(t.id)) &&
+      !existingCods.has(t.cod) &&
+      validCursoIds.has(toUuid(t.cursoId)),
+  );
   if (missing.length === 0) return false;
   const rows = missing.map(turmaToRow);
   const { error } = await supabase
@@ -85,7 +102,8 @@ async function loadFromDb() {
   }
   const rows = (data ?? []) as TurmaRow[];
   const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpTurmas(existingIds);
+  const existingCods = new Set(rows.map((r) => r.cod));
+  const inserted = await topUpTurmas(existingIds, existingCods);
   if (inserted) {
     const { data: data2 } = await supabase.from("turmas").select("*").order("cod");
     turmas = (data2 ?? []).map(rowToTurma);

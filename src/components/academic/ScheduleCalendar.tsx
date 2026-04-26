@@ -18,7 +18,10 @@ import { Button } from "@/components/ui/button";
 import {
   computeSlotEstado,
   diaSemanaFromDate,
+  formatMinutos,
   getDuracaoAulaMin,
+  MS_PER_HOUR,
+  REPORT_DEADLINE_HOURS,
   slotBlocosCount,
   blocoInicio,
   blocoFim,
@@ -381,14 +384,19 @@ function SlotChip({
       <button
         type="button"
         onClick={handleHeaderClick}
-        className="w-full flex items-center gap-1 px-0.5 hover:opacity-80 transition-opacity"
+        className="w-full flex flex-col gap-0.5 px-0.5 hover:opacity-80 transition-opacity"
       >
-        <StateBadge estado={headerEstado} />
-        <span className={cn("font-semibold truncate", compact ? "text-[10px]" : "text-xs")}>
-          {turma.cod}
-        </span>
-        <span className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}>
-          {slotInicio}
+        <div className="flex items-center gap-1 w-full">
+          <StateBadge estado={headerEstado} />
+          <span className={cn("font-semibold truncate", compact ? "text-[10px]" : "text-xs")}>
+            {turma.cod}
+          </span>
+          <span className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}>
+            {slotInicio}–{slotFim}
+          </span>
+        </div>
+        <span className={cn("text-muted-foreground pl-3", compact ? "text-[8px]" : "text-[9px]")}>
+          {totalBlocos} {totalBlocos === 1 ? "aula" : "aulas"} · {formatMinutos(duracaoAulaMin)} cada
         </span>
       </button>
 
@@ -412,7 +420,7 @@ function SlotChip({
             const startOfDay = new Date(`${dataKey}T00:00:00`);
             const slotEnd24 = new Date(
               new Date(`${dataKey}T${blocoEnd}:00`).getTime() +
-                24 * 60 * 60 * 1000,
+                REPORT_DEADLINE_HOURS * MS_PER_HOUR,
             );
             const dentroJanelaRelatorio =
               now >= startOfDay && now <= slotEnd24;

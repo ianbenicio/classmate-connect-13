@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ClipboardList, Lock, Pencil, Plus, Trash2, User, Users } from "lucide-react";
+import { ClipboardList, Eye, Lock, Pencil, Plus, Trash2, User, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -53,6 +53,7 @@ function FormulariosPage() {
   const [editing, setEditing] = useState<FormularioTemplate | null>(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<FormularioTemplate | null>(null);
+  const [viewing, setViewing] = useState<FormularioTemplate | null>(null);
 
   const grupos = useMemo(() => {
     const sistema = formularios.filter((f) => f.isSystem);
@@ -91,6 +92,7 @@ function FormulariosPage() {
                 key={f.id}
                 f={f}
                 isStaff={isStaff}
+                onView={() => setViewing(f)}
                 onEdit={() => setEditing(f)}
                 onDelete={() => setDeleting(f)}
               />
@@ -114,6 +116,7 @@ function FormulariosPage() {
                 key={f.id}
                 f={f}
                 isStaff={isStaff}
+                onView={() => setViewing(f)}
                 onEdit={() => setEditing(f)}
                 onDelete={() => setDeleting(f)}
               />
@@ -121,6 +124,12 @@ function FormulariosPage() {
           </div>
         )}
       </section>
+
+      <FormularioPreviewDialog
+        open={!!viewing}
+        onOpenChange={(o) => !o && setViewing(null)}
+        formulario={viewing}
+      />
 
       <FormularioFormDialog
         open={creating}
@@ -168,11 +177,13 @@ function FormulariosPage() {
 function FormularioCard({
   f,
   isStaff,
+  onView,
   onEdit,
   onDelete,
 }: {
   f: FormularioTemplate;
   isStaff: boolean;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -218,23 +229,26 @@ function FormularioCard({
           {blocos.length} bloco{blocos.length === 1 ? "" : "s"} ·{" "}
           {totalPerguntas} pergunta{totalPerguntas === 1 ? "" : "s"}
         </div>
-        {isStaff && (
-          <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1">
+          <Button variant="outline" size="sm" onClick={onView}>
+            <Eye /> Visualizar
+          </Button>
+          {isStaff && (
             <Button variant="outline" size="sm" onClick={onEdit}>
               <Pencil /> Editar
             </Button>
-            {!f.isSystem && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onDelete}
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash2 /> Excluir
-              </Button>
-            )}
-          </div>
-        )}
+          )}
+          {isStaff && !f.isSystem && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDelete}
+              className="text-destructive hover:text-destructive"
+            >
+              <Trash2 /> Excluir
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
@@ -376,6 +390,160 @@ function FormularioFormDialog({
           </Button>
           <Button onClick={handleSubmit} disabled={saving}>
             {saving ? "Salvando…" : initial ? "Salvar" : "Criar"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Rótulos amigáveis para os tipos de pergunta usados em `estrutura.blocos[].perguntas[].tipo`.
+const PERGUNTA_TIPO_LABELS: Record<string, string> = {
+  texto_curto: "Texto curto",
+  texto_longo: "Texto longo",
+  escala_1_5: "Escala 1-5",
+  escala_1_10: "Escala 1-10",
+  sim_nao: "Sim / Não",
+  multipla_escolha: "Múltipla escolha",
+  numero: "Número",
+  data: "Data",
+};
+
+interface PreviewPergunta {
+  id?: string;
+  tipo?: string;
+  label?: string;
+  obrigatorio?: boolean;
+  opcoes?: string[];
+}
+
+interface PreviewBloco {
+  titulo?: string;
+  descricao?: string;
+  perguntas?: PreviewPergunta[];
+}
+
+function FormularioPreviewDialog({
+  open,
+  onOpenChange,
+  formulario,
+}: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  formulario: FormularioTemplate | null;
+}) {
+  if (!formulario) return null;
+  const blocos = ((formulario.estrutura as { blocos?: PreviewBloco[] }).blocos ?? []);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Eye className="h-5 w-5" />
+            {formulario.nome}
+          </DialogTitle>
+          <DialogDescription className="space-y-2">
+            <span className="block">
+              {formulario.descricao || "Sem descrição."}
+            </span>
+            <span className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                {formulario.destinatario === "professor" ? (
+                  <>
+                    <User className="h-3 w-3" /> Professor
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-3 w-3" /> Aluno
+                  </>
+                )}
+              </Badge>
+              {formulario.isSystem && (
+                <Badge variant="outline" className="gap-1 text-[10px]">
+                  <Lock className="h-3 w-3" /> Sistema
+                </Badge>
+              )}
+              <code className="text-[11px] text-muted-foreground">
+                {formulario.slug}
+              </code>
+            </span>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {blocos.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic">
+              Este formulário ainda não tem blocos.
+            </p>
+          ) : (
+            blocos.map((bloco, bi) => {
+              const perguntas = bloco.perguntas ?? [];
+              return (
+                <section
+                  key={bi}
+                  className="rounded-lg border bg-muted/30 p-3 space-y-3"
+                >
+                  <header className="space-y-0.5">
+                    <h4 className="text-sm font-semibold">
+                      {bloco.titulo || `Bloco ${bi + 1}`}
+                    </h4>
+                    {bloco.descricao && (
+                      <p className="text-xs text-muted-foreground">
+                        {bloco.descricao}
+                      </p>
+                    )}
+                  </header>
+                  {perguntas.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      Nenhuma pergunta neste bloco.
+                    </p>
+                  ) : (
+                    <ol className="space-y-2 list-decimal list-inside text-sm">
+                      {perguntas.map((p, pi) => (
+                        <li key={p.id ?? pi} className="space-y-1">
+                          <div className="inline-flex items-start gap-2">
+                            <span className="font-medium">
+                              {p.label || "(sem enunciado)"}
+                            </span>
+                            {p.obrigatorio && (
+                              <span
+                                className="text-destructive font-bold"
+                                title="Obrigatória"
+                              >
+                                *
+                              </span>
+                            )}
+                          </div>
+                          <div className="ml-5 flex flex-wrap items-center gap-1.5">
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] font-normal"
+                            >
+                              {PERGUNTA_TIPO_LABELS[p.tipo ?? ""] ??
+                                p.tipo ??
+                                "—"}
+                            </Badge>
+                            {p.opcoes && p.opcoes.length > 0 && (
+                              <span className="text-[11px] text-muted-foreground">
+                                {p.opcoes.length} opç
+                                {p.opcoes.length === 1 ? "ão" : "ões"}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </section>
+              );
+            })
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Fechar
           </Button>
         </DialogFooter>
       </DialogContent>

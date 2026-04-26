@@ -1,5 +1,13 @@
 // Relatório do Professor — preenchido após a aula.
 // Inclui chamada da turma + avaliação geral da aula + observações.
+//
+// Ao salvar:
+// 1) Persiste em `avaliacoes` via avaliacoesStore.saveRelatorioProf
+//    (que internamente sincroniza presenças com a tabela `presencas`).
+// 2) Marca o agendamento como concluído.
+// 3) Emite notificações + tarefas-formulário (relatório aluno + checklist).
+//
+// Substituiu o antigo RegistrarRelatorioDialog (placeholder sem chamada).
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -19,6 +27,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { FaceRating } from "./FaceRating";
 import { avaliacoesStore } from "@/lib/avaliacoes-store";
+import { agendamentosStore } from "@/lib/agendamentos-store";
+import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useAlunos } from "@/lib/alunos-store";
 import { toast } from "sonner";
 import type {
@@ -35,9 +45,23 @@ import type { Nota } from "@/lib/avaliacoes-types";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  agendamento: Agendamento;
-  turma: Turma;
-  curso: Curso;
+  // Nullables para casar com o padrão dos call sites (turma_dia / pendentes),
+  // que setam um contexto que pode ser null entre aberturas. Early-return
+  // abaixo evita render incompleto.
+  agendamento: Agendamento | null;
+  turma?: Turma;
+  curso?: Curso;
+  /**
+   * Chamado após salvar com sucesso, recebe a lista de alunos com
+   * `presente=true`. Usado pelo orquestrador (routes/index.tsx) para
+   * encadear o ChecklistAlunoDialog para cada aluno presente.
+   */
+  onSaved?: (info: {
+    agendamento: Agendamento;
+    turma: Turma;
+    curso: Curso;
+    alunosPresentes: { id: string; nome: string }[];
+  }) => void;
 }
 
 export function RelatorioProfessorDialog({
@@ -46,7 +70,9 @@ export function RelatorioProfessorDialog({
   agendamento,
   turma,
   curso,
+  onSaved,
 }: Props) {
+  if (!agendamento || !turma || !curso) return null;
   const todosAlunos = useAlunos();
   const alunosTurma = useMemo(
     () => todosAlunos.filter((a) => a.turmaId === turma.id),
@@ -98,6 +124,13 @@ export function RelatorioProfessorDialog({
       toast.error("Escreva um resumo da aula.");
       return;
     }
+    if (alunosTurma.length > 0 && agendamento.atividadeIds.length === 0) {
+      // Sem atividades vinculadas, syncPresencas faz early-return silencioso —
+      // alerta o professor para evitar "salvou mas frequência não registrou".
+      toast.warning(
+        "Esta aula não tem atividades vinculadas. As presenças não serão registradas no histórico de frequência.",
+      );
+    }
     const dados: RelatorioProfessorDados = {
       resumo: resumo.trim(),
       engajamentoTurma: engajamento as Nota1a5 | null,
@@ -107,9 +140,88 @@ export function RelatorioProfessorDialog({
       sugestoes: sugestoes.trim() || undefined,
       presencas,
     };
+    // 1) Salva avaliação + sincroniza tabela `presencas`.
     await avaliacoesStore.saveRelatorioProf(agendamento.id, dados);
-    toast.success("Relatório do professor salvo.");
+
+    // 2) Marca o agendamento como concluído.
+    await agendamentosStore.marcarConcluido(agendamento.id);
+
+    // 3) Notificações + tarefas-formulário (porteado de RegistrarRelatorioDialog).
+    const baseSlot = {
+      cursoId: curso.id,
+      turmaId: turma.id,
+      data: agendamento.data,
+      inicio: agendamento.inicio,
+      fim: agendamento.fim,
+      professor: agendamento.professor,
+      atividadeIds: agendamento.atividadeIds,
+      // agendamentoId é o que permite o NotificationsBell deep-linkar para
+      // o AvaliacaoAulaDialog do aluno e dedup no banco.
+      agendamentoId: agendamento.id,
+      criadoEm: new Date().toISOString(),
+      lida: false,
+    };
+    const notifConcluido = {
+      ...baseSlot,
+      titulo: `Relatório registrado — ${turma.cod}`,
+      mensagem: `${curso.nome} · ${turma.nome} · ${dataFmt} ${agendamento.inicio}–${agendamento.fim} — relatório registrado.`,
+      kind: "concluido" as const,
+    };
+    const tarefaProf = agendamento.professor
+      ? [
+          {
+            ...baseSlot,
+            id: crypto.randomUUID(),
+            destinatarioTipo: "professor" as const,
+            destinatarioId: agendamento.professor,
+            titulo: `📋 Relatório registrado — ${turma.cod}`,
+            mensagem: `Aula de ${dataFmt} marcada como concluída.`,
+            kind: "concluido" as const,
+          },
+        ]
+      : [];
+    const tarefasChecklist = agendamento.professor
+      ? alunosTurma.map((al) => ({
+          ...baseSlot,
+          id: crypto.randomUUID(),
+          destinatarioTipo: "professor" as const,
+          destinatarioId: agendamento.professor!,
+          titulo: `✅ Checklist pendente — ${al.nome}`,
+          mensagem: `Avalie ${al.nome} na aula de ${dataFmt}.`,
+          kind: "agendado" as const,
+        }))
+      : [];
+    const tarefasAluno = alunosTurma.map((al) => ({
+      ...baseSlot,
+      id: crypto.randomUUID(),
+      destinatarioTipo: "aluno" as const,
+      destinatarioId: al.id,
+      titulo: `✨ Como foi sua aula?`,
+      mensagem: `Conte como foi a aula de ${dataFmt} (até 24h).`,
+      kind: "agendado" as const,
+    }));
+    notificacoesStore.addMany([
+      ...alunosTurma.map((al) => ({
+        ...notifConcluido,
+        id: crypto.randomUUID(),
+        destinatarioTipo: "aluno" as const,
+        destinatarioId: al.id,
+      })),
+      ...tarefaProf,
+      ...tarefasChecklist,
+      ...tarefasAluno,
+    ]);
+
+    toast.success("Relatório registrado e frequência atualizada.");
     onOpenChange(false);
+
+    // Encadeia o checklist individual para cada aluno presente.
+    if (onSaved) {
+      const presentes = alunosTurma
+        .filter((a) => presencas[a.id] !== false)
+        .map((a) => ({ id: a.id, nome: a.nome }));
+      onSaved({ agendamento, turma, curso, alunosPresentes: presentes });
+    }
   };
 
   return (

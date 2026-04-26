@@ -269,7 +269,18 @@ async function syncPresencas(
   registradoPorUserId: string | null,
 ): Promise<void> {
   const ag = agendamentosStore.getAll().find((g) => g.id === agendamentoId);
-  if (!ag || ag.atividadeIds.length === 0) return;
+  if (!ag) {
+    console.warn("[presencas] agendamento não encontrado:", agendamentoId);
+    return;
+  }
+  if (ag.atividadeIds.length === 0) {
+    // Aviso ao usuário também é dado pelo dialog antes de salvar.
+    console.warn(
+      "[presencas] agendamento sem atividades, frequência não foi gravada:",
+      agendamentoId,
+    );
+    return;
+  }
   const agUuid = toUuid(agendamentoId);
 
   const rows = Object.entries(presencas).flatMap(([alunoId, presente]) =>
@@ -283,19 +294,13 @@ async function syncPresencas(
   );
   if (rows.length === 0) return;
 
-  // Como não há unique constraint em (agendamento_id, aluno_id, atividade_id),
-  // fazemos delete+insert da janela do agendamento atual.
-  const { error: delErr } = await supabase
+  // Upsert atômico via UNIQUE INDEX criado em
+  // 20260425150000_presencas_unique_index.sql.
+  const { error } = await supabase
     .from("presencas")
-    .delete()
-    .eq("agendamento_id", agUuid);
-  if (delErr) {
-    console.error("[presencas] delete error", delErr);
-    return;
-  }
-  const { error: insErr } = await supabase.from("presencas").insert(rows);
-  if (insErr) {
-    console.error("[presencas] insert error", insErr);
-    toast.error(`Erro ao salvar presenças: ${insErr.message}`);
+    .upsert(rows, { onConflict: "agendamento_id,aluno_id,atividade_id" });
+  if (error) {
+    console.error("[presencas] upsert error", error);
+    toast.error(`Erro ao salvar presenças: ${error.message}`);
   }
 }

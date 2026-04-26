@@ -8,13 +8,12 @@ import {
   useRouterState,
   useNavigate,
 } from "@tanstack/react-router";
-import { ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
+import { Sparkles, SmilePlus } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
-import { Button } from "@/components/ui/button";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
 import { SkillsManagerDialog } from "@/components/academic/SkillsManagerDialog";
-import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
+import { TagsManagerDialog } from "@/components/academic/TagsManagerDialog";
 import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 import { AuthProvider, useAuth } from "@/lib/auth";
 
@@ -102,9 +101,8 @@ function AppShell() {
   const { hasRole, isStaff: isStaffFn, isAuthenticated, loading } = useAuth();
   const isStaff = isStaffFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
-  const isAdmin = hasRole("admin");
   const [skillsOpen, setSkillsOpen] = useState(false);
-  const [usersOpen, setUsersOpen] = useState(false);
+  const [tagsOpen, setTagsOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const isPublic = PUBLIC_ROUTES.has(pathname);
@@ -176,16 +174,6 @@ function AppShell() {
               Alunos
             </Link>
             {isStaff && (
-              <Link
-                to="/formularios"
-                activeProps={{ className: "text-foreground font-medium" }}
-                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-              >
-                <ClipboardList className="h-3.5 w-3.5" />
-                Formulários
-              </Link>
-            )}
-            {isStaff && (
               <button
                 type="button"
                 onClick={() => setSkillsOpen(true)}
@@ -195,14 +183,14 @@ function AppShell() {
                 Habilidades
               </button>
             )}
-            {isAdmin && (
+            {isStaff && (
               <button
                 type="button"
-                onClick={() => setUsersOpen(true)}
+                onClick={() => setTagsOpen(true)}
                 className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
               >
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Usuários
+                <SmilePlus className="h-3.5 w-3.5" />
+                Comportamento
               </button>
             )}
             {isCoord && (
@@ -222,9 +210,7 @@ function AppShell() {
       <Outlet />
       <Toaster />
       <SkillsManagerDialog open={skillsOpen} onOpenChange={setSkillsOpen} />
-      {isAdmin && (
-        <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />
-      )}
+      <TagsManagerDialog open={tagsOpen} onOpenChange={setTagsOpen} />
     </>
   );
 }

@@ -19,11 +19,11 @@ import { FaceRating } from "./FaceRating";
 import { avaliacoesStore } from "@/lib/avaliacoes-store";
 import { useHabilidades } from "@/lib/habilidades-store";
 import {
-  COMPORTAMENTO_TAGS,
   type ChecklistAlunoDados,
   type ComportamentoTag,
   type Nota1a5,
 } from "@/lib/formularios-types";
+import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import type { Nota } from "@/lib/avaliacoes-types";
 import type {
   Agendamento,
@@ -51,6 +51,9 @@ export function ChecklistAlunoDialog({
   atividades,
 }: Props) {
   const todasHabilidades = useHabilidades();
+  const todasTags = useComportamentoTags();
+  // Mostra apenas tags ativas, ordenadas por `ordem`.
+  const tagsAtivas = todasTags.filter((t) => t.ativo);
 
   const habilidadesGerais = useMemo(() => {
     const ids = new Set(curso.habilidadeIds ?? []);
@@ -202,7 +205,7 @@ export function ChecklistAlunoDialog({
         <section className="space-y-2 border-t pt-3">
           <Label>Comportamento na aula (multi-seleção)</Label>
           <div className="flex flex-wrap gap-2">
-            {COMPORTAMENTO_TAGS.map((t) => {
+            {tagsAtivas.map((t) => {
               const sel = comp.includes(t.value);
               return (
                 <button
@@ -218,11 +221,16 @@ export function ChecklistAlunoDialog({
                       : "border-border hover:border-primary/40",
                   )}
                 >
-                  <span>{t.emoji}</span>
+                  {t.emoji && <span>{t.emoji}</span>}
                   <span>{t.label}</span>
                 </button>
               );
             })}
+            {tagsAtivas.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                Nenhuma tag de comportamento cadastrada.
+              </p>
+            )}
           </div>
         </section>
 

@@ -23,7 +23,7 @@ import {
 } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
-import { RegistrarRelatorioDialog } from "./RegistrarRelatorioDialog";
+import { RelatorioProfessorDialog } from "./RelatorioProfessorDialog";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -170,13 +170,12 @@ export function PendingReportsDialog({
         </DialogContent>
       </Dialog>
 
-      <RegistrarRelatorioDialog
+      <RelatorioProfessorDialog
         open={!!selecionado}
         onOpenChange={(o) => !o && setSelecionado(null)}
         agendamento={selecionado?.agendamento ?? null}
         turma={selecionado?.turma}
         curso={selecionado?.curso}
-        atividades={atividades}
       />
     </>
   );

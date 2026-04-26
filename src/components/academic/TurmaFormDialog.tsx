@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useHabilidades } from "@/lib/habilidades-store";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DIAS_SEMANA,
@@ -31,6 +32,7 @@ import {
   type HorarioSlot,
   type Turma,
 } from "@/lib/academic-types";
+import { Badge } from "@/components/ui/badge";
 
 interface Props {
   open: boolean;
@@ -58,7 +60,14 @@ export function TurmaFormDialog({
   const turnoMin = curso ? getTurnoDiarioMin(curso) : 0;
   const aulaMin = curso ? getDuracaoAulaMin(curso) : 0;
   const blocosDia = curso ? blocosPorTurno(curso) : 0;
+  const cargaTotal = curso?.cargaHorariaTotalMin ?? 0;
   const cursoOk = !!curso && turnoMin > 0;
+
+  const todasHabilidades = useHabilidades();
+  const habilidadesDoCurso = useMemo(() => {
+    const ids = new Set(curso?.habilidadeIds ?? []);
+    return todasHabilidades.filter((h) => ids.has(h.id));
+  }, [todasHabilidades, curso]);
 
   /** Recalcula `fim` baseado em `inicio + turnoMin` do curso. */
   const ajustarFim = useMemo(
@@ -78,7 +87,9 @@ export function TurmaFormDialog({
     setNome(editing?.nome ?? "");
     setCod(editing?.cod ?? "");
     setData(editing?.data ?? "");
-    // Migração automática: ao abrir, força os slots a respeitarem o turno do curso.
+    // Cada `horario` é um ENCONTRO (turno do curso, ex: 2h30).
+    // Dentro de cada encontro, o calendário renderiza N sub-blocos (slots/aulas).
+    // ajustarFim garante que `fim = inicio + turnoMin` (respeitando turno do curso).
     const base = editing?.horarios ?? [];
     setHorarios(turnoMin > 0 ? base.map(ajustarFim) : base);
     setDescricao(editing?.descricao ?? "");
@@ -153,11 +164,34 @@ export function TurmaFormDialog({
             </div>
           )}
           {cursoOk && (
-            <div className="rounded-md border bg-muted/30 p-2 text-[11px] text-muted-foreground">
-              Turno do curso: <strong>{formatMinutos(turnoMin)}</strong> ·{" "}
-              dividido em <strong>{blocosDia} aula(s)</strong> de{" "}
-              <strong>{formatMinutos(aulaMin)}</strong>. O fim de cada slot é
-              calculado automaticamente.
+            <div className="rounded-md border bg-muted/30 p-3 text-[11px] text-muted-foreground space-y-2">
+              <div>
+                Turno: <strong>{formatMinutos(turnoMin)}</strong> ·{" "}
+                <strong>{blocosDia} aula(s)</strong> de{" "}
+                <strong>{formatMinutos(aulaMin)}</strong>
+                {cargaTotal > 0 && (
+                  <> · Carga total: <strong>{formatMinutos(cargaTotal)}</strong></>
+                )}
+              </div>
+              {habilidadesDoCurso.length > 0 && (
+                <div>
+                  <span className="inline-flex items-center gap-1 mb-1">
+                    <Star className="h-3 w-3" /> Habilidades do curso:
+                  </span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {habilidadesDoCurso.map((h) => (
+                      <Badge
+                        key={h.id}
+                        variant="secondary"
+                        className="text-[10px] font-normal"
+                        title={h.descricao}
+                      >
+                        {h.sigla}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <div className="grid grid-cols-2 gap-3">

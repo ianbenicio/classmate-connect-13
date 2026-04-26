@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2 } from "lucide-react";
+import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap } from "lucide-react";
+import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
+import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -48,8 +50,11 @@ function CoordenacaoPage() {
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
   const [exportandoJson, setExportandoJson] = useState(false);
   const [exportandoCsv, setExportandoCsv] = useState(false);
+  const [usersOpen, setUsersOpen] = useState(false);
+  const [professoresOpen, setProfessoresOpen] = useState(false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao");
+  const isAdmin = hasRole("admin");
   const userNome =
     displayName || (authUser?.user_metadata?.name as string | undefined) || authUser?.email || "—";
 
@@ -185,6 +190,30 @@ function CoordenacaoPage() {
 
       <Card>
         <CardHeader className="pb-3">
+          <CardTitle className="text-base">Atalhos administrativos</CardTitle>
+          <CardDescription className="text-xs">
+            Áreas restritas a coordenação e admin.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link to="/formularios">
+              <ClipboardList /> Formulários
+            </Link>
+          </Button>
+          {isAdmin && (
+            <Button variant="outline" onClick={() => setUsersOpen(true)}>
+              <Users /> Usuários
+            </Button>
+          )}
+          <Button variant="outline" onClick={() => setProfessoresOpen(true)}>
+            <GraduationCap /> Professores
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
           <CardTitle className="text-base">Sobre as exportações</CardTitle>
           <CardDescription className="text-xs leading-relaxed">
             <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as tabelas
@@ -301,6 +330,14 @@ function CoordenacaoPage() {
           )}
         </CardContent>
       </Card>
+
+      {isAdmin && (
+        <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />
+      )}
+      <ProfessoresManagerDialog
+        open={professoresOpen}
+        onOpenChange={setProfessoresOpen}
+      />
     </main>
   );
 }

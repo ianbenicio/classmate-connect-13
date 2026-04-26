@@ -35,10 +35,22 @@ export const MAX_HABILIDADES_POR_ATIVIDADE = 5;
 /** Limite rígido de habilidades por curso. */
 export const MAX_HABILIDADES_POR_CURSO = 8;
 
+/** Duração padrão de uma aula quando o curso não define `duracaoAulaMin`. */
+export const DEFAULT_AULA_MINUTES = 60;
+
+/** Milissegundos por hora — usado nos cálculos de janela de relatório. */
+export const MS_PER_HOUR = 60 * 60 * 1000;
+
+/**
+ * Horas após o fim do slot durante as quais o professor ainda pode registrar
+ * o relatório. Altera o estado do slot de "atrasado" para "expirado".
+ */
+export const REPORT_DEADLINE_HOURS = 24;
+
 /** Helpers de carga horária / blocos. */
 export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number {
   const v = curso.duracaoAulaMin ?? 0;
-  return v > 0 ? v : 60;
+  return v > 0 ? v : DEFAULT_AULA_MINUTES;
 }
 
 /** Duração do turno diário (em minutos). Default = duracaoAulaMin. */
@@ -295,7 +307,8 @@ export interface Atividade {
   objetivoResultados: string;
   prazo: string; // ISO date (referência didática)
   criadoPor: string;
-  professor: string; // professor responsável pela atividade
+  professor: string; // professor responsável pela atividade (string para compatibilidade)
+  professorId?: string; // NOVO — FK para professor (UUID) — Fase 6
   habilidadeIds: string[];
 
   // Aula-only — básico (legado)
@@ -444,9 +457,9 @@ export function endSlotDate(a: Pick<Agendamento, "data" | "fim">): Date {
   return d;
 }
 
-/** Fim do slot + 24h — limite para registrar relatório */
+/** Fim do slot + REPORT_DEADLINE_HOURS — limite para registrar relatório */
 export function endSlotPlus24h(a: Pick<Agendamento, "data" | "fim">): Date {
-  return new Date(endSlotDate(a).getTime() + 24 * 60 * 60 * 1000);
+  return new Date(endSlotDate(a).getTime() + REPORT_DEADLINE_HOURS * MS_PER_HOUR);
 }
 
 /**

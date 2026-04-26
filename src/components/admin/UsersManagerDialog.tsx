@@ -42,6 +42,7 @@ import {
   X,
   Search,
   Users as UsersIcon,
+  UserPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -72,6 +73,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
   const [confirmRemove, setConfirmRemove] = useState<UserRow | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
 
   // Reload ao abrir — papéis podem ter mudado em outra sessão.
   useEffect(() => {
@@ -280,14 +282,24 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome ou e-mail…"
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-            className="pl-9 h-9"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome ou e-mail…"
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+              className="pl-9 h-9"
+            />
+          </div>
+          <Button
+            size="sm"
+            onClick={() => setCreateOpen(true)}
+            className="shrink-0"
+          >
+            <UserPlus className="h-3.5 w-3.5" />
+            Novo usuário
+          </Button>
         </div>
 
         <ScrollArea className="max-h-[60vh] -mx-2 px-2">
@@ -405,6 +417,154 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <CreateUserDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
+    </Dialog>
+  );
+}
+
+// Diálogo de criação de novo usuário. Cria via signUp em cliente isolado
+// (sem afetar a sessão do admin), e atribui papéis em seguida.
+function CreateUserDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  // Decisão: na CRIAÇÃO o usuário recebe um único papel. Multi-papel só pode
+  // ser atribuído depois, via janela de edição (toggleRole no acordeon).
+  // Motivo: na prática um usuário novo é "aluno" OU "professor" OU "coord";
+  // empilhar papéis na criação confunde permissões e é fonte de bug.
+  const [role, setRole] = useState<AppRole>("aluno");
+  const [saving, setSaving] = useState(false);
+
+  // Reset ao abrir.
+  useEffect(() => {
+    if (open) {
+      setEmail("");
+      setPassword("");
+      setDisplayName("");
+      setRole("aluno");
+      setSaving(false);
+    }
+  }, [open]);
+
+  const handleCreate = async () => {
+    setSaving(true);
+    const id = await usersStore.createUser({
+      email,
+      password,
+      displayName,
+      roles: [role],
+    });
+    setSaving(false);
+    if (id) onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <UserPlus className="h-5 w-5" />
+            Novo usuário
+          </DialogTitle>
+          <DialogDescription>
+            Cria a conta no Supabase Auth e o perfil no app. O usuário pode
+            precisar confirmar o e-mail antes do primeiro login (depende da
+            configuração do projeto).
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="cu-name">Nome de exibição *</Label>
+            <Input
+              id="cu-name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Ex.: Maria Silva"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cu-email">E-mail *</Label>
+            <Input
+              id="cu-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="usuario@exemplo.com"
+              autoComplete="off"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cu-pw">Senha temporária *</Label>
+            <Input
+              id="cu-pw"
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              autoComplete="new-password"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              O usuário pode trocar depois pelo fluxo de "esqueci a senha".
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Papel</Label>
+            <div className="flex flex-wrap gap-3" role="radiogroup">
+              {ROLE_ORDER.map((r) => (
+                <label
+                  key={r}
+                  className="inline-flex items-center gap-1.5 text-xs cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="create-user-role"
+                    value={r}
+                    checked={role === r}
+                    onChange={() => setRole(r)}
+                    className="h-3.5 w-3.5 accent-primary"
+                  />
+                  <span
+                    className={
+                      role === r ? "font-medium" : "text-muted-foreground"
+                    }
+                  >
+                    {APP_ROLE_LABELS[r]}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Um único papel na criação. Para acumular papéis (ex.: professor
+              que também coordena), edite o usuário depois.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={saving}
+          >
+            Cancelar
+          </Button>
+          <Button onClick={handleCreate} disabled={saving}>
+            {saving ? "Criando…" : "Criar usuário"}
+          </Button>
+        </div>
+      </DialogContent>
     </Dialog>
   );
 }

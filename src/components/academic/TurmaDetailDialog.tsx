@@ -18,10 +18,16 @@ import {
   CalendarCheck,
   RotateCcw,
   BookOpen,
+  Star,
+  BarChart2,
   User as UserIcon,
 } from "lucide-react";
 import {
+  blocosPorTurno,
   formatHorarioSlot,
+  formatMinutos,
+  getDuracaoAulaMin,
+  getTurnoDiarioMin,
   type Agendamento,
   type Aluno,
   type Atividade,
@@ -32,6 +38,7 @@ import {
   agendamentosStore,
   useAgendamentos,
 } from "@/lib/agendamentos-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { toast } from "sonner";
 
@@ -52,9 +59,27 @@ export function TurmaDetailDialog({
 }: Props) {
   const [quadroOpen, setQuadroOpen] = useState(false);
   const allAgendamentos = useAgendamentos();
+  const todasHabilidades = useHabilidades();
   const alunosDaTurma = turma
     ? alunos.filter((a) => a.turmaId === turma.id)
     : [];
+
+  // Habilidades do curso.
+  const habilidadesDoCurso = useMemo(() => {
+    const ids = new Set(curso?.habilidadeIds ?? []);
+    return todasHabilidades.filter((h) => ids.has(h.id));
+  }, [todasHabilidades, curso]);
+
+  // Propriedades derivadas do curso.
+  const blocosDia = curso ? blocosPorTurno(curso) : 0;
+  const duracaoAulaMin = curso ? getDuracaoAulaMin(curso) : 0;
+  const turnoDiarioMin = curso ? getTurnoDiarioMin(curso) : 0;
+  const cargaTotal = curso?.cargaHorariaTotalMin ?? 0;
+  // Total de aulas esperadas = carga horária total / duração de cada aula.
+  const totalAulasEsperadas =
+    cargaTotal > 0 && duracaoAulaMin > 0
+      ? Math.ceil(cargaTotal / duracaoAulaMin)
+      : 0;
 
   // Aulas "dadas" pela turma = aulas do curso com ≥1 aluno da turma com presença=true.
   const { aulasDadasIds, totalAulas, dadas, pct } = useMemo(() => {
@@ -87,6 +112,13 @@ export function TurmaDetailDialog({
     : [];
   const pendentes = agendaDaTurma.filter((a) => a.status === "pendente");
   const concluidas = agendaDaTurma.filter((a) => a.status === "concluido");
+
+  // Progresso de aulas baseado em agendamentos concluídos vs total esperado.
+  const aulasConcluidas = concluidas.length;
+  const pctAgendamentos =
+    totalAulasEsperadas > 0
+      ? Math.min(100, Math.round((aulasConcluidas / totalAulasEsperadas) * 100))
+      : 0;
 
   const ativPorId = new Map(atividades.map((a) => [a.id, a]));
 
@@ -159,6 +191,91 @@ export function TurmaDetailDialog({
           )}
         </section>
 
+        {/* Propriedades do curso herdadas pela turma */}
+        {curso && (blocosDia > 0 || cargaTotal > 0 || habilidadesDoCurso.length > 0) && (
+          <section className="mt-3 border rounded-md p-3 bg-muted/20 space-y-3">
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+              <BarChart2 className="h-3.5 w-3.5" />
+              Propriedades do curso
+            </h3>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              {cargaTotal > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase text-muted-foreground">Carga horária</div>
+                  <div className="font-semibold">{formatMinutos(cargaTotal)}</div>
+                </div>
+              )}
+              {blocosDia > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase text-muted-foreground">Aulas/dia</div>
+                  <div className="font-semibold">{blocosDia}</div>
+                </div>
+              )}
+              {duracaoAulaMin > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase text-muted-foreground">Duração/aula</div>
+                  <div className="font-semibold">{formatMinutos(duracaoAulaMin)}</div>
+                </div>
+              )}
+              {turnoDiarioMin > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase text-muted-foreground">Turno diário</div>
+                  <div className="font-semibold">{formatMinutos(turnoDiarioMin)}</div>
+                </div>
+              )}
+              {totalAulasEsperadas > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase text-muted-foreground">Total aulas</div>
+                  <div className="font-semibold">{totalAulasEsperadas}</div>
+                </div>
+              )}
+            </div>
+
+            {habilidadesDoCurso.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase text-muted-foreground mb-1.5 flex items-center gap-1">
+                  <Star className="h-3 w-3" />
+                  Habilidades
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {habilidadesDoCurso.map((h) => (
+                    <Badge
+                      key={h.id}
+                      variant="secondary"
+                      className="text-[10px] font-normal"
+                      title={h.descricao}
+                    >
+                      <span className="font-semibold mr-1">{h.sigla}</span>
+                      {h.nome ?? h.descricao}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Progresso de aulas (baseado em agendamentos concluídos) */}
+        {totalAulasEsperadas > 0 && (
+          <section className="mt-3">
+            <div className="border rounded-md p-3 bg-muted/20 space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="uppercase tracking-wide font-medium text-muted-foreground inline-flex items-center gap-1.5">
+                  <BarChart2 className="h-3.5 w-3.5" />
+                  Progresso de aulas
+                </span>
+                <span className="font-mono text-muted-foreground">
+                  {aulasConcluidas}/{totalAulasEsperadas} ({pctAgendamentos}%)
+                </span>
+              </div>
+              <Progress value={pctAgendamentos} className="h-2" />
+              <p className="text-[10px] text-muted-foreground">
+                Agendamentos concluídos vs. total esperado pela carga horária
+              </p>
+            </div>
+          </section>
+        )}
+
         {totalAulas > 0 && (
           <section className="mt-3">
             <button
@@ -170,7 +287,7 @@ export function TurmaDetailDialog({
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <span className="uppercase tracking-wide font-medium text-muted-foreground inline-flex items-center gap-1.5">
                   <BookOpen className="h-3.5 w-3.5" />
-                  Aulas dadas
+                  Aulas dadas (por presenças)
                 </span>
                 <span className="font-mono text-muted-foreground group-hover:text-primary transition-colors">
                   {dadas}/{totalAulas} ({pct}%)

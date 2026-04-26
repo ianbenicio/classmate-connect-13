@@ -41,6 +41,7 @@ import {
   type HabilidadeNivelAlvo,
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
+import { useProfessores } from "@/lib/professores-store";
 
 interface Props {
   open: boolean;
@@ -96,6 +97,7 @@ export function ActivityFormDialog({
   const [prazo, setPrazo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [professor, setProfessor] = useState("");
+  const [professorId, setProfessorId] = useState<string | undefined>();
   const [cargaHoras, setCargaHoras] = useState("0");
   const [cargaMin, setCargaMin] = useState("0");
 
@@ -135,6 +137,7 @@ export function ActivityFormDialog({
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
+      setProfessorId(editing.professorId ?? undefined);
       const carga = editing.cargaHorariaMin ?? 0;
       setCargaHoras(String(Math.floor(carga / 60)));
       setCargaMin(String(carga % 60));
@@ -169,6 +172,7 @@ export function ActivityFormDialog({
       setPrazo("");
       setDescricao("");
       setProfessor("");
+      setProfessorId(undefined);
       // Aulas novas: pré-preenche carga com a duração padrão do curso (pode
       // ser alterada). Tarefas continuam com 0 (livre).
       if (defaultTipo === 0 && cursoPadrao) {
@@ -201,7 +205,16 @@ export function ActivityFormDialog({
       setInstrucoes("");
     }
     setTab("identificacao");
-  }, [open, editing, defaultTipo, cursos]);
+    // ATENÇÃO: NÃO inclua `cursos` nas deps. `useCursos()` retorna novo array
+    // a cada emit do store (subscribe), e qualquer ação distante (load de
+    // alunos, mudança de turma, etc.) gera um emit. Se `cursos` estiver nas
+    // deps, este effect dispara fora do mount/abertura e RESETA tipo, aba,
+    // cursoId, todos os campos — o que aparenta "abre e volta pra Ident.",
+    // "não muda Aula→Tarefa" e "não reflete o curso selecionado".
+    // O effect deve rodar só ao abrir o diálogo ou trocar `editing`/`defaultTipo`.
+    // `cursos[0]` é lido dentro do effect, não precisa estar no array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editing, defaultTipo]);
 
   // Sincroniza niveisAlvo quando habilidades mudam (mantém o que ainda é válido)
   useEffect(() => {
@@ -271,6 +284,7 @@ export function ActivityFormDialog({
           descricao,
           objetivoResultados,
           professor: professor.trim(),
+          professorId: professorId ?? undefined,
           habilidadeIds,
           cargaHorariaMin: cargaHorariaMinFinal,
           // Aula
@@ -306,6 +320,7 @@ export function ActivityFormDialog({
           prazo,
           criadoPor: displayName || authUser?.email || "",
           professor: professor.trim(),
+          professorId: professorId ?? undefined,
           habilidadeIds,
           cargaHorariaMin: cargaHorariaMinFinal,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
@@ -394,6 +409,8 @@ export function ActivityFormDialog({
                   gruposDisponiveis={gruposDisponiveis}
                   professor={professor}
                   setProfessor={setProfessor}
+                  professorId={professorId}
+                  setProfessorId={setProfessorId}
                   prazo={prazo}
                   setPrazo={setPrazo}
                   descricao={descricao}
@@ -797,6 +814,8 @@ export function ActivityFormDialog({
                 gruposDisponiveis={gruposDisponiveis}
                 professor={professor}
                 setProfessor={setProfessor}
+                professorId={professorId}
+                setProfessorId={setProfessorId}
                 prazo={prazo}
                 setPrazo={setPrazo}
                 descricao={descricao}
@@ -876,6 +895,8 @@ interface IdentificacaoFieldsProps {
   gruposDisponiveis: Grupo[];
   professor: string;
   setProfessor: (s: string) => void;
+  professorId?: string;
+  setProfessorId: (s: string | undefined) => void;
   prazo: string;
   setPrazo: (s: string) => void;
   descricao: string;
@@ -901,6 +922,8 @@ function IdentificacaoFields({
   gruposDisponiveis,
   professor,
   setProfessor,
+  professorId,
+  setProfessorId,
   prazo,
   setPrazo,
   descricao,
@@ -911,9 +934,7 @@ function IdentificacaoFields({
   setCargaMin,
 }: IdentificacaoFieldsProps) {
   const tipoAtual = isEdit ? editing!.tipo : tipo;
-  // Suprime warning de prop não usada localmente; professor é gerenciado pelo pai.
-  void professor;
-  void setProfessor;
+  const professores = useProfessores();
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1036,6 +1057,47 @@ function IdentificacaoFields({
           onChange={(e) => setDescricao(e.target.value)}
           rows={3}
         />
+      </div>
+
+      {/* Professor - identificação (string) e vínculo FK (Fase 6) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Professor Responsável (nome)</Label>
+          <Input
+            value={professor}
+            onChange={(e) => setProfessor(e.target.value)}
+            placeholder="Ex.: João Silva"
+          />
+          <p className="text-[10px] text-muted-foreground">
+            Identificação do professor (compatibilidade).
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Vínculo com Professor (Fase 6)</Label>
+          <Select value={professorId ?? ""} onValueChange={(v) => setProfessorId(v || undefined)}>
+            <SelectTrigger>
+              <SelectValue
+                placeholder={
+                  professores.length === 0
+                    ? "Sem professores cadastrados"
+                    : "Selecionar professor..."
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">(Sem vínculo)</SelectItem>
+              {professores.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.nome} {p.email ? `(${p.email})` : ""}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[10px] text-muted-foreground">
+            Vínculo com registro de professor (Fase 6 - novo).
+          </p>
+        </div>
       </div>
     </>
   );

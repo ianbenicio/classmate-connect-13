@@ -64,8 +64,19 @@ function cursoToRow(c: Curso) {
 // problema do seed-if-empty, que só rodava com tabela 100% vazia — se um
 // chunk do primeiro seed falhasse, as linhas perdidas nunca seriam
 // recuperadas. Agora cada load converge para o seed.
-async function topUpCursos(existingIds: Set<string>) {
-  const missing = SEED_CURSOS.filter((c) => !existingIds.has(toUuid(c.id)));
+//
+// Importante: ignoramos linhas cujo `cod` JÁ existe no banco (mesmo com
+// `id` diferente). Sem isso, o upsert com onConflict:"id" tropeçava no
+// UNIQUE de `cod` e gerava 409 a cada page-load. O caso surge quando o
+// UUID determinístico mudou entre deploys ou quando o registro foi
+// semeado por outro caminho.
+async function topUpCursos(
+  existingIds: Set<string>,
+  existingCods: Set<string>,
+) {
+  const missing = SEED_CURSOS.filter(
+    (c) => !existingIds.has(toUuid(c.id)) && !existingCods.has(c.cod),
+  );
   if (missing.length === 0) return false;
   const rows = missing.map(cursoToRow);
   const { error } = await supabase
@@ -127,7 +138,8 @@ async function loadFromDb() {
   }
   const rows = (data ?? []) as CursoRow[];
   const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpCursos(existingIds);
+  const existingCods = new Set(rows.map((r) => r.cod));
+  const inserted = await topUpCursos(existingIds, existingCods);
   if (inserted) {
     const { data: data2 } = await supabase.from("cursos").select("*").order("cod");
     cursos = (data2 ?? []).map(rowToCurso);

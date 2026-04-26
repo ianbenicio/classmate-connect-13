@@ -13,9 +13,33 @@
 //   não pode rodar no client). Onboarding continua via página /auth.
 
 import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { toast } from "sonner";
 import type { AppRole } from "./auth";
+
+/**
+ * Cliente Supabase efêmero para signUp pelo admin: não persiste sessão nem
+ * faz auto-refresh, então o token do admin no localStorage continua intacto.
+ * Sem isso, `signUp` faria login automático do novo usuário e expulsaria
+ * o admin da própria sessão.
+ */
+function makeIsolatedClient() {
+  const url =
+    import.meta.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const key =
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) throw new Error("Supabase env vars ausentes.");
+  return createClient<Database>(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      storage: undefined,
+    },
+  });
+}
 
 export interface UserRow {
   userId: string;
@@ -113,6 +137,82 @@ export const usersStore = {
     emit();
   },
 
+  /**
+   * Cria um novo usuário via signUp em cliente isolado (não afeta a sessão
+   * do admin). O trigger `handle_new_user` no banco cria a linha em
+   * `profiles` automaticamente, com display_name extraído do
+   * `raw_user_meta_data`. Os papéis informados são inseridos em seguida
+   * pelo cliente principal (RLS de admin permite).
+   *
+   * Observação sobre confirmação de email:
+   * - Se o projeto Supabase exigir email-confirm, o novo usuário só
+   *   conseguirá logar após clicar no link recebido. Este método retorna
+   *   sucesso mesmo nesse caso (a conta foi criada).
+   *
+   * @returns userId criado, ou null em erro.
+   */
+  async createUser(input: {
+    email: string;
+    password: string;
+    displayName: string;
+    roles: AppRole[];
+  }): Promise<string | null> {
+    const email = input.email.trim().toLowerCase();
+    const displayName = input.displayName.trim();
+    if (!email || !input.password || !displayName) {
+      toast.error("Email, senha e nome são obrigatórios.");
+      return null;
+    }
+    if (input.password.length < 6) {
+      toast.error("Senha precisa de pelo menos 6 caracteres.");
+      return null;
+    }
+
+    const ephemeral = makeIsolatedClient();
+    const { data, error } = await ephemeral.auth.signUp({
+      email,
+      password: input.password,
+      options: { data: { display_name: displayName } },
+    });
+    if (error) {
+      console.error("[users] createUser signUp error", error);
+      toast.error(`Erro ao criar usuário: ${error.message}`);
+      return null;
+    }
+    const newUserId = data.user?.id;
+    if (!newUserId) {
+      toast.error("Usuário criado, mas o ID não foi retornado.");
+      return null;
+    }
+
+    // Atribui papéis solicitados (RLS admin permite escrever em user_roles).
+    if (input.roles.length > 0) {
+      const rows = input.roles.map((role) => ({
+        user_id: newUserId,
+        role,
+      }));
+      const { error: roleErr } = await supabase
+        .from("user_roles")
+        .insert(rows);
+      if (roleErr) {
+        console.error("[users] createUser addRoles error", roleErr);
+        toast.error(`Usuário criado, mas falhou ao atribuir papéis: ${roleErr.message}`);
+      }
+    }
+
+    // Recarrega lista do banco (o trigger handle_new_user cria o profile).
+    await loadFromDb();
+    emit();
+    toast.success(
+      `Usuário ${email} criado.${
+        data.user?.email_confirmed_at
+          ? ""
+          : " Pode ser necessário confirmar o e-mail antes do primeiro login."
+      }`,
+    );
+    return newUserId;
+  },
+
   async addRole(userId: string, role: AppRole): Promise<void> {
     const target = users.find((u) => u.userId === userId);
     if (target?.roles.includes(role)) return;
@@ -206,4 +306,30 @@ export function useUsers(): UserRow[] {
     };
   }, []);
   return snap;
+}
+
+/**
+ * Hook que retorna usuários disponíveis para serem vinculados como professores.
+ * Exclui usuários já vinculados a um professor (professor.user_id é UNIQUE).
+ * Retorna ordenado por displayName.
+ */
+export function useAvailableProfessorsUsers(): UserRow[] {
+  // Importamos aqui para evitar circular dependency
+  const { useProfessores } = require("./professores-store") as typeof import("./professores-store");
+
+  const allUsers = useUsers();
+  const allProfessores = useProfessores();
+
+  // Cria um Set de userId já vinculados a professores
+  const linkedUserIds = new Set<string>();
+  for (const prof of allProfessores) {
+    if (prof.userId) {
+      linkedUserIds.add(prof.userId);
+    }
+  }
+
+  // Retorna usuários não vinculados, ordenados por displayName
+  return allUsers
+    .filter((u) => !linkedUserIds.has(u.userId))
+    .sort((a, b) => a.displayName.localeCompare(b.displayName));
 }

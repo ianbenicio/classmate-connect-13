@@ -13,6 +13,13 @@ export const APP_ROLE_LABELS: Record<AppRole, string> = {
   viewer: "Viewer",
 };
 
+/**
+ * Papéis que têm acesso à área de staff (back-office).
+ * Adicionar um novo papel aqui propaga automaticamente para toda a lógica
+ * que usa `isStaff()` — sem precisar tocar em condicionais espalhados.
+ */
+export const STAFF_ROLES = ["admin", "coordenacao", "professor"] as const satisfies readonly AppRole[];
+
 export interface AuthState {
   user: User | null;
   session: Session | null;
@@ -77,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     isAuthenticated: !!user,
     hasRole: (r) => roles.includes(r),
-    isStaff: () => roles.some((r) => r === "admin" || r === "coordenacao" || r === "professor"),
+    isStaff: () => roles.some((r) => (STAFF_ROLES as readonly string[]).includes(r)),
     signOut: async () => {
       await supabase.auth.signOut();
     },

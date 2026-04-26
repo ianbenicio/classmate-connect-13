@@ -119,7 +119,12 @@ export function AgendarAtividadeDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, defaultTurmaId, defaultData, turmas]);
 
-  const turmaSelecionada = turmas.find((t) => t.id === turmaId);
+  // Memoizado para estabilizar referência — evita disparar useEffects em loop
+  // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
+  const turmaSelecionada = useMemo(
+    () => turmas.find((t) => t.id === turmaId),
+    [turmas, turmaId],
+  );
 
   const slotsDisponiveis = useMemo(() => {
     if (!turmaSelecionada || !date) return [];
@@ -427,6 +432,18 @@ export function AgendarAtividadeDialog({
       const mensagem = `${curso.nome} · ${turmaSelecionada.nome} · ${dataFmt} ${ag.inicio}–${ag.fim}${
         ag.professor ? ` · ${ag.professor}` : ""
       }${partes ? ` — ${partes}` : ""}`;
+      // `agendamentoId` alimenta o índice único parcial
+      // `uq_notificacoes_dedup_scanner` — sem ele, o scanner que roda a
+      // cada 60s pode recriar notificações duplicadas.
+      //
+      // OBS importante sobre `kind`:
+      // - Aluno NÃO recebe `kind: "agendado"` aqui. O fluxo é sequencial:
+      //   só vira actionable depois que o professor fecha o relatório
+      //   (RelatorioProfessorDialog faz o upsert com kind=agendado).
+      //   Dar kind=agendado já no agendar permitiria o aluno avaliar a aula
+      //   antes dela acontecer.
+      // - Professor recebe `kind: "agendado"` para o NotificationsBell
+      //   abrir o RelatorioProfessorDialog quando ele clicar.
       const base = {
         titulo,
         mensagem,
@@ -439,6 +456,7 @@ export function AgendarAtividadeDialog({
         atividadeIds: ag.atividadeIds,
         criadoEm,
         lida: false,
+        agendamentoId: ag.id,
       };
       for (const al of alunosDaTurma) {
         allNotifs.push({
@@ -483,6 +501,11 @@ export function AgendarAtividadeDialog({
         atividadeIds: Array.from(new Set(ags.flatMap((a) => a.atividadeIds))),
         criadoEm,
         lida: false,
+        kind: "agendado" as const,
+        // Notificação do professor é agrupada (várias aulas no mesmo dia
+        // viram 1 notificação). Usamos o primeiro agendamentoId como âncora
+        // de dedup; basta para evitar dupla criação no mesmo lote.
+        agendamentoId: ags[0].id,
       });
     }
 

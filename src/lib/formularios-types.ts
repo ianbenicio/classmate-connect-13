@@ -39,30 +39,22 @@ export interface ChecklistAlunoDados {
   observacao?: string;
 }
 
-export type ComportamentoTag =
-  | "participativo"
-  | "colaborativo"
-  | "concentrado"
-  | "criativo"
-  | "lider"
-  | "disperso"
-  | "agitado"
-  | "tímido"
-  | "ausente"
-  | "frustrado";
+/**
+ * Slug de tag de comportamento — persiste em `avaliacoes.dados.comportamento[]`.
+ * Widened para `string` para aceitar tags criadas dinamicamente pela escola via
+ * `comportamento_tags` no banco. Dados históricos com os slugs originais continuam
+ * válidos — o slug nunca muda (só `label` e `emoji` podem ser editados).
+ */
+export type ComportamentoTag = string;
 
-export const COMPORTAMENTO_TAGS: { value: ComportamentoTag; label: string; emoji: string; tom: "pos" | "neg" }[] = [
-  { value: "participativo", label: "Participativo", emoji: "🙋", tom: "pos" },
-  { value: "colaborativo", label: "Colaborativo", emoji: "🤝", tom: "pos" },
-  { value: "concentrado", label: "Concentrado", emoji: "🎯", tom: "pos" },
-  { value: "criativo", label: "Criativo", emoji: "💡", tom: "pos" },
-  { value: "lider", label: "Liderança", emoji: "⭐", tom: "pos" },
-  { value: "disperso", label: "Disperso", emoji: "🌀", tom: "neg" },
-  { value: "agitado", label: "Agitado", emoji: "⚡", tom: "neg" },
-  { value: "tímido", label: "Tímido", emoji: "🙊", tom: "neg" },
-  { value: "ausente", label: "Apático", emoji: "😶", tom: "neg" },
-  { value: "frustrado", label: "Frustrado", emoji: "😤", tom: "neg" },
-];
+/**
+ * @deprecated Use `useComportamentoTags()` de `@/lib/comportamento-tags-store`.
+ * Mantido apenas como referência de valores legados ainda presentes em dados históricos.
+ */
+export const COMPORTAMENTO_TAGS_LEGACY = [
+  "participativo", "colaborativo", "concentrado", "criativo", "lider",
+  "disperso", "agitado", "tímido", "ausente", "frustrado",
+] as const;
 
 // =====================================================================
 // 3) RELATÓRIO DO ALUNO — preenchido pelo aluno após a aula (substitui o antigo)

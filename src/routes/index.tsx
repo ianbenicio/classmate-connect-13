@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
@@ -17,11 +17,18 @@ import { useTurmas } from "@/lib/turmas-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
-import { RegistrarRelatorioDialog } from "@/components/academic/RegistrarRelatorioDialog";
+import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
+import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog";
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
-import type { Agendamento, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
+import type {
+  Agendamento,
+  Atividade,
+  Curso,
+  HorarioSlot,
+  Turma,
+} from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -64,6 +71,15 @@ function DashboardPage() {
     agendamento: Agendamento;
     turma: Turma;
     curso: Curso;
+  } | null>(null);
+  // Fila de checklists que abre em sequência logo após o relatório do
+  // professor. Cada item vira uma instância de ChecklistAlunoDialog e,
+  // ao salvar/cancelar, é consumido (shift) até esvaziar.
+  const [checklistQueue, setChecklistQueue] = useState<{
+    agendamento: Agendamento;
+    turma: Turma;
+    curso: Curso;
+    alunos: { id: string; nome: string }[];
   } | null>(null);
   const [diaDetailCtx, setDiaDetailCtx] = useState<{
     curso: Curso;
@@ -390,13 +406,30 @@ function DashboardPage() {
         />
       )}
 
-      <RegistrarRelatorioDialog
+      <RelatorioProfessorDialog
         open={!!relatorioCtx}
         onOpenChange={(o) => !o && setRelatorioCtx(null)}
         agendamento={relatorioCtx?.agendamento ?? null}
         turma={relatorioCtx?.turma}
         curso={relatorioCtx?.curso}
+        onSaved={({ agendamento, turma, curso, alunosPresentes }) => {
+          if (alunosPresentes.length === 0) {
+            toast.info("Sem alunos presentes para checklist individual.");
+            return;
+          }
+          setChecklistQueue({
+            agendamento,
+            turma,
+            curso,
+            alunos: alunosPresentes,
+          });
+        }}
+      />
+
+      <ChecklistQueueRunner
+        ctx={checklistQueue}
         atividades={atividades}
+        onClose={() => setChecklistQueue(null)}
       />
 
       {diaDetailCtx && (
@@ -446,5 +479,63 @@ function DashboardPage() {
         />
       )}
     </div>
+  );
+}
+
+// Roda o ChecklistAlunoDialog sequencialmente para cada aluno do contexto.
+// Quando o último aluno fecha (salvo ou não), o callback `onClose` limpa
+// a fila no pai. ChecklistAlunoDialog precisa do objeto `Aluno` completo,
+// então fazemos lookup no store global via id.
+function ChecklistQueueRunner({
+  ctx,
+  atividades,
+  onClose,
+}: {
+  ctx: {
+    agendamento: Agendamento;
+    turma: Turma;
+    curso: Curso;
+    alunos: { id: string; nome: string }[];
+  } | null;
+  atividades: Atividade[];
+  onClose: () => void;
+}) {
+  const alunosAll = useAlunos();
+  const [idx, setIdx] = useState(0);
+
+  // Reseta o cursor quando o contexto muda (nova rodada).
+  useEffect(() => {
+    setIdx(0);
+  }, [ctx]);
+
+  if (!ctx) return null;
+  const current = ctx.alunos[idx];
+  if (!current) return null;
+  const alunoFull = alunosAll.find((a) => a.id === current.id);
+  if (!alunoFull) {
+    // Aluno desapareceu do store entre o relatório e o checklist; pula.
+    setIdx((i) => i + 1);
+    return null;
+  }
+
+  const isLast = idx >= ctx.alunos.length - 1;
+
+  return (
+    <ChecklistAlunoDialog
+      open
+      onOpenChange={(o) => {
+        if (o) return;
+        if (isLast) {
+          toast.success("Checklists individuais concluídos.");
+          onClose();
+        } else {
+          setIdx((i) => i + 1);
+        }
+      }}
+      agendamento={ctx.agendamento}
+      aluno={alunoFull}
+      curso={ctx.curso}
+      atividades={atividades}
+    />
   );
 }
