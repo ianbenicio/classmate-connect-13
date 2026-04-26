@@ -5,6 +5,7 @@ import { ptBR } from "date-fns/locale";
 import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap, BarChart3 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
+import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -197,6 +198,18 @@ function CoordenacaoDashboard() {
           </Button>
         </div>
       </header>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Visão geral</CardTitle>
+          <CardDescription className="text-xs">
+            Hoje, esta semana e o mês corrente.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DashboardKPIs />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-3">
