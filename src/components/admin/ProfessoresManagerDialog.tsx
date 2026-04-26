@@ -342,6 +342,25 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
     "ativos",
   );
 
+  // Sync automático: ao abrir, garante que todo usuário com papel "professor"
+  // tenha um registro em `professores`. Idempotente — não duplica.
+  useEffect(() => {
+    if (!open) return;
+    if (users.length === 0) return; // ainda carregando
+    let cancelled = false;
+    (async () => {
+      const created = await professoresStore.syncFromUsers(users);
+      if (!cancelled && created > 0) {
+        toast.success(
+          `${created} professor(es) sincronizado(s) a partir de Usuários.`,
+        );
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, users]);
+
   const lista = useMemo(() => {
     return all.filter((p) => {
       if (statusFiltro === "ativos" && !p.ativo) return false;

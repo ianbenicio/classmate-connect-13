@@ -18,7 +18,7 @@ import { Route as AtividadesRouteImport } from './routes/atividades'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
-import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao/relatorios/extrato-horas-p'
+import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao.relatorios.extrato-horas-p'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',

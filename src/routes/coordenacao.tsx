@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useChildMatches } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap, BarChart3 } from "lucide-react";
@@ -45,6 +45,16 @@ const TIPO_BADGE: Record<RelatorioTipo, string> = {
 };
 
 function CoordenacaoPage() {
+  // Se uma rota filha (ex.: /coordenacao/relatorios/extrato-horas-p) estiver
+  // ativa, renderiza apenas o Outlet. Caso contrário, mostra o dashboard.
+  const childMatches = useChildMatches();
+  if (childMatches.length > 0) {
+    return <Outlet />;
+  }
+  return <CoordenacaoDashboard />;
+}
+
+function CoordenacaoDashboard() {
   const { user: authUser, roles, hasRole, displayName } = useAuth();
   const relatorios = useRelatorios();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");

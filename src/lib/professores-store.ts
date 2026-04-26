@@ -277,6 +277,25 @@ export const professoresStore = {
     await professoresStore.upsert(novoProfessor);
   },
 
+  /**
+   * Backfill: para cada usuário com papel "professor" que ainda não tem
+   * registro em `professores`, cria um. Idempotente — pode ser chamado
+   * livremente. Retorna quantos registros foram criados.
+   */
+  async syncFromUsers(users: UserRow[]): Promise<number> {
+    const linkedIds = new Set(
+      professores.map((p) => p.userId).filter(Boolean) as string[],
+    );
+    const candidates = users.filter(
+      (u) => u.roles.includes("professor") && !linkedIds.has(u.userId),
+    );
+    if (candidates.length === 0) return 0;
+    for (const u of candidates) {
+      await professoresStore.createFromUser(u);
+    }
+    return candidates.length;
+  },
+
   async remove(id: string): Promise<void> {
     professores = professores.filter((p) => p.id !== id);
     avaliacoes = avaliacoes.filter((a) => a.professorId !== id);
