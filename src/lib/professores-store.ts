@@ -15,6 +15,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { UserRow } from "./users-store";
 
 // ---------------------------------------------------------------------
 // Tipos públicos
@@ -242,6 +243,38 @@ export const professoresStore = {
       await loadFromDb();
       emit();
     }
+  },
+
+  /** Cria novo professor a partir de um usuário (Fase A - auto-sync). */
+  async createFromUser(user: UserRow): Promise<void> {
+    // Verifica se professor já existe para este usuário
+    const existente = professores.find((p) => p.userId === user.userId);
+    if (existente) {
+      console.info(`[professores] Professor já existe para userId ${user.userId}`);
+      return;
+    }
+
+    // Cria novo Professor com dados do usuário
+    const novoProfessor: Professor = {
+      id: crypto.randomUUID(),
+      userId: user.userId,
+      nome: user.displayName,
+      email: user.email,
+      telefone: null,
+      cpf: null,
+      formacao: null,
+      bio: null,
+      fotoUrl: null,
+      cargaHorariaSemanalMin: 0, // sem limite por padrão
+      habilidadesIds: [],
+      ativo: true,
+      criadoEm: new Date().toISOString(),
+      atualizadoEm: new Date().toISOString(),
+      criadoPorUserId: null,
+    };
+
+    // Salva usando upsert normal
+    await professoresStore.upsert(novoProfessor);
   },
 
   async remove(id: string): Promise<void> {

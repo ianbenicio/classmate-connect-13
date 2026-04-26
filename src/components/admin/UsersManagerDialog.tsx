@@ -51,6 +51,7 @@ import {
   type UserRow,
 } from "@/lib/users-store";
 import { APP_ROLE_LABELS, useAuth, type AppRole } from "@/lib/auth";
+import { professoresStore } from "@/lib/professores-store";
 
 interface Props {
   open: boolean;
@@ -143,6 +144,12 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
     if (want) {
       await usersStore.addRole(u.userId, role);
       toast.success(`Papel ${APP_ROLE_LABELS[role]} atribuído.`);
+
+      // Fase A: Auto-criar Professor quando papel "professor" é atribuído
+      if (role === "professor") {
+        await professoresStore.createFromUser(u);
+        toast.success("Professor registrado com sucesso!");
+      }
     } else {
       await usersStore.removeRole(u.userId, role);
       toast.success(`Papel ${APP_ROLE_LABELS[role]} removido.`);
