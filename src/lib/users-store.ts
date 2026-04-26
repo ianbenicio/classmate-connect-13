@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { toast } from "sonner";
 import type { AppRole } from "./auth";
+import { useProfessores } from "./professores-store";
 
 /**
  * Cliente Supabase efêmero para signUp pelo admin: não persiste sessão nem
@@ -314,9 +315,8 @@ export function useUsers(): UserRow[] {
  * Retorna ordenado por displayName.
  */
 export function useAvailableProfessorsUsers(): UserRow[] {
-  // Importamos aqui para evitar circular dependency
-  const { useProfessores } = require("./professores-store") as typeof import("./professores-store");
-
+  // professores-store só importa UserRow como type (apagado no build),
+  // então não há ciclo em runtime — import estático é seguro.
   const allUsers = useUsers();
   const allProfessores = useProfessores();
 
