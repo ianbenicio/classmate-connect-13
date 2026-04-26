@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { UserRow } from "./users-store";
+import { devInfo } from "./dev-log";
 
 // ---------------------------------------------------------------------
 // Tipos públicos
@@ -254,7 +255,7 @@ export const professoresStore = {
     // Verifica se professor já existe para este usuário
     const existente = professores.find((p) => p.userId === user.userId);
     if (existente) {
-      console.info(`[professores] Professor já existe para userId ${user.userId}`);
+      devInfo(`[professores] Professor já existe para userId ${user.userId}`);
       return;
     }
 

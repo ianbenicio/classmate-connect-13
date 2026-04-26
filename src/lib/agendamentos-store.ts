@@ -11,6 +11,7 @@ import { SEED_AGENDAMENTOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
 import { toast } from "sonner";
+import { devInfo } from "./dev-log";
 
 let agendamentos: Agendamento[] = [];
 let initialized = false;
@@ -132,7 +133,7 @@ async function topUpAgendamentos(existingIds: Set<string>) {
     inserted += chunk.length;
   }
   if (inserted > 0) {
-    console.info(`[agendamentos] top-up: +${inserted} linhas do seed`);
+    devInfo(`[agendamentos] top-up: +${inserted} linhas do seed`);
   }
   return inserted > 0;
 }

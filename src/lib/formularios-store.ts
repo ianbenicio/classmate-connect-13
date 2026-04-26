@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SEED_FORMULARIOS } from "./academic-seed";
 import { toUuid } from "./db-mapping";
+import { devInfo } from "./dev-log";
 
 export type FormularioDestinatario = "professor" | "aluno";
 
@@ -81,7 +82,7 @@ async function topUpFormularios(existingSlugs: Set<string>) {
     console.error("[formularios] top-up error", error);
     return false;
   }
-  console.info(`[formularios] top-up: +${missing.length} templates do seed`);
+  devInfo(`[formularios] top-up: +${missing.length} templates do seed`);
   return true;
 }
 

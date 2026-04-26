@@ -7,6 +7,7 @@ import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
+import { devInfo } from "./dev-log";
 
 let habilidades: Habilidade[] = [];
 let initialized = false;
@@ -62,7 +63,7 @@ async function topUpHabilidades(existingIds: Set<string>) {
     console.error("[habilidades] top-up error", error);
     return false;
   }
-  console.info(`[habilidades] top-up: +${missing.length} linhas do seed`);
+  devInfo(`[habilidades] top-up: +${missing.length} linhas do seed`);
   return true;
 }
 

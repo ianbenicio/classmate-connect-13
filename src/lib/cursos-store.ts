@@ -8,6 +8,7 @@ import { SEED_CURSOS, SEED_GRUPOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
 import { toast } from "sonner";
+import { devInfo } from "./dev-log";
 
 let cursos: Curso[] = [];
 let initialized = false;
@@ -86,7 +87,7 @@ async function topUpCursos(
     console.error("[cursos] top-up error", error);
     return false;
   }
-  console.info(`[cursos] top-up: +${missing.length} linhas do seed`);
+  devInfo(`[cursos] top-up: +${missing.length} linhas do seed`);
   return true;
 }
 
@@ -126,7 +127,7 @@ async function topUpGrupos(cursosNoBanco: Curso[]) {
     console.error("[grupos] top-up error", error);
     return;
   }
-  console.info(`[grupos] top-up: +${missing.length} linhas do seed`);
+  devInfo(`[grupos] top-up: +${missing.length} linhas do seed`);
 }
 
 async function loadFromDb() {

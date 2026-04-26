@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import type { Aluno } from "./academic-types";
 import { SEED_ALUNOS } from "./academic-seed";
+import { devInfo } from "./dev-log";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
@@ -94,7 +95,7 @@ async function topUpAlunos(existingIds: Set<string>) {
     console.error("[alunos] top-up error", error);
     return false;
   }
-  console.info(`[alunos] top-up: +${missing.length} linhas do seed`);
+  devInfo(`[alunos] top-up: +${missing.length} linhas do seed`);
   return true;
 }
 

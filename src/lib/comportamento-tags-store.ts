@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { devInfo } from "./dev-log";
 
 // -----------------------------------------------------------------------
 // Tipo público
@@ -113,7 +114,7 @@ async function topUpSeed(existingValues: Set<string>) {
     console.error("[comportamento-tags] top-up error", error);
     return false;
   }
-  console.info(`[comportamento-tags] top-up: +${missing.length} tags do seed`);
+  devInfo(`[comportamento-tags] top-up: +${missing.length} tags do seed`);
   return true;
 }
 

@@ -13,6 +13,7 @@ import { SEED_ATIVIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
 import { toast } from "sonner";
+import { devInfo } from "./dev-log";
 
 let atividades: Atividade[] = [];
 let initialized = false;
@@ -167,7 +168,7 @@ async function topUpSeed(
     inserted += chunk.length;
   }
   if (inserted > 0) {
-    console.info(`[atividades] top-up: +${inserted} linhas do seed`);
+    devInfo(`[atividades] top-up: +${inserted} linhas do seed`);
   }
   return inserted > 0;
 }

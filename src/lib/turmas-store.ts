@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
 import { alunosStore } from "./alunos-store";
+import { devInfo } from "./dev-log";
 
 let turmas: Turma[] = [];
 let initialized = false;
@@ -89,7 +90,7 @@ async function topUpTurmas(
     console.error("[turmas] top-up error", error);
     return false;
   }
-  console.info(`[turmas] top-up: +${missing.length} linhas do seed`);
+  devInfo(`[turmas] top-up: +${missing.length} linhas do seed`);
   return true;
 }
 
