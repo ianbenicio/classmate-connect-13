@@ -29,4 +29,4 @@ FROM public.atividades
 WHERE professor IS NOT NULL
   AND professor_id IS NULL
 GROUP BY professor
-ORDER BY count DESC;
+ORDER BY count_of_unmatched_activities DESC;
