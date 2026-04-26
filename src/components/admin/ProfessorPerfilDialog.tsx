@@ -123,21 +123,36 @@ export function ProfessorPerfilDialog({
   }, [agendamentos, professor]);
 
   // #2.4 — Tags de comportamento recebidas pelo professor, agregadas
+  // e separadas por tipo de avaliador (alunos vs coord/admin).
   const allTags = useComportamentoTags();
   const tagsAgregadas = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const a of avaliacoesProfessor) {
-      for (const t of a.tags ?? []) {
-        counts.set(t, (counts.get(t) ?? 0) + 1);
+    function aggregate(filtered: typeof avaliacoesProfessor) {
+      const counts = new Map<string, number>();
+      for (const a of filtered) {
+        for (const t of a.tags ?? []) {
+          counts.set(t, (counts.get(t) ?? 0) + 1);
+        }
       }
+      return Array.from(counts.entries())
+        .map(([slug, count]) => {
+          const meta = allTags.find((t) => t.value === slug);
+          return { slug, count, meta };
+        })
+        .sort((a, b) => b.count - a.count);
     }
-    return Array.from(counts.entries())
-      .map(([slug, count]) => {
-        const meta = allTags.find((t) => t.value === slug);
-        return { slug, count, meta };
-      })
-      .sort((a, b) => b.count - a.count);
+    return {
+      alunos: aggregate(
+        avaliacoesProfessor.filter((a) => a.avaliadorTipo === "aluno"),
+      ),
+      staff: aggregate(
+        avaliacoesProfessor.filter(
+          (a) => a.avaliadorTipo === "coordenacao" || a.avaliadorTipo === "admin",
+        ),
+      ),
+    };
   }, [avaliacoesProfessor, allTags]);
+
+  const tagsTotal = tagsAgregadas.alunos.length + tagsAgregadas.staff.length;
 
   // #4 — Notificações endereçadas ao professor (filtro por nome)
   const notificacoesProfessor = useMemo(() => {
@@ -500,49 +515,34 @@ export function ProfessorPerfilDialog({
                 Tags de Comportamento
               </CardTitle>
               <CardDescription>
-                {tagsAgregadas.length === 0
+                {tagsTotal === 0
                   ? "Nenhuma tag atribuída ainda."
-                  : `${tagsAgregadas.length} tag(s) — atribuídas por alunos, coordenação e admin`}
+                  : `${tagsAgregadas.alunos.length} de alunos · ${tagsAgregadas.staff.length} de coordenação/admin`}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {tagsAgregadas.length === 0 ? (
+              {tagsTotal === 0 ? (
                 <p className="text-sm text-muted-foreground italic">
-                  Aguardando avaliações com tags. Ao avaliar, alunos e coordenação
-                  podem marcar atributos como "didático", "pontual", etc.
+                  Aguardando avaliações com tags. Ao avaliar, alunos e
+                  coordenação podem marcar atributos como "didático",
+                  "pontual", etc.
                 </p>
               ) : (
-                <div className="flex flex-wrap gap-1.5">
-                  {tagsAgregadas.map(({ slug, count, meta }) => {
-                    const tone = meta?.tom ?? "pos";
-                    return (
-                      <span
-                        key={slug}
-                        title={meta?.descricao ?? undefined}
-                        className={cn(
-                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs",
-                          tone === "pos"
-                            ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                            : "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-                        )}
-                      >
-                        {meta?.emoji && <span>{meta.emoji}</span>}
-                        <span className="font-medium">
-                          {meta?.label ?? slug}
-                        </span>
-                        <span
-                          className={cn(
-                            "ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[10px] font-semibold",
-                            tone === "pos"
-                              ? "bg-emerald-500/20"
-                              : "bg-amber-500/20",
-                          )}
-                        >
-                          {count}
-                        </span>
-                      </span>
-                    );
-                  })}
+                <div className="space-y-3">
+                  {tagsAgregadas.alunos.length > 0 && (
+                    <TagsBlock
+                      title="Alunos"
+                      accent="blue"
+                      items={tagsAgregadas.alunos}
+                    />
+                  )}
+                  {tagsAgregadas.staff.length > 0 && (
+                    <TagsBlock
+                      title="Coordenação / Admin"
+                      accent="purple"
+                      items={tagsAgregadas.staff}
+                    />
+                  )}
                 </div>
               )}
             </CardContent>
@@ -697,6 +697,65 @@ function ScoreBar({
         </span>
       </div>
       <Progress value={pct} className={cn("h-2", colorClass)} />
+    </div>
+  );
+}
+
+/** Bloco de tags agregadas, separado por fonte (alunos, staff). */
+function TagsBlock({
+  title,
+  accent,
+  items,
+}: {
+  title: string;
+  accent: "blue" | "purple";
+  items: Array<{
+    slug: string;
+    count: number;
+    meta?: { label: string; emoji: string; tom: "pos" | "neg"; descricao: string | null };
+  }>;
+}) {
+  const accentClass =
+    accent === "blue"
+      ? "border-blue-500/30 bg-blue-500/5"
+      : "border-purple-500/30 bg-purple-500/5";
+  const total = items.reduce((s, t) => s + t.count, 0);
+  return (
+    <div className={cn("space-y-2 rounded-md border p-3", accentClass)}>
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">{title}</p>
+        <span className="text-xs text-muted-foreground">
+          {total} marcação(ões) · {items.length} tag(s)
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map(({ slug, count, meta }) => {
+          const tone = meta?.tom ?? "pos";
+          return (
+            <span
+              key={slug}
+              title={meta?.descricao ?? undefined}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs",
+                tone === "pos"
+                  ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                  : "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+              )}
+            >
+              {meta?.emoji && <span>{meta.emoji}</span>}
+              <span className="font-medium">{meta?.label ?? slug}</span>
+              <span
+                className={cn(
+                  "ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[10px] font-semibold",
+                  tone === "pos" ? "bg-emerald-500/20" : "bg-amber-500/20",
+                )}
+              >
+                {count}
+              </span>
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 }

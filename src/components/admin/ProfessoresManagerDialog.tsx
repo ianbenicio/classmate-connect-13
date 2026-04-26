@@ -73,6 +73,7 @@ import {
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { formatMinutos } from "@/lib/academic-types";
 import { ProfessorPerfilDialog } from "./ProfessorPerfilDialog";
+import { ProfessorAvaliacaoDialog } from "@/components/academic/ProfessorAvaliacaoDialog";
 
 interface Props {
   open: boolean;
@@ -345,6 +346,7 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
   const [formOpen, setFormOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Professor | null>(null);
   const [perfilAberto, setPerfilAberto] = useState<Professor | null>(null);
+  const [avaliarProfId, setAvaliarProfId] = useState<string | null>(null);
   const [filtro, setFiltro] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<"todos" | "ativos" | "inativos">(
     "ativos",
@@ -560,6 +562,15 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
                       <Button
                         size="icon"
                         variant="ghost"
+                        title="Avaliar professor"
+                        onClick={() => setAvaliarProfId(p.id)}
+                        aria-label="Avaliar"
+                      >
+                        <Star className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
                         onClick={() => handleEditar(p)}
                         aria-label="Editar"
                       >
@@ -634,6 +645,13 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
             ? users.find((u) => u.userId === perfilAberto.userId)?.displayName
             : undefined
         }
+      />
+
+      {/* Avaliar professor (Fase 5) */}
+      <ProfessorAvaliacaoDialog
+        open={!!avaliarProfId}
+        onOpenChange={(o) => !o && setAvaliarProfId(null)}
+        defaultProfessorId={avaliarProfId ?? undefined}
       />
     </>
   );
