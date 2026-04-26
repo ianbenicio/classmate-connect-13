@@ -35,6 +35,7 @@ import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { StarRating } from "./StarRating";
 import { AvaliacaoAulaDialog } from "./AvaliacaoAulaDialog";
 import { QuadroAulasDialog } from "./QuadroAulasDialog";
+import { AlunoTimeline, AlunoHabilidadesChart } from "./AlunoInsights";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { startOfWeek, endOfWeek, parseISO, format, isWithinInterval } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -848,6 +849,40 @@ export function AlunoDetailDialog({
                 </ul>
               )}
             </section>
+
+            {/* ============================================================ */}
+            {/* SETOR 4.3 — EVOLUÇÃO DE HABILIDADES (gráfico, #12)            */}
+            {/* ============================================================ */}
+            {aluno && (
+              <section className="border rounded-lg p-4 mt-3">
+                <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                  <Award className="h-3.5 w-3.5" />
+                  Evolução de Habilidades
+                </h3>
+                <AlunoHabilidadesChart
+                  aluno={aluno}
+                  habilidadesCurso={habilidadesCurso}
+                  avaliacoes={avaliacoes}
+                />
+              </section>
+            )}
+
+            {/* ============================================================ */}
+            {/* SETOR 4.4 — TIMELINE (#6)                                     */}
+            {/* ============================================================ */}
+            {aluno && (
+              <section className="border rounded-lg p-4 mt-3">
+                <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                  <Activity className="h-3.5 w-3.5" />
+                  Linha do tempo
+                </h3>
+                <AlunoTimeline
+                  aluno={aluno}
+                  agendamentos={agendamentos}
+                  avaliacoes={avaliacoes}
+                />
+              </section>
+            )}
 
             {/* ============================================================ */}
             {/* SETOR 4.5 — TAGS DE COMPORTAMENTO (agregadas dos checklists) */}

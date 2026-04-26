@@ -120,11 +120,11 @@ export function gerarExtratoHoras(
 
     // Encontra professor: por professor_id (FK) ou professor string (legacy)
     let professorNome = ag.professor || "(sem professor)";
-    let professorId: string | undefined = ag.professor_id;
+    let professorId: string | undefined = ag.professorId;
 
     // Se tem professor_id, tenta carregar nome do objeto Professor
-    if (ag.professor_id && professoresById.has(ag.professor_id)) {
-      const prof = professoresById.get(ag.professor_id)!;
+    if (ag.professorId && professoresById.has(ag.professorId)) {
+      const prof = professoresById.get(ag.professorId)!;
       professorNome = prof.nome;
     }
 

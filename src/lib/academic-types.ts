@@ -397,7 +397,10 @@ export interface Agendamento {
   criadoEm: string;
   concluidoEm?: string;
   observacao?: string;
+  /** Nome do professor (legado / display). Mantido para compatibilidade. */
   professor?: string;
+  /** FK para professores.id — fonte de verdade do vínculo. */
+  professorId?: string;
   criadoPorUserId?: string;
   criadoPorNome?: string;
 

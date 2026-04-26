@@ -81,12 +81,11 @@ export function ProfessorPerfilDialog({
 
   // Carga horária trabalhada (filtra agendamentos deste professor)
   const carga = useMemo(() => {
-    // Nota: agendamentos.professor é string (nome), agendamentos.professor_id seria o FK
-    // Para compatibilidade, procuramos ambos
+    // Match por FK (professorId) ou por nome (legado / agendamentos pré-backfill).
     const agendsDoProf = agendamentos.filter(
       (ag) =>
         ag.professor?.trim().toLowerCase() === professor.nome.trim().toLowerCase() ||
-        (ag as any).professor_id === professor.id,
+        ag.professorId === professor.id,
     );
     return calcularCargaTrabalhada(professor, agendsDoProf);
   }, [agendamentos, professor]);
@@ -109,7 +108,7 @@ export function ProfessorPerfilDialog({
       .filter((ag) => {
         const isProf =
           ag.professor?.trim().toLowerCase() === profNomeKey ||
-          (ag as any).professor_id === professor.id;
+          ag.professorId === professor.id;
         if (!isProf) return false;
         // ag.data é "YYYY-MM-DD"; parseISO trata como meia-noite UTC,
         // mas pra comparar dia inteiro isso basta.
