@@ -465,3 +465,83 @@ export function calcularScores(avs: ProfessorAvaliacao[]): ProfessorScores {
     total: avs.length,
   };
 }
+
+// =====================================================================
+// Helpers de desempenho em habilidades (Fase C)
+// =====================================================================
+export interface DesempenhoHabilidade {
+  habilidadeId: string;
+  media: number; // average 1-5
+  count: number; // # of evaluations
+  min?: number;
+  max?: number;
+}
+
+/**
+ * Calcula desempenho do professor em cada habilidade com base em avaliacoes
+ * de tipo 'checklist_aluno'. Retorna média de notas por habilidade.
+ *
+ * Nota: Esta função é destinada para uso em ProfessorPerfilDialog com dados
+ * passados de useAvaliacoes() (store de formulários, não professor_avaliacoes).
+ * Precisamos match agendamentos por professor para filtrar avaliacoes relevantes.
+ */
+export function calcularDesempenhoHabilidades(
+  professor: Professor,
+  avaliacoes: Array<{
+    agendamentoId: string | null;
+    tipo: string;
+    dados: any;
+  }>,
+  agendamentos: Array<{
+    id: string;
+    professor?: string;
+    professorId?: string;
+  }>,
+): Record<string, DesempenhoHabilidade> {
+  // Encontra agendamentos deste professor
+  const agendamentosDoProf = new Set<string>();
+  for (const ag of agendamentos) {
+    const matches =
+      ag.professorId === professor.id ||
+      (ag.professor != null && ag.professor.trim().toLowerCase() === professor.nome.trim().toLowerCase());
+    if (matches) {
+      agendamentosDoProf.add(ag.id);
+    }
+  }
+
+  // Filtra avaliacoes: tipo='checklist_aluno' + agendamento deste professor
+  const checklistsDoProf = avaliacoes.filter(
+    (av) => av.tipo === "checklist_aluno" && av.agendamentoId && agendamentosDoProf.has(av.agendamentoId),
+  );
+
+  // Agrupa notas por habilidade
+  const desempenho: Record<string, { notas: number[]; min: number; max: number }> = {};
+
+  for (const checklist of checklistsDoProf) {
+    const habilidadesNotas = checklist.dados?.habilidadesNotas || {};
+    for (const [habilidadeId, nota] of Object.entries(habilidadesNotas)) {
+      if (typeof nota !== "number" || nota < 1 || nota > 5) continue;
+
+      const entry = desempenho[habilidadeId] || { notas: [], min: 5, max: 1 };
+      entry.notas.push(nota);
+      entry.min = Math.min(entry.min, nota);
+      entry.max = Math.max(entry.max, nota);
+      desempenho[habilidadeId] = entry;
+    }
+  }
+
+  // Calcula médias
+  const resultado: Record<string, DesempenhoHabilidade> = {};
+  for (const [habilidadeId, entry] of Object.entries(desempenho)) {
+    const media = entry.notas.length > 0 ? entry.notas.reduce((a, b) => a + b, 0) / entry.notas.length : 0;
+    resultado[habilidadeId] = {
+      habilidadeId,
+      media: Math.round(media * 100) / 100,
+      count: entry.notas.length,
+      min: entry.min,
+      max: entry.max,
+    };
+  }
+
+  return resultado;
+}

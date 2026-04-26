@@ -30,9 +30,11 @@ import {
   calcularScores,
   type ProfessorAvaliacao,
   calcularCargaTrabalhada,
+  calcularDesempenhoHabilidades,
 } from "@/lib/professores-store";
 import { formatMinutos } from "@/lib/academic-types";
 import type { Agendamento } from "@/lib/academic-types";
+import { useAvaliacoes } from "@/lib/avaliacoes-store";
 
 interface Props {
   open: boolean;
@@ -52,6 +54,9 @@ export function ProfessorPerfilDialog({
   userName,
 }: Props) {
   if (!professor) return null;
+
+  // Get all avaliacoes from store (for skill performance calculation)
+  const allAvaliacoes = useAvaliacoes();
 
   // Avaliações específicas deste professor
   const avaliacoesProfessor = useMemo(
@@ -76,6 +81,14 @@ export function ProfessorPerfilDialog({
     );
     return calcularCargaTrabalhada(professor, agendsDoProf);
   }, [agendamentos, professor]);
+
+  // Desempenho em habilidades (baseado em avaliacoes de alunos)
+  const desempenhoHabilidades = useMemo(() => {
+    if (professor.habilidadesIds.length === 0) {
+      return {};
+    }
+    return calcularDesempenhoHabilidades(professor, allAvaliacoes, agendamentos);
+  }, [professor, allAvaliacoes, agendamentos]);
 
   const horasTrabalhadasTotal = Math.round(carga.totalMin / 60 * 10) / 10;
   const horasTrabalhadasConcluidas = Math.round(carga.concluidasMin / 60 * 10) / 10;
@@ -237,6 +250,73 @@ export function ProfessorPerfilDialog({
               </div>
             </CardContent>
           </Card>
+
+          {/* ========== Desempenho em Habilidades ========== */}
+          {professor.habilidadesIds.length > 0 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Desempenho em Habilidades</CardTitle>
+                <CardDescription>
+                  {Object.keys(desempenhoHabilidades).length === 0
+                    ? "Aguardando avaliações de alunos"
+                    : `Baseado em avaliações de alunos`}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {Object.keys(desempenhoHabilidades).length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">
+                    Sem avaliações de habilidades registradas ainda.
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    {professor.habilidadesIds.map((habilidadeId) => {
+                      const desempenho = desempenhoHabilidades[habilidadeId];
+                      if (!desempenho) return null;
+
+                      // Determine color based on average score
+                      const isRed = desempenho.media < 3;
+                      const isYellow =
+                        desempenho.media >= 3 && desempenho.media < 4;
+                      const isGreen = desempenho.media >= 4;
+
+                      const barColor = isRed
+                        ? "bg-red-500"
+                        : isYellow
+                          ? "bg-yellow-500"
+                          : "bg-green-500";
+
+                      return (
+                        <div key={habilidadeId} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-medium font-mono">
+                              {habilidadeId}
+                            </p>
+                            <p className="text-sm font-semibold">
+                              {desempenho.media.toFixed(1)}/5
+                            </p>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div
+                              className={cn("h-2 rounded-full transition-all", barColor)}
+                              style={{
+                                width: `${(desempenho.media / 5) * 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {desempenho.count}{" "}
+                            {desempenho.count === 1
+                              ? "avaliação"
+                              : "avaliações"}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* ========== Avaliações ========== */}
           <Card>
