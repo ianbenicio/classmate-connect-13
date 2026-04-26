@@ -6,6 +6,7 @@ import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchi
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
+import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -210,6 +211,8 @@ function CoordenacaoDashboard() {
           <DashboardKPIs />
         </CardContent>
       </Card>
+
+      <AlertasInteligentes />
 
       <Card>
         <CardHeader className="pb-3">

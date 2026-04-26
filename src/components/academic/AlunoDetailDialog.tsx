@@ -31,10 +31,15 @@ import { useAuth } from "@/lib/auth";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAlunos } from "@/lib/alunos-store";
 import { useHabilidades } from "@/lib/habilidades-store";
+import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { StarRating } from "./StarRating";
 import { AvaliacaoAulaDialog } from "./AvaliacaoAulaDialog";
 import { QuadroAulasDialog } from "./QuadroAulasDialog";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
+import { startOfWeek, endOfWeek, parseISO, format, isWithinInterval } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon, SmilePlus } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   endSlotDate,
   endSlotPlus24h,
@@ -69,6 +74,51 @@ export function AlunoDetailDialog({
   const todasHabilidades = useHabilidades();
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
   const [quadroOpen, setQuadroOpen] = useState(false);
+  const todasTagsComp = useComportamentoTags();
+
+  // Aulas desta semana — agendamentos da turma do aluno entre seg–dom
+  const aulasSemana = useMemo(() => {
+    if (!aluno) return [] as Agendamento[];
+    const inicio = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const fim = endOfWeek(new Date(), { weekStartsOn: 1 });
+    return agendamentos
+      .filter((g) => g.turmaId === aluno.turmaId)
+      .filter((g) => {
+        try {
+          return isWithinInterval(parseISO(g.data), { start: inicio, end: fim });
+        } catch {
+          return false;
+        }
+      })
+      .sort(
+        (a, b) =>
+          a.data.localeCompare(b.data) || a.inicio.localeCompare(b.inicio),
+      );
+  }, [agendamentos, aluno]);
+
+  // Tags de comportamento agregadas — checklist_aluno desse aluno,
+  // contando ocorrências de cada slug em dados.comportamento[]
+  const tagsComportamentoAgregadas = useMemo(() => {
+    if (!aluno) return [] as Array<{ slug: string; count: number; meta?: ReturnType<typeof useComportamentoTags>[number] }>;
+    const counts = new Map<string, number>();
+    for (const av of avaliacoes) {
+      if (av.alunoId !== aluno.id) continue;
+      if (av.tipo !== "checklist_aluno") continue;
+      const dados = av.dados as { comportamento?: string[] } | null;
+      const tags = dados?.comportamento;
+      if (!Array.isArray(tags)) continue;
+      for (const slug of tags) {
+        counts.set(slug, (counts.get(slug) ?? 0) + 1);
+      }
+    }
+    return Array.from(counts.entries())
+      .map(([slug, count]) => ({
+        slug,
+        count,
+        meta: todasTagsComp.find((t) => t.value === slug),
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [avaliacoes, aluno, todasTagsComp]);
 
   // Habilidades do curso do aluno
   const habilidadesCurso = useMemo(() => {
@@ -451,6 +501,65 @@ export function AlunoDetailDialog({
             })()}
 
             {/* ============================================================ */}
+            {/* SETOR 1.4 — AULAS DESTA SEMANA                               */}
+            {/* ============================================================ */}
+            <section className="border rounded-lg p-4 mt-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                <CalendarIcon className="h-3.5 w-3.5" />
+                Aulas desta Semana
+                <Badge variant="outline" className="ml-1 text-[10px]">
+                  {aulasSemana.length}
+                </Badge>
+              </h3>
+              {aulasSemana.length === 0 ? (
+                <p className="text-xs text-muted-foreground italic">
+                  Sem aulas agendadas para a semana atual.
+                </p>
+              ) : (
+                <ul className="divide-y rounded-md border">
+                  {aulasSemana.map((ag) => {
+                    let dataObj: Date | null = null;
+                    try {
+                      dataObj = parseISO(ag.data);
+                    } catch {
+                      dataObj = null;
+                    }
+                    return (
+                      <li
+                        key={ag.id}
+                        className="flex items-center justify-between p-2 text-xs"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium capitalize">
+                            {dataObj
+                              ? format(dataObj, "EEE, dd/MM", { locale: ptBR })
+                              : ag.data}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {ag.inicio} – {ag.fim}
+                            {ag.professor ? ` · ${ag.professor}` : ""}
+                          </span>
+                        </div>
+                        <Badge
+                          variant={
+                            ag.status === "concluido"
+                              ? "default"
+                              : ag.status === "cancelado"
+                                ? "destructive"
+                                : "secondary"
+                          }
+                          className="text-[10px]"
+                        >
+                          {ag.status}
+                        </Badge>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+
+            {/* ============================================================ */}
             {/* SETOR 1.5 — PENDÊNCIAS DO ALUNO (avaliações de aula)         */}
             {/* ============================================================ */}
             {pendentesAvaliacao.length > 0 && (
@@ -737,6 +846,58 @@ export function AlunoDetailDialog({
                     </li>
                   )}
                 </ul>
+              )}
+            </section>
+
+            {/* ============================================================ */}
+            {/* SETOR 4.5 — TAGS DE COMPORTAMENTO (agregadas dos checklists) */}
+            {/* ============================================================ */}
+            <section className="border rounded-lg p-4 mt-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1.5 mb-3">
+                <SmilePlus className="h-3.5 w-3.5" />
+                Tags de Comportamento
+                <Badge variant="outline" className="ml-1 text-[10px]">
+                  {tagsComportamentoAgregadas.length}
+                </Badge>
+              </h3>
+              {tagsComportamentoAgregadas.length === 0 ? (
+                <p className="text-xs text-muted-foreground italic">
+                  Sem tags atribuídas ainda. As tags aparecem quando o
+                  professor preenche o checklist do aluno.
+                </p>
+              ) : (
+                <div className="flex flex-wrap gap-1.5">
+                  {tagsComportamentoAgregadas.map(({ slug, count, meta }) => {
+                    const tone = meta?.tom ?? "pos";
+                    return (
+                      <span
+                        key={slug}
+                        title={meta?.descricao ?? undefined}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs",
+                          tone === "pos"
+                            ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                            : "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+                        )}
+                      >
+                        {meta?.emoji && <span>{meta.emoji}</span>}
+                        <span className="font-medium">
+                          {meta?.label ?? slug}
+                        </span>
+                        <span
+                          className={cn(
+                            "ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[10px] font-semibold",
+                            tone === "pos"
+                              ? "bg-emerald-500/20"
+                              : "bg-amber-500/20",
+                          )}
+                        >
+                          {count}
+                        </span>
+                      </span>
+                    );
+                  })}
+                </div>
               )}
             </section>
 
