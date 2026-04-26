@@ -18,6 +18,7 @@ import { Route as AtividadesRouteImport } from './routes/atividades'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
+import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao/relatorios/extrato-horas-p'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -64,28 +65,36 @@ const AtividadesCursoIdRoute = AtividadesCursoIdRouteImport.update({
   path: '/$cursoId',
   getParentRoute: () => AtividadesRoute,
 } as any)
+const CoordenacaoRelatoriosExtratoHorasPRoute =
+  CoordenacaoRelatoriosExtratoHorasPRouteImport.update({
+    id: '/relatorios/extrato-horas-p',
+    path: '/relatorios/extrato-horas-p',
+    getParentRoute: () => CoordenacaoRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
   '/auth': typeof AuthRoute
-  '/coordenacao': typeof CoordenacaoRoute
+  '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
   '/auth': typeof AuthRoute
-  '/coordenacao': typeof CoordenacaoRoute
+  '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,11 +102,12 @@ export interface FileRoutesById {
   '/alunos': typeof AlunosRoute
   '/atividades': typeof AtividadesRouteWithChildren
   '/auth': typeof AuthRoute
-  '/coordenacao': typeof CoordenacaoRoute
+  '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
+  '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/extrato-horas-p'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/extrato-horas-p'
   id:
     | '__root__'
     | '/'
@@ -133,6 +145,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/reset-password'
     | '/atividades/$cursoId'
+    | '/coordenacao/relatorios/extrato-horas-p'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -140,7 +153,7 @@ export interface RootRouteChildren {
   AlunosRoute: typeof AlunosRoute
   AtividadesRoute: typeof AtividadesRouteWithChildren
   AuthRoute: typeof AuthRoute
-  CoordenacaoRoute: typeof CoordenacaoRoute
+  CoordenacaoRoute: typeof CoordenacaoRouteWithChildren
   CursosRoute: typeof CursosRoute
   FormulariosRoute: typeof FormulariosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtividadesCursoIdRouteImport
       parentRoute: typeof AtividadesRoute
     }
+    '/coordenacao/relatorios/extrato-horas-p': {
+      id: '/coordenacao/relatorios/extrato-horas-p'
+      path: '/relatorios/extrato-horas-p'
+      fullPath: '/coordenacao/relatorios/extrato-horas-p'
+      preLoaderRoute: typeof CoordenacaoRelatoriosExtratoHorasPRouteImport
+      parentRoute: typeof CoordenacaoRoute
+    }
   }
 }
 
@@ -226,12 +246,25 @@ const AtividadesRouteWithChildren = AtividadesRoute._addFileChildren(
   AtividadesRouteChildren,
 )
 
+interface CoordenacaoRouteChildren {
+  CoordenacaoRelatoriosExtratoHorasPRoute: typeof CoordenacaoRelatoriosExtratoHorasPRoute
+}
+
+const CoordenacaoRouteChildren: CoordenacaoRouteChildren = {
+  CoordenacaoRelatoriosExtratoHorasPRoute:
+    CoordenacaoRelatoriosExtratoHorasPRoute,
+}
+
+const CoordenacaoRouteWithChildren = CoordenacaoRoute._addFileChildren(
+  CoordenacaoRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlunosRoute: AlunosRoute,
   AtividadesRoute: AtividadesRouteWithChildren,
   AuthRoute: AuthRoute,
-  CoordenacaoRoute: CoordenacaoRoute,
+  CoordenacaoRoute: CoordenacaoRouteWithChildren,
   CursosRoute: CursosRoute,
   FormulariosRoute: FormulariosRoute,
   ResetPasswordRoute: ResetPasswordRoute,

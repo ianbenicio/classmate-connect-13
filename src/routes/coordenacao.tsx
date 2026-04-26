@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap } from "lucide-react";
+import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap, BarChart3 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { Button } from "@/components/ui/button";
@@ -199,6 +199,11 @@ function CoordenacaoPage() {
           <Button asChild variant="outline">
             <Link to="/formularios">
               <ClipboardList /> Formulários
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/coordenacao/relatorios/extrato-horas-p">
+              <BarChart3 /> Extrato de Horas
             </Link>
           </Button>
           {isAdmin && (
