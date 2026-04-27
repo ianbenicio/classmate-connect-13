@@ -624,12 +624,11 @@ function MonthView({
           const isToday = isSameDay(d, new Date());
           const dayKey = format(d, "yyyy-MM-dd");
           return (
-            <button
+            <div
               key={d.toISOString()}
-              type="button"
               onClick={() => onDayClick(d)}
               className={cn(
-                "min-h-[88px] border-b border-r p-1.5 text-left flex flex-col gap-1 transition-colors hover:bg-muted/40",
+                "min-h-[88px] border-b border-r p-1.5 text-left flex flex-col gap-1 transition-colors hover:bg-muted/40 cursor-pointer",
                 !isCurMonth && "bg-muted/20 text-muted-foreground",
               )}
             >
@@ -670,7 +669,7 @@ function MonthView({
                   </div>
                 )}
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
