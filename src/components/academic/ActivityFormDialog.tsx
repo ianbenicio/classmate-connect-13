@@ -485,40 +485,21 @@ export function ActivityFormDialog({
                   </FieldLabel>
                   <p className="text-xs text-muted-foreground">
                     Escolha até <strong>{MAX_HABILIDADES_POR_ATIVIDADE}</strong>{" "}
-                    habilidades. Apenas as habilidades vinculadas ao curso
-                    selecionado podem ser escolhidas.
+                    habilidades.
                   </p>
-                  {(() => {
-                    const idsDoCurso = new Set(
-                      cursoSelecionado?.habilidadeIds ?? [],
-                    );
-                    const habilidadesDoCurso = habilidades.filter((h) =>
-                      idsDoCurso.has(h.id),
-                    );
-                    if (habilidadesDoCurso.length === 0) {
-                      return (
-                        <p className="text-xs italic text-muted-foreground">
-                          O curso selecionado não tem habilidades vinculadas.
-                          Edite o curso para adicionar habilidades primeiro.
-                        </p>
-                      );
-                    }
-                    return (
-                      <SkillSelector
-                        habilidades={habilidadesDoCurso}
-                        selectedIds={habilidadeIds}
-                        onChange={(ids) => {
-                          if (ids.length > MAX_HABILIDADES_POR_ATIVIDADE) {
-                            toast.error(
-                              `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`,
-                            );
-                            return;
-                          }
-                          setHabilidadeIds(ids);
-                        }}
-                      />
-                    );
-                  })()}
+                  <SkillSelector
+                    habilidades={habilidades}
+                    selectedIds={habilidadeIds}
+                    onChange={(ids) => {
+                      if (ids.length > MAX_HABILIDADES_POR_ATIVIDADE) {
+                        toast.error(
+                          `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`,
+                        );
+                        return;
+                      }
+                      setHabilidadeIds(ids);
+                    }}
+                  />
                   <p className="text-[11px] text-muted-foreground">
                     {habilidadeIds.length}/{MAX_HABILIDADES_POR_ATIVIDADE}{" "}
                     selecionadas

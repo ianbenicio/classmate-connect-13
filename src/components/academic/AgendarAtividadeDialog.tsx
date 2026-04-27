@@ -365,7 +365,11 @@ export function AgendarAtividadeDialog({
       const profs = Array.from(
         new Set(ativs.map((a) => a.professor).filter(Boolean)),
       ) as string[];
+      const profIds = Array.from(
+        new Set(ativs.map((a) => a.professorId).filter(Boolean)),
+      ) as string[];
       const professor = profs.join(" / ") || undefined;
+      const professorId = profIds.length === 1 ? profIds[0] : undefined;
       return {
         id: crypto.randomUUID(),
         turmaId: turmaSelecionada.id,
@@ -382,6 +386,7 @@ export function AgendarAtividadeDialog({
         criadoEm,
         observacao: observacao.trim() || undefined,
         professor,
+        professorId,
         criadoPorUserId: authUser?.id,
         criadoPorNome,
       };
