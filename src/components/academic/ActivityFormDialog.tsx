@@ -989,17 +989,23 @@ function IdentificacaoFields({
 
         <div className="space-y-2">
           <Label>Grupo / Módulo{isEdit ? "" : " *"}</Label>
-          <Select value={grupo} onValueChange={setGrupo} disabled={isEdit}>
+          <Select value={grupo || ""} onValueChange={(v) => setGrupo(v || "")} disabled={isEdit}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecione" />
+              <SelectValue placeholder={gruposDisponiveis.length === 0 ? "Nenhum grupo disponível" : "Selecione"} />
             </SelectTrigger>
             <SelectContent>
-              {gruposDisponiveis.map((g) => (
-                <SelectItem key={g.cod} value={g.cod}>
-                  <span className="font-mono text-xs mr-2">{g.cod}</span>
-                  {g.nome}
+              {gruposDisponiveis.length === 0 ? (
+                <SelectItem value="_empty" disabled>
+                  Nenhum grupo disponível para este curso
                 </SelectItem>
-              ))}
+              ) : (
+                gruposDisponiveis.map((g) => (
+                  <SelectItem key={g.cod} value={g.cod}>
+                    <span className="font-mono text-xs mr-2">{g.cod}</span>
+                    {g.nome}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -1075,7 +1081,7 @@ function IdentificacaoFields({
 
         <div className="space-y-2">
           <Label>Vínculo com Professor (Fase 6)</Label>
-          <Select value={professorId ?? ""} onValueChange={(v) => setProfessorId(v || undefined)}>
+          <Select value={professorId ?? "_none"} onValueChange={(v) => setProfessorId(v === "_none" ? undefined : v)}>
             <SelectTrigger>
               <SelectValue
                 placeholder={
@@ -1086,7 +1092,7 @@ function IdentificacaoFields({
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">(Sem vínculo)</SelectItem>
+              <SelectItem value="_none">(Sem vínculo)</SelectItem>
               {professores.map((p) => (
                 <SelectItem key={p.id} value={p.id}>
                   {p.nome} {p.email ? `(${p.email})` : ""}
