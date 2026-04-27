@@ -365,8 +365,6 @@ export function AgendarAtividadeDialog({
     const criadoEm = new Date().toISOString();
     const criadoPorNome = displayName || authUser?.email || "";
 
-    console.debug(`[agendamento] submit: selectedProfessorId=${selectedProfessorId}, disponíveis=${professores.length} professores`);
-
     const novos: Agendamento[] = entries.map(({ blocoIndex, assign }) => {
       const ativIds = [assign.aulaId, assign.tarefaId].filter(Boolean) as string[];
       const professorSelecionado = selectedProfessorId && selectedProfessorId !== ""
@@ -374,7 +372,6 @@ export function AgendarAtividadeDialog({
         : undefined;
       const professor = professorSelecionado?.nome || undefined;
       const professorId = selectedProfessorId && selectedProfessorId !== "" ? selectedProfessorId : undefined;
-      console.debug(`[agendamento] bloco ${blocoIndex}: professorSelecionado=${professorSelecionado?.nome}, professorId=${professorId}`);
       return {
         id: crypto.randomUUID(),
         turmaId: turmaSelecionada.id,

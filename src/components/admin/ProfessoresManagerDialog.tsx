@@ -48,7 +48,6 @@ import {
 } from "@/components/ui/select";
 import {
   GraduationCap,
-  Plus,
   Pencil,
   Trash2,
   Search,
@@ -131,6 +130,11 @@ function ProfessorFormDialog({
       toast.error("Nome é obrigatório.");
       return;
     }
+    // Professores devem sempre estar vinculados a um usuário
+    if (!userId) {
+      toast.error("Professor deve estar vinculado a uma conta de usuário.");
+      return;
+    }
     const entry: Professor = {
       id: editing?.id ?? crypto.randomUUID(),
       userId: userId ?? null,
@@ -154,7 +158,7 @@ function ProfessorFormDialog({
     if (entry.userId) {
       await usersStore.addRole(entry.userId, "professor");
     }
-    toast.success(editing ? "Professor atualizado." : "Professor cadastrado.");
+    toast.success("Professor atualizado.");
     onOpenChange(false);
   };
 
@@ -163,7 +167,7 @@ function ProfessorFormDialog({
       <InnerDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <InnerDialogHeader>
           <InnerDialogTitle>
-            {editing ? "Editar professor" : "Novo professor"}
+            Editar professor
           </InnerDialogTitle>
         </InnerDialogHeader>
 
@@ -319,7 +323,7 @@ function ProfessorFormDialog({
             Cancelar
           </Button>
           <Button onClick={handleSubmit}>
-            {editing ? "Salvar" : "Cadastrar"}
+            Salvar
           </Button>
         </InnerDialogFooter>
       </InnerDialogContent>
@@ -394,6 +398,8 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
 
   const lista = useMemo(() => {
     return all.filter((p) => {
+      // Mostrar apenas professores vinculados a usuários
+      if (!p.userId) return false;
       if (statusFiltro === "ativos" && !p.ativo) return false;
       if (statusFiltro === "inativos" && p.ativo) return false;
       if (!filtro) return true;
@@ -405,11 +411,6 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
       );
     });
   }, [all, filtro, statusFiltro]);
-
-  const handleNovo = () => {
-    setEditing(null);
-    setFormOpen(true);
-  };
   const handleEditar = (p: Professor) => {
     setEditing(p);
     setFormOpen(true);
@@ -425,9 +426,8 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
               Professores
             </DialogTitle>
             <DialogDescription>
-              Cadastre professores e atribua especialidades. Vínculo com conta
-              de usuário (login), atividades e avaliações chegam nas próximas
-              fases.
+              Professores sincronizados de usuários com papel "professor".
+              Edite perfil, especialidades e avaliações.
             </DialogDescription>
           </DialogHeader>
 
@@ -455,17 +455,14 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
                 <SelectItem value="todos">Todos</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={handleNovo}>
-              <Plus /> Novo
-            </Button>
           </div>
 
           {/* Resultado */}
           <div className="flex-1 overflow-y-auto space-y-2 -mx-2 px-2">
             {lista.length === 0 ? (
               <div className="text-center text-sm text-muted-foreground py-8">
-                {all.length === 0
-                  ? "Nenhum professor cadastrado. Clique em 'Novo' para começar."
+                {all.filter((p) => p.userId).length === 0
+                  ? "Nenhum professor vinculado a usuário. Crie usuários com papel 'professor' na tela de Usuários."
                   : "Nenhum resultado para o filtro atual."}
               </div>
             ) : (

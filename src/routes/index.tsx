@@ -412,22 +412,7 @@ function DashboardPage() {
           defaultSlot={agendarCtx.slot}
           defaultProfessorId={
             authUser?.id
-              ? (() => {
-                  const byUserId = professores.find((p) => p.userId === authUser.id);
-                  if (byUserId) {
-                    console.debug(`[calendar] Found professor by userId: ${byUserId.id}`);
-                    return byUserId.id;
-                  }
-                  if (displayName) {
-                    const byNome = professores.find((p) => p.nome === displayName);
-                    if (byNome) {
-                      console.debug(`[calendar] Found professor by nome: ${byNome.id}`);
-                      return byNome.id;
-                    }
-                  }
-                  console.debug(`[calendar] No professor found. authUser.id=${authUser.id}, displayName=${displayName}, available professors: ${professores.map(p => `${p.id}(userId:${p.userId}, nome:${p.nome})`).join(', ')}`);
-                  return undefined;
-                })()
+              ? professores.find((p) => p.userId === authUser.id)?.id
               : undefined
           }
           lockTurmaEHorario
