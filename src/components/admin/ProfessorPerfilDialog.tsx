@@ -99,11 +99,9 @@ export function ProfessorPerfilDialog({
     return calcularDesempenhoHabilidades(professor, allAvaliacoes, agendamentos);
   }, [professor, allAvaliacoes, agendamentos]);
 
-  // #2 — Aulas desta Semana
+  // #2 — Próximas 5 Aulas
   const aulasSemana = useMemo(() => {
-    const hoje = new Date();
-    const inicioSemana = startOfWeek(hoje, { weekStartsOn: 1 }); // segunda
-    const fimSemana = endOfWeek(hoje, { weekStartsOn: 1 }); // domingo
+    const hoje = new Date().toISOString().slice(0, 10);
     const profNomeKey = professor.nome.trim().toLowerCase();
     return agendamentos
       .filter((ag) => {
@@ -111,15 +109,14 @@ export function ProfessorPerfilDialog({
           ag.professor?.trim().toLowerCase() === profNomeKey ||
           ag.professorId === professor.id;
         if (!isProf) return false;
-        // ag.data é "YYYY-MM-DD"; parseISO trata como meia-noite UTC,
-        // mas pra comparar dia inteiro isso basta.
-        const dataAg = parseISO(ag.data);
-        return isWithinInterval(dataAg, { start: inicioSemana, end: fimSemana });
+        // Mostrar apenas aulas futuras (data >= hoje)
+        return ag.data >= hoje;
       })
       .sort((a, b) => {
         const cmp = a.data.localeCompare(b.data);
         return cmp !== 0 ? cmp : a.inicio.localeCompare(b.inicio);
-      });
+      })
+      .slice(0, 5);
   }, [agendamentos, professor]);
 
   // #2.4 — Tags de comportamento recebidas pelo professor, agregadas
@@ -287,23 +284,23 @@ export function ProfessorPerfilDialog({
             </Card>
           )}
 
-          {/* ========== Aulas desta Semana (#2) ========== */}
+          {/* ========== Próximas 5 Aulas (#2) ========== */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base inline-flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Aulas desta Semana
+                Próximas 5 Aulas
               </CardTitle>
               <CardDescription>
                 {aulasSemana.length === 0
-                  ? "Nenhuma aula agendada esta semana."
-                  : `${aulasSemana.length} aula(s) entre seg–dom`}
+                  ? "Nenhuma aula agendada."
+                  : `${aulasSemana.length} aula(s) próxima(s)`}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {aulasSemana.length === 0 ? (
                 <p className="text-sm text-muted-foreground italic">
-                  Sem agendamentos para a semana atual.
+                  Sem agendamentos futuros.
                 </p>
               ) : (
                 <ul className="divide-y rounded-md border">
