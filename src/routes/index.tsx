@@ -23,6 +23,7 @@ import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
+import { useProfessores } from "@/lib/professores-store";
 import type {
   Agendamento,
   Atividade,
@@ -58,6 +59,7 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
+  const professores = useProfessores();
   const { user: authUser, hasRole, displayName } = useAuth();
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
@@ -408,6 +410,26 @@ function DashboardPage() {
           defaultTurmaId={agendarCtx.turma.id}
           defaultData={agendarCtx.data}
           defaultSlot={agendarCtx.slot}
+          defaultProfessorId={
+            authUser?.id
+              ? (() => {
+                  const byUserId = professores.find((p) => p.userId === authUser.id);
+                  if (byUserId) {
+                    console.debug(`[calendar] Found professor by userId: ${byUserId.id}`);
+                    return byUserId.id;
+                  }
+                  if (displayName) {
+                    const byNome = professores.find((p) => p.nome === displayName);
+                    if (byNome) {
+                      console.debug(`[calendar] Found professor by nome: ${byNome.id}`);
+                      return byNome.id;
+                    }
+                  }
+                  console.debug(`[calendar] No professor found. authUser.id=${authUser.id}, displayName=${displayName}, available professors: ${professores.map(p => `${p.id}(userId:${p.userId}, nome:${p.nome})`).join(', ')}`);
+                  return undefined;
+                })()
+              : undefined
+          }
           lockTurmaEHorario
         />
       )}

@@ -461,7 +461,7 @@ export function ProfessorPerfilDialog({
               <CardDescription>
                 {avaliacoesProfessor.length === 0
                   ? "Nenhuma avaliação registrada ainda."
-                  : `${scores.total} avaliação(ões) — ${scoresAlunos.total} de alunos · ${scoresStaff.total} de staff`}
+                  : `${scores.total} avaliação(ões)`}
               </CardDescription>
             </CardHeader>
             <CardContent>

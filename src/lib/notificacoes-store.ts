@@ -113,16 +113,9 @@ export const notificacoesStore = {
     notificacoes = [...local, ...notificacoes];
     emit();
     const rows = items.map(notifToRow);
-    // Dedup no banco: índice único parcial sobre
-    // (destinatario_ref, agendamento_id, kind) — quando os três estão
-    // preenchidos, duplicatas são silenciosamente ignoradas. Notificações
-    // manuais (sem agendamento_id) inserem normalmente.
     const { error } = await supabase
       .from("notificacoes")
-      .upsert(rows, {
-        onConflict: "destinatario_ref,agendamento_id,kind",
-        ignoreDuplicates: true,
-      });
+      .insert(rows);
     if (error) {
       console.error("[notificacoes] insert error", error);
       toast.error(`Erro ao registrar notificações: ${error.message}`);

@@ -47,6 +47,7 @@ import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
+import { useProfessores } from "@/lib/professores-store";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
@@ -60,6 +61,7 @@ interface Props {
   defaultTurmaId?: string;
   defaultData?: string;
   defaultSlot?: HorarioSlot;
+  defaultProfessorId?: string;
   /** Quando true (origem: calendário), trava turma, data e horário. */
   lockTurmaEHorario?: boolean;
 }
@@ -81,12 +83,14 @@ export function AgendarAtividadeDialog({
   defaultTurmaId,
   defaultData,
   defaultSlot,
+  defaultProfessorId,
   lockTurmaEHorario = false,
 }: Props) {
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
   const [slotIdx, setSlotIdx] = useState<string>("");
   const [observacao, setObservacao] = useState("");
+  const [selectedProfessorId, setSelectedProfessorId] = useState<string>("");
 
   /** Map blocoIndex → assignment confirmado (local). */
   const [assignments, setAssignments] = useState<Record<number, BlocoAssignment>>({});
@@ -101,6 +105,7 @@ export function AgendarAtividadeDialog({
   const gruposByCursoCod = useGruposByCursoCod();
   const { user: authUser, displayName } = useAuth();
   const duracaoAulaMin = getDuracaoAulaMin(curso);
+  const professores = useProfessores();
 
   // ---------- Reset ao abrir ----------
   useEffect(() => {
@@ -109,6 +114,7 @@ export function AgendarAtividadeDialog({
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
     setObservacao("");
+    setSelectedProfessorId(defaultProfessorId ?? "");
     setAssignments({});
     setEditingBloco(null);
     setDraftGrupo("");
@@ -117,7 +123,7 @@ export function AgendarAtividadeDialog({
     // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
     // muda. Os setters são estáveis e não precisam constar nas deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, defaultTurmaId, defaultData, turmas]);
+  }, [open, defaultTurmaId, defaultData, defaultProfessorId, turmas]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
   // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
@@ -359,17 +365,16 @@ export function AgendarAtividadeDialog({
     const criadoEm = new Date().toISOString();
     const criadoPorNome = displayName || authUser?.email || "";
 
+    console.debug(`[agendamento] submit: selectedProfessorId=${selectedProfessorId}, disponíveis=${professores.length} professores`);
+
     const novos: Agendamento[] = entries.map(({ blocoIndex, assign }) => {
       const ativIds = [assign.aulaId, assign.tarefaId].filter(Boolean) as string[];
-      const ativs = atividades.filter((a) => ativIds.includes(a.id));
-      const profs = Array.from(
-        new Set(ativs.map((a) => a.professor).filter(Boolean)),
-      ) as string[];
-      const profIds = Array.from(
-        new Set(ativs.map((a) => a.professorId).filter(Boolean)),
-      ) as string[];
-      const professor = profs.join(" / ") || undefined;
-      const professorId = profIds.length === 1 ? profIds[0] : undefined;
+      const professorSelecionado = selectedProfessorId && selectedProfessorId !== ""
+        ? professores.find((p) => p.id === selectedProfessorId)
+        : undefined;
+      const professor = professorSelecionado?.nome || undefined;
+      const professorId = selectedProfessorId && selectedProfessorId !== "" ? selectedProfessorId : undefined;
+      console.debug(`[agendamento] bloco ${blocoIndex}: professorSelecionado=${professorSelecionado?.nome}, professorId=${professorId}`);
       return {
         id: crypto.randomUUID(),
         turmaId: turmaSelecionada.id,
@@ -629,6 +634,34 @@ export function AgendarAtividadeDialog({
                 </Select>
               )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Professor *</Label>
+            {lockTurmaEHorario && selectedProfessorId ? (
+              <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
+                {professores.find((p) => p.id === selectedProfessorId)?.nome ||
+                  "Professor desconhecido"}
+              </div>
+            ) : (
+              <Select value={selectedProfessorId} onValueChange={setSelectedProfessorId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o professor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {professores.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {professores.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                Nenhum professor cadastrado.
+              </p>
+            )}
           </div>
 
           {/* Lista de blocos */}
