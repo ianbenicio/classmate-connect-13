@@ -101,7 +101,7 @@ export function ProfessorPerfilDialog({
 
   // #2 — Próximas 5 Aulas
   const aulasSemana = useMemo(() => {
-    const hoje = new Date().toISOString().slice(0, 10);
+    const hoje = format(new Date(), "yyyy-MM-dd");
     const profNomeKey = professor.nome.trim().toLowerCase();
     return agendamentos
       .filter((ag) => {
