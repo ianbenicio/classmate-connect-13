@@ -28,11 +28,13 @@ export type Database = {
           fim: string
           id: string
           inicio: string
+          meta: Json
           observacao: string | null
           parte_grupo_id: string | null
           parte_num: number
           partes_total: number
           professor: string | null
+          professor_id: string | null
           status: Database["public"]["Enums"]["status_agendamento"]
           turma_id: string
           updated_at: string
@@ -50,11 +52,13 @@ export type Database = {
           fim: string
           id?: string
           inicio: string
+          meta?: Json
           observacao?: string | null
           parte_grupo_id?: string | null
           parte_num?: number
           partes_total?: number
           professor?: string | null
+          professor_id?: string | null
           status?: Database["public"]["Enums"]["status_agendamento"]
           turma_id: string
           updated_at?: string
@@ -72,16 +76,25 @@ export type Database = {
           fim?: string
           id?: string
           inicio?: string
+          meta?: Json
           observacao?: string | null
           parte_grupo_id?: string | null
           parte_num?: number
           partes_total?: number
           professor?: string | null
+          professor_id?: string | null
           status?: Database["public"]["Enums"]["status_agendamento"]
           turma_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "agendamentos_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "agendamentos_turma_id_fkey"
             columns: ["turma_id"]
@@ -208,6 +221,7 @@ export type Database = {
           prazo: string | null
           pre_requisitos: string | null
           professor: string | null
+          professor_id: string | null
           referencias: string | null
           resultados_esperados: string | null
           roteiro: Json | null
@@ -239,6 +253,7 @@ export type Database = {
           prazo?: string | null
           pre_requisitos?: string | null
           professor?: string | null
+          professor_id?: string | null
           referencias?: string | null
           resultados_esperados?: string | null
           roteiro?: Json | null
@@ -270,6 +285,7 @@ export type Database = {
           prazo?: string | null
           pre_requisitos?: string | null
           professor?: string | null
+          professor_id?: string | null
           referencias?: string | null
           resultados_esperados?: string | null
           roteiro?: Json | null
@@ -284,6 +300,13 @@ export type Database = {
             columns: ["curso_id"]
             isOneToOne: false
             referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividades_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
             referencedColumns: ["id"]
           },
         ]
@@ -345,6 +368,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      comportamento_tags: {
+        Row: {
+          ativo: boolean
+          criado_em: string
+          descricao: string | null
+          emoji: string
+          id: string
+          label: string
+          ordem: number
+          tom: string
+          value: string
+        }
+        Insert: {
+          ativo?: boolean
+          criado_em?: string
+          descricao?: string | null
+          emoji?: string
+          id?: string
+          label: string
+          ordem?: number
+          tom?: string
+          value: string
+        }
+        Update: {
+          ativo?: boolean
+          criado_em?: string
+          descricao?: string | null
+          emoji?: string
+          id?: string
+          label?: string
+          ordem?: number
+          tom?: string
+          value?: string
+        }
+        Relationships: []
       }
       cursos: {
         Row: {
@@ -494,6 +553,7 @@ export type Database = {
       }
       notificacoes: {
         Row: {
+          agendamento_id: string | null
           atividade_ids: Json | null
           created_at: string
           curso_id: string | null
@@ -512,6 +572,7 @@ export type Database = {
           turma_id: string | null
         }
         Insert: {
+          agendamento_id?: string | null
           atividade_ids?: Json | null
           created_at?: string
           curso_id?: string | null
@@ -530,6 +591,7 @@ export type Database = {
           turma_id?: string | null
         }
         Update: {
+          agendamento_id?: string | null
           atividade_ids?: Json | null
           created_at?: string
           curso_id?: string | null
@@ -548,6 +610,13 @@ export type Database = {
           turma_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "notificacoes_agendamento_id_fkey"
+            columns: ["agendamento_id"]
+            isOneToOne: false
+            referencedRelation: "agendamentos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notificacoes_curso_id_fkey"
             columns: ["curso_id"]
@@ -621,6 +690,111 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      professor_avaliacoes: {
+        Row: {
+          agendamento_id: string | null
+          avaliador_tipo: string
+          avaliador_user_id: string
+          comentario: string | null
+          criado_em: string
+          id: string
+          notas: Json
+          professor_id: string
+          tags: string[]
+        }
+        Insert: {
+          agendamento_id?: string | null
+          avaliador_tipo: string
+          avaliador_user_id: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          notas?: Json
+          professor_id: string
+          tags?: string[]
+        }
+        Update: {
+          agendamento_id?: string | null
+          avaliador_tipo?: string
+          avaliador_user_id?: string
+          comentario?: string | null
+          criado_em?: string
+          id?: string
+          notas?: Json
+          professor_id?: string
+          tags?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professor_avaliacoes_agendamento_id_fkey"
+            columns: ["agendamento_id"]
+            isOneToOne: false
+            referencedRelation: "agendamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professor_avaliacoes_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professores: {
+        Row: {
+          ativo: boolean
+          atualizado_em: string
+          bio: string | null
+          carga_horaria_semanal_min: number
+          cpf: string | null
+          criado_em: string
+          criado_por_user_id: string | null
+          email: string | null
+          formacao: string | null
+          foto_url: string | null
+          habilidades_ids: string[]
+          id: string
+          nome: string
+          telefone: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          atualizado_em?: string
+          bio?: string | null
+          carga_horaria_semanal_min?: number
+          cpf?: string | null
+          criado_em?: string
+          criado_por_user_id?: string | null
+          email?: string | null
+          formacao?: string | null
+          foto_url?: string | null
+          habilidades_ids?: string[]
+          id?: string
+          nome: string
+          telefone?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          atualizado_em?: string
+          bio?: string | null
+          carga_horaria_semanal_min?: number
+          cpf?: string | null
+          criado_em?: string
+          criado_por_user_id?: string | null
+          email?: string | null
+          formacao?: string | null
+          foto_url?: string | null
+          habilidades_ids?: string[]
+          id?: string
+          nome?: string
+          telefone?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -702,6 +876,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      relatorios_exportados: {
+        Row: {
+          conteudo: string
+          created_at: string
+          filename: string
+          formato: string
+          gerado_em: string
+          gerado_por_nome: string | null
+          gerado_por_user_id: string | null
+          id: string
+          size_bytes: number
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          conteudo: string
+          created_at?: string
+          filename: string
+          formato?: string
+          gerado_em?: string
+          gerado_por_nome?: string | null
+          gerado_por_user_id?: string | null
+          id?: string
+          size_bytes?: number
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          filename?: string
+          formato?: string
+          gerado_em?: string
+          gerado_por_nome?: string | null
+          gerado_por_user_id?: string | null
+          id?: string
+          size_bytes?: number
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: []
       }
       turmas: {
         Row: {

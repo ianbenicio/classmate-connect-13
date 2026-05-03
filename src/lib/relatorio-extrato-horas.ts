@@ -9,7 +9,8 @@
 
 import type { Agendamento } from "./academic-types";
 import type { Professor } from "./professores-store";
-import type { Avaliacao } from "./formularios-types";
+import type { AvaliacaoRecord } from "./avaliacoes-store";
+type Avaliacao = AvaliacaoRecord & { agendamento_id?: string | null };
 
 /**
  * Registro de uma aula individual no relatório.

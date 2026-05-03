@@ -49,7 +49,7 @@ export function CheckInRapidoCard() {
   const aulasHoje = useMemo(() => {
     const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     let lista = agendamentos.filter(
-      (ag) => ag.status === "agendado" && ag.data === todayKey,
+      (ag) => ag.status === "pendente" && ag.data === todayKey,
     );
     // Se for só professor (não staff), filtra pelas aulas dele
     if (!isStaff && isProfessor && displayName) {
