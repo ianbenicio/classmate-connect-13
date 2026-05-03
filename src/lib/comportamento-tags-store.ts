@@ -68,16 +68,16 @@ function entryToRow(e: ComportamentoTagEntry): Omit<TagRow, never> {
 // O store insere as que faltarem no primeiro load (top-up idempotente).
 // -----------------------------------------------------------------------
 const SEED_TAGS: Omit<ComportamentoTagEntry, "id" | "ativo">[] = [
-  { value: "participativo", label: "Participativo", emoji: "🙋", tom: "pos", ordem:  1 },
-  { value: "colaborativo",  label: "Colaborativo",  emoji: "🤝", tom: "pos", ordem:  2 },
-  { value: "concentrado",   label: "Concentrado",   emoji: "🎯", tom: "pos", ordem:  3 },
-  { value: "criativo",      label: "Criativo",      emoji: "💡", tom: "pos", ordem:  4 },
-  { value: "lider",         label: "Liderança",     emoji: "⭐", tom: "pos", ordem:  5 },
-  { value: "disperso",      label: "Disperso",      emoji: "🌀", tom: "neg", ordem:  6 },
-  { value: "agitado",       label: "Agitado",       emoji: "⚡", tom: "neg", ordem:  7 },
-  { value: "tímido",        label: "Tímido",        emoji: "🙊", tom: "neg", ordem:  8 },
-  { value: "ausente",       label: "Apático",       emoji: "😶", tom: "neg", ordem:  9 },
-  { value: "frustrado",     label: "Frustrado",     emoji: "😤", tom: "neg", ordem: 10 },
+  { value: "participativo", label: "Participativo", emoji: "🙋", tom: "pos", ordem:  1, descricao: "" },
+  { value: "colaborativo",  label: "Colaborativo",  emoji: "🤝", tom: "pos", ordem:  2, descricao: "" },
+  { value: "concentrado",   label: "Concentrado",   emoji: "🎯", tom: "pos", ordem:  3, descricao: "" },
+  { value: "criativo",      label: "Criativo",      emoji: "💡", tom: "pos", ordem:  4, descricao: "" },
+  { value: "lider",         label: "Liderança",     emoji: "⭐", tom: "pos", ordem:  5, descricao: "" },
+  { value: "disperso",      label: "Disperso",      emoji: "🌀", tom: "neg", ordem:  6, descricao: "" },
+  { value: "agitado",       label: "Agitado",       emoji: "⚡", tom: "neg", ordem:  7, descricao: "" },
+  { value: "tímido",        label: "Tímido",        emoji: "🙊", tom: "neg", ordem:  8, descricao: "" },
+  { value: "ausente",       label: "Apático",       emoji: "😶", tom: "neg", ordem:  9, descricao: "" },
+  { value: "frustrado",     label: "Frustrado",     emoji: "😤", tom: "neg", ordem: 10, descricao: "" },
 ];
 
 // -----------------------------------------------------------------------
@@ -207,7 +207,9 @@ export const comportamentoTagsStore = {
 
   subscribe(fn: () => void) {
     listeners.add(fn);
-    return () => listeners.delete(fn);
+    return () => {
+      listeners.delete(fn);
+    };
   },
 
   ensureInit,

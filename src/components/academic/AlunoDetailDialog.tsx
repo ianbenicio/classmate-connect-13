@@ -543,11 +543,7 @@ export function AlunoDetailDialog({
                         </div>
                         <Badge
                           variant={
-                            ag.status === "concluido"
-                              ? "default"
-                              : ag.status === "cancelado"
-                                ? "destructive"
-                                : "secondary"
+                            ag.status === "concluido" ? "default" : "secondary"
                           }
                           className="text-[10px]"
                         >
