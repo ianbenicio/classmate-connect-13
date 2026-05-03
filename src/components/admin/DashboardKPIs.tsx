@@ -68,8 +68,8 @@ export function DashboardKPIs() {
     // Aulas hoje
     const hoje = agendamentos.filter((a) => inInterval(a.data, todayStart, todayEnd));
     const hojeConcluidas = hoje.filter((a) => a.status === "concluido").length;
-    const hojeAgendadas = hoje.filter((a) => a.status === "agendado").length;
-    const hojeCanceladas = hoje.filter((a) => a.status === "cancelado").length;
+    const hojeAgendadas = hoje.filter((a) => a.status === "pendente").length;
+    const hojeCanceladas = 0;
 
     // Aulas semana / mês
     const semana = agendamentos.filter((a) => inInterval(a.data, weekStart, weekEnd));
