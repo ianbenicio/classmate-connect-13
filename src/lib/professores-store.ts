@@ -1,30 +1,34 @@
 // =====================================================================
-// Store singleton de Professores (Fase 1 da seção Professores).
+// Camada de compatibilidade — Professores derivados de Usuários (Fase 8).
 // =====================================================================
-// Espelha o padrão de `comportamento-tags-store.ts`:
-//   • Singleton em memória + pub/sub para reatividade React.
-//   • Carrega lazy (na 1ª chamada de `ensureInit`).
-//   • Não toca em `atividades`, `agendamentos`, `notificacoes` — fases
-//     seguintes farão a integração.
+// A tabela `professores` foi eliminada. Um "Professor" é um Usuário com
+// role "professor", cujos dados específicos (telefone, formacao, bio, etc.)
+// vivem em `profiles`. Este módulo expõe a mesma API antiga (Professor,
+// useProfessores, professoresStore) mas a fonte de verdade agora é
+// `usersStore`. ID do Professor === userId do User.
 //
-// Visibilidade: a tabela `professores` tem RLS exigindo papel staff
-// (admin/coordenação/professor). Aluno/pais não veem. A UI de gestão
-// (ProfessoresManagerDialog — Fase 2) só é montada se isStaff().
+// Avaliações de professores continuam em `professor_avaliacoes`, agora
+// chaveadas por `professor_user_id` (FK para auth.users).
 // =====================================================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import type { UserRow } from "./users-store";
-import { devInfo } from "./dev-log";
+import {
+  usersStore,
+  useUsers,
+  updateUserProfessorFields,
+  type UserRow,
+} from "./users-store";
 
 // ---------------------------------------------------------------------
-// Tipos públicos
+// Tipos públicos (mantidos por compatibilidade)
 // ---------------------------------------------------------------------
 export interface Professor {
+  /** Igual ao userId — não há mais ID separado. */
   id: string;
-  /** FK para auth.users — opcional (pode existir antes do professor logar). */
-  userId: string | null;
+  /** Igual a `id`. Mantido por compat com código que diferencia. */
+  userId: string;
   nome: string;
   email: string | null;
   telefone: string | null;
@@ -32,9 +36,7 @@ export interface Professor {
   formacao: string | null;
   bio: string | null;
   fotoUrl: string | null;
-  /** Limite máximo de minutos por semana (0 = sem controle). */
   cargaHorariaSemanalMin: number;
-  /** Especialidades — referencia tabela `habilidades` por id. */
   habilidadesIds: string[];
   ativo: boolean;
   criadoEm: string;
@@ -42,47 +44,54 @@ export interface Professor {
   criadoPorUserId: string | null;
 }
 
-/** Avaliação de um professor — pode ser por aula (agendamento) ou geral. */
 export interface ProfessorAvaliacao {
   id: string;
+  /** Mantido por compat — agora é igual a `professorUserId`. */
   professorId: string;
+  professorUserId: string;
   avaliadorUserId: string;
   avaliadorTipo: "aluno" | "coordenacao" | "admin" | "autoavaliacao";
-  /** Aula avaliada — null para avaliação geral. */
   agendamentoId: string | null;
-  /** JSON livre. Sugestão de critérios:
-   *   { clareza: 1-5, dominio: 1-5, engajamento: 1-5, pontualidade: 1-5 } */
   notas: Record<string, number>;
   comentario: string | null;
-  /** Slugs de comportamento_tags escolhidas pelo avaliador (ex.: ["didatico","participativo"]). */
   tags: string[];
   criadoEm: string;
 }
 
 // ---------------------------------------------------------------------
-// Tipos de linha do banco
+// Conversão User → Professor
 // ---------------------------------------------------------------------
-type ProfessorRow = {
-  id: string;
-  user_id: string | null;
-  nome: string;
-  email: string | null;
-  telefone: string | null;
-  cpf: string | null;
-  formacao: string | null;
-  bio: string | null;
-  foto_url: string | null;
-  carga_horaria_semanal_min: number;
-  habilidades_ids: string[];
-  ativo: boolean;
-  criado_em: string;
-  atualizado_em: string;
-  criado_por_user_id: string | null;
-};
+function userToProfessor(u: UserRow): Professor {
+  return {
+    id: u.userId, // ID === userId agora
+    userId: u.userId,
+    nome: u.displayName,
+    email: u.email,
+    telefone: u.telefone ?? null,
+    cpf: u.cpf ?? null,
+    formacao: u.formacao ?? null,
+    bio: u.bio ?? null,
+    fotoUrl: u.fotoUrl ?? null,
+    cargaHorariaSemanalMin: u.cargaHorariaSemanalMin ?? 0,
+    habilidadesIds: u.habilidadesIds ?? [],
+    ativo: u.ativo ?? true,
+    criadoEm: u.criadoEm,
+    atualizadoEm: u.criadoEm,
+    criadoPorUserId: null,
+  };
+}
 
+function isProfessor(u: UserRow): boolean {
+  return u.roles.includes("professor");
+}
+
+// ---------------------------------------------------------------------
+// Avaliações — armazenadas em `professor_avaliacoes` (chave: professor_user_id)
+// ---------------------------------------------------------------------
 type ProfessorAvaliacaoRow = {
   id: string;
-  professor_id: string;
+  professor_id: string | null;
+  professor_user_id: string;
   avaliador_user_id: string;
   avaliador_tipo: string;
   agendamento_id: string | null;
@@ -92,51 +101,11 @@ type ProfessorAvaliacaoRow = {
   criado_em: string;
 };
 
-// ---------------------------------------------------------------------
-// Converters
-// ---------------------------------------------------------------------
-function rowToProfessor(r: ProfessorRow): Professor {
-  return {
-    id: r.id,
-    userId: r.user_id,
-    nome: r.nome,
-    email: r.email,
-    telefone: r.telefone,
-    cpf: r.cpf,
-    formacao: r.formacao,
-    bio: r.bio,
-    fotoUrl: r.foto_url,
-    cargaHorariaSemanalMin: r.carga_horaria_semanal_min,
-    habilidadesIds: r.habilidades_ids ?? [],
-    ativo: r.ativo,
-    criadoEm: r.criado_em,
-    atualizadoEm: r.atualizado_em,
-    criadoPorUserId: r.criado_por_user_id,
-  };
-}
-
-function professorToRow(p: Professor): Omit<ProfessorRow, "criado_em" | "atualizado_em"> {
-  return {
-    id: p.id,
-    user_id: p.userId,
-    nome: p.nome,
-    email: p.email,
-    telefone: p.telefone,
-    cpf: p.cpf,
-    formacao: p.formacao,
-    bio: p.bio,
-    foto_url: p.fotoUrl,
-    carga_horaria_semanal_min: p.cargaHorariaSemanalMin,
-    habilidades_ids: p.habilidadesIds,
-    ativo: p.ativo,
-    criado_por_user_id: p.criadoPorUserId,
-  };
-}
-
 function rowToAvaliacao(r: ProfessorAvaliacaoRow): ProfessorAvaliacao {
   return {
     id: r.id,
-    professorId: r.professor_id,
+    professorId: r.professor_user_id, // alias
+    professorUserId: r.professor_user_id,
     avaliadorUserId: r.avaliador_user_id,
     avaliadorTipo: r.avaliador_tipo as ProfessorAvaliacao["avaliadorTipo"],
     agendamentoId: r.agendamento_id,
@@ -147,179 +116,145 @@ function rowToAvaliacao(r: ProfessorAvaliacaoRow): ProfessorAvaliacao {
   };
 }
 
-// ---------------------------------------------------------------------
-// Estado singleton
-// ---------------------------------------------------------------------
-let professores: Professor[] = [];
 let avaliacoes: ProfessorAvaliacao[] = [];
-let initialized = false;
-let initPromise: Promise<void> | null = null;
+let avaliacoesInitialized = false;
+let avaliacoesInitPromise: Promise<void> | null = null;
 const listeners = new Set<() => void>();
 
 function emit() {
   for (const l of listeners) l();
 }
 
-async function loadFromDb(): Promise<void> {
-  // Carrega professores e avaliações em paralelo.
-  const [{ data: profData, error: profErr }, { data: avalData, error: avalErr }] =
-    await Promise.all([
-      supabase.from("professores").select("*").order("nome"),
-      supabase.from("professor_avaliacoes").select("*").order("criado_em", { ascending: false }),
-    ]);
-
-  if (profErr) {
-    // RLS pode bloquear quem não é staff — tratamos silenciosamente para
-    // não poluir o console de alunos/pais.
-    if (profErr.code !== "PGRST301" && profErr.code !== "42501") {
-      console.error("[professores] load error", profErr);
-    }
-    professores = [];
-  } else {
-    professores = ((profData ?? []) as unknown as ProfessorRow[]).map(rowToProfessor);
-  }
-
-  if (avalErr) {
-    if (avalErr.code !== "PGRST301" && avalErr.code !== "42501") {
-      console.error("[professor_avaliacoes] load error", avalErr);
+async function loadAvaliacoes(): Promise<void> {
+  const { data, error } = await supabase
+    .from("professor_avaliacoes")
+    .select("*")
+    .order("criado_em", { ascending: false });
+  if (error) {
+    if (error.code !== "PGRST301" && error.code !== "42501") {
+      console.error("[professor_avaliacoes] load error", error);
     }
     avaliacoes = [];
-  } else {
-    avaliacoes = ((avalData ?? []) as unknown as ProfessorAvaliacaoRow[]).map(rowToAvaliacao);
+    return;
   }
+  avaliacoes = ((data ?? []) as unknown as ProfessorAvaliacaoRow[]).map(
+    rowToAvaliacao,
+  );
 }
 
-async function ensureInit(): Promise<void> {
-  if (initialized) return;
-  if (!initPromise) {
-    initPromise = loadFromDb().then(() => {
-      initialized = true;
+async function ensureInitAvaliacoes(): Promise<void> {
+  if (avaliacoesInitialized) return;
+  if (!avaliacoesInitPromise) {
+    avaliacoesInitPromise = loadAvaliacoes().then(() => {
+      avaliacoesInitialized = true;
       emit();
     });
   }
-  return initPromise;
+  return avaliacoesInitPromise;
 }
 
 // ---------------------------------------------------------------------
-// Store público
+// Store público (compat shim) — deriva tudo de usersStore
 // ---------------------------------------------------------------------
 export const professoresStore = {
   // ---- Leitura ----
   getAll(): Professor[] {
-    return professores;
+    return usersStore.getAll().filter(isProfessor).map(userToProfessor);
   },
   getAtivos(): Professor[] {
-    return professores.filter((p) => p.ativo);
+    return professoresStore.getAll().filter((p) => p.ativo);
   },
   getById(id: string): Professor | undefined {
-    return professores.find((p) => p.id === id);
+    // ID === userId
+    return professoresStore.getByUserId(id);
   },
   getByUserId(userId: string): Professor | undefined {
-    return professores.find((p) => p.userId === userId);
+    const u = usersStore.getAll().find((x) => x.userId === userId);
+    if (!u || !isProfessor(u)) return undefined;
+    return userToProfessor(u);
   },
   getByNome(nome: string): Professor | undefined {
     const norm = nome.trim().toLowerCase();
-    return professores.find((p) => p.nome.trim().toLowerCase() === norm);
+    return professoresStore
+      .getAll()
+      .find((p) => p.nome.trim().toLowerCase() === norm);
   },
   getAvaliacoes(): ProfessorAvaliacao[] {
     return avaliacoes;
   },
   getAvaliacoesDoProfessor(professorId: string): ProfessorAvaliacao[] {
-    return avaliacoes.filter((a) => a.professorId === professorId);
+    // professorId === userId
+    return avaliacoes.filter((a) => a.professorUserId === professorId);
   },
 
   // ---- Escrita: Professor ----
-  /** Cria ou atualiza professor. Optimistic UI. */
+  /**
+   * "Salva" um professor — na verdade atualiza os campos estendidos do
+   * profile correspondente. NÃO cria usuários (que precisam de auth).
+   */
   async upsert(entry: Professor): Promise<void> {
-    const exists = professores.some((p) => p.id === entry.id);
-    professores = exists
-      ? professores.map((p) => (p.id === entry.id ? entry : p))
-      : [...professores, entry].sort((a, b) => a.nome.localeCompare(b.nome));
-    emit();
-
-    const row = professorToRow(entry);
-    const { error } = await supabase
-      .from("professores")
-      .upsert(row, { onConflict: "id" });
-    if (error) {
-      console.error("[professores] upsert error", error);
-      toast.error(`Erro ao salvar professor: ${error.message}`);
-      // Reverte cache para evitar drift visual em caso de RLS reject.
-      await loadFromDb();
-      emit();
-    }
-  },
-
-  /** Cria novo professor a partir de um usuário (Fase A - auto-sync). */
-  async createFromUser(user: UserRow): Promise<void> {
-    // Verifica se professor já existe para este usuário
-    const existente = professores.find((p) => p.userId === user.userId);
-    if (existente) {
-      devInfo(`[professores] Professor já existe para userId ${user.userId}`);
+    if (!entry.userId) {
+      toast.error("Não é possível salvar professor sem usuário vinculado.");
       return;
     }
 
-    // Cria novo Professor com dados do usuário
-    const novoProfessor: Professor = {
-      id: crypto.randomUUID(),
-      userId: user.userId,
-      nome: user.displayName,
-      email: user.email,
-      telefone: null,
-      cpf: null,
-      formacao: null,
-      bio: null,
-      fotoUrl: null,
-      cargaHorariaSemanalMin: 0, // sem limite por padrão
-      habilidadesIds: [],
-      ativo: true,
-      criadoEm: new Date().toISOString(),
-      atualizadoEm: new Date().toISOString(),
-      criadoPorUserId: null,
-    };
+    // Garante que o usuário tem role "professor"
+    const u = usersStore.getAll().find((x) => x.userId === entry.userId);
+    if (u && !u.roles.includes("professor")) {
+      await usersStore.addRole(entry.userId, "professor");
+    }
 
-    // Salva usando upsert normal
-    await professoresStore.upsert(novoProfessor);
+    // Atualiza display_name se mudou
+    if (u && u.displayName !== entry.nome) {
+      await usersStore.updateDisplayName(entry.userId, entry.nome);
+    }
+
+    // Atualiza campos específicos em profiles
+    await updateUserProfessorFields(entry.userId, {
+      telefone: entry.telefone,
+      cpf: entry.cpf,
+      formacao: entry.formacao,
+      bio: entry.bio,
+      fotoUrl: entry.fotoUrl,
+      cargaHorariaSemanalMin: entry.cargaHorariaSemanalMin,
+      habilidadesIds: entry.habilidadesIds,
+      ativo: entry.ativo,
+    });
+    emit();
+  },
+
+  /** Cria/garante que o usuário tem role "professor". */
+  async createFromUser(user: UserRow): Promise<void> {
+    if (user.roles.includes("professor")) return;
+    await usersStore.addRole(user.userId, "professor");
+    emit();
   },
 
   /**
-   * Backfill: para cada usuário com papel "professor" que ainda não tem
-   * registro em `professores`, cria um. Idempotente — pode ser chamado
-   * livremente. Retorna quantos registros foram criados.
+   * Backfill: para cada usuário com role "professor" que ainda não tem
+   * dados estendidos preenchidos, não faz nada (não há mais sync separado).
+   * Mantido como no-op por compat. Retorna 0.
    */
-  async syncFromUsers(users: UserRow[]): Promise<number> {
-    const linkedIds = new Set(
-      professores.map((p) => p.userId).filter(Boolean) as string[],
-    );
-    const candidates = users.filter(
-      (u) => u.roles.includes("professor") && !linkedIds.has(u.userId),
-    );
-    if (candidates.length === 0) return 0;
-    for (const u of candidates) {
-      await professoresStore.createFromUser(u);
-    }
-    return candidates.length;
+  async syncFromUsers(_users: UserRow[]): Promise<number> {
+    // Nada a sincronizar — User+role é a única fonte de verdade.
+    return 0;
   },
 
+  /**
+   * "Remove" um professor — na verdade remove a role "professor" do usuário.
+   * O usuário continua existindo (com outros papéis ou nenhum).
+   */
   async remove(id: string): Promise<void> {
-    professores = professores.filter((p) => p.id !== id);
-    avaliacoes = avaliacoes.filter((a) => a.professorId !== id);
+    // id === userId
+    await usersStore.removeRole(id, "professor");
     emit();
-
-    const { error } = await supabase.from("professores").delete().eq("id", id);
-    if (error) {
-      console.error("[professores] remove error", error);
-      toast.error(`Erro ao remover professor: ${error.message}`);
-      await loadFromDb();
-      emit();
-    }
   },
 
-  /** Alterna `ativo` (preserva histórico — não deleta). */
   async toggleAtivo(id: string): Promise<void> {
-    const p = professores.find((x) => x.id === id);
+    const p = professoresStore.getById(id);
     if (!p) return;
-    await professoresStore.upsert({ ...p, ativo: !p.ativo });
+    await updateUserProfessorFields(p.userId, { ativo: !p.ativo });
+    emit();
   },
 
   // ---- Escrita: Avaliações ----
@@ -329,7 +264,9 @@ export const professoresStore = {
 
     const row = {
       id: entry.id,
-      professor_id: entry.professorId,
+      // professor_id é nullable agora — só preenche se vier explícito
+      professor_id: null as string | null,
+      professor_user_id: entry.professorUserId,
       avaliador_user_id: entry.avaliadorUserId,
       avaliador_tipo: entry.avaliadorTipo,
       agendamento_id: entry.agendamentoId,
@@ -339,11 +276,11 @@ export const professoresStore = {
     };
     const { error } = await supabase
       .from("professor_avaliacoes")
-      .upsert(row, { onConflict: "id" });
+      .upsert(row as never, { onConflict: "id" });
     if (error) {
       console.error("[professor_avaliacoes] insert error", error);
       toast.error(`Erro ao salvar avaliação: ${error.message}`);
-      await loadFromDb();
+      await loadAvaliacoes();
       emit();
     }
   },
@@ -352,11 +289,14 @@ export const professoresStore = {
     avaliacoes = avaliacoes.filter((a) => a.id !== id);
     emit();
 
-    const { error } = await supabase.from("professor_avaliacoes").delete().eq("id", id);
+    const { error } = await supabase
+      .from("professor_avaliacoes")
+      .delete()
+      .eq("id", id);
     if (error) {
       console.error("[professor_avaliacoes] remove error", error);
       toast.error(`Erro ao remover avaliação: ${error.message}`);
-      await loadFromDb();
+      await loadAvaliacoes();
       emit();
     }
   },
@@ -364,16 +304,20 @@ export const professoresStore = {
   // ---- Subscriptions / init ----
   subscribe(fn: () => void): () => void {
     listeners.add(fn);
+    // Repassa também eventos de usersStore (que mudam o derivado).
+    const unsubUsers = usersStore.subscribe(fn);
     return () => {
       listeners.delete(fn);
+      unsubUsers();
     };
   },
 
-  ensureInit,
+  ensureInit: async () => {
+    await Promise.all([usersStore.ensureInit(), ensureInitAvaliacoes()]);
+  },
 
-  /** Força recarga do banco — útil após mudanças externas. */
   async reload(): Promise<void> {
-    await loadFromDb();
+    await Promise.all([usersStore.refresh(), loadAvaliacoes()]);
     emit();
   },
 };
@@ -382,49 +326,87 @@ export const professoresStore = {
 // Hooks React
 // ---------------------------------------------------------------------
 export function useProfessores(): Professor[] {
-  const [snap, setSnap] = useState<Professor[]>(professoresStore.getAll());
-  useEffect(() => {
-    void ensureInit();
-    const unsub = professoresStore.subscribe(() =>
-      setSnap([...professoresStore.getAll()]),
-    );
-    return unsub;
-  }, []);
-  return snap;
+  const allUsers = useUsers();
+  return useMemo(
+    () => allUsers.filter(isProfessor).map(userToProfessor),
+    [allUsers],
+  );
 }
 
 export function useProfessoresAtivos(): Professor[] {
   const todos = useProfessores();
-  return todos.filter((p) => p.ativo);
+  return useMemo(() => todos.filter((p) => p.ativo), [todos]);
 }
 
-export function useProfessorAvaliacoes(professorId?: string): ProfessorAvaliacao[] {
-  const [snap, setSnap] = useState<ProfessorAvaliacao[]>(
-    professoresStore.getAvaliacoes(),
-  );
+export function useProfessorAvaliacoes(
+  professorId?: string,
+): ProfessorAvaliacao[] {
+  const [snap, setSnap] = useState<ProfessorAvaliacao[]>(avaliacoes);
   useEffect(() => {
-    void ensureInit();
-    const unsub = professoresStore.subscribe(() =>
-      setSnap([...professoresStore.getAvaliacoes()]),
-    );
+    void professoresStore.ensureInit();
+    const unsub = professoresStore.subscribe(() => setSnap([...avaliacoes]));
     return unsub;
   }, []);
-  return professorId ? snap.filter((a) => a.professorId === professorId) : snap;
+  return professorId
+    ? snap.filter((a) => a.professorUserId === professorId)
+    : snap;
 }
 
 // ---------------------------------------------------------------------
-// Helpers de cálculo (carga horária trabalhada por agendamentos)
+// Helpers (compat)
 // ---------------------------------------------------------------------
 /**
- * Calcula minutos totais trabalhados pelo professor a partir de uma lista
- * de agendamentos. Conta apenas agendamentos onde o professor está vinculado
- * por `professor_id` (Fase 6) OU pelo nome (compat).
+ * Deriva os agendamentos de um professor combinando match por
+ * `professorUserId` (fonte nova) ou nome (legado).
  */
+export function getAgendamentosDoProfessor<
+  T extends {
+    professorUserId?: string;
+    professorId?: string;
+    professor?: string;
+  },
+>(
+  professor: { id: string; userId?: string | null; nome: string },
+  agendamentos: T[],
+): T[] {
+  const userId = professor.userId ?? professor.id;
+  const nomeNorm = professor.nome.trim().toLowerCase();
+  return agendamentos.filter(
+    (ag) =>
+      (ag.professorUserId && ag.professorUserId === userId) ||
+      (ag.professorId && ag.professorId === professor.id) ||
+      (ag.professor && ag.professor.trim().toLowerCase() === nomeNorm),
+  );
+}
+
+export function getAtividadesDoProfessor<
+  T extends {
+    professorUserId?: string;
+    professorId?: string;
+    professor?: string;
+  },
+>(
+  professor: { id: string; userId?: string | null; nome: string },
+  atividades: T[],
+): T[] {
+  return getAgendamentosDoProfessor(professor, atividades);
+}
+
+// ---------------------------------------------------------------------
+// Cálculos (preservados — agora aceitam tanto Professor quanto User base)
+// ---------------------------------------------------------------------
+function duracaoMin(inicio: string, fim: string): number {
+  const [hi, mi] = inicio.split(":").map(Number);
+  const [hf, mf] = fim.split(":").map(Number);
+  return hf * 60 + mf - (hi * 60 + mi);
+}
+
 export function calcularCargaTrabalhada(
   professor: Professor,
   agendamentos: Array<{
     professor?: string;
     professorId?: string;
+    professorUserId?: string;
     inicio: string;
     fim: string;
     status: string;
@@ -433,38 +415,27 @@ export function calcularCargaTrabalhada(
   let totalMin = 0;
   let concluidasMin = 0;
   let pendentesMin = 0;
-
+  const nomeNorm = professor.nome.trim().toLowerCase();
   for (const ag of agendamentos) {
     const matches =
-      ag.professorId === professor.id ||
-      (ag.professor != null && ag.professor.trim().toLowerCase() === professor.nome.trim().toLowerCase());
+      (ag.professorUserId && ag.professorUserId === professor.userId) ||
+      (ag.professorId && ag.professorId === professor.id) ||
+      (ag.professor != null && ag.professor.trim().toLowerCase() === nomeNorm);
     if (!matches) continue;
-
     const dur = duracaoMin(ag.inicio, ag.fim);
     totalMin += dur;
     if (ag.status === "concluido") concluidasMin += dur;
     else pendentesMin += dur;
   }
-
   return { totalMin, concluidasMin, pendentesMin };
 }
 
-function duracaoMin(inicio: string, fim: string): number {
-  const [hi, mi] = inicio.split(":").map(Number);
-  const [hf, mf] = fim.split(":").map(Number);
-  return hf * 60 + mf - (hi * 60 + mi);
-}
-
-// ---------------------------------------------------------------------
-// Helpers de avaliação (média de notas)
-// ---------------------------------------------------------------------
 export interface ProfessorScores {
   porCriterio: Record<string, number>;
   geral: number | null;
   total: number;
 }
 
-/** Média das notas por critério + média geral. Ignora avaliações sem notas. */
 export function calcularScores(avs: ProfessorAvaliacao[]): ProfessorScores {
   if (avs.length === 0) return { porCriterio: {}, geral: null, total: 0 };
   const soma: Record<string, number> = {};
@@ -491,62 +462,52 @@ export function calcularScores(avs: ProfessorAvaliacao[]): ProfessorScores {
   };
 }
 
-// =====================================================================
-// Helpers de desempenho em habilidades (Fase C)
-// =====================================================================
 export interface DesempenhoHabilidade {
   habilidadeId: string;
-  media: number; // average 1-5
-  count: number; // # of evaluations
+  media: number;
+  count: number;
   min?: number;
   max?: number;
 }
 
-/**
- * Calcula desempenho do professor em cada habilidade com base em avaliacoes
- * de tipo 'checklist_aluno'. Retorna média de notas por habilidade.
- *
- * Nota: Esta função é destinada para uso em ProfessorPerfilDialog com dados
- * passados de useAvaliacoes() (store de formulários, não professor_avaliacoes).
- * Precisamos match agendamentos por professor para filtrar avaliacoes relevantes.
- */
 export function calcularDesempenhoHabilidades(
   professor: Professor,
   avaliacoes: Array<{
     agendamentoId: string | null;
     tipo: string;
-    dados: any;
+    dados: unknown;
   }>,
   agendamentos: Array<{
     id: string;
     professor?: string;
     professorId?: string;
+    professorUserId?: string;
   }>,
 ): Record<string, DesempenhoHabilidade> {
-  // Encontra agendamentos deste professor
+  const nomeNorm = professor.nome.trim().toLowerCase();
   const agendamentosDoProf = new Set<string>();
   for (const ag of agendamentos) {
     const matches =
-      ag.professorId === professor.id ||
-      (ag.professor != null && ag.professor.trim().toLowerCase() === professor.nome.trim().toLowerCase());
-    if (matches) {
-      agendamentosDoProf.add(ag.id);
-    }
+      (ag.professorUserId && ag.professorUserId === professor.userId) ||
+      (ag.professorId && ag.professorId === professor.id) ||
+      (ag.professor != null && ag.professor.trim().toLowerCase() === nomeNorm);
+    if (matches) agendamentosDoProf.add(ag.id);
   }
-
-  // Filtra avaliacoes: tipo='checklist_aluno' + agendamento deste professor
   const checklistsDoProf = avaliacoes.filter(
-    (av) => av.tipo === "checklist_aluno" && av.agendamentoId && agendamentosDoProf.has(av.agendamentoId),
+    (av) =>
+      av.tipo === "checklist_aluno" &&
+      av.agendamentoId &&
+      agendamentosDoProf.has(av.agendamentoId),
   );
-
-  // Agrupa notas por habilidade
-  const desempenho: Record<string, { notas: number[]; min: number; max: number }> = {};
-
+  const desempenho: Record<
+    string,
+    { notas: number[]; min: number; max: number }
+  > = {};
   for (const checklist of checklistsDoProf) {
-    const habilidadesNotas = checklist.dados?.habilidadesNotas || {};
+    const dados = checklist.dados as { habilidadesNotas?: Record<string, unknown> } | null;
+    const habilidadesNotas = dados?.habilidadesNotas ?? {};
     for (const [habilidadeId, nota] of Object.entries(habilidadesNotas)) {
       if (typeof nota !== "number" || nota < 1 || nota > 5) continue;
-
       const entry = desempenho[habilidadeId] || { notas: [], min: 5, max: 1 };
       entry.notas.push(nota);
       entry.min = Math.min(entry.min, nota);
@@ -554,11 +515,12 @@ export function calcularDesempenhoHabilidades(
       desempenho[habilidadeId] = entry;
     }
   }
-
-  // Calcula médias
   const resultado: Record<string, DesempenhoHabilidade> = {};
   for (const [habilidadeId, entry] of Object.entries(desempenho)) {
-    const media = entry.notas.length > 0 ? entry.notas.reduce((a, b) => a + b, 0) / entry.notas.length : 0;
+    const media =
+      entry.notas.length > 0
+        ? entry.notas.reduce((a, b) => a + b, 0) / entry.notas.length
+        : 0;
     resultado[habilidadeId] = {
       habilidadeId,
       media: Math.round(media * 100) / 100,
@@ -567,6 +529,5 @@ export function calcularDesempenhoHabilidades(
       max: entry.max,
     };
   }
-
   return resultado;
 }

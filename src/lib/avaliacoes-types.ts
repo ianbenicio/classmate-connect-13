@@ -3,7 +3,25 @@
 // + 2 a 3 perguntas abertas rotativas sorteadas a cada aula
 // + área de interesse opcional para a próxima aula.
 
+import type {
+  FormularioTipo,
+} from "./formularios-types";
+
 export type Nota = 1 | 2 | 3 | 4 | 5;
+
+/**
+ * Registro genérico de avaliação armazenado no Supabase.
+ * Cobre múltiplos tipos: relatorio_prof, checklist_aluno, relatorio_aluno, aula_aluno_legacy.
+ */
+export interface AvaliacaoRecord<T = unknown> {
+  id: string;
+  agendamentoId: string | null;
+  alunoId: string | null;
+  atividadeId: string | null;
+  tipo: FormularioTipo | "aula_aluno_legacy";
+  dados: T;
+  criadoEm: string;
+}
 
 /** Perguntas fechadas — Aula */
 export const PERGUNTAS_AULA = [

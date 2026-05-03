@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { toast } from "sonner";
-import type { AvaliacaoAula } from "./avaliacoes-types";
+import type { AvaliacaoAula, AvaliacaoRecord } from "./avaliacoes-types";
 import type {
   ChecklistAlunoDados,
   RelatorioAlunoDados,
@@ -22,16 +22,8 @@ import type {
 } from "./formularios-types";
 import { buildAvaliacaoSnapshot } from "./avaliacao-snapshot";
 import { agendamentosStore } from "./agendamentos-store";
-
-export interface AvaliacaoRecord<T = unknown> {
-  id: string;
-  agendamentoId: string | null;
-  alunoId: string | null;
-  atividadeId: string | null;
-  tipo: FormularioTipo | "aula_aluno_legacy";
-  dados: T;
-  criadoEm: string;
-}
+import { SEED_AVALIACOES } from "./academic-seed";
+import { devInfo } from "./dev-log";
 
 let registros: AvaliacaoRecord[] = [];
 let initialized = false;
@@ -64,6 +56,44 @@ function rowTo(r: Row): AvaliacaoRecord {
   };
 }
 
+function avaliacaoToRow(a: AvaliacaoRecord): Row {
+  return {
+    id: toUuid(a.id),
+    agendamento_id: a.agendamentoId ? toUuid(a.agendamentoId) : null,
+    aluno_id: a.alunoId ? toUuid(a.alunoId) : null,
+    atividade_id: a.atividadeId ? toUuid(a.atividadeId) : null,
+    tipo: a.tipo,
+    dados: a.dados,
+    created_at: a.criadoEm,
+  };
+}
+
+async function topUpAvaliacoes(existingIds: Set<string>) {
+  if (SEED_AVALIACOES.length === 0) return false;
+  const missing = SEED_AVALIACOES.filter(
+    (a) => !existingIds.has(toUuid(a.id)),
+  );
+  if (missing.length === 0) return false;
+  const rows = missing.map(avaliacaoToRow);
+  const chunkSize = 100;
+  let inserted = 0;
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const chunk = rows.slice(i, i + chunkSize);
+    const { error } = await supabase
+      .from("avaliacoes")
+      .upsert(chunk, { onConflict: "id", ignoreDuplicates: true });
+    if (error) {
+      console.error("[avaliacoes] top-up error (chunk)", error);
+      continue;
+    }
+    inserted += chunk.length;
+  }
+  if (inserted > 0) {
+    devInfo(`[avaliacoes] top-up: +${inserted} linhas do seed`);
+  }
+  return inserted > 0;
+}
+
 async function loadFromDb() {
   const { data, error } = await supabase
     .from("avaliacoes")
@@ -73,7 +103,18 @@ async function loadFromDb() {
     console.error("[avaliacoes] load error", error);
     return;
   }
-  registros = (data as Row[] | null ?? []).map(rowTo);
+  const rows = (data as Row[] | null ?? []);
+  const existingIds = new Set(rows.map((r) => r.id));
+  const inserted = await topUpAvaliacoes(existingIds);
+  if (inserted) {
+    const { data: data2 } = await supabase
+      .from("avaliacoes")
+      .select("*")
+      .order("created_at", { ascending: false });
+    registros = ((data2 ?? []) as unknown as Row[]).map(rowTo);
+  } else {
+    registros = rows.map(rowTo);
+  }
 }
 
 async function ensureInit(): Promise<void> {
@@ -324,3 +365,6 @@ async function syncPresencas(
     toast.error(`Erro ao salvar presenças: ${error.message}`);
   }
 }
+
+// Re-export AvaliacaoRecord for backwards compatibility
+export type { AvaliacaoRecord };

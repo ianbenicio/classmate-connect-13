@@ -36,7 +36,8 @@ type AtividadeRow = {
   prazo: string | null;
   criado_por: string | null;
   professor: string | null;
-  professor_id: string | null; // NOVO — Fase 6 FK to professores
+  professor_id: string | null; // @deprecated FK to professores
+  professor_user_id: string | null; // FK direta para auth.users (Fase 7)
   habilidade_ids: unknown;
   descricao_conteudo: string | null;
   sugestoes_pais: string | null;
@@ -76,6 +77,7 @@ function rowToAtividade(r: AtividadeRow): Atividade {
     criadoPor: r.criado_por ?? "",
     professor: r.professor ?? "",
     professorId: r.professor_id ?? undefined,
+    professorUserId: r.professor_user_id ?? undefined,
     habilidadeIds: toUuidArray(
       (Array.isArray(r.habilidade_ids) ? r.habilidade_ids : []) as string[],
     ),
@@ -115,6 +117,7 @@ function atividadeToRow(a: Atividade) {
     criado_por: a.criadoPor || null,
     professor: a.professor || null,
     professor_id: a.professorId ? toUuid(a.professorId) : null,
+    professor_user_id: a.professorUserId ? toUuid(a.professorUserId) : null,
     habilidade_ids: toUuidArray(a.habilidadeIds) as never,
     descricao_conteudo: a.descricaoConteudo ?? null,
     sugestoes_pais: a.sugestoesPais ?? null,

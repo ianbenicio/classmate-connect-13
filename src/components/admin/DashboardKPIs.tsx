@@ -32,7 +32,7 @@ import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAlunos } from "@/lib/alunos-store";
-import { useProfessores } from "@/lib/professores-store";
+import { useUsersByRole } from "@/lib/users-store";
 import { cn } from "@/lib/utils";
 
 export function DashboardKPIs() {
@@ -41,7 +41,8 @@ export function DashboardKPIs() {
   const cursos = useCursos();
   const turmas = useTurmas();
   const alunos = useAlunos();
-  const professores = useProfessores();
+  // Fase 8: professores são users com role "professor"
+  const professores = useUsersByRole("professor");
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -121,7 +122,7 @@ export function DashboardKPIs() {
     const cursosAtivos = cursos.length; // Curso não tem campo `ativo` no modelo atual
     const turmasAtivas = turmas.length;
     const alunosTotal = alunos.length;
-    const professoresAtivos = professores.filter((p) => p.ativo).length;
+    const professoresAtivos = professores.filter((p) => p.ativo !== false).length;
 
     return {
       hojeConcluidas,

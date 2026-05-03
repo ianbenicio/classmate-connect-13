@@ -47,7 +47,7 @@ import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
-import { useProfessores } from "@/lib/professores-store";
+import { useUsersByRole } from "@/lib/users-store";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
@@ -61,7 +61,10 @@ interface Props {
   defaultTurmaId?: string;
   defaultData?: string;
   defaultSlot?: HorarioSlot;
+  /** @deprecated usar defaultProfessorUserId. Mantido p/ compat. */
   defaultProfessorId?: string;
+  /** UserID auth.users do professor para auto-seleção (Fase 7). */
+  defaultProfessorUserId?: string;
   /** Quando true (origem: calendário), trava turma, data e horário. */
   lockTurmaEHorario?: boolean;
 }
@@ -84,13 +87,14 @@ export function AgendarAtividadeDialog({
   defaultData,
   defaultSlot,
   defaultProfessorId,
+  defaultProfessorUserId,
   lockTurmaEHorario = false,
 }: Props) {
   const [turmaId, setTurmaId] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>();
   const [slotIdx, setSlotIdx] = useState<string>("");
   const [observacao, setObservacao] = useState("");
-  const [selectedProfessorId, setSelectedProfessorId] = useState<string>("");
+  const [selectedProfessorUserId, setSelectedProfessorUserId] = useState<string>("");
 
   /** Map blocoIndex → assignment confirmado (local). */
   const [assignments, setAssignments] = useState<Record<number, BlocoAssignment>>({});
@@ -105,7 +109,8 @@ export function AgendarAtividadeDialog({
   const gruposByCursoCod = useGruposByCursoCod();
   const { user: authUser, displayName } = useAuth();
   const duracaoAulaMin = getDuracaoAulaMin(curso);
-  const professores = useProfessores();
+  // Professores são usuários com role "professor" (Fase 8 — fonte única).
+  const professores = useUsersByRole("professor");
 
   // ---------- Reset ao abrir ----------
   useEffect(() => {
@@ -114,7 +119,7 @@ export function AgendarAtividadeDialog({
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
     setObservacao("");
-    setSelectedProfessorId(defaultProfessorId ?? "");
+    setSelectedProfessorUserId(defaultProfessorUserId ?? defaultProfessorId ?? "");
     setAssignments({});
     setEditingBloco(null);
     setDraftGrupo("");
@@ -123,7 +128,7 @@ export function AgendarAtividadeDialog({
     // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
     // muda. Os setters são estáveis e não precisam constar nas deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, defaultTurmaId, defaultData, defaultProfessorId, turmas]);
+  }, [open, defaultTurmaId, defaultData, defaultProfessorId, defaultProfessorUserId, turmas]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
   // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
@@ -367,11 +372,14 @@ export function AgendarAtividadeDialog({
 
     const novos: Agendamento[] = entries.map(({ blocoIndex, assign }) => {
       const ativIds = [assign.aulaId, assign.tarefaId].filter(Boolean) as string[];
-      const professorSelecionado = selectedProfessorId && selectedProfessorId !== ""
-        ? professores.find((p) => p.id === selectedProfessorId)
+      // Fase 8: professor é apenas um User com role "professor".
+      // selectedProfessorUserId === userId; nome vai p/ campo `professor` (legado).
+      const professorSelecionado = selectedProfessorUserId
+        ? professores.find((p) => p.userId === selectedProfessorUserId)
         : undefined;
-      const professor = professorSelecionado?.nome || undefined;
-      const professorId = selectedProfessorId && selectedProfessorId !== "" ? selectedProfessorId : undefined;
+      const professor = professorSelecionado?.displayName || undefined;
+      const professorUserId =
+        selectedProfessorUserId || defaultProfessorUserId || undefined;
       return {
         id: crypto.randomUUID(),
         turmaId: turmaSelecionada.id,
@@ -388,7 +396,7 @@ export function AgendarAtividadeDialog({
         criadoEm,
         observacao: observacao.trim() || undefined,
         professor,
-        professorId,
+        professorUserId,
         criadoPorUserId: authUser?.id,
         criadoPorNome,
       };
@@ -635,20 +643,20 @@ export function AgendarAtividadeDialog({
 
           <div className="space-y-2">
             <Label>Professor *</Label>
-            {lockTurmaEHorario && selectedProfessorId ? (
+            {lockTurmaEHorario && selectedProfessorUserId ? (
               <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
-                {professores.find((p) => p.id === selectedProfessorId)?.nome ||
+                {professores.find((p) => p.userId === selectedProfessorUserId)?.displayName ||
                   "Professor desconhecido"}
               </div>
             ) : (
-              <Select value={selectedProfessorId} onValueChange={setSelectedProfessorId}>
+              <Select value={selectedProfessorUserId} onValueChange={setSelectedProfessorUserId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o professor" />
                 </SelectTrigger>
                 <SelectContent>
                   {professores.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nome}
+                    <SelectItem key={p.userId} value={p.userId}>
+                      {p.displayName}
                     </SelectItem>
                   ))}
                 </SelectContent>

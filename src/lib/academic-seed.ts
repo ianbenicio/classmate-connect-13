@@ -8,6 +8,7 @@ import {
   type Habilidade,
   type Turma,
 } from "./academic-types";
+import type { AvaliacaoRecord } from "./avaliacoes-types";
 import { toUuid } from "./db-mapping";
 
 // ====================================================================
@@ -475,15 +476,15 @@ export const SEED_ATIVIDADES: Atividade[] = [
 ];
 
 export const SEED_AGENDAMENTOS: Agendamento[] = [
-  { id: "ag-t-mp-1-mpc01-20260202", turmaId: "t-mp-1", data: "2026-02-02", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-02-02T14:00:00.000Z", concluidoEm: "2026-02-02T15:00:00.000Z" },
-  { id: "ag-t-mp-1-mpp01-20260223", turmaId: "t-mp-1", data: "2026-02-23", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-02-23T14:00:00.000Z", concluidoEm: "2026-02-23T15:00:00.000Z" },
+  { id: "ag-t-mp-1-mpc01-20260202", turmaId: "t-mp-1", data: "2026-02-02", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-02-02T14:00:00.000Z", concluidoEm: "2026-02-02T15:00:00.000Z", professor: "Prof. João Silva" },
+  { id: "ag-t-mp-1-mpp01-20260223", turmaId: "t-mp-1", data: "2026-02-23", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-02-23T14:00:00.000Z", concluidoEm: "2026-02-23T15:00:00.000Z", professor: "Prof. João Silva" },
   { id: "ag-t-mp-1-mpc02-20260302", turmaId: "t-mp-1", data: "2026-03-02", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-02"], status: "concluido", criadoEm: "2026-03-02T14:00:00.000Z", concluidoEm: "2026-03-02T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpp02-20260309", turmaId: "t-mp-1", data: "2026-03-09", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-02"], status: "concluido", criadoEm: "2026-03-09T14:00:00.000Z", concluidoEm: "2026-03-09T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpc04-20260316", turmaId: "t-mp-1", data: "2026-03-16", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-04"], status: "concluido", criadoEm: "2026-03-16T14:00:00.000Z", concluidoEm: "2026-03-16T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpc03-20260330", turmaId: "t-mp-1", data: "2026-03-30", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-03"], status: "concluido", criadoEm: "2026-03-30T14:00:00.000Z", concluidoEm: "2026-03-30T15:00:00.000Z" },
   { id: "ag-t-mp-1-mpc04-20260406", turmaId: "t-mp-1", data: "2026-04-06", diaSemana: "seg", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-04"], status: "concluido", criadoEm: "2026-04-06T14:00:00.000Z", concluidoEm: "2026-04-06T15:00:00.000Z" },
-  { id: "ag-t-mp-2-mpc01-20260123", turmaId: "t-mp-2", data: "2026-01-23", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-01-23T09:00:00.000Z", concluidoEm: "2026-01-23T10:00:00.000Z" },
-  { id: "ag-t-mp-2-mpp01-20260130", turmaId: "t-mp-2", data: "2026-01-30", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-01-30T09:00:00.000Z", concluidoEm: "2026-01-30T10:00:00.000Z" },
+  { id: "ag-t-mp-2-mpc01-20260123", turmaId: "t-mp-2", data: "2026-01-23", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-01-23T09:00:00.000Z", concluidoEm: "2026-01-23T10:00:00.000Z", professor: "Prof. Maria Santos" },
+  { id: "ag-t-mp-2-mpp01-20260130", turmaId: "t-mp-2", data: "2026-01-30", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-01-30T09:00:00.000Z", concluidoEm: "2026-01-30T10:00:00.000Z", professor: "Prof. Maria Santos" },
   { id: "ag-t-mp-2-mpc02-20260203", turmaId: "t-mp-2", data: "2026-02-03", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-02"], status: "concluido", criadoEm: "2026-02-03T09:00:00.000Z", concluidoEm: "2026-02-03T10:00:00.000Z" },
   { id: "ag-t-mp-2-mpp02-20260213", turmaId: "t-mp-2", data: "2026-02-13", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-p-aula-02"], status: "concluido", criadoEm: "2026-02-13T09:00:00.000Z", concluidoEm: "2026-02-13T10:00:00.000Z" },
   { id: "ag-t-mp-2-mpc03-20260220", turmaId: "t-mp-2", data: "2026-02-20", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-03"], status: "concluido", criadoEm: "2026-02-20T09:00:00.000Z", concluidoEm: "2026-02-20T10:00:00.000Z" },
@@ -493,8 +494,8 @@ export const SEED_AGENDAMENTOS: Agendamento[] = [
   { id: "ag-t-mp-2-mpp05-20260320", turmaId: "t-mp-2", data: "2026-03-20", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-p-aula-05"], status: "concluido", criadoEm: "2026-03-20T09:00:00.000Z", concluidoEm: "2026-03-20T10:00:00.000Z" },
   { id: "ag-t-mp-2-mpc05-20260327", turmaId: "t-mp-2", data: "2026-03-27", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-05"], status: "concluido", criadoEm: "2026-03-27T09:00:00.000Z", concluidoEm: "2026-03-27T10:00:00.000Z" },
   { id: "ag-t-mp-2-mpc05-20260410", turmaId: "t-mp-2", data: "2026-04-10", diaSemana: "sex", inicio: "09:00", fim: "10:00", atividadeIds: ["at-mp-c-aula-05"], status: "concluido", criadoEm: "2026-04-10T09:00:00.000Z", concluidoEm: "2026-04-10T10:00:00.000Z" },
-  { id: "ag-t-mp-3-mpc01-20260123", turmaId: "t-mp-3", data: "2026-01-23", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-01-23T14:00:00.000Z", concluidoEm: "2026-01-23T15:00:00.000Z" },
-  { id: "ag-t-mp-3-mpp01-20260130", turmaId: "t-mp-3", data: "2026-01-30", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-01-30T14:00:00.000Z", concluidoEm: "2026-01-30T15:00:00.000Z" },
+  { id: "ag-t-mp-3-mpc01-20260123", turmaId: "t-mp-3", data: "2026-01-23", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-01"], status: "concluido", criadoEm: "2026-01-23T14:00:00.000Z", concluidoEm: "2026-01-23T15:00:00.000Z", professor: "Prof. Carlos Oliveira" },
+  { id: "ag-t-mp-3-mpp01-20260130", turmaId: "t-mp-3", data: "2026-01-30", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-01"], status: "concluido", criadoEm: "2026-01-30T14:00:00.000Z", concluidoEm: "2026-01-30T15:00:00.000Z", professor: "Prof. Carlos Oliveira" },
   { id: "ag-t-mp-3-mpc02-20260206", turmaId: "t-mp-3", data: "2026-02-06", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-02"], status: "concluido", criadoEm: "2026-02-06T14:00:00.000Z", concluidoEm: "2026-02-06T15:00:00.000Z" },
   { id: "ag-t-mp-3-mpp02-20260213", turmaId: "t-mp-3", data: "2026-02-13", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-p-aula-02"], status: "concluido", criadoEm: "2026-02-13T14:00:00.000Z", concluidoEm: "2026-02-13T15:00:00.000Z" },
   { id: "ag-t-mp-3-mpc03-20260220", turmaId: "t-mp-3", data: "2026-02-20", diaSemana: "sex", inicio: "14:00", fim: "15:00", atividadeIds: ["at-mp-c-aula-03"], status: "concluido", criadoEm: "2026-02-20T14:00:00.000Z", concluidoEm: "2026-02-20T15:00:00.000Z" },
@@ -572,5 +573,94 @@ export const SEED_FORMULARIOS: SeedFormulario[] = [
       ],
     },
     isSystem: true,
+  },
+];
+
+// ====================================================================
+// AVALIAÇÕES (relatórios de aula)
+// ====================================================================
+// Dados de teste para popular o relatório de Extrato de Horas.
+// Cada avaliação vincula uma aula (agendamento) a um formulário de feedback.
+export const SEED_AVALIACOES: AvaliacaoRecord[] = [
+  // Avaliações para Prof. João Silva - T-MP-1
+  {
+    id: "av-ag-t-mp-1-mpc01-20260202-prof",
+    agendamentoId: "ag-t-mp-1-mpc01-20260202",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Abordou os conceitos básicos de pré-produção. Alunos participativos.",
+      observacoes: "Turma com boa disposição. Alguns alunos tiveram dúvidas no final.",
+      proximos_passos: "Reforçar conceitos na próxima aula. Fazer exercício prático.",
+    },
+    criadoEm: "2026-02-02T15:30:00.000Z",
+  },
+  {
+    id: "av-ag-t-mp-1-mpp01-20260223-prof",
+    agendamentoId: "ag-t-mp-1-mpp01-20260223",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Práticas de prototipagem. Alunos criaram protótipos do zero.",
+      observacoes: "Excelente engajamento. Dois grupos precisam refinar suas ideias.",
+      proximos_passos: "Apresentações dos protótipos. Feedback entre pares.",
+    },
+    criadoEm: "2026-02-23T15:30:00.000Z",
+  },
+  // Avaliações para Prof. Maria Santos - T-MP-2
+  {
+    id: "av-ag-t-mp-2-mpc01-20260123-prof",
+    agendamentoId: "ag-t-mp-2-mpc01-20260123",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Introdução ao design thinking. Ferramentas e metodologia.",
+      observacoes: "Turma pequena, mas muito comprometida. Todos acompanharam bem.",
+      proximos_passos: "Aplicar metodologia em projeto real. Criar personas.",
+    },
+    criadoEm: "2026-01-23T10:30:00.000Z",
+  },
+  {
+    id: "av-ag-t-mp-2-mpp01-20260130-prof",
+    agendamentoId: "ag-t-mp-2-mpp01-20260130",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Workshop de entrevistas com usuários. Técnicas e perguntas efetivas.",
+      observacoes: "Trabalho em duplas foi produtivo. Bom nível de discussão.",
+      proximos_passos: "Análise dos dados coletados. Síntese de insights.",
+    },
+    criadoEm: "2026-01-30T10:30:00.000Z",
+  },
+  // Avaliações para Prof. Carlos Oliveira - T-MP-3
+  {
+    id: "av-ag-t-mp-3-mpc01-20260123-prof",
+    agendamentoId: "ag-t-mp-3-mpc01-20260123",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Fundamentos de storytelling em games. Narrativa não-linear.",
+      observacoes: "Turma grande e diversificada. Discussões muito ricas.",
+      proximos_passos: "Criar estrutura de história para projeto. Quadro de beat.",
+    },
+    criadoEm: "2026-01-23T15:30:00.000Z",
+  },
+  {
+    id: "av-ag-t-mp-3-mpp01-20260130-prof",
+    agendamentoId: "ag-t-mp-3-mpp01-20260130",
+    alunoId: null,
+    atividadeId: null,
+    tipo: "relatorio_prof",
+    dados: {
+      conteudo: "Prática de escrita de diálogos. Characterização através de fala.",
+      observacoes: "Exercícios criativos geraram bom momentum. Alguns ainda tímidos.",
+      proximos_passos: "Leitura dramatizada de diálogos. Revisão colaborativa.",
+    },
+    criadoEm: "2026-01-30T15:30:00.000Z",
   },
 ];

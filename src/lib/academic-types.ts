@@ -308,7 +308,10 @@ export interface Atividade {
   prazo: string; // ISO date (referência didática)
   criadoPor: string;
   professor: string; // professor responsável pela atividade (string para compatibilidade)
-  professorId?: string; // NOVO — FK para professor (UUID) — Fase 6
+  /** @deprecated FK para professores.id — usar `professorUserId`. Mantido p/ compat. */
+  professorId?: string;
+  /** FK direta para auth.users.id — fonte de verdade do professor (Fase 7). */
+  professorUserId?: string;
   habilidadeIds: string[];
 
   // Aula-only — básico (legado)
@@ -399,8 +402,10 @@ export interface Agendamento {
   observacao?: string;
   /** Nome do professor (legado / display). Mantido para compatibilidade. */
   professor?: string;
-  /** FK para professores.id — fonte de verdade do vínculo. */
+  /** @deprecated FK para professores.id — usar `professorUserId`. Mantido p/ compat. */
   professorId?: string;
+  /** FK direta para auth.users.id — fonte de verdade do professor (Fase 7). */
+  professorUserId?: string;
   criadoPorUserId?: string;
   criadoPorNome?: string;
 

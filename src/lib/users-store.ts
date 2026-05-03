@@ -48,6 +48,17 @@ export interface UserRow {
   email: string | null;
   roles: AppRole[];
   criadoEm: string;
+
+  // Campos migrados de professores → profiles (Fase 7)
+  // Relevantes apenas para usuários com role "professor", mas presentes em todos.
+  telefone?: string | null;
+  cpf?: string | null;
+  formacao?: string | null;
+  bio?: string | null;
+  fotoUrl?: string | null;
+  cargaHorariaSemanalMin?: number;
+  habilidadesIds?: string[];
+  ativo?: boolean;
 }
 
 let users: UserRow[] = [];
@@ -63,7 +74,9 @@ async function loadFromDb(): Promise<void> {
   const [profilesRes, rolesRes] = await Promise.all([
     supabase
       .from("profiles")
-      .select("user_id, display_name, email, created_at")
+      .select(
+        "user_id, display_name, email, created_at, telefone, cpf, formacao, bio, foto_url, carga_horaria_semanal_min, habilidades_ids, ativo",
+      )
       .order("display_name", { ascending: true }),
     supabase.from("user_roles").select("user_id, role"),
   ]);
@@ -86,13 +99,35 @@ async function loadFromDb(): Promise<void> {
     rolesByUser.set(r.user_id, arr);
   }
 
-  users = (profilesRes.data ?? []).map((p) => ({
-    userId: p.user_id,
-    displayName: p.display_name ?? "",
-    email: p.email,
-    roles: rolesByUser.get(p.user_id) ?? [],
-    criadoEm: p.created_at,
-  }));
+  users = (profilesRes.data ?? []).map((p) => {
+    // p tem campos novos do schema estendido (Fase 7); usa optional chaining
+    // para tolerar tipagens antigas até o regen do Database type.
+    const ext = p as unknown as {
+      telefone?: string | null;
+      cpf?: string | null;
+      formacao?: string | null;
+      bio?: string | null;
+      foto_url?: string | null;
+      carga_horaria_semanal_min?: number | null;
+      habilidades_ids?: string[] | null;
+      ativo?: boolean | null;
+    };
+    return {
+      userId: p.user_id,
+      displayName: p.display_name ?? "",
+      email: p.email,
+      roles: rolesByUser.get(p.user_id) ?? [],
+      criadoEm: p.created_at,
+      telefone: ext.telefone ?? null,
+      cpf: ext.cpf ?? null,
+      formacao: ext.formacao ?? null,
+      bio: ext.bio ?? null,
+      fotoUrl: ext.foto_url ?? null,
+      cargaHorariaSemanalMin: ext.carga_horaria_semanal_min ?? 0,
+      habilidadesIds: ext.habilidades_ids ?? [],
+      ativo: ext.ativo ?? true,
+    };
+  });
 }
 
 async function ensureInit(): Promise<void> {
@@ -307,6 +342,91 @@ export function useUsers(): UserRow[] {
     };
   }, []);
   return snap;
+}
+
+/**
+ * Hook que retorna apenas usuários com um papel específico.
+ * Útil para listar professores, alunos, coordenadores, etc.
+ *
+ * @example
+ * const professores = useUsersByRole("professor");
+ * const admins = useUsersByRole("admin");
+ */
+export function useUsersByRole(role: AppRole): UserRow[] {
+  const all = useUsers();
+  return all.filter((u) => u.roles.includes(role));
+}
+
+/**
+ * Hook que retorna usuários com role "professor" e ativo=true.
+ * Substituto direto de `useProfessores` da antiga professores-store.
+ */
+export function useProfessoresAtivos(): UserRow[] {
+  const profs = useUsersByRole("professor");
+  return profs.filter((u) => u.ativo !== false);
+}
+
+/**
+ * Atualiza os campos estendidos de um usuário (antes específicos de Professor).
+ * Usado pela tela de gestão de professores e edição de perfil.
+ */
+export async function updateUserProfessorFields(
+  userId: string,
+  fields: Partial<{
+    telefone: string | null;
+    cpf: string | null;
+    formacao: string | null;
+    bio: string | null;
+    fotoUrl: string | null;
+    cargaHorariaSemanalMin: number;
+    habilidadesIds: string[];
+    ativo: boolean;
+  }>,
+): Promise<void> {
+  const dbFields: Record<string, unknown> = {};
+  if (fields.telefone !== undefined) dbFields.telefone = fields.telefone;
+  if (fields.cpf !== undefined) dbFields.cpf = fields.cpf;
+  if (fields.formacao !== undefined) dbFields.formacao = fields.formacao;
+  if (fields.bio !== undefined) dbFields.bio = fields.bio;
+  if (fields.fotoUrl !== undefined) dbFields.foto_url = fields.fotoUrl;
+  if (fields.cargaHorariaSemanalMin !== undefined)
+    dbFields.carga_horaria_semanal_min = fields.cargaHorariaSemanalMin;
+  if (fields.habilidadesIds !== undefined)
+    dbFields.habilidades_ids = fields.habilidadesIds;
+  if (fields.ativo !== undefined) dbFields.ativo = fields.ativo;
+
+  const { error } = await supabase
+    .from("profiles")
+    .update(dbFields as never)
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("[users] updateUserProfessorFields error", error);
+    toast.error(`Erro ao atualizar perfil: ${error.message}`);
+    return;
+  }
+
+  // Atualiza memória local
+  users = users.map((u) =>
+    u.userId === userId
+      ? {
+          ...u,
+          ...(fields.telefone !== undefined && { telefone: fields.telefone }),
+          ...(fields.cpf !== undefined && { cpf: fields.cpf }),
+          ...(fields.formacao !== undefined && { formacao: fields.formacao }),
+          ...(fields.bio !== undefined && { bio: fields.bio }),
+          ...(fields.fotoUrl !== undefined && { fotoUrl: fields.fotoUrl }),
+          ...(fields.cargaHorariaSemanalMin !== undefined && {
+            cargaHorariaSemanalMin: fields.cargaHorariaSemanalMin,
+          }),
+          ...(fields.habilidadesIds !== undefined && {
+            habilidadesIds: fields.habilidadesIds,
+          }),
+          ...(fields.ativo !== undefined && { ativo: fields.ativo }),
+        }
+      : u,
+  );
+  emit();
 }
 
 /**

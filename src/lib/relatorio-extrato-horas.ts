@@ -8,8 +8,8 @@
 // Saída: estrutura para renderização em tabela e PDF
 
 import type { Agendamento } from "./academic-types";
-import type { Professor } from "./professores-store";
-import type { Avaliacao } from "./formularios-types";
+import type { UserRow } from "./users-store";
+import type { AvaliacaoRecord } from "./avaliacoes-types";
 
 /**
  * Registro de uma aula individual no relatório.
@@ -22,7 +22,8 @@ export interface ClassRecord {
   duracaoHoras: number; // Decimal hours (ex: 1.5)
   duracaoMin: number; // For calculations
   professorNome: string;
-  professorId?: string;
+  /** UserId do professor (auth.users). Substitui antigo professorId. */
+  professorUserId?: string;
   avaliacaoStatus: "com_avaliacao" | "sem_avaliacao";
 }
 
@@ -31,7 +32,8 @@ export interface ClassRecord {
  */
 export interface RelatorioProfessor {
   professorNome: string;
-  professorId?: string;
+  /** UserId do professor (auth.users). */
+  professorUserId?: string;
   totalClasses: number;
   totalHoras: number;
   classesAvaliadas: number;
@@ -79,16 +81,16 @@ function minutesToHours(minutes: number): number {
  */
 export function gerarExtratoHoras(
   agendamentos: Agendamento[],
-  avaliacoes: Avaliacao[],
-  professores: Professor[],
+  avaliacoes: AvaliacaoRecord[],
+  professores: UserRow[],
   dataInicio?: string,
   dataFim?: string,
 ): ExtratoHorasPayload {
   // Monta set de agendamentos com avaliações para lookup rápido
   const agendamentosComAvaliacao = new Set<string>();
   for (const av of avaliacoes) {
-    if (av.agendamento_id) {
-      agendamentosComAvaliacao.add(av.agendamento_id);
+    if (av.agendamentoId) {
+      agendamentosComAvaliacao.add(av.agendamentoId);
     }
   }
 
@@ -100,38 +102,46 @@ export function gerarExtratoHoras(
     return true;
   });
 
-  // Monta mapa de professores por ID para lookup
-  const professoresById = new Map<string, Professor>();
-  for (const prof of professores) {
-    professoresById.set(prof.id, prof);
+  // Mapa de users (professores) por userId para lookup
+  const usersByUserId = new Map<string, UserRow>();
+  for (const u of professores) {
+    usersByUserId.set(u.userId, u);
   }
 
   // Agrupa classes por professor
   const posProfessor = new Map<string, ClassRecord[]>();
 
-  for (const ag of agendamentosFiltrados) {
-    // Só inclui aulas que foram avaliadas
-    const temAvaliacao = agendamentosComAvaliacao.has(ag.id);
-    if (!temAvaliacao) continue; // Skip unevaluated classes
+  let agendamentosProcessados = 0;
+  let agendamentosSemAvaliacao = 0;
+  let agendamentosSemProfessor = 0;
 
-    // Calcula duração
+  for (const ag of agendamentosFiltrados) {
+    const temAvaliacao = agendamentosComAvaliacao.has(ag.id);
+    if (!temAvaliacao) {
+      agendamentosSemAvaliacao++;
+      continue;
+    }
+
+    agendamentosProcessados++;
     const duracaoMin = timeToMinutes(ag.fim) - timeToMinutes(ag.inicio);
     const duracaoHoras = minutesToHours(duracaoMin);
 
-    // Encontra professor: por professor_id (FK) ou professor string (legacy)
+    // Fase 8: prioriza professorUserId (FK direta para auth.users).
+    // Fallback para nome string em agendamentos legados.
     let professorNome = ag.professor || "(sem professor)";
-    let professorId: string | undefined = ag.professorId;
+    const professorUserId: string | undefined = ag.professorUserId;
 
-    // Se tem professor_id, tenta carregar nome do objeto Professor
-    if (ag.professorId && professoresById.has(ag.professorId)) {
-      const prof = professoresById.get(ag.professorId)!;
-      professorNome = prof.nome;
+    if (!ag.professorUserId && !ag.professor) {
+      agendamentosSemProfessor++;
     }
 
-    // Cria chave única: prefer professor_id se existe, senão usar nome string
-    const chaveProf = professorId || professorNome.toLowerCase();
+    if (ag.professorUserId && usersByUserId.has(ag.professorUserId)) {
+      const u = usersByUserId.get(ag.professorUserId)!;
+      professorNome = u.displayName;
+    }
 
-    // Adiciona à lista deste professor
+    const chaveProf = professorUserId || professorNome.toLowerCase();
+
     const classes = posProfessor.get(chaveProf) ?? [];
     classes.push({
       agendamentoId: ag.id,
@@ -141,7 +151,7 @@ export function gerarExtratoHoras(
       duracaoHoras,
       duracaoMin,
       professorNome,
-      professorId,
+      professorUserId,
       avaliacaoStatus: "com_avaliacao",
     });
     posProfessor.set(chaveProf, classes);
@@ -161,7 +171,7 @@ export function gerarExtratoHoras(
 
     relatorioProfessores.push({
       professorNome: classes[0].professorNome,
-      professorId: classes[0].professorId,
+      professorUserId: classes[0].professorUserId,
       totalClasses,
       totalHoras: Math.round(totalHoras * 100) / 100, // Round to 2 decimals
       classesAvaliadas: classes.filter((c) => c.avaliacaoStatus === "com_avaliacao").length,

@@ -23,7 +23,6 @@ import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
-import { useProfessores } from "@/lib/professores-store";
 import type {
   Agendamento,
   Atividade,
@@ -59,7 +58,6 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
-  const professores = useProfessores();
   const { user: authUser, hasRole, displayName } = useAuth();
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
@@ -410,10 +408,8 @@ function DashboardPage() {
           defaultTurmaId={agendarCtx.turma.id}
           defaultData={agendarCtx.data}
           defaultSlot={agendarCtx.slot}
-          defaultProfessorId={
-            authUser?.id
-              ? professores.find((p) => p.userId === authUser.id)?.id
-              : undefined
+          defaultProfessorUserId={
+            hasRole("professor") && authUser?.id ? authUser.id : undefined
           }
           lockTurmaEHorario
         />

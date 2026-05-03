@@ -41,7 +41,7 @@ import {
   type HabilidadeNivelAlvo,
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
-import { useProfessores } from "@/lib/professores-store";
+import { useUsersByRole } from "@/lib/users-store";
 
 interface Props {
   open: boolean;
@@ -97,7 +97,7 @@ export function ActivityFormDialog({
   const [prazo, setPrazo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [professor, setProfessor] = useState("");
-  const [professorId, setProfessorId] = useState<string | undefined>();
+  const [professorUserId, setProfessorUserId] = useState<string | undefined>();
   const [cargaHoras, setCargaHoras] = useState("0");
   const [cargaMin, setCargaMin] = useState("0");
 
@@ -137,7 +137,7 @@ export function ActivityFormDialog({
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
-      setProfessorId(editing.professorId ?? undefined);
+      setProfessorUserId(editing.professorUserId ?? undefined);
       const carga = editing.cargaHorariaMin ?? 0;
       setCargaHoras(String(Math.floor(carga / 60)));
       setCargaMin(String(carga % 60));
@@ -172,7 +172,7 @@ export function ActivityFormDialog({
       setPrazo("");
       setDescricao("");
       setProfessor("");
-      setProfessorId(undefined);
+      setProfessorUserId(undefined);
       // Aulas novas: pré-preenche carga com a duração padrão do curso (pode
       // ser alterada). Tarefas continuam com 0 (livre).
       if (defaultTipo === 0 && cursoPadrao) {
@@ -284,7 +284,7 @@ export function ActivityFormDialog({
           descricao,
           objetivoResultados,
           professor: professor.trim(),
-          professorId: professorId ?? undefined,
+          professorUserId: professorUserId ?? undefined,
           habilidadeIds,
           cargaHorariaMin: cargaHorariaMinFinal,
           // Aula
@@ -320,7 +320,7 @@ export function ActivityFormDialog({
           prazo,
           criadoPor: displayName || authUser?.email || "",
           professor: professor.trim(),
-          professorId: professorId ?? undefined,
+          professorUserId: professorUserId ?? undefined,
           habilidadeIds,
           cargaHorariaMin: cargaHorariaMinFinal,
           descricaoConteudo: isAula ? descricaoConteudo : undefined,
@@ -409,8 +409,8 @@ export function ActivityFormDialog({
                   gruposDisponiveis={gruposDisponiveis}
                   professor={professor}
                   setProfessor={setProfessor}
-                  professorId={professorId}
-                  setProfessorId={setProfessorId}
+                  professorUserId={professorUserId}
+                  setProfessorUserId={setProfessorUserId}
                   prazo={prazo}
                   setPrazo={setPrazo}
                   descricao={descricao}
@@ -795,8 +795,8 @@ export function ActivityFormDialog({
                 gruposDisponiveis={gruposDisponiveis}
                 professor={professor}
                 setProfessor={setProfessor}
-                professorId={professorId}
-                setProfessorId={setProfessorId}
+                professorUserId={professorUserId}
+                setProfessorUserId={setProfessorUserId}
                 prazo={prazo}
                 setPrazo={setPrazo}
                 descricao={descricao}
@@ -876,8 +876,8 @@ interface IdentificacaoFieldsProps {
   gruposDisponiveis: Grupo[];
   professor: string;
   setProfessor: (s: string) => void;
-  professorId?: string;
-  setProfessorId: (s: string | undefined) => void;
+  professorUserId?: string;
+  setProfessorUserId: (s: string | undefined) => void;
   prazo: string;
   setPrazo: (s: string) => void;
   descricao: string;
@@ -903,8 +903,8 @@ function IdentificacaoFields({
   gruposDisponiveis,
   professor,
   setProfessor,
-  professorId,
-  setProfessorId,
+  professorUserId,
+  setProfessorUserId,
   prazo,
   setPrazo,
   descricao,
@@ -915,7 +915,8 @@ function IdentificacaoFields({
   setCargaMin,
 }: IdentificacaoFieldsProps) {
   const tipoAtual = isEdit ? editing!.tipo : tipo;
-  const professores = useProfessores();
+  // Fase 8: professores são users com role "professor"
+  const professores = useUsersByRole("professor");
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1062,7 +1063,7 @@ function IdentificacaoFields({
 
         <div className="space-y-2">
           <Label>Vínculo com Professor (Fase 6)</Label>
-          <Select value={professorId ?? "_none"} onValueChange={(v) => setProfessorId(v === "_none" ? undefined : v)}>
+          <Select value={professorUserId ?? "_none"} onValueChange={(v) => setProfessorUserId(v === "_none" ? undefined : v)}>
             <SelectTrigger>
               <SelectValue
                 placeholder={
@@ -1075,8 +1076,8 @@ function IdentificacaoFields({
             <SelectContent>
               <SelectItem value="_none">(Sem vínculo)</SelectItem>
               {professores.map((p) => (
-                <SelectItem key={p.id} value={p.id}>
-                  {p.nome} {p.email ? `(${p.email})` : ""}
+                <SelectItem key={p.userId} value={p.userId}>
+                  {p.displayName} {p.email ? `(${p.email})` : ""}
                 </SelectItem>
               ))}
             </SelectContent>

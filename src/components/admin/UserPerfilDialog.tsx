@@ -3,6 +3,7 @@
 // =====================================================================
 // Mostra dados do usuário: nome, email, papéis, conta criada em,
 // e link para o registro de professor se vinculado.
+// Para professores, exibe também suas horas de aula baseado em avaliações.
 
 import { useMemo } from "react";
 import {
@@ -20,12 +21,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, User, ShieldCheck, GraduationCap, Calendar } from "lucide-react";
+import { Mail, User, ShieldCheck, GraduationCap, Calendar, Clock } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { UserRow } from "@/lib/users-store";
-import { useProfessores } from "@/lib/professores-store";
+// Fase 8: professor é apenas user com role "professor" — sem store separada.
 import { APP_ROLE_LABELS } from "@/lib/auth";
+import { useAgendamentos } from "@/lib/agendamentos-store";
+import { useAvaliacoes } from "@/lib/avaliacoes-store";
+import { gerarExtratoHoras, formatarHoras } from "@/lib/relatorio-extrato-horas";
 
 interface Props {
   open: boolean;
@@ -43,11 +47,51 @@ export function UserPerfilDialog({
 }: Props) {
   if (!user) return null;
 
-  const allProfs = useProfessores();
+  const agendamentos = useAgendamentos();
+  const avaliacoes = useAvaliacoes();
+
+  // Fase 8: usuário "é" professor se tem a role. Dados estão no próprio user.
+  const isProfessor = user.roles.includes("professor");
   const linkedProf = useMemo(
-    () => allProfs.find((p) => p.userId === user.userId) ?? null,
-    [allProfs, user.userId],
+    () =>
+      isProfessor
+        ? {
+            id: user.userId, // id === userId agora
+            userId: user.userId,
+            nome: user.displayName,
+            formacao: user.formacao ?? null,
+            ativo: user.ativo ?? true,
+          }
+        : null,
+    [isProfessor, user.userId, user.displayName, user.formacao, user.ativo],
   );
+
+  // Calcula horas de aula do professor baseado em agendamentos e avaliações
+  const professorHours = useMemo(() => {
+    if (!isProfessor || !linkedProf) return null;
+
+    // Usa o display name do usuário como identificador do professor
+    const professorName = user.displayName || "";
+
+    // Filtra agendamentos do professor
+    const professorAgendamentos = agendamentos.filter(
+      (ag) => ag.professor === professorName || ag.professorUserId === user.userId,
+    );
+
+    if (professorAgendamentos.length === 0) {
+      return { totalHoras: 0, totalAulas: 0, aulasAvaliadas: 0 };
+    }
+
+    // Gera relatório para calcular horas
+    const relatorio = gerarExtratoHoras(professorAgendamentos, avaliacoes, [user]);
+    const profData = relatorio.professores[0];
+
+    return {
+      totalHoras: profData?.totalHoras ?? 0,
+      totalAulas: profData?.totalClasses ?? 0,
+      aulasAvaliadas: profData?.classesAvaliadas ?? 0,
+    };
+  }, [isProfessor, linkedProf, user, agendamentos, avaliacoes]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,6 +158,45 @@ export function UserPerfilDialog({
               )}
             </CardContent>
           </Card>
+
+          {/* Carga Horária — Para Professores */}
+          {isProfessor && professorHours && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base inline-flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Carga Horária
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-2xl font-bold text-primary">
+                      {formatarHoras(professorHours.totalHoras)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Total de Horas</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {professorHours.totalAulas}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Aulas Totais</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-emerald-600">
+                      {professorHours.aulasAvaliadas}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Avaliadas</p>
+                  </div>
+                </div>
+                {professorHours.totalAulas === 0 && (
+                  <p className="text-xs text-muted-foreground italic">
+                    Sem aulas concluídas com avaliações registradas.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Vínculo com professor */}
           <Card>

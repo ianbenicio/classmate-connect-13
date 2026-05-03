@@ -27,7 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, RefreshCw, Calendar } from "lucide-react";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
-import { useProfessores } from "@/lib/professores-store";
+import { useUsersByRole } from "@/lib/users-store";
 import {
   gerarExtratoHoras,
   formatarHoras,
@@ -38,7 +38,7 @@ import { toast } from "sonner";
 export function ExtratoHorasProfessoresReport() {
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
-  const professores = useProfessores();
+  const professores = useUsersByRole("professor");
 
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFim, setDataFim] = useState<string>("");
@@ -261,14 +261,14 @@ export function ExtratoHorasProfessoresReport() {
           ) : (
             <div className="space-y-6">
               {professoresFiltrados.map((prof) => (
-                <div key={prof.professorId || prof.professorNome} className="space-y-3">
+                <div key={prof.professorUserId || prof.professorNome} className="space-y-3">
                   {/* Cabeçalho do professor */}
                   <div className="flex items-center justify-between border-b pb-3">
                     <div>
                       <p className="font-semibold">{prof.professorNome}</p>
-                      {prof.professorId && (
+                      {prof.professorUserId && (
                         <p className="text-xs text-muted-foreground font-mono">
-                          {prof.professorId}
+                          {prof.professorUserId}
                         </p>
                       )}
                     </div>
@@ -352,7 +352,7 @@ export function ExtratoHorasProfessoresReport() {
             </thead>
             <tbody>
               {professoresFiltrados.map((prof) => (
-                <tr key={prof.professorId || prof.professorNome}>
+                <tr key={prof.professorUserId || prof.professorNome}>
                   <td className="border border-gray-300 p-2">{prof.professorNome}</td>
                   <td className="border border-gray-300 p-2 text-right">
                     {prof.totalClasses}

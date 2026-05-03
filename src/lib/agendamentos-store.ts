@@ -35,6 +35,7 @@ type AgendamentoRow = {
   observacao: string | null;
   professor: string | null;
   professor_id: string | null;
+  professor_user_id: string | null;
   criado_por_user_id: string | null;
   criado_por_nome: string | null;
   bloco_index: number;
@@ -72,6 +73,7 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
     observacao: r.observacao ?? undefined,
     professor: r.professor ?? undefined,
     professorId: r.professor_id ?? undefined,
+    professorUserId: r.professor_user_id ?? undefined,
     criadoPorUserId: r.criado_por_user_id ?? undefined,
     criadoPorNome: r.criado_por_nome ?? undefined,
     blocoIndex: r.bloco_index,
@@ -101,6 +103,7 @@ function agendamentoToRow(a: Agendamento) {
     observacao: a.observacao ?? null,
     professor: a.professor ?? null,
     professor_id: a.professorId ?? null,
+    professor_user_id: a.professorUserId ?? null,
     criado_por_user_id: a.criadoPorUserId ?? null,
     criado_por_nome: a.criadoPorNome ?? null,
     bloco_index: a.blocoIndex ?? 0,
