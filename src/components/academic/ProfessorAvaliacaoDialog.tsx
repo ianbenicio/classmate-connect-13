@@ -108,6 +108,8 @@ export function ProfessorAvaliacaoDialog({
     const avaliacao: ProfessorAvaliacao = {
       id: crypto.randomUUID(),
       professorId,
+      // Após migração, professor.id === userId — ambos campos apontam para auth.users.
+      professorUserId: professorId,
       avaliadorUserId: authUser?.id ?? "",
       avaliadorTipo,
       agendamentoId: null, // Pode ser setado ao chamar de AgendarAtividadeDialog
