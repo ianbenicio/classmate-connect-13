@@ -102,7 +102,6 @@ function agendamentoToRow(a: Agendamento) {
     concluido_em: a.concluidoEm ?? null,
     observacao: a.observacao ?? null,
     professor: a.professor ?? null,
-    professor_id: a.professorId ?? null,
     professor_user_id: a.professorUserId ?? null,
     criado_por_user_id: a.criadoPorUserId ?? null,
     criado_por_nome: a.criadoPorNome ?? null,
@@ -117,18 +116,15 @@ function agendamentoToRow(a: Agendamento) {
 
 async function topUpAgendamentos(existingIds: Set<string>) {
   if (SEED_AGENDAMENTOS.length === 0) return false;
-  const missing = SEED_AGENDAMENTOS.filter(
-    (a) => !existingIds.has(toUuid(a.id)),
-  );
-  if (missing.length === 0) return false;
-  const rows = missing.map(agendamentoToRow);
+  // Upsert ALL seed agendamentos to ensure updated fields (like professor) are synced
+  const rows = SEED_AGENDAMENTOS.map(agendamentoToRow);
   const chunkSize = 100;
   let inserted = 0;
   for (let i = 0; i < rows.length; i += chunkSize) {
     const chunk = rows.slice(i, i + chunkSize);
     const { error } = await supabase
       .from("agendamentos")
-      .upsert(chunk, { onConflict: "id", ignoreDuplicates: true });
+      .upsert(chunk, { onConflict: "id" });
     if (error) {
       console.error("[agendamentos] top-up error (chunk)", error);
       continue;
