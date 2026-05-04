@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
+import { notificacoesStore } from "./notificacoes-store";
 
 let agendamentos: Agendamento[] = [];
 let initialized = false;
@@ -209,6 +210,15 @@ export const agendamentosStore = {
     const dbId = toUuid(id);
     agendamentos = agendamentos.filter((x) => x.id !== dbId && x.id !== id);
     emit();
+
+    // Remove notificações associadas a este agendamento
+    await notificacoesStore.ensureInit();
+    const notificacoes = notificacoesStore.getAll();
+    const notifsRelacionadas = notificacoes.filter((n) => n.agendamentoId === id || n.agendamentoId === dbId);
+    for (const notif of notifsRelacionadas) {
+      await notificacoesStore.remove(notif.id);
+    }
+
     const { error } = await supabase.from("agendamentos").delete().eq("id", dbId);
     if (error) {
       console.error("[agendamentos] remove error", error);

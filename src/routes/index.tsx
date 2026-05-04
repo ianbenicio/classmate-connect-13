@@ -86,6 +86,9 @@ function DashboardPage() {
 
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
+  // Calcula se o usuário é professor (fora do useMemo para evitar issue de dependência)
+  const isProfessor = hasRole("professor");
+
   const proximas = useMemo(() => {
     const hoje = new Date().toISOString().slice(0, 10);
 
@@ -93,7 +96,7 @@ function DashboardPage() {
       .filter((a) => a.prazo >= hoje)
       .filter((a) => {
         // Se o usuário é professor, filtra apenas suas atividades
-        if (hasRole("professor")) {
+        if (isProfessor) {
           return a.professorUserId === currentUserId || a.professor === displayName;
         }
         // Caso contrário, mostra todas as atividades
@@ -101,7 +104,7 @@ function DashboardPage() {
       })
       .sort((a, b) => a.prazo.localeCompare(b.prazo))
       .slice(0, 8);
-  }, [atividades, currentUserId, displayName, hasRole]);
+  }, [atividades, isProfessor, currentUserId, displayName]);
 
   const stats = [
     {
