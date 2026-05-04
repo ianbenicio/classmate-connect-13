@@ -120,9 +120,7 @@ function ProfessorFormDialog({
   }, [open, editing]);
 
   const toggleHab = (id: string) => {
-    setHabilidadesSel((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
+    setHabilidadesSel((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const handleSubmit = async () => {
@@ -166,9 +164,7 @@ function ProfessorFormDialog({
     <InnerDialog open={open} onOpenChange={onOpenChange}>
       <InnerDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <InnerDialogHeader>
-          <InnerDialogTitle>
-            Editar professor
-          </InnerDialogTitle>
+          <InnerDialogTitle>Editar professor</InnerDialogTitle>
         </InnerDialogHeader>
 
         <div className="space-y-3">
@@ -198,9 +194,7 @@ function ProfessorFormDialog({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__unlinked">
-                  (Sem conta / Desvinculado)
-                </SelectItem>
+                <SelectItem value="__unlinked">(Sem conta / Desvinculado)</SelectItem>
                 {availableUsers.map((u) => (
                   <SelectItem key={u.userId} value={u.userId}>
                     {u.displayName} ({u.email})
@@ -322,9 +316,7 @@ function ProfessorFormDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit}>
-            Salvar
-          </Button>
+          <Button onClick={handleSubmit}>Salvar</Button>
         </InnerDialogFooter>
       </InnerDialogContent>
     </InnerDialog>
@@ -341,10 +333,7 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
   const avaliacoes = useProfessorAvaliacoes();
   const agendamentos = useAgendamentos();
 
-  const habMap = useMemo(
-    () => new Map(habilidades.map((h) => [h.id, h])),
-    [habilidades],
-  );
+  const habMap = useMemo(() => new Map(habilidades.map((h) => [h.id, h])), [habilidades]);
 
   const [editing, setEditing] = useState<Professor | null>(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -352,9 +341,7 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
   const [perfilAberto, setPerfilAberto] = useState<Professor | null>(null);
   const [avaliarProfId, setAvaliarProfId] = useState<string | null>(null);
   const [filtro, setFiltro] = useState("");
-  const [statusFiltro, setStatusFiltro] = useState<"todos" | "ativos" | "inativos">(
-    "ativos",
-  );
+  const [statusFiltro, setStatusFiltro] = useState<"todos" | "ativos" | "inativos">("ativos");
 
   // Sync automático bidirecional ao abrir:
   //   1. Cada usuário com papel "professor" → garante registro em `professores`
@@ -380,14 +367,10 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
       }
       if (!cancelled) {
         if (created > 0) {
-          toast.success(
-            `${created} professor(es) sincronizado(s) a partir de Usuários.`,
-          );
+          toast.success(`${created} professor(es) sincronizado(s) a partir de Usuários.`);
         }
         if (rolesAdded > 0) {
-          toast.success(
-            `${rolesAdded} usuário(s) ganharam o papel "professor".`,
-          );
+          toast.success(`${rolesAdded} usuário(s) ganharam o papel "professor".`);
         }
       }
     })();
@@ -426,8 +409,8 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
               Professores
             </DialogTitle>
             <DialogDescription>
-              Professores sincronizados de usuários com papel "professor".
-              Edite perfil, especialidades e avaliações.
+              Professores sincronizados de usuários com papel "professor". Edite perfil,
+              especialidades e avaliações.
             </DialogDescription>
           </DialogHeader>
 
@@ -505,9 +488,7 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
                         </div>
                       )}
                       {p.formacao && (
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
-                          {p.formacao}
-                        </p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{p.formacao}</p>
                       )}
                       {p.cargaHorariaSemanalMin > 0 && (
                         <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -590,28 +571,19 @@ export function ProfessoresManagerDialog({ open, onOpenChange }: Props) {
         </DialogContent>
       </Dialog>
 
-      <ProfessorFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        editing={editing}
-      />
+      <ProfessorFormDialog open={formOpen} onOpenChange={setFormOpen} editing={editing} />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(o) => !o && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir professor?</AlertDialogTitle>
             <AlertDialogDescription>
-              <strong>"{confirmDelete?.nome}"</strong> será removido do banco.
-              Avaliações vinculadas a esse professor também serão removidas
-              (CASCADE). Atividades e agendamentos antigos preservam o nome do
-              professor como string para compatibilidade.
+              <strong>"{confirmDelete?.nome}"</strong> será removido do banco. Avaliações vinculadas
+              a esse professor também serão removidas (CASCADE). Atividades e agendamentos antigos
+              preservam o nome do professor como string para compatibilidade.
               <br />
               <br />
-              Prefira <strong>Desativar</strong> para preservar o histórico
-              completo.
+              Prefira <strong>Desativar</strong> para preservar o histórico completo.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

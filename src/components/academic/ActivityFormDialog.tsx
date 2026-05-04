@@ -157,8 +157,10 @@ export function ActivityFormDialog({
         ...DEFAULT_FORMULARIOS,
         ...(editing.formularios ?? {}),
         // Aulas: forçar sempre ON
-        relatorioProfessor: editing.tipo === 0 ? true : (editing.formularios?.relatorioProfessor ?? true),
-        autoavaliacaoAluno: editing.tipo === 0 ? true : (editing.formularios?.autoavaliacaoAluno ?? false),
+        relatorioProfessor:
+          editing.tipo === 0 ? true : (editing.formularios?.relatorioProfessor ?? true),
+        autoavaliacaoAluno:
+          editing.tipo === 0 ? true : (editing.formularios?.autoavaliacaoAluno ?? false),
       });
       setRubricas(editing.rubricas ?? []);
       setSugestoesPais(editing.sugestoesPais ?? "");
@@ -258,9 +260,7 @@ export function ActivityFormDialog({
       return;
     }
     if (habilidadeIds.length > MAX_HABILIDADES_POR_ATIVIDADE) {
-      toast.error(
-        `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades por atividade.`,
-      );
+      toast.error(`Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades por atividade.`);
       setTab("pedagogico");
       return;
     }
@@ -273,8 +273,7 @@ export function ActivityFormDialog({
       : formularios;
 
     const cargaHorariaMinFinal =
-      (parseInt(cargaHoras || "0", 10) || 0) * 60 +
-      (parseInt(cargaMin || "0", 10) || 0);
+      (parseInt(cargaHoras || "0", 10) || 0) * 60 + (parseInt(cargaMin || "0", 10) || 0);
 
     const atividade: Atividade = isEdit
       ? {
@@ -358,10 +357,7 @@ export function ActivityFormDialog({
   const delRoteiro = (id: string) => setRoteiro((r) => r.filter((b) => b.id !== id));
 
   const addMaterial = () =>
-    setMateriais((m) => [
-      ...m,
-      { id: crypto.randomUUID(), tipo: "link", titulo: "", url: "" },
-    ]);
+    setMateriais((m) => [...m, { id: crypto.randomUUID(), tipo: "link", titulo: "", url: "" }]);
   const updMaterial = (id: string, patch: Partial<MaterialAula>) =>
     setMateriais((m) => m.map((x) => (x.id === id ? { ...x, ...patch } : x)));
   const delMaterial = (id: string) => setMateriais((m) => m.filter((x) => x.id !== id));
@@ -376,20 +372,28 @@ export function ActivityFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "Editar Atividade" : "Nova Atividade"}
-          </DialogTitle>
+          <DialogTitle>{isEdit ? "Editar Atividade" : "Nova Atividade"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isAula ? (
             <Tabs value={tab} onValueChange={setTab} className="w-full">
               <TabsList className="grid w-full grid-cols-5 h-auto">
-                <TabsTrigger value="identificacao" className="text-xs">📌 Ident.</TabsTrigger>
-                <TabsTrigger value="pedagogico" className="text-xs">🎯 Pedag.</TabsTrigger>
-                <TabsTrigger value="conteudo" className="text-xs">📚 Conteúdo</TabsTrigger>
-                <TabsTrigger value="avaliacao" className="text-xs">📝 Avaliação</TabsTrigger>
-                <TabsTrigger value="pais" className="text-xs">👨‍👩 Pais</TabsTrigger>
+                <TabsTrigger value="identificacao" className="text-xs">
+                  📌 Ident.
+                </TabsTrigger>
+                <TabsTrigger value="pedagogico" className="text-xs">
+                  🎯 Pedag.
+                </TabsTrigger>
+                <TabsTrigger value="conteudo" className="text-xs">
+                  📚 Conteúdo
+                </TabsTrigger>
+                <TabsTrigger value="avaliacao" className="text-xs">
+                  📝 Avaliação
+                </TabsTrigger>
+                <TabsTrigger value="pais" className="text-xs">
+                  👨‍👩 Pais
+                </TabsTrigger>
               </TabsList>
 
               {/* ============ IDENTIFICAÇÃO ============ */}
@@ -435,7 +439,9 @@ export function ActivityFormDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <FieldLabel field="resultadosEsperados">Resultados Esperados e Benefícios</FieldLabel>
+                  <FieldLabel field="resultadosEsperados">
+                    Resultados Esperados e Benefícios
+                  </FieldLabel>
                   <Textarea
                     value={resultadosEsperados}
                     onChange={(e) => setResultadosEsperados(e.target.value)}
@@ -443,7 +449,9 @@ export function ActivityFormDialog({
                     placeholder={`Para os alunos:\n- ...\n\nPara os pais/responsáveis:\n- ...\n\nPara a instituição:\n- ...`}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Use as seções <strong>Para os alunos</strong>, <strong>Para os pais/responsáveis</strong> e <strong>Para a instituição</strong>.
+                    Use as seções <strong>Para os alunos</strong>,{" "}
+                    <strong>Para os pais/responsáveis</strong> e <strong>Para a instituição</strong>
+                    .
                   </p>
                 </div>
 
@@ -475,34 +483,30 @@ export function ActivityFormDialog({
                     placeholder={`Linguagem: ...\nMediação: ...\nSensibilidade: ...\nConexão com família: ...\nRegistro: ...`}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Orientações sobre <strong>Linguagem</strong>, <strong>Mediação</strong>, <strong>Sensibilidade</strong>, <strong>Conexão com família</strong> e <strong>Registro</strong>.
+                    Orientações sobre <strong>Linguagem</strong>, <strong>Mediação</strong>,{" "}
+                    <strong>Sensibilidade</strong>, <strong>Conexão com família</strong> e{" "}
+                    <strong>Registro</strong>.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <FieldLabel field="habilidadeIds">
-                    Habilidades Trabalhadas
-                  </FieldLabel>
+                  <FieldLabel field="habilidadeIds">Habilidades Trabalhadas</FieldLabel>
                   <p className="text-xs text-muted-foreground">
-                    Escolha até <strong>{MAX_HABILIDADES_POR_ATIVIDADE}</strong>{" "}
-                    habilidades.
+                    Escolha até <strong>{MAX_HABILIDADES_POR_ATIVIDADE}</strong> habilidades.
                   </p>
                   <SkillSelector
                     habilidades={habilidades}
                     selectedIds={habilidadeIds}
                     onChange={(ids) => {
                       if (ids.length > MAX_HABILIDADES_POR_ATIVIDADE) {
-                        toast.error(
-                          `Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`,
-                        );
+                        toast.error(`Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`);
                         return;
                       }
                       setHabilidadeIds(ids);
                     }}
                   />
                   <p className="text-[11px] text-muted-foreground">
-                    {habilidadeIds.length}/{MAX_HABILIDADES_POR_ATIVIDADE}{" "}
-                    selecionadas
+                    {habilidadeIds.length}/{MAX_HABILIDADES_POR_ATIVIDADE} selecionadas
                   </p>
                 </div>
 
@@ -581,12 +585,16 @@ export function ActivityFormDialog({
                     </Button>
                   </div>
                   {roteiro.length === 0 && (
-                    <p className="text-xs text-muted-foreground italic">Sem blocos. Adicione etapas com tempo estimado.</p>
+                    <p className="text-xs text-muted-foreground italic">
+                      Sem blocos. Adicione etapas com tempo estimado.
+                    </p>
                   )}
                   {roteiro.map((b, i) => (
                     <div key={b.id} className="rounded-md border p-3 space-y-2 bg-card">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}.</span>
+                        <span className="text-xs font-mono text-muted-foreground w-6">
+                          {i + 1}.
+                        </span>
                         <Input
                           placeholder="Título do bloco"
                           value={b.titulo}
@@ -631,10 +639,15 @@ export function ActivityFormDialog({
                     </Button>
                   </div>
                   {materiais.map((m) => (
-                    <div key={m.id} className="flex items-center gap-2 rounded-md border p-2 bg-card">
+                    <div
+                      key={m.id}
+                      className="flex items-center gap-2 rounded-md border p-2 bg-card"
+                    >
                       <Select
                         value={m.tipo}
-                        onValueChange={(v) => updMaterial(m.id, { tipo: v as MaterialAula["tipo"] })}
+                        onValueChange={(v) =>
+                          updMaterial(m.id, { tipo: v as MaterialAula["tipo"] })
+                        }
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
@@ -732,7 +745,10 @@ export function ActivityFormDialog({
                     </p>
                   )}
                   {rubricas.map((r, i) => (
-                    <div key={r.id} className="flex items-center gap-2 rounded-md border p-2 bg-card">
+                    <div
+                      key={r.id}
+                      className="flex items-center gap-2 rounded-md border p-2 bg-card"
+                    >
                       <span className="text-xs font-mono text-muted-foreground w-6">{i + 1}.</span>
                       <Input
                         placeholder="Descrição do critério"
@@ -840,9 +856,8 @@ export function ActivityFormDialog({
           )}
 
           <p className="text-xs text-muted-foreground border-l-2 border-muted pl-3">
-            Esta atividade fica disponível na biblioteca do curso. Para que ela
-            aconteça em uma turma, use <strong>"Agendar"</strong> na lista de
-            atividades.
+            Esta atividade fica disponível na biblioteca do curso. Para que ela aconteça em uma
+            turma, use <strong>"Agendar"</strong> na lista de atividades.
           </p>
 
           <DialogFooter>
@@ -938,7 +953,9 @@ function IdentificacaoFields({
         </div>
 
         <div className="space-y-2">
-          <FieldLabel field="nome" required>Nome</FieldLabel>
+          <FieldLabel field="nome" required>
+            Nome
+          </FieldLabel>
           <Input
             value={nome}
             onChange={(e) => setNome(e.target.value)}
@@ -973,7 +990,11 @@ function IdentificacaoFields({
           <Label>Grupo / Módulo{isEdit ? "" : " *"}</Label>
           <Select value={grupo || ""} onValueChange={(v) => setGrupo(v || "")} disabled={isEdit}>
             <SelectTrigger>
-              <SelectValue placeholder={gruposDisponiveis.length === 0 ? "Nenhum grupo disponível" : "Selecione"} />
+              <SelectValue
+                placeholder={
+                  gruposDisponiveis.length === 0 ? "Nenhum grupo disponível" : "Selecione"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {gruposDisponiveis.length === 0 ? (
@@ -1033,18 +1054,17 @@ function IdentificacaoFields({
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground">
-            Tempo que esta atividade ocupa quando agendada. <strong>0</strong> = livre (não consome blocos).
+            Tempo que esta atividade ocupa quando agendada. <strong>0</strong> = livre (não consome
+            blocos).
           </p>
         </div>
       </div>
 
       <div className="space-y-2">
-        <FieldLabel field="descricao" required>Descrição Geral</FieldLabel>
-        <Textarea
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          rows={3}
-        />
+        <FieldLabel field="descricao" required>
+          Descrição Geral
+        </FieldLabel>
+        <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} />
       </div>
 
       {/* Professor - identificação (string) e vínculo FK (Fase 6) */}
@@ -1063,7 +1083,10 @@ function IdentificacaoFields({
 
         <div className="space-y-2">
           <Label>Vínculo com Professor (Fase 6)</Label>
-          <Select value={professorUserId ?? "_none"} onValueChange={(v) => setProfessorUserId(v === "_none" ? undefined : v)}>
+          <Select
+            value={professorUserId ?? "_none"}
+            onValueChange={(v) => setProfessorUserId(v === "_none" ? undefined : v)}
+          >
             <SelectTrigger>
               <SelectValue
                 placeholder={
@@ -1105,7 +1128,9 @@ function FormularioCheckbox({
   locked?: boolean;
 }) {
   return (
-    <label className={`flex items-start gap-3 rounded-md p-2 transition-colors ${locked ? "opacity-90 cursor-not-allowed bg-muted/40" : "cursor-pointer hover:bg-muted/50"}`}>
+    <label
+      className={`flex items-start gap-3 rounded-md p-2 transition-colors ${locked ? "opacity-90 cursor-not-allowed bg-muted/40" : "cursor-pointer hover:bg-muted/50"}`}
+    >
       <Checkbox
         checked={checked}
         disabled={locked}
@@ -1115,7 +1140,11 @@ function FormularioCheckbox({
       <div className="flex-1">
         <div className="text-sm font-medium flex items-center gap-2">
           {label}
-          {locked && <span className="text-[10px] uppercase tracking-wide text-muted-foreground border rounded px-1 py-0.5">obrigatório</span>}
+          {locked && (
+            <span className="text-[10px] uppercase tracking-wide text-muted-foreground border rounded px-1 py-0.5">
+              obrigatório
+            </span>
+          )}
         </div>
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>

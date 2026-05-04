@@ -106,9 +106,7 @@ function FormulariosPage() {
           Personalizados
         </h2>
         {grupos.personalizados.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Nenhum formulário personalizado ainda.
-          </p>
+          <p className="text-sm text-muted-foreground">Nenhum formulário personalizado ainda.</p>
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
             {grupos.personalizados.map((f) => (
@@ -131,27 +129,20 @@ function FormulariosPage() {
         formulario={viewing}
       />
 
-      <FormularioFormDialog
-        open={creating}
-        onOpenChange={setCreating}
-        initial={null}
-      />
+      <FormularioFormDialog open={creating} onOpenChange={setCreating} initial={null} />
       <FormularioFormDialog
         open={!!editing}
         onOpenChange={(o) => !o && setEditing(null)}
         initial={editing}
       />
 
-      <AlertDialog
-        open={!!deleting}
-        onOpenChange={(o) => !o && setDeleting(null)}
-      >
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir formulário?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser desfeita. O template{" "}
-              <strong>{deleting?.nome}</strong> será removido.
+              Esta ação não pode ser desfeita. O template <strong>{deleting?.nome}</strong> será
+              removido.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -222,12 +213,10 @@ function FormularioCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {f.descricao && (
-          <p className="text-sm text-muted-foreground">{f.descricao}</p>
-        )}
+        {f.descricao && <p className="text-sm text-muted-foreground">{f.descricao}</p>}
         <div className="text-xs text-muted-foreground">
-          {blocos.length} bloco{blocos.length === 1 ? "" : "s"} ·{" "}
-          {totalPerguntas} pergunta{totalPerguntas === 1 ? "" : "s"}
+          {blocos.length} bloco{blocos.length === 1 ? "" : "s"} · {totalPerguntas} pergunta
+          {totalPerguntas === 1 ? "" : "s"}
         </div>
         <div className="flex gap-2 pt-1">
           <Button variant="outline" size="sm" onClick={onView}>
@@ -265,8 +254,7 @@ function FormularioFormDialog({
 }) {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [destinatario, setDestinatario] =
-    useState<FormularioDestinatario>("professor");
+  const [destinatario, setDestinatario] = useState<FormularioDestinatario>("professor");
   const [estruturaJson, setEstruturaJson] = useState('{\n  "blocos": []\n}');
   const [saving, setSaving] = useState(false);
 
@@ -275,9 +263,7 @@ function FormularioFormDialog({
     setNome(initial?.nome ?? "");
     setDescricao(initial?.descricao ?? "");
     setDestinatario(initial?.destinatario ?? "professor");
-    setEstruturaJson(
-      JSON.stringify(initial?.estrutura ?? { blocos: [] }, null, 2),
-    );
+    setEstruturaJson(JSON.stringify(initial?.estrutura ?? { blocos: [] }, null, 2));
   }, [open, initial]);
 
   const handleSubmit = async () => {
@@ -320,9 +306,7 @@ function FormularioFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {initial ? "Editar formulário" : "Novo formulário"}
-          </DialogTitle>
+          <DialogTitle>{initial ? "Editar formulário" : "Novo formulário"}</DialogTitle>
           <DialogDescription>
             {isSystem
               ? "Formulário do sistema — você pode ajustar a estrutura, mas o slug é fixo."
@@ -378,8 +362,7 @@ function FormularioFormDialog({
               className="font-mono text-xs"
             />
             <p className="text-[11px] text-muted-foreground">
-              Edição avançada via JSON. Em breve, editor visual de blocos e
-              perguntas.
+              Edição avançada via JSON. Em breve, editor visual de blocos e perguntas.
             </p>
           </div>
         </div>
@@ -433,7 +416,7 @@ function FormularioPreviewDialog({
   formulario: FormularioTemplate | null;
 }) {
   if (!formulario) return null;
-  const blocos = ((formulario.estrutura as { blocos?: PreviewBloco[] }).blocos ?? []);
+  const blocos = (formulario.estrutura as { blocos?: PreviewBloco[] }).blocos ?? [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -444,9 +427,7 @@ function FormularioPreviewDialog({
             {formulario.nome}
           </DialogTitle>
           <DialogDescription className="space-y-2">
-            <span className="block">
-              {formulario.descricao || "Sem descrição."}
-            </span>
+            <span className="block">{formulario.descricao || "Sem descrição."}</span>
             <span className="flex items-center gap-2">
               <Badge variant="secondary" className="gap-1">
                 {formulario.destinatario === "professor" ? (
@@ -464,9 +445,7 @@ function FormularioPreviewDialog({
                   <Lock className="h-3 w-3" /> Sistema
                 </Badge>
               )}
-              <code className="text-[11px] text-muted-foreground">
-                {formulario.slug}
-              </code>
+              <code className="text-[11px] text-muted-foreground">{formulario.slug}</code>
             </span>
           </DialogDescription>
         </DialogHeader>
@@ -480,18 +459,11 @@ function FormularioPreviewDialog({
             blocos.map((bloco, bi) => {
               const perguntas = bloco.perguntas ?? [];
               return (
-                <section
-                  key={bi}
-                  className="rounded-lg border bg-muted/30 p-3 space-y-3"
-                >
+                <section key={bi} className="rounded-lg border bg-muted/30 p-3 space-y-3">
                   <header className="space-y-0.5">
-                    <h4 className="text-sm font-semibold">
-                      {bloco.titulo || `Bloco ${bi + 1}`}
-                    </h4>
+                    <h4 className="text-sm font-semibold">{bloco.titulo || `Bloco ${bi + 1}`}</h4>
                     {bloco.descricao && (
-                      <p className="text-xs text-muted-foreground">
-                        {bloco.descricao}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{bloco.descricao}</p>
                     )}
                   </header>
                   {perguntas.length === 0 ? (
@@ -503,26 +475,16 @@ function FormularioPreviewDialog({
                       {perguntas.map((p, pi) => (
                         <li key={p.id ?? pi} className="space-y-1">
                           <div className="inline-flex items-start gap-2">
-                            <span className="font-medium">
-                              {p.label || "(sem enunciado)"}
-                            </span>
+                            <span className="font-medium">{p.label || "(sem enunciado)"}</span>
                             {p.obrigatorio && (
-                              <span
-                                className="text-destructive font-bold"
-                                title="Obrigatória"
-                              >
+                              <span className="text-destructive font-bold" title="Obrigatória">
                                 *
                               </span>
                             )}
                           </div>
                           <div className="ml-5 flex flex-wrap items-center gap-1.5">
-                            <Badge
-                              variant="outline"
-                              className="text-[10px] font-normal"
-                            >
-                              {PERGUNTA_TIPO_LABELS[p.tipo ?? ""] ??
-                                p.tipo ??
-                                "—"}
+                            <Badge variant="outline" className="text-[10px] font-normal">
+                              {PERGUNTA_TIPO_LABELS[p.tipo ?? ""] ?? p.tipo ?? "—"}
                             </Badge>
                             {p.opcoes && p.opcoes.length > 0 && (
                               <span className="text-[11px] text-muted-foreground">

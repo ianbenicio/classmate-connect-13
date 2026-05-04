@@ -3,13 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExtratoHorasProfessoresReport } from "@/components/relatorios/ExtratoHorasProfessoresReport";
 import { useAuth } from "@/lib/auth";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 export const Route = createFileRoute("/coordenacao/relatorios/extrato-horas-p")({
   component: ExtratoHorasPRoute,

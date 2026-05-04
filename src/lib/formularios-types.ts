@@ -52,8 +52,16 @@ export type ComportamentoTag = string;
  * Mantido apenas como referência de valores legados ainda presentes em dados históricos.
  */
 export const COMPORTAMENTO_TAGS_LEGACY = [
-  "participativo", "colaborativo", "concentrado", "criativo", "lider",
-  "disperso", "agitado", "tímido", "ausente", "frustrado",
+  "participativo",
+  "colaborativo",
+  "concentrado",
+  "criativo",
+  "lider",
+  "disperso",
+  "agitado",
+  "tímido",
+  "ausente",
+  "frustrado",
 ] as const;
 
 // =====================================================================
@@ -90,7 +98,10 @@ export interface RelatorioAlunoDados {
 // =====================================================================
 export type FormularioTipo = "relatorio_prof" | "checklist_aluno" | "relatorio_aluno";
 
-export const FORMULARIO_LABELS: Record<FormularioTipo, { titulo: string; emoji: string; descricao: string }> = {
+export const FORMULARIO_LABELS: Record<
+  FormularioTipo,
+  { titulo: string; emoji: string; descricao: string }
+> = {
   relatorio_prof: {
     titulo: "Relatório da aula (professor)",
     emoji: "📋",

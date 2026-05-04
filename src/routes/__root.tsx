@@ -47,13 +47,22 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Academia" },
-      { name: "description", content: "Academia Flow é um sistema de gestão acadêmica para coordenadores e professores." },
+      {
+        name: "description",
+        content: "Academia Flow é um sistema de gestão acadêmica para coordenadores e professores.",
+      },
       { property: "og:title", content: "Acadêmico" },
-      { property: "og:description", content: "Sistema de gestão acadêmica para coordenadores e professores." },
+      {
+        property: "og:description",
+        content: "Sistema de gestão acadêmica para coordenadores e professores.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Acadêmico" },
-      { name: "twitter:description", content: "Sistema de gestão acadêmica para coordenadores e professores." },
+      {
+        name: "twitter:description",
+        content: "Sistema de gestão acadêmica para coordenadores e professores.",
+      },
     ],
     links: [
       {

@@ -68,10 +68,7 @@ async function topUpHabilidades(existingIds: Set<string>) {
 }
 
 async function loadFromDb() {
-  const { data, error } = await supabase
-    .from("habilidades")
-    .select("*")
-    .order("sigla");
+  const { data, error } = await supabase.from("habilidades").select("*").order("sigla");
   if (error) {
     console.error("[habilidades] load error", error);
     habilidades = [];
@@ -81,10 +78,7 @@ async function loadFromDb() {
   const existingIds = new Set(rows.map((r) => r.id));
   const inserted = await topUpHabilidades(existingIds);
   if (inserted) {
-    const { data: data2 } = await supabase
-      .from("habilidades")
-      .select("*")
-      .order("sigla");
+    const { data: data2 } = await supabase.from("habilidades").select("*").order("sigla");
     habilidades = ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
   } else {
     habilidades = rows.map(rowToHabilidade);
@@ -114,9 +108,7 @@ export const habilidadesStore = {
       ? habilidades.map((x) => (x.id === local.id ? local : x))
       : [...habilidades, local];
     emit();
-    const { error } = await supabase
-      .from("habilidades")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabase.from("habilidades").upsert(row, { onConflict: "id" });
     if (error) {
       console.error("[habilidades] upsert error", error);
       toast.error(`Erro ao salvar habilidade: ${error.message}`);
@@ -143,9 +135,7 @@ export function useHabilidades(): Habilidade[] {
   const [snap, setSnap] = useState<Habilidade[]>(habilidadesStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = habilidadesStore.subscribe(() =>
-      setSnap([...habilidadesStore.getAll()]),
-    );
+    const unsub = habilidadesStore.subscribe(() => setSnap([...habilidadesStore.getAll()]));
     return () => {
       unsub();
     };

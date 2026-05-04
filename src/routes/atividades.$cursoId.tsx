@@ -36,11 +36,7 @@ import { cursosStore } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { atividadesStore, useAtividades } from "@/lib/atividades-store";
 import { useHabilidades } from "@/lib/habilidades-store";
-import {
-  type Atividade,
-  type AtividadeTipo,
-  type Grupo,
-} from "@/lib/academic-types";
+import { type Atividade, type AtividadeTipo, type Grupo } from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades/$cursoId")({
@@ -148,13 +144,9 @@ function CursoAtividadesPage() {
                   {turmasDoCurso.length} turmas
                 </span>
               </div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                {curso.nome}
-              </h1>
+              <h1 className="text-3xl font-bold tracking-tight">{curso.nome}</h1>
               {curso.descricao && (
-                <p className="text-muted-foreground mt-2 max-w-2xl">
-                  {curso.descricao}
-                </p>
+                <p className="text-muted-foreground mt-2 max-w-2xl">{curso.descricao}</p>
               )}
             </div>
             <div className="flex gap-3 text-sm">
@@ -210,23 +202,17 @@ function CursoAtividadesPage() {
         onSave={handleSave}
       />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(open) => !open && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover atividade?</AlertDialogTitle>
             <AlertDialogDescription>
-              A atividade <strong>{confirmDelete?.nome}</strong> será removida
-              permanentemente.
+              A atividade <strong>{confirmDelete?.nome}</strong> será removida permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => confirmDelete && handleDelete(confirmDelete)}
-            >
+            <AlertDialogAction onClick={() => confirmDelete && handleDelete(confirmDelete)}>
               Remover
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -266,9 +252,7 @@ function ActivityColumn({
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter(
-        (a) =>
-          a.nome.toLowerCase().includes(q) ||
-          a.codigo.toLowerCase().includes(q),
+        (a) => a.nome.toLowerCase().includes(q) || a.codigo.toLowerCase().includes(q),
       );
     }
     return list;
@@ -304,9 +288,7 @@ function ActivityColumn({
         <h2 className="font-semibold inline-flex items-center gap-2">
           {icon} {title}
           <Badge variant="secondary" className="ml-1">
-            {filtered.length !== items.length
-              ? `${filtered.length}/${items.length}`
-              : items.length}
+            {filtered.length !== items.length ? `${filtered.length}/${items.length}` : items.length}
           </Badge>
         </h2>
         <Button size="sm" onClick={onAdd}>
@@ -345,9 +327,7 @@ function ActivityColumn({
 
       <div className="p-3 space-y-2">
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">
-            {emptyText}
-          </p>
+          <p className="text-sm text-muted-foreground text-center py-8">{emptyText}</p>
         ) : filtered.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
             Nenhum resultado para a busca.
@@ -360,9 +340,7 @@ function ActivityColumn({
                   <Badge variant="outline" className="text-[10px] font-mono">
                     {group.cod}
                   </Badge>
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    {group.nome}
-                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">{group.nome}</span>
                   <span className="text-[10px] text-muted-foreground ml-auto">
                     {group.items.length}
                   </span>
@@ -376,9 +354,7 @@ function ActivityColumn({
                   >
                     <div className="min-w-0">
                       <div className="font-medium truncate">{a.nome}</div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {a.codigo}
-                      </div>
+                      <div className="text-xs text-muted-foreground truncate">{a.codigo}</div>
                     </div>
                     <div className="flex gap-1 shrink-0">
                       <Button

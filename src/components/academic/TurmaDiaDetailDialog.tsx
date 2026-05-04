@@ -63,11 +63,7 @@ export function TurmaDiaDetailDialog({
   // Mapa blocoIndex -> agendamento
   const agByBloco = new Map<number, Agendamento>();
   for (const a of agendamentos) {
-    if (
-      a.turmaId !== turma.id ||
-      a.data !== dataKey ||
-      (a.slotInicio ?? a.inicio) !== slot.inicio
-    )
+    if (a.turmaId !== turma.id || a.data !== dataKey || (a.slotInicio ?? a.inicio) !== slot.inicio)
       continue;
     const start = a.blocoIndex ?? 0;
     const len = Math.max(1, a.blocosTotal ?? 1);
@@ -83,9 +79,8 @@ export function TurmaDiaDetailDialog({
             {curso.nome} · {turma.cod}
           </DialogTitle>
           <DialogDescription>
-            {format(date, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })} ·{" "}
-            {slot.inicio}–{slot.fim} · {totalBlocos}{" "}
-            {totalBlocos === 1 ? "aula" : "aulas"}
+            {format(date, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })} · {slot.inicio}–
+            {slot.fim} · {totalBlocos} {totalBlocos === 1 ? "aula" : "aulas"}
           </DialogDescription>
         </DialogHeader>
 
@@ -100,26 +95,18 @@ export function TurmaDiaDetailDialog({
             const inicio = blocoInicio(slot, idx, duracaoAulaMin);
             const fim = blocoFim(slot, idx, duracaoAulaMin);
             const estado = computeSlotEstado(dataKey, fim, ag, now);
-            const isOwner = ag
-              ? hasRole("admin") || ag.criadoPorUserId === user?.id
-              : false;
+            const isOwner = ag ? hasRole("admin") || ag.criadoPorUserId === user?.id : false;
 
             // Janela do relatório: do início do dia da aula até 24h após o fim
             const slotEnd = endSlotDate({ data: dataKey, fim });
             const slotEnd24 = endSlotPlus24h({ data: dataKey, fim });
             const startOfDay = new Date(`${dataKey}T00:00:00`);
-            const dentroJanelaRelatorio =
-              now >= startOfDay && now <= slotEnd24;
+            const dentroJanelaRelatorio = now >= startOfDay && now <= slotEnd24;
 
             const podeRegistrarRelatorio =
-              !!ag &&
-              isOwner &&
-              dentroJanelaRelatorio &&
-              ag.status !== "concluido";
+              !!ag && isOwner && dentroJanelaRelatorio && ag.status !== "concluido";
 
-            const ativsDoAg = ag
-              ? atividades.filter((a) => ag.atividadeIds.includes(a.id))
-              : [];
+            const ativsDoAg = ag ? atividades.filter((a) => ag.atividadeIds.includes(a.id)) : [];
 
             return (
               <div
@@ -152,15 +139,10 @@ export function TurmaDiaDetailDialog({
                     {ativsDoAg.length > 0 && (
                       <div className="space-y-1">
                         {ativsDoAg.map((at) => (
-                          <div
-                            key={at.id}
-                            className="flex items-start gap-1.5 text-sm"
-                          >
+                          <div key={at.id} className="flex items-start gap-1.5 text-sm">
                             <FileText className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary" />
                             <div className="min-w-0 flex-1">
-                              <div className="font-medium truncate">
-                                {at.nome}
-                              </div>
+                              <div className="font-medium truncate">{at.nome}</div>
                               <div className="text-[11px] font-mono text-muted-foreground">
                                 {at.codigo}
                               </div>
@@ -172,9 +154,7 @@ export function TurmaDiaDetailDialog({
 
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <User className="h-3 w-3" />
-                      <span className="truncate">
-                        {ag.criadoPorNome ?? ag.professor ?? "—"}
-                      </span>
+                      <span className="truncate">{ag.criadoPorNome ?? ag.professor ?? "—"}</span>
                     </div>
 
                     {ag.observacao && (
@@ -220,9 +200,7 @@ export function TurmaDiaDetailDialog({
                   </>
                 ) : (
                   <>
-                    <p className="text-sm text-muted-foreground">
-                      Slot disponível
-                    </p>
+                    <p className="text-sm text-muted-foreground">Slot disponível</p>
                     {now <= slotEnd && (
                       <Button
                         size="sm"

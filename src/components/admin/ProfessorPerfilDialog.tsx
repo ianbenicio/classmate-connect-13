@@ -16,13 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { X, Mail, Phone, BookOpen, GraduationCap, Eye, Calendar, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Professor } from "@/lib/professores-store";
@@ -52,16 +46,25 @@ interface Props {
   userName?: string; // display_name do usuário vinculado (se houver)
 }
 
-export function ProfessorPerfilDialog({
+export function ProfessorPerfilDialog(props: Props) {
+  // Early return ANTES dos hooks (Rules of Hooks). O conteúdo real fica em
+  // ProfessorPerfilDialogContent que só é montado quando professor existe.
+  if (!props.professor) return null;
+  return <ProfessorPerfilDialogContent {...props} professor={props.professor} />;
+}
+
+interface ContentProps extends Omit<Props, "professor"> {
+  professor: Professor;
+}
+
+function ProfessorPerfilDialogContent({
   open,
   onOpenChange,
   professor,
   avaliacoes,
   agendamentos,
   userName,
-}: Props) {
-  if (!professor) return null;
-
+}: ContentProps) {
   // Get all avaliacoes from store (for skill performance calculation)
   const allAvaliacoes = useAvaliacoes();
   // Notificações endereçadas a este professor (#4)
@@ -75,10 +78,7 @@ export function ProfessorPerfilDialog({
   );
 
   // Scores agregados
-  const scores = useMemo(
-    () => calcularScores(avaliacoesProfessor),
-    [avaliacoesProfessor],
-  );
+  const scores = useMemo(() => calcularScores(avaliacoesProfessor), [avaliacoesProfessor]);
 
   // Carga horária trabalhada (filtra agendamentos deste professor)
   const carga = useMemo(() => {
@@ -86,7 +86,7 @@ export function ProfessorPerfilDialog({
     const agendsDoProf = agendamentos.filter(
       (ag) =>
         ag.professor?.trim().toLowerCase() === professor.nome.trim().toLowerCase() ||
-        ag.professorId === professor.id,
+        ag.professorUserId === professor.userId,
     );
     return calcularCargaTrabalhada(professor, agendsDoProf);
   }, [agendamentos, professor]);
@@ -107,7 +107,7 @@ export function ProfessorPerfilDialog({
       .filter((ag) => {
         const isProf =
           ag.professor?.trim().toLowerCase() === profNomeKey ||
-          ag.professorId === professor.id;
+          ag.professorUserId === professor.userId;
         if (!isProf) return false;
         // Mostrar apenas aulas futuras (data >= hoje)
         return ag.data >= hoje;
@@ -138,9 +138,7 @@ export function ProfessorPerfilDialog({
         .sort((a, b) => b.count - a.count);
     }
     return {
-      alunos: aggregate(
-        avaliacoesProfessor.filter((a) => a.avaliadorTipo === "aluno"),
-      ),
+      alunos: aggregate(avaliacoesProfessor.filter((a) => a.avaliadorTipo === "aluno")),
       staff: aggregate(
         avaliacoesProfessor.filter(
           (a) => a.avaliadorTipo === "coordenacao" || a.avaliadorTipo === "admin",
@@ -178,10 +176,10 @@ export function ProfessorPerfilDialog({
     [avaliacoesProfessor],
   );
 
-  const horasTrabalhadasTotal = Math.round(carga.totalMin / 60 * 10) / 10;
-  const horasTrabalhadasConcluidas = Math.round(carga.concluidasMin / 60 * 10) / 10;
-  const horasPendentes = Math.round(carga.pendentesMin / 60 * 10) / 10;
-  const cargaHorariaSemanalHoras = Math.round(professor.cargaHorariaSemanalMin / 60 * 10) / 10;
+  const horasTrabalhadasTotal = Math.round((carga.totalMin / 60) * 10) / 10;
+  const horasTrabalhadasConcluidas = Math.round((carga.concluidasMin / 60) * 10) / 10;
+  const horasPendentes = Math.round((carga.pendentesMin / 60) * 10) / 10;
+  const cargaHorariaSemanalHoras = Math.round((professor.cargaHorariaSemanalMin / 60) * 10) / 10;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -299,18 +297,13 @@ export function ProfessorPerfilDialog({
             </CardHeader>
             <CardContent>
               {aulasSemana.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic">
-                  Sem agendamentos futuros.
-                </p>
+                <p className="text-sm text-muted-foreground italic">Sem agendamentos futuros.</p>
               ) : (
                 <ul className="divide-y rounded-md border">
                   {aulasSemana.map((ag) => {
                     const dataObj = parseISO(ag.data);
                     return (
-                      <li
-                        key={ag.id}
-                        className="flex items-center justify-between p-2 text-sm"
-                      >
+                      <li key={ag.id} className="flex items-center justify-between p-2 text-sm">
                         <div className="flex flex-col">
                           <span className="font-medium capitalize">
                             {format(dataObj, "EEE, dd/MM", { locale: ptBR })}
@@ -321,9 +314,7 @@ export function ProfessorPerfilDialog({
                           </span>
                         </div>
                         <Badge
-                          variant={
-                            ag.status === "concluido" ? "default" : "secondary"
-                          }
+                          variant={ag.status === "concluido" ? "default" : "secondary"}
                           className="text-[10px]"
                         >
                           {ag.status}
@@ -348,9 +339,7 @@ export function ProfessorPerfilDialog({
                   <p className="text-sm font-medium">
                     {cargaHorariaSemanalHoras}h
                     {professor.cargaHorariaSemanalMin === 0 && (
-                      <span className="text-xs text-muted-foreground ml-1">
-                        (sem limite)
-                      </span>
+                      <span className="text-xs text-muted-foreground ml-1">(sem limite)</span>
                     )}
                   </p>
                 </div>
@@ -370,9 +359,7 @@ export function ProfessorPerfilDialog({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Pendentes:</span>
-                      <span className="text-amber-600 font-medium">
-                        {horasPendentes}h
-                      </span>
+                      <span className="text-amber-600 font-medium">{horasPendentes}h</span>
                     </div>
                   </div>
                 </div>
@@ -404,8 +391,7 @@ export function ProfessorPerfilDialog({
 
                       // Determine color based on average score
                       const isRed = desempenho.media < 3;
-                      const isYellow =
-                        desempenho.media >= 3 && desempenho.media < 4;
+                      const isYellow = desempenho.media >= 3 && desempenho.media < 4;
                       const isGreen = desempenho.media >= 4;
 
                       const barColor = isRed
@@ -417,12 +403,8 @@ export function ProfessorPerfilDialog({
                       return (
                         <div key={habilidadeId} className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium font-mono">
-                              {habilidadeId}
-                            </p>
-                            <p className="text-sm font-semibold">
-                              {desempenho.media.toFixed(1)}/5
-                            </p>
+                            <p className="text-sm font-medium font-mono">{habilidadeId}</p>
+                            <p className="text-sm font-semibold">{desempenho.media.toFixed(1)}/5</p>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                             <div
@@ -433,10 +415,7 @@ export function ProfessorPerfilDialog({
                             ></div>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            {desempenho.count}{" "}
-                            {desempenho.count === 1
-                              ? "avaliação"
-                              : "avaliações"}
+                            {desempenho.count} {desempenho.count === 1 ? "avaliação" : "avaliações"}
                           </p>
                         </div>
                       );
@@ -469,11 +448,7 @@ export function ProfessorPerfilDialog({
                 <div className="space-y-4">
                   {/* Média geral consolidada */}
                   {scores.geral !== null && (
-                    <ScoreBar
-                      label="Média Geral"
-                      value={scores.geral}
-                      bold
-                    />
+                    <ScoreBar label="Média Geral" value={scores.geral} bold />
                   )}
 
                   {/* Por avaliador: alunos */}
@@ -516,18 +491,13 @@ export function ProfessorPerfilDialog({
             <CardContent>
               {tagsTotal === 0 ? (
                 <p className="text-sm text-muted-foreground italic">
-                  Aguardando avaliações com tags. Ao avaliar, alunos e
-                  coordenação podem marcar atributos como "didático",
-                  "pontual", etc.
+                  Aguardando avaliações com tags. Ao avaliar, alunos e coordenação podem marcar
+                  atributos como "didático", "pontual", etc.
                 </p>
               ) : (
                 <div className="space-y-3">
                   {tagsAgregadas.alunos.length > 0 && (
-                    <TagsBlock
-                      title="Alunos"
-                      accent="blue"
-                      items={tagsAgregadas.alunos}
-                    />
+                    <TagsBlock title="Alunos" accent="blue" items={tagsAgregadas.alunos} />
                   )}
                   {tagsAgregadas.staff.length > 0 && (
                     <TagsBlock
@@ -587,9 +557,7 @@ export function ProfessorPerfilDialog({
                       <li key={n.id} className="text-sm">
                         <button
                           type="button"
-                          onClick={() =>
-                            setExpandedNotifId(expanded ? null : n.id)
-                          }
+                          onClick={() => setExpandedNotifId(expanded ? null : n.id)}
                           className="w-full flex items-start gap-2 p-2 hover:bg-muted/40 text-left transition-colors"
                         >
                           <ChevronRight
@@ -601,26 +569,17 @@ export function ProfessorPerfilDialog({
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span
-                                className={cn(
-                                  "font-medium truncate",
-                                  !n.lida && "text-foreground",
-                                )}
+                                className={cn("font-medium truncate", !n.lida && "text-foreground")}
                               >
                                 {n.titulo}
                               </span>
                               {n.kind && (
-                                <Badge
-                                  variant="outline"
-                                  className="text-[10px] capitalize"
-                                >
+                                <Badge variant="outline" className="text-[10px] capitalize">
                                   {n.kind}
                                 </Badge>
                               )}
                               {!n.lida && (
-                                <Badge
-                                  variant="default"
-                                  className="text-[10px]"
-                                >
+                                <Badge variant="default" className="text-[10px]">
                                   nova
                                 </Badge>
                               )}
@@ -635,9 +594,7 @@ export function ProfessorPerfilDialog({
                         </button>
                         {expanded && (
                           <div className="px-9 pb-3 pt-1 space-y-1 border-t bg-muted/20">
-                            <p className="text-xs whitespace-pre-wrap">
-                              {n.mensagem}
-                            </p>
+                            <p className="text-xs whitespace-pre-wrap">{n.mensagem}</p>
                             {(n.data || n.inicio || n.fim) && (
                               <p className="text-xs text-muted-foreground">
                                 <strong>Quando:</strong> {n.data}
@@ -666,9 +623,7 @@ export function ProfessorPerfilDialog({
               ID: <span className="font-mono">{professor.id}</span>
             </p>
             <p>Criado em: {new Date(professor.criadoEm).toLocaleString("pt-BR")}</p>
-            <p>
-              Atualizado em: {new Date(professor.atualizadoEm).toLocaleString("pt-BR")}
-            </p>
+            <p>Atualizado em: {new Date(professor.atualizadoEm).toLocaleString("pt-BR")}</p>
           </div>
         </div>
       </DialogContent>
@@ -694,15 +649,16 @@ function ScoreBar({
 }) {
   const pct = Math.max(0, Math.min(100, (value / 5) * 100));
   const colorClass =
-    tone === "blue"
-      ? "[&>div]:bg-blue-500"
-      : tone === "purple"
-        ? "[&>div]:bg-purple-500"
-        : "";
+    tone === "blue" ? "[&>div]:bg-blue-500" : tone === "purple" ? "[&>div]:bg-purple-500" : "";
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-sm">
-        <span className={cn("text-muted-foreground capitalize", bold && "font-semibold text-foreground")}>
+        <span
+          className={cn(
+            "text-muted-foreground capitalize",
+            bold && "font-semibold text-foreground",
+          )}
+        >
           {label}
         </span>
         <span className={cn("font-mono", bold ? "text-base font-semibold" : "text-xs")}>
@@ -729,9 +685,7 @@ function TagsBlock({
   }>;
 }) {
   const accentClass =
-    accent === "blue"
-      ? "border-blue-500/30 bg-blue-500/5"
-      : "border-purple-500/30 bg-purple-500/5";
+    accent === "blue" ? "border-blue-500/30 bg-blue-500/5" : "border-purple-500/30 bg-purple-500/5";
   const total = items.reduce((s, t) => s + t.count, 0);
   return (
     <div className={cn("space-y-2 rounded-md border p-3", accentClass)}>
@@ -793,9 +747,7 @@ function SourceBlock({
           {count} {count === 1 ? "avaliação" : "avaliações"}
         </span>
       </div>
-      {scores.geral !== null && (
-        <ScoreBar label="Média" value={scores.geral} tone={tone} />
-      )}
+      {scores.geral !== null && <ScoreBar label="Média" value={scores.geral} tone={tone} />}
       {Object.entries(scores.porCriterio).map(([criterio, score]) => (
         <ScoreBar key={criterio} label={criterio} value={score} tone={tone} />
       ))}

@@ -11,8 +11,8 @@ import { devInfo } from "./dev-log";
 // -----------------------------------------------------------------------
 export interface ComportamentoTagEntry {
   id: string;
-  value: string;      // slug persistido em avaliacoes.dados (ex.: "participativo")
-  label: string;      // rótulo da UI (pode ser renomeado sem quebrar histórico)
+  value: string; // slug persistido em avaliacoes.dados (ex.: "participativo")
+  label: string; // rótulo da UI (pode ser renomeado sem quebrar histórico)
   emoji: string;
   tom: "pos" | "neg"; // positivo (verde) ou negativo (âmbar)
   ordem: number;
@@ -68,16 +68,30 @@ function entryToRow(e: ComportamentoTagEntry): Omit<TagRow, never> {
 // O store insere as que faltarem no primeiro load (top-up idempotente).
 // -----------------------------------------------------------------------
 const SEED_TAGS: Omit<ComportamentoTagEntry, "id" | "ativo">[] = [
-  { value: "participativo", label: "Participativo", emoji: "🙋", tom: "pos", ordem:  1, descricao: "" },
-  { value: "colaborativo",  label: "Colaborativo",  emoji: "🤝", tom: "pos", ordem:  2, descricao: "" },
-  { value: "concentrado",   label: "Concentrado",   emoji: "🎯", tom: "pos", ordem:  3, descricao: "" },
-  { value: "criativo",      label: "Criativo",      emoji: "💡", tom: "pos", ordem:  4, descricao: "" },
-  { value: "lider",         label: "Liderança",     emoji: "⭐", tom: "pos", ordem:  5, descricao: "" },
-  { value: "disperso",      label: "Disperso",      emoji: "🌀", tom: "neg", ordem:  6, descricao: "" },
-  { value: "agitado",       label: "Agitado",       emoji: "⚡", tom: "neg", ordem:  7, descricao: "" },
-  { value: "tímido",        label: "Tímido",        emoji: "🙊", tom: "neg", ordem:  8, descricao: "" },
-  { value: "ausente",       label: "Apático",       emoji: "😶", tom: "neg", ordem:  9, descricao: "" },
-  { value: "frustrado",     label: "Frustrado",     emoji: "😤", tom: "neg", ordem: 10, descricao: "" },
+  {
+    value: "participativo",
+    label: "Participativo",
+    emoji: "🙋",
+    tom: "pos",
+    ordem: 1,
+    descricao: "",
+  },
+  {
+    value: "colaborativo",
+    label: "Colaborativo",
+    emoji: "🤝",
+    tom: "pos",
+    ordem: 2,
+    descricao: "",
+  },
+  { value: "concentrado", label: "Concentrado", emoji: "🎯", tom: "pos", ordem: 3, descricao: "" },
+  { value: "criativo", label: "Criativo", emoji: "💡", tom: "pos", ordem: 4, descricao: "" },
+  { value: "lider", label: "Liderança", emoji: "⭐", tom: "pos", ordem: 5, descricao: "" },
+  { value: "disperso", label: "Disperso", emoji: "🌀", tom: "neg", ordem: 6, descricao: "" },
+  { value: "agitado", label: "Agitado", emoji: "⚡", tom: "neg", ordem: 7, descricao: "" },
+  { value: "tímido", label: "Tímido", emoji: "🙊", tom: "neg", ordem: 8, descricao: "" },
+  { value: "ausente", label: "Apático", emoji: "😶", tom: "neg", ordem: 9, descricao: "" },
+  { value: "frustrado", label: "Frustrado", emoji: "😤", tom: "neg", ordem: 10, descricao: "" },
 ];
 
 // -----------------------------------------------------------------------
@@ -122,10 +136,7 @@ async function topUpSeed(existingValues: Set<string>) {
 // Carrega todas as tags do banco, ordena por `ordem`.
 // -----------------------------------------------------------------------
 async function loadFromDb() {
-  const { data, error } = await supabase
-    .from("comportamento_tags")
-    .select("*")
-    .order("ordem");
+  const { data, error } = await supabase.from("comportamento_tags").select("*").order("ordem");
   if (error) {
     console.error("[comportamento-tags] load error", error);
     tags = [];
@@ -135,10 +146,7 @@ async function loadFromDb() {
   const existingValues = new Set(rows.map((r) => r.value));
   const inserted = await topUpSeed(existingValues);
   if (inserted) {
-    const { data: data2 } = await supabase
-      .from("comportamento_tags")
-      .select("*")
-      .order("ordem");
+    const { data: data2 } = await supabase.from("comportamento_tags").select("*").order("ordem");
     tags = ((data2 ?? []) as unknown as TagRow[]).map(rowToEntry);
   } else {
     tags = rows.map(rowToEntry);
@@ -176,9 +184,7 @@ export const comportamentoTagsStore = {
       ? tags.map((x) => (x.id === entry.id ? entry : x))
       : [...tags, entry].sort((a, b) => a.ordem - b.ordem);
     emit();
-    const { error } = await supabase
-      .from("comportamento_tags")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabase.from("comportamento_tags").upsert(row, { onConflict: "id" });
     if (error) {
       console.error("[comportamento-tags] upsert error", error);
       toast.error(`Erro ao salvar tag: ${error.message}`);
@@ -188,10 +194,7 @@ export const comportamentoTagsStore = {
   async remove(id: string) {
     tags = tags.filter((x) => x.id !== id);
     emit();
-    const { error } = await supabase
-      .from("comportamento_tags")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("comportamento_tags").delete().eq("id", id);
     if (error) {
       console.error("[comportamento-tags] remove error", error);
       toast.error(`Erro ao remover tag: ${error.message}`);
@@ -219,9 +222,7 @@ export const comportamentoTagsStore = {
 // Hook React
 // -----------------------------------------------------------------------
 export function useComportamentoTags(): ComportamentoTagEntry[] {
-  const [snap, setSnap] = useState<ComportamentoTagEntry[]>(
-    comportamentoTagsStore.getAll(),
-  );
+  const [snap, setSnap] = useState<ComportamentoTagEntry[]>(comportamentoTagsStore.getAll());
   useEffect(() => {
     void ensureInit();
     const unsub = comportamentoTagsStore.subscribe(() =>

@@ -27,13 +27,7 @@ function canSee(field: keyof typeof FIELD_VISIBILITY, perfil: PerfilAcesso) {
   return FIELD_VISIBILITY[field]?.includes(perfil) ?? true;
 }
 
-export function ActivityViewDialog({
-  atividade,
-  curso,
-  habilidades,
-  perfil,
-  onOpenChange,
-}: Props) {
+export function ActivityViewDialog({ atividade, curso, habilidades, perfil, onOpenChange }: Props) {
   if (!atividade) return null;
   const isAula = atividade.tipo === 0;
 
@@ -131,7 +125,9 @@ export function ActivityViewDialog({
               <ul className="space-y-1">
                 {atividade.materiais!.map((m) => (
                   <li key={m.id} className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-[10px]">{m.tipo}</Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      {m.tipo}
+                    </Badge>
                     {m.url ? (
                       <a
                         href={m.url}

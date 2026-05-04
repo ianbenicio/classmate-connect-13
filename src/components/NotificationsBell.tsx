@@ -2,17 +2,10 @@ import { useState } from "react";
 import { Bell, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  notificacoesStore,
-  useNotificacoes,
-} from "@/lib/notificacoes-store";
+import { notificacoesStore, useNotificacoes } from "@/lib/notificacoes-store";
 import { cn } from "@/lib/utils";
 import { useAlunos } from "@/lib/alunos-store";
 import { useAgendamentos } from "@/lib/agendamentos-store";
@@ -42,21 +35,13 @@ export function NotificationsBell() {
   // com kind=agendado). Antes disso, a notif do aluno é só informativa.
   // RLS da tabela `notificacoes` já restringe a leitura por destinatário.
   const isAvaliacaoAlunoActionable = (n: Notificacao): boolean => {
-    return (
-      n.destinatarioTipo === "aluno" &&
-      !!n.agendamentoId &&
-      n.kind === "agendado"
-    );
+    return n.destinatarioTipo === "aluno" && !!n.agendamentoId && n.kind === "agendado";
   };
 
   // "Acionável professor" = leva ao RelatorioProfessorDialog.
   // Mesmo critério estrutural; o destinatário diferencia o dialog aberto.
   const isRelatorioProfActionable = (n: Notificacao): boolean => {
-    return (
-      n.destinatarioTipo === "professor" &&
-      !!n.agendamentoId &&
-      n.kind === "agendado"
-    );
+    return n.destinatarioTipo === "professor" && !!n.agendamentoId && n.kind === "agendado";
   };
 
   const isAnyActionable = (n: Notificacao): boolean =>
@@ -96,12 +81,7 @@ export function NotificationsBell() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Notificações"
-          className="relative"
-        >
+        <Button variant="ghost" size="icon" aria-label="Notificações" className="relative">
           <Bell className="h-5 w-5" />
           {naoLidas > 0 && (
             <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold">
@@ -152,9 +132,7 @@ export function NotificationsBell() {
                         {n.destinatarioTipo === "professor" ? "Professor" : "Aluno"}
                       </Badge>
                     </div>
-                    <div className="text-xs text-muted-foreground leading-snug">
-                      {n.mensagem}
-                    </div>
+                    <div className="text-xs text-muted-foreground leading-snug">{n.mensagem}</div>
                     <div className="flex items-center justify-between mt-1">
                       <div className="text-[10px] text-muted-foreground">
                         {format(new Date(n.criadoEm), "dd/MM HH:mm", { locale: ptBR })}

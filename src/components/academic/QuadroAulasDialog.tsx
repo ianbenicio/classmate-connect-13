@@ -88,9 +88,7 @@ export function QuadroAulasDialog({
   }, [celulas]);
 
   const total = aulasCurso.length;
-  const progresso = aluno
-    ? stats.presente
-    : stats.dada;
+  const progresso = aluno ? stats.presente : stats.dada;
   const pct = total > 0 ? Math.round((progresso / total) * 100) : 0;
 
   return (
@@ -104,7 +102,9 @@ export function QuadroAulasDialog({
           <DialogDescription>
             {curso ? (
               <span className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="font-mono">{curso.cod}</Badge>
+                <Badge variant="outline" className="font-mono">
+                  {curso.cod}
+                </Badge>
                 <span>{curso.nome}</span>
                 {aluno && (
                   <>
@@ -130,10 +130,7 @@ export function QuadroAulasDialog({
             </span>
           </div>
           <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full bg-emerald-500 transition-all"
-              style={{ width: `${pct}%` }}
-            />
+            <div className="h-full bg-emerald-500 transition-all" style={{ width: `${pct}%` }} />
           </div>
           <div className="flex flex-wrap gap-3 mt-3 text-xs">
             {aluno ? (

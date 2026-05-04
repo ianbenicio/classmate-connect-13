@@ -65,12 +65,10 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {editing ? "Editar habilidade" : "Nova habilidade"}
-          </DialogTitle>
+          <DialogTitle>{editing ? "Editar habilidade" : "Nova habilidade"}</DialogTitle>
           <DialogDescription>
-            Cadastre a habilidade. Ela poderá ser vinculada a cursos (até 8 por
-            curso) e a atividades (até 5 por atividade).
+            Cadastre a habilidade. Ela poderá ser vinculada a cursos (até 8 por curso) e a
+            atividades (até 5 por atividade).
           </DialogDescription>
         </DialogHeader>
 
@@ -118,9 +116,7 @@ export function SkillFormDialog({ open, onOpenChange, editing }: Props) {
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit}>
-            {editing ? "Salvar" : "Criar habilidade"}
-          </Button>
+          <Button onClick={handleSubmit}>{editing ? "Salvar" : "Criar habilidade"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

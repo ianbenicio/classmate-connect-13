@@ -45,14 +45,12 @@ export const Route = createFileRoute("/alunos")({
       { title: "Alunos — Sistema Acadêmico" },
       {
         name: "description",
-        content:
-          "Listagem completa de alunos com filtros por curso e turma, edição e remoção.",
+        content: "Listagem completa de alunos com filtros por curso e turma, edição e remoção.",
       },
       { property: "og:title", content: "Alunos — Sistema Acadêmico" },
       {
         property: "og:description",
-        content:
-          "Gerencie alunos: filtre por curso e turma, edite ou remova cadastros.",
+        content: "Gerencie alunos: filtre por curso e turma, edite ou remova cadastros.",
       },
     ],
   }),
@@ -67,34 +65,19 @@ function AlunosPage() {
 
   // Filtros persistentes — sobrevivem refresh
   const [busca, setBusca] = useLocalStorage<string>("alunos.filtro.busca", "");
-  const [cursoFiltro, setCursoFiltro] = useLocalStorage<string>(
-    "alunos.filtro.curso",
-    "todos",
-  );
-  const [turmaFiltro, setTurmaFiltro] = useLocalStorage<string>(
-    "alunos.filtro.turma",
-    "todas",
-  );
+  const [cursoFiltro, setCursoFiltro] = useLocalStorage<string>("alunos.filtro.curso", "todos");
+  const [turmaFiltro, setTurmaFiltro] = useLocalStorage<string>("alunos.filtro.turma", "todas");
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Aluno | undefined>();
   const [confirmDelete, setConfirmDelete] = useState<Aluno | null>(null);
   const [detalhe, setDetalhe] = useState<Aluno | null>(null);
 
-  const cursoMap = useMemo(
-    () => new Map(cursos.map((c) => [c.id, c])),
-    [cursos],
-  );
-  const turmaMap = useMemo(
-    () => new Map(turmas.map((t) => [t.id, t])),
-    [turmas],
-  );
+  const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
+  const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
 
   const turmasDisponiveis = useMemo(
-    () =>
-      cursoFiltro === "todos"
-        ? turmas
-        : turmas.filter((t) => t.cursoId === cursoFiltro),
+    () => (cursoFiltro === "todos" ? turmas : turmas.filter((t) => t.cursoId === cursoFiltro)),
     [cursoFiltro, turmas],
   );
 
@@ -131,10 +114,7 @@ function AlunosPage() {
     setTurmaFiltro("todas");
   };
 
-  const filtrosAtivos =
-    busca.trim() !== "" ||
-    cursoFiltro !== "todos" ||
-    turmaFiltro !== "todas";
+  const filtrosAtivos = busca.trim() !== "" || cursoFiltro !== "todos" || turmaFiltro !== "todas";
 
   return (
     <div className="min-h-screen bg-background">
@@ -225,9 +205,7 @@ function AlunosPage() {
                 <TableHead className="hidden md:table-cell">Curso</TableHead>
                 <TableHead className="hidden md:table-cell">Turma</TableHead>
                 <TableHead className="hidden lg:table-cell">Contato</TableHead>
-                <TableHead className="hidden lg:table-cell">
-                  Responsável
-                </TableHead>
+                <TableHead className="hidden lg:table-cell">Responsável</TableHead>
                 <TableHead className="text-right w-[100px]">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -248,17 +226,11 @@ function AlunosPage() {
                   const curso = cursoMap.get(a.cursoId);
                   const turma = turmaMap.get(a.turmaId);
                   return (
-                    <TableRow
-                      key={a.id}
-                      className="cursor-pointer"
-                      onClick={() => setDetalhe(a)}
-                    >
+                    <TableRow key={a.id} className="cursor-pointer" onClick={() => setDetalhe(a)}>
                       <TableCell>
                         <div className="font-medium">{a.nome}</div>
                         {a.idade != null && (
-                          <div className="text-xs text-muted-foreground">
-                            {a.idade} anos
-                          </div>
+                          <div className="text-xs text-muted-foreground">{a.idade} anos</div>
                         )}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
@@ -267,18 +239,14 @@ function AlunosPage() {
                             {curso.cod}
                           </Badge>
                         ) : (
-                          <span className="text-xs text-muted-foreground">
-                            —
-                          </span>
+                          <span className="text-xs text-muted-foreground">—</span>
                         )}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {turma ? (
                           <span className="text-sm">{turma.cod}</span>
                         ) : (
-                          <span className="text-xs text-muted-foreground">
-                            —
-                          </span>
+                          <span className="text-xs text-muted-foreground">—</span>
                         )}
                       </TableCell>
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
@@ -287,10 +255,7 @@ function AlunosPage() {
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                         {a.responsavel || "—"}
                       </TableCell>
-                      <TableCell
-                        className="text-right"
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="inline-flex gap-1">
                           <Button
                             size="icon"
@@ -339,23 +304,18 @@ function AlunosPage() {
         onOpenChange={(o) => !o && setDetalhe(null)}
       />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(o) => !o && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover aluno?</AlertDialogTitle>
             <AlertDialogDescription>
-              O aluno <strong>{confirmDelete?.nome}</strong> será removido
-              permanentemente. Esta ação não pode ser desfeita.
+              O aluno <strong>{confirmDelete?.nome}</strong> será removido permanentemente. Esta
+              ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => confirmDelete && handleDelete(confirmDelete)}
-            >
+            <AlertDialogAction onClick={() => confirmDelete && handleDelete(confirmDelete)}>
               Remover
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -148,7 +148,7 @@ export const formulariosStore = {
     estrutura?: Record<string, unknown>;
     slug?: string;
   }): Promise<FormularioTemplate | null> {
-    const slug = (input.slug?.trim() || slugify(input.nome)) || `form_${Date.now()}`;
+    const slug = input.slug?.trim() || slugify(input.nome) || `form_${Date.now()}`;
     const { data: authData } = await supabase.auth.getUser();
     const row = {
       slug,
@@ -159,11 +159,7 @@ export const formulariosStore = {
       is_system: false,
       criado_por_user_id: authData.user?.id ?? null,
     };
-    const { data, error } = await supabase
-      .from("formularios")
-      .insert(row)
-      .select("*")
-      .single();
+    const { data, error } = await supabase.from("formularios").insert(row).select("*").single();
     if (error) {
       console.error("[formularios] create error", error);
       toast.error(`Erro ao criar formulário: ${error.message}`);
@@ -227,9 +223,7 @@ export function useFormularios(): FormularioTemplate[] {
   const [snap, setSnap] = useState<FormularioTemplate[]>(formulariosStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = formulariosStore.subscribe(() =>
-      setSnap([...formulariosStore.getAll()]),
-    );
+    const unsub = formulariosStore.subscribe(() => setSnap([...formulariosStore.getAll()]));
     return () => {
       unsub();
     };

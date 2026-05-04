@@ -60,13 +60,7 @@ interface Props {
   onOpenChange: (o: boolean) => void;
 }
 
-export function AlunoDetailDialog({
-  aluno,
-  curso,
-  turma,
-  atividades,
-  onOpenChange,
-}: Props) {
+export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChange }: Props) {
   const { hasRole } = useAuth();
   const canSeePerfil = hasRole("admin") || hasRole("coordenacao");
   const agendamentos = useAgendamentos();
@@ -91,16 +85,18 @@ export function AlunoDetailDialog({
           return false;
         }
       })
-      .sort(
-        (a, b) =>
-          a.data.localeCompare(b.data) || a.inicio.localeCompare(b.inicio),
-      );
+      .sort((a, b) => a.data.localeCompare(b.data) || a.inicio.localeCompare(b.inicio));
   }, [agendamentos, aluno]);
 
   // Tags de comportamento agregadas — checklist_aluno desse aluno,
   // contando ocorrências de cada slug em dados.comportamento[]
   const tagsComportamentoAgregadas = useMemo(() => {
-    if (!aluno) return [] as Array<{ slug: string; count: number; meta?: ReturnType<typeof useComportamentoTags>[number] }>;
+    if (!aluno)
+      return [] as Array<{
+        slug: string;
+        count: number;
+        meta?: ReturnType<typeof useComportamentoTags>[number];
+      }>;
     const counts = new Map<string, number>();
     for (const av of avaliacoes) {
       if (av.alunoId !== aluno.id) continue;
@@ -155,10 +151,7 @@ export function AlunoDetailDialog({
     return out;
   }, [avaliacoes, aluno]);
 
-  const atividadeMap = useMemo(
-    () => new Map(atividades.map((a) => [a.id, a])),
-    [atividades],
-  );
+  const atividadeMap = useMemo(() => new Map(atividades.map((a) => [a.id, a])), [atividades]);
 
   /** Aulas pendentes de avaliação para este aluno (dentro da janela de 24h pós-fim). */
   const pendentesAvaliacao = useMemo(() => {
@@ -172,12 +165,7 @@ export function AlunoDetailDialog({
         // janela: depois do fim da aula, até 24h depois
         return now >= fim && now <= expira;
       })
-      .filter(
-        (g) =>
-          !avaliacoes.some(
-            (av) => av.agendamentoId === g.id && av.alunoId === aluno.id,
-          ),
-      )
+      .filter((g) => !avaliacoes.some((av) => av.agendamentoId === g.id && av.alunoId === aluno.id))
       .map((g) => ({ ag: g, expiraEm: endSlotPlus24h(g) }))
       .sort((a, b) => a.expiraEm.getTime() - b.expiraEm.getTime());
   }, [agendamentos, aluno, avaliacoes]);
@@ -205,13 +193,11 @@ export function AlunoDetailDialog({
 
   // Templates do curso
   const aulasCurso = useMemo(
-    () =>
-      curso ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0) : [],
+    () => (curso ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0) : []),
     [atividades, curso],
   );
   const tarefasCurso = useMemo(
-    () =>
-      curso ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 1) : [],
+    () => (curso ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 1) : []),
     [atividades, curso],
   );
 
@@ -225,10 +211,7 @@ export function AlunoDetailDialog({
   }, [aluno]);
 
   const tarefasMap = useMemo(() => {
-    const m = new Map<
-      string,
-      { entregue: boolean; nota?: number; observacao?: string }
-    >();
+    const m = new Map<string, { entregue: boolean; nota?: number; observacao?: string }>();
     if (aluno)
       for (const r of aluno.trabalhos)
         m.set(r.atividadeId, {
@@ -329,9 +312,7 @@ export function AlunoDetailDialog({
             <User className="h-5 w-5" />
             {aluno?.nome}
           </DialogTitle>
-          <DialogDescription className="sr-only">
-            Perfil do aluno
-          </DialogDescription>
+          <DialogDescription className="sr-only">Perfil do aluno</DialogDescription>
         </DialogHeader>
 
         {aluno && (
@@ -353,9 +334,7 @@ export function AlunoDetailDialog({
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">Idade:</span>
-                  <span>
-                    {aluno.idade != null ? `${aluno.idade} anos` : "—"}
-                  </span>
+                  <span>{aluno.idade != null ? `${aluno.idade} anos` : "—"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -373,8 +352,7 @@ export function AlunoDetailDialog({
 
               {aluno.observacao && (
                 <p className="mt-3 text-sm text-muted-foreground border-t pt-2">
-                  <span className="font-medium text-foreground">Obs:</span>{" "}
-                  {aluno.observacao}
+                  <span className="font-medium text-foreground">Obs:</span> {aluno.observacao}
                 </p>
               )}
 
@@ -426,8 +404,7 @@ export function AlunoDetailDialog({
               const faltas = freqStats.faltas;
               const avaliacoesPend = pendentesAvaliacao.length;
               const mensagens = 0; // placeholder — futuro: integração de mensagens
-              const total =
-                tarefasPend + faltas + avaliacoesPend + mensagens;
+              const total = tarefasPend + faltas + avaliacoesPend + mensagens;
 
               const items: {
                 key: string;
@@ -437,9 +414,27 @@ export function AlunoDetailDialog({
                 tone: "primary" | "warning" | "danger" | "muted";
               }[] = [
                 { key: "msg", icon: Mail, label: "Mensagens", count: mensagens, tone: "primary" },
-                { key: "tar", icon: ClipboardList, label: "Tarefas pendentes", count: tarefasPend, tone: "warning" },
-                { key: "falt", icon: AlertTriangle, label: "Faltas", count: faltas, tone: "danger" },
-                { key: "av", icon: CheckCircle2, label: "Avaliações de aula", count: avaliacoesPend, tone: "primary" },
+                {
+                  key: "tar",
+                  icon: ClipboardList,
+                  label: "Tarefas pendentes",
+                  count: tarefasPend,
+                  tone: "warning",
+                },
+                {
+                  key: "falt",
+                  icon: AlertTriangle,
+                  label: "Faltas",
+                  count: faltas,
+                  tone: "danger",
+                },
+                {
+                  key: "av",
+                  icon: CheckCircle2,
+                  label: "Avaliações de aula",
+                  count: avaliacoesPend,
+                  tone: "primary",
+                },
               ];
 
               const toneClass = (tone: string, active: boolean) => {
@@ -526,15 +521,10 @@ export function AlunoDetailDialog({
                       dataObj = null;
                     }
                     return (
-                      <li
-                        key={ag.id}
-                        className="flex items-center justify-between p-2 text-xs"
-                      >
+                      <li key={ag.id} className="flex items-center justify-between p-2 text-xs">
                         <div className="flex flex-col">
                           <span className="font-medium capitalize">
-                            {dataObj
-                              ? format(dataObj, "EEE, dd/MM", { locale: ptBR })
-                              : ag.data}
+                            {dataObj ? format(dataObj, "EEE, dd/MM", { locale: ptBR }) : ag.data}
                           </span>
                           <span className="text-[10px] text-muted-foreground">
                             {ag.inicio} – {ag.fim}
@@ -542,9 +532,7 @@ export function AlunoDetailDialog({
                           </span>
                         </div>
                         <Badge
-                          variant={
-                            ag.status === "concluido" ? "default" : "secondary"
-                          }
+                          variant={ag.status === "concluido" ? "default" : "secondary"}
                           className="text-[10px]"
                         >
                           {ag.status}
@@ -587,8 +575,7 @@ export function AlunoDetailDialog({
                           </div>
                           <div className="text-[11px] text-muted-foreground">
                             {ag.inicio}–{ag.fim}
-                            {ag.professor && ` · ${ag.professor}`} · expira em{" "}
-                            {horasRestantes}h
+                            {ag.professor && ` · ${ag.professor}`} · expira em {horasRestantes}h
                           </div>
                         </div>
                         <Button size="sm" onClick={() => setAvaliarAg(ag)}>
@@ -625,40 +612,35 @@ export function AlunoDetailDialog({
                         Frequência
                       </h4>
                       <span className="text-[11px] font-mono text-muted-foreground group-hover:text-primary transition-colors">
-                        {freqStats.presentes}/{freqStats.total || aulasCurso.length} · {freqStats.pct}%
+                        {freqStats.presentes}/{freqStats.total || aulasCurso.length} ·{" "}
+                        {freqStats.pct}%
                       </span>
                     </div>
-                    <Progress value={freqStats.pct} className="h-2 mb-2 group-hover:opacity-80 transition-opacity" />
+                    <Progress
+                      value={freqStats.pct}
+                      className="h-2 mb-2 group-hover:opacity-80 transition-opacity"
+                    />
                   </button>
                   {aulasCurso.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
-                      Nenhuma aula no curso.
-                    </p>
+                    <p className="text-xs text-muted-foreground italic">Nenhuma aula no curso.</p>
                   ) : (
                     <ul className="divide-y border rounded-md max-h-72 overflow-y-auto">
                       {aulasCurso.map((a) => {
                         const reg = aulasMap.get(a.id);
                         const data = dataPorAtividade.get(a.id);
                         return (
-                          <li
-                            key={a.id}
-                            className="px-2 py-1.5 flex items-center gap-2 text-xs"
-                          >
+                          <li key={a.id} className="px-2 py-1.5 flex items-center gap-2 text-xs">
                             <span className="font-mono text-muted-foreground w-14 shrink-0">
                               {a.codigo}
                             </span>
-                            <span className="flex-1 min-w-0 truncate">
-                              {a.nome}
-                            </span>
+                            <span className="flex-1 min-w-0 truncate">{a.nome}</span>
                             {data && (
                               <span className="font-mono text-[10px] text-muted-foreground shrink-0">
                                 {formatData(data)}
                               </span>
                             )}
                             {reg === undefined ? (
-                              <span className="text-muted-foreground/60 text-[10px]">
-                                —
-                              </span>
+                              <span className="text-muted-foreground/60 text-[10px]">—</span>
                             ) : reg.presente ? (
                               <Check className="h-4 w-4 text-emerald-600 shrink-0" />
                             ) : (
@@ -679,39 +661,31 @@ export function AlunoDetailDialog({
                       Atividades
                     </h4>
                     <span className="text-[11px] font-mono text-muted-foreground">
-                      {tarefasStats.entregues}/{tarefasStats.total || tarefasCurso.length} · {tarefasStats.pct}%
+                      {tarefasStats.entregues}/{tarefasStats.total || tarefasCurso.length} ·{" "}
+                      {tarefasStats.pct}%
                     </span>
                   </div>
                   <Progress value={tarefasStats.pct} className="h-2 mb-2" />
                   {tarefasCurso.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
-                      Nenhuma tarefa no curso.
-                    </p>
+                    <p className="text-xs text-muted-foreground italic">Nenhuma tarefa no curso.</p>
                   ) : (
                     <ul className="divide-y border rounded-md max-h-72 overflow-y-auto">
                       {tarefasCurso.map((a) => {
                         const reg = tarefasMap.get(a.id);
                         const data = dataPorAtividade.get(a.id);
                         return (
-                          <li
-                            key={a.id}
-                            className="px-2 py-1.5 flex items-center gap-2 text-xs"
-                          >
+                          <li key={a.id} className="px-2 py-1.5 flex items-center gap-2 text-xs">
                             <span className="font-mono text-muted-foreground w-14 shrink-0">
                               {a.codigo}
                             </span>
-                            <span className="flex-1 min-w-0 truncate">
-                              {a.nome}
-                            </span>
+                            <span className="flex-1 min-w-0 truncate">{a.nome}</span>
                             {data && (
                               <span className="font-mono text-[10px] text-muted-foreground shrink-0">
                                 {formatData(data)}
                               </span>
                             )}
                             {reg === undefined ? (
-                              <span className="text-muted-foreground/60 text-[10px]">
-                                —
-                              </span>
+                              <span className="text-muted-foreground/60 text-[10px]">—</span>
                             ) : reg.entregue ? (
                               <Check className="h-4 w-4 text-emerald-600 shrink-0" />
                             ) : (
@@ -754,10 +728,7 @@ export function AlunoDetailDialog({
                         return (
                           <li key={h.id} className="space-y-1">
                             <div className="flex items-baseline gap-2">
-                              <Badge
-                                variant="secondary"
-                                className="font-mono text-[10px] shrink-0"
-                              >
+                              <Badge variant="secondary" className="font-mono text-[10px] shrink-0">
                                 {h.sigla}
                               </Badge>
                               <span className="text-xs flex-1 min-w-0 truncate">
@@ -787,9 +758,7 @@ export function AlunoDetailDialog({
                     Tarefas avaliadas
                   </h4>
                   {tarefasComNota.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">
-                      Sem notas registradas.
-                    </p>
+                    <p className="text-xs text-muted-foreground italic">Sem notas registradas.</p>
                   ) : (
                     <ul className="divide-y border rounded-md">
                       {tarefasComNota.map(({ reg, atividade }) => (
@@ -800,9 +769,7 @@ export function AlunoDetailDialog({
                           <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">
                             {atividade?.codigo ?? reg.atividadeId.slice(0, 6)}
                           </span>
-                          <span className="flex-1 min-w-0 truncate">
-                            {atividade?.nome ?? "—"}
-                          </span>
+                          <span className="flex-1 min-w-0 truncate">{atividade?.nome ?? "—"}</span>
                           <StarRating value={reg.nota ?? 0} max={10} />
                         </li>
                       ))}
@@ -821,19 +788,12 @@ export function AlunoDetailDialog({
                 Observações
               </h3>
               {observacoes.length === 0 ? (
-                <p className="text-xs text-muted-foreground italic">
-                  Sem observações registradas.
-                </p>
+                <p className="text-xs text-muted-foreground italic">Sem observações registradas.</p>
               ) : (
                 <ul className="space-y-2">
                   {observacoes.slice(0, 3).map((o, i) => (
-                    <li
-                      key={i}
-                      className="text-xs border-l-2 border-primary/40 pl-3 py-1"
-                    >
-                      <span className="font-mono text-muted-foreground">
-                        {o.origem}:
-                      </span>{" "}
+                    <li key={i} className="text-xs border-l-2 border-primary/40 pl-3 py-1">
+                      <span className="font-mono text-muted-foreground">{o.origem}:</span>{" "}
                       <span>{o.texto}</span>
                     </li>
                   ))}
@@ -872,11 +832,7 @@ export function AlunoDetailDialog({
                   <Activity className="h-3.5 w-3.5" />
                   Linha do tempo
                 </h3>
-                <AlunoTimeline
-                  aluno={aluno}
-                  agendamentos={agendamentos}
-                  avaliacoes={avaliacoes}
-                />
+                <AlunoTimeline aluno={aluno} agendamentos={agendamentos} avaliacoes={avaliacoes} />
               </section>
             )}
 
@@ -893,8 +849,8 @@ export function AlunoDetailDialog({
               </h3>
               {tagsComportamentoAgregadas.length === 0 ? (
                 <p className="text-xs text-muted-foreground italic">
-                  Sem tags atribuídas ainda. As tags aparecem quando o
-                  professor preenche o checklist do aluno.
+                  Sem tags atribuídas ainda. As tags aparecem quando o professor preenche o
+                  checklist do aluno.
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
@@ -912,15 +868,11 @@ export function AlunoDetailDialog({
                         )}
                       >
                         {meta?.emoji && <span>{meta.emoji}</span>}
-                        <span className="font-medium">
-                          {meta?.label ?? slug}
-                        </span>
+                        <span className="font-medium">{meta?.label ?? slug}</span>
                         <span
                           className={cn(
                             "ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-[10px] font-semibold",
-                            tone === "pos"
-                              ? "bg-emerald-500/20"
-                              : "bg-amber-500/20",
+                            tone === "pos" ? "bg-emerald-500/20" : "bg-amber-500/20",
                           )}
                         >
                           {count}
@@ -949,9 +901,8 @@ export function AlunoDetailDialog({
                 </div>
                 <div className="border rounded-md p-3 bg-muted/30 text-sm text-muted-foreground">
                   <p className="mb-1">
-                    Perfil descritivo será gerado a partir de presença, notas,
-                    habilidades, observações dos professores e retorno dos
-                    pais.
+                    Perfil descritivo será gerado a partir de presença, notas, habilidades,
+                    observações dos professores e retorno dos pais.
                   </p>
                   <p className="text-xs italic">
                     Geração por IA disponível após ativação do Lovable Cloud.

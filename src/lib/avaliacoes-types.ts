@@ -3,9 +3,7 @@
 // + 2 a 3 perguntas abertas rotativas sorteadas a cada aula
 // + área de interesse opcional para a próxima aula.
 
-import type {
-  FormularioTipo,
-} from "./formularios-types";
+import type { FormularioTipo } from "./formularios-types";
 
 export type Nota = 1 | 2 | 3 | 4 | 5;
 
@@ -25,20 +23,70 @@ export interface AvaliacaoRecord<T = unknown> {
 
 /** Perguntas fechadas — Aula */
 export const PERGUNTAS_AULA = [
-  { id: "objetivo", emoji: "🎯", titulo: "Entendi o objetivo", pergunta: "Eu entendi o que a gente ia aprender ou criar hoje?" },
-  { id: "pratica", emoji: "🔧", titulo: "Mão na massa", pergunta: "Consegui fazer algo prático na aula?" },
-  { id: "diversao", emoji: "🎮", titulo: "Foi divertido?", pergunta: "A aula me manteve interessado do começo ao fim?" },
-  { id: "ritmo", emoji: "⏱️", titulo: "Ritmo da aula", pergunta: "O tempo foi bom? Nem corrido, nem parado demais?" },
-  { id: "materiais", emoji: "💻", titulo: "Materiais funcionaram?", pergunta: "Os recursos (software, peças, exemplos) ajudaram?" },
+  {
+    id: "objetivo",
+    emoji: "🎯",
+    titulo: "Entendi o objetivo",
+    pergunta: "Eu entendi o que a gente ia aprender ou criar hoje?",
+  },
+  {
+    id: "pratica",
+    emoji: "🔧",
+    titulo: "Mão na massa",
+    pergunta: "Consegui fazer algo prático na aula?",
+  },
+  {
+    id: "diversao",
+    emoji: "🎮",
+    titulo: "Foi divertido?",
+    pergunta: "A aula me manteve interessado do começo ao fim?",
+  },
+  {
+    id: "ritmo",
+    emoji: "⏱️",
+    titulo: "Ritmo da aula",
+    pergunta: "O tempo foi bom? Nem corrido, nem parado demais?",
+  },
+  {
+    id: "materiais",
+    emoji: "💻",
+    titulo: "Materiais funcionaram?",
+    pergunta: "Os recursos (software, peças, exemplos) ajudaram?",
+  },
 ] as const;
 
 /** Perguntas fechadas — Professor */
 export const PERGUNTAS_PROFESSOR = [
-  { id: "explica", emoji: "💙", titulo: "Explica bem", pergunta: "O professor explicou de um jeito que eu entendi?" },
-  { id: "ajuda", emoji: "🙋", titulo: "Ajuda quando travo", pergunta: "Quando tive dúvida, o professor me ajudou de um jeito legal?" },
-  { id: "respeito", emoji: "🤝", titulo: "Respeita todo mundo", pergunta: "O professor foi paciente e respeitoso com todos?" },
-  { id: "energia", emoji: "⚡", titulo: "Deixa a aula animada", pergunta: "O professor manteve a energia da aula legal?" },
-  { id: "evolucao", emoji: "↩️", titulo: "Me ajudou a evoluir", pergunta: "Quando errei, o professor me ajudou a melhorar?" },
+  {
+    id: "explica",
+    emoji: "💙",
+    titulo: "Explica bem",
+    pergunta: "O professor explicou de um jeito que eu entendi?",
+  },
+  {
+    id: "ajuda",
+    emoji: "🙋",
+    titulo: "Ajuda quando travo",
+    pergunta: "Quando tive dúvida, o professor me ajudou de um jeito legal?",
+  },
+  {
+    id: "respeito",
+    emoji: "🤝",
+    titulo: "Respeita todo mundo",
+    pergunta: "O professor foi paciente e respeitoso com todos?",
+  },
+  {
+    id: "energia",
+    emoji: "⚡",
+    titulo: "Deixa a aula animada",
+    pergunta: "O professor manteve a energia da aula legal?",
+  },
+  {
+    id: "evolucao",
+    emoji: "↩️",
+    titulo: "Me ajudou a evoluir",
+    pergunta: "Quando errei, o professor me ajudou a melhorar?",
+  },
 ] as const;
 
 export type PerguntaAulaId = (typeof PERGUNTAS_AULA)[number]["id"];
@@ -109,11 +157,14 @@ function hashString(s: string): number {
 export function sortearAbertas(
   agendamentoId: string,
   alunoId: string,
-): { aula: typeof PERGUNTAS_ABERTAS_AULA[number][]; prof: typeof PERGUNTAS_ABERTAS_PROFESSOR[number][] } {
+): {
+  aula: (typeof PERGUNTAS_ABERTAS_AULA)[number][];
+  prof: (typeof PERGUNTAS_ABERTAS_PROFESSOR)[number][];
+} {
   const seedAula = hashString(`${agendamentoId}|${alunoId}|aula`);
   const seedProf = hashString(`${agendamentoId}|${alunoId}|prof`);
 
-  const pickN = <T,>(arr: readonly T[], seed: number, n: number): T[] => {
+  const pickN = <T>(arr: readonly T[], seed: number, n: number): T[] => {
     const idxs = arr.map((_, i) => i);
     // Fisher-Yates seedado simples (LCG)
     let s = seed || 1;

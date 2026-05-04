@@ -71,10 +71,7 @@ function cursoToRow(c: Curso) {
 // UNIQUE de `cod` e gerava 409 a cada page-load. O caso surge quando o
 // UUID determinístico mudou entre deploys ou quando o registro foi
 // semeado por outro caminho.
-async function topUpCursos(
-  existingIds: Set<string>,
-  existingCods: Set<string>,
-) {
+async function topUpCursos(existingIds: Set<string>, existingCods: Set<string>) {
   const missing = SEED_CURSOS.filter(
     (c) => !existingIds.has(toUuid(c.id)) && !existingCods.has(c.cod),
   );
@@ -109,9 +106,7 @@ async function topUpGrupos(cursosNoBanco: Curso[]) {
   if (expectedRows.length === 0) return;
 
   // Descobre quais já existem.
-  const { data: existing, error: selErr } = await supabase
-    .from("grupos")
-    .select("id");
+  const { data: existing, error: selErr } = await supabase.from("grupos").select("id");
   if (selErr) {
     console.error("[grupos] select error", selErr);
     return;
@@ -175,9 +170,7 @@ export const cursosStore = {
     const row = cursoToRow(c);
     const local: Curso = { ...c, id: row.id };
     const exists = cursos.some((x) => x.id === local.id);
-    cursos = exists
-      ? cursos.map((x) => (x.id === local.id ? local : x))
-      : [...cursos, local];
+    cursos = exists ? cursos.map((x) => (x.id === local.id ? local : x)) : [...cursos, local];
     emit();
     const { error } = await supabase.from("cursos").upsert(row, { onConflict: "id" });
     if (error) {

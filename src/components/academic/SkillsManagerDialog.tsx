@@ -85,8 +85,8 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
               <Sparkles className="h-5 w-5 text-primary" /> Habilidades
             </DialogTitle>
             <DialogDescription>
-              Cadastre habilidades. Vincule-as a cursos (até 8) e a atividades
-              (até 5) nos respectivos formulários.
+              Cadastre habilidades. Vincule-as a cursos (até 8) e a atividades (até 5) nos
+              respectivos formulários.
             </DialogDescription>
           </DialogHeader>
 
@@ -135,18 +135,10 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
                       <Badge variant="secondary" className="font-mono">
                         {h.sigla}
                       </Badge>
-                      {h.nome && (
-                        <span className="text-sm font-medium">{h.nome}</span>
-                      )}
-                      {h.grupo && (
-                        <span className="text-xs text-muted-foreground">
-                          {h.grupo}
-                        </span>
-                      )}
+                      {h.nome && <span className="text-sm font-medium">{h.nome}</span>}
+                      {h.grupo && <span className="text-xs text-muted-foreground">{h.grupo}</span>}
                     </div>
-                    <p className="text-sm leading-snug text-muted-foreground">
-                      {h.descricao}
-                    </p>
+                    <p className="text-sm leading-snug text-muted-foreground">{h.descricao}</p>
                   </div>
                   <div className="flex flex-col gap-1">
                     <Button
@@ -173,16 +165,9 @@ export function SkillsManagerDialog({ open, onOpenChange }: Props) {
         </DialogContent>
       </Dialog>
 
-      <SkillFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        editing={editing}
-      />
+      <SkillFormDialog open={formOpen} onOpenChange={setFormOpen} editing={editing} />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(o) => !o && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir habilidade?</AlertDialogTitle>

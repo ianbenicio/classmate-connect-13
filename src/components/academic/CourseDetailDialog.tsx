@@ -80,10 +80,7 @@ export function CourseDetailDialog({
     [curso, atividades],
   );
 
-  const aulasDoCurso = useMemo(
-    () => doCurso.filter((a) => a.tipo === 0),
-    [doCurso],
-  );
+  const aulasDoCurso = useMemo(() => doCurso.filter((a) => a.tipo === 0), [doCurso]);
 
   const totalAulasCurso = useMemo(() => aulasDoCurso.length, [aulasDoCurso]);
 
@@ -144,19 +141,13 @@ export function CourseDetailDialog({
             <Badge variant="outline">{curso?.cod}</Badge>
             <DialogTitle className="flex-1">{curso?.nome}</DialogTitle>
             {curso && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onEditCurso(curso)}
-              >
+              <Button size="sm" variant="outline" onClick={() => onEditCurso(curso)}>
                 <Settings className="h-4 w-4 mr-1" />
                 Editar curso
               </Button>
             )}
           </div>
-          <DialogDescription className="sr-only">
-            Detalhes do curso
-          </DialogDescription>
+          <DialogDescription className="sr-only">Detalhes do curso</DialogDescription>
         </DialogHeader>
 
         {/* Propriedades do curso */}
@@ -175,9 +166,7 @@ export function CourseDetailDialog({
             <dt className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-0.5">
               Descrição
             </dt>
-            <dd className="text-muted-foreground whitespace-pre-wrap">
-              {curso.descricao || "—"}
-            </dd>
+            <dd className="text-muted-foreground whitespace-pre-wrap">{curso.descricao || "—"}</dd>
           </dl>
         )}
 
@@ -196,7 +185,11 @@ export function CourseDetailDialog({
               <span className="font-mono text-muted-foreground group-hover:text-primary transition-colors">
                 {progressoCurso.dadas}/{progressoCurso.total} aulas ({progressoCurso.pct}%)
                 {progressoCurso.minTotal > 0 && (
-                  <> · {formatMinutos(progressoCurso.minDadas)}/{formatMinutos(progressoCurso.minTotal)}</>
+                  <>
+                    {" "}
+                    · {formatMinutos(progressoCurso.minDadas)}/
+                    {formatMinutos(progressoCurso.minTotal)}
+                  </>
                 )}
               </span>
             </div>
@@ -276,27 +269,27 @@ export function CourseDetailDialog({
                     <span>🕐 {formatHorarios(t.horarios)}</span>
                     <span>👥 {t.alunosIds.length} alunos</span>
                   </button>
-                  {totalAulasCurso > 0 && (() => {
-                    const dadas = aulasDadasPorTurma.get(t.id)?.size ?? 0;
-                    const pct = Math.round((dadas / totalAulasCurso) * 100);
-                    return (
-                      <div className="mt-2">
-                        <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
-                          <span>Aulas dadas</span>
-                          <span className="font-mono">
-                            {dadas}/{totalAulasCurso} ({pct}%)
-                          </span>
+                  {totalAulasCurso > 0 &&
+                    (() => {
+                      const dadas = aulasDadasPorTurma.get(t.id)?.size ?? 0;
+                      const pct = Math.round((dadas / totalAulasCurso) * 100);
+                      return (
+                        <div className="mt-2">
+                          <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                            <span>Aulas dadas</span>
+                            <span className="font-mono">
+                              {dadas}/{totalAulasCurso} ({pct}%)
+                            </span>
+                          </div>
+                          <Progress value={pct} className="h-1.5" />
                         </div>
-                        <Progress value={pct} className="h-1.5" />
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
                 </div>
               ))}
             </div>
           )}
         </section>
-
       </DialogContent>
 
       <ActivityViewDialog

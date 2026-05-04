@@ -33,11 +33,7 @@ import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import {
-  professoresStore,
-  useProfessores,
-  type ProfessorAvaliacao,
-} from "@/lib/professores-store";
+import { professoresStore, useProfessores, type ProfessorAvaliacao } from "@/lib/professores-store";
 import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 
 interface Props {
@@ -48,11 +44,7 @@ interface Props {
 
 const CRITERIOS_PADRAO = ["clareza", "dominio", "engajamento", "pontualidade"];
 
-export function ProfessorAvaliacaoDialog({
-  open,
-  onOpenChange,
-  defaultProfessorId,
-}: Props) {
+export function ProfessorAvaliacaoDialog({ open, onOpenChange, defaultProfessorId }: Props) {
   const { user: authUser, roles } = useAuth();
   const professores = useProfessores();
   const tagsAvail = useComportamentoTags();
@@ -75,9 +67,7 @@ export function ProfessorAvaliacaoDialog({
   }, [open, defaultProfessorId]);
 
   const toggleTag = (slug: string) => {
-    setTagsSel((prev) =>
-      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
-    );
+    setTagsSel((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
   };
 
   const handleCriterioChange = (criterio: string, valor: number) => {
@@ -126,9 +116,7 @@ export function ProfessorAvaliacaoDialog({
       onOpenChange(false);
     } catch (err) {
       console.error("[ProfessorAvaliacaoDialog] submit error", err);
-      toast.error(
-        err instanceof Error ? err.message : "Erro ao salvar avaliação",
-      );
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar avaliação");
     } finally {
       setSalvando(false);
     }
@@ -165,14 +153,10 @@ export function ProfessorAvaliacaoDialog({
 
           {/* Avaliações por critério */}
           <div className="space-y-3">
-            <p className="text-sm font-medium">
-              Avalie em cada critério (1-5 estrelas):
-            </p>
+            <p className="text-sm font-medium">Avalie em cada critério (1-5 estrelas):</p>
             {CRITERIOS_PADRAO.map((criterio) => (
               <div key={criterio} className="space-y-1.5">
-                <label className="text-xs text-muted-foreground capitalize">
-                  {criterio}
-                </label>
+                <label className="text-xs text-muted-foreground capitalize">{criterio}</label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((valor) => (
                     <button
@@ -249,9 +233,7 @@ export function ProfessorAvaliacaoDialog({
               rows={3}
               className="text-sm"
             />
-            <p className="text-[10px] text-muted-foreground">
-              Máximo 500 caracteres
-            </p>
+            <p className="text-[10px] text-muted-foreground">Máximo 500 caracteres</p>
           </div>
 
           {/* Info sobre avaliador tipo */}

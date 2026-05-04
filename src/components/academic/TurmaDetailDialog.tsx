@@ -34,10 +34,7 @@ import {
   type Curso,
   type Turma,
 } from "@/lib/academic-types";
-import {
-  agendamentosStore,
-  useAgendamentos,
-} from "@/lib/agendamentos-store";
+import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { toast } from "sonner";
@@ -50,19 +47,11 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-export function TurmaDetailDialog({
-  turma,
-  curso,
-  alunos,
-  atividades,
-  onOpenChange,
-}: Props) {
+export function TurmaDetailDialog({ turma, curso, alunos, atividades, onOpenChange }: Props) {
   const [quadroOpen, setQuadroOpen] = useState(false);
   const allAgendamentos = useAgendamentos();
   const todasHabilidades = useHabilidades();
-  const alunosDaTurma = turma
-    ? alunos.filter((a) => a.turmaId === turma.id)
-    : [];
+  const alunosDaTurma = turma ? alunos.filter((a) => a.turmaId === turma.id) : [];
 
   // Habilidades do curso.
   const habilidadesDoCurso = useMemo(() => {
@@ -77,9 +66,7 @@ export function TurmaDetailDialog({
   const cargaTotal = curso?.cargaHorariaTotalMin ?? 0;
   // Total de aulas esperadas = carga horária total / duração de cada aula.
   const totalAulasEsperadas =
-    cargaTotal > 0 && duracaoAulaMin > 0
-      ? Math.ceil(cargaTotal / duracaoAulaMin)
-      : 0;
+    cargaTotal > 0 && duracaoAulaMin > 0 ? Math.ceil(cargaTotal / duracaoAulaMin) : 0;
 
   // Aulas "dadas" pela turma = aulas do curso com ≥1 aluno da turma com presença=true.
   const { aulasDadasIds, totalAulas, dadas, pct } = useMemo(() => {
@@ -132,9 +119,7 @@ export function TurmaDetailDialog({
       return aulas.length ? { ag, aulas } : null;
     })
     .filter((x): x is { ag: Agendamento; aulas: Atividade[] } => !!x)
-    .sort((a, b) =>
-      (b.ag.data + b.ag.inicio).localeCompare(a.ag.data + a.ag.inicio),
-    );
+    .sort((a, b) => (b.ag.data + b.ag.inicio).localeCompare(a.ag.data + a.ag.inicio));
 
   return (
     <Dialog open={!!turma} onOpenChange={onOpenChange}>
@@ -155,25 +140,17 @@ export function TurmaDetailDialog({
 
         <section className="grid grid-cols-2 gap-3 py-3 border-y text-sm">
           <div>
-            <div className="text-xs uppercase text-muted-foreground">
-              Data início
-            </div>
+            <div className="text-xs uppercase text-muted-foreground">Data início</div>
             <div className="font-medium">{turma?.data || "—"}</div>
           </div>
           <div className="col-span-2">
-            <div className="text-xs uppercase text-muted-foreground mb-1">
-              Horários
-            </div>
+            <div className="text-xs uppercase text-muted-foreground mb-1">Horários</div>
             {!turma?.horarios?.length ? (
               <div className="text-sm text-muted-foreground">—</div>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {turma.horarios.map((h, i) => (
-                  <Badge
-                    key={i}
-                    variant="secondary"
-                    className="inline-flex items-center gap-1"
-                  >
+                  <Badge key={i} variant="secondary" className="inline-flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     {formatHorarioSlot(h)}
                   </Badge>
@@ -183,9 +160,7 @@ export function TurmaDetailDialog({
           </div>
           {turma?.descricao && (
             <div className="col-span-2">
-              <div className="text-xs uppercase text-muted-foreground">
-                Descrição
-              </div>
+              <div className="text-xs uppercase text-muted-foreground">Descrição</div>
               <div>{turma.descricao}</div>
             </div>
           )}
@@ -335,7 +310,6 @@ export function TurmaDetailDialog({
           )}
         </section>
 
-
         <section className="mt-4">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
             <BookOpen className="h-3.5 w-3.5" />
@@ -344,8 +318,8 @@ export function TurmaDetailDialog({
 
           {aulasRealizadas.length === 0 ? (
             <p className="text-sm text-muted-foreground border rounded-md p-6 text-center">
-              Nenhuma aula realizada ainda. As aulas aparecem aqui quando o
-              professor registra o relatório.
+              Nenhuma aula realizada ainda. As aulas aparecem aqui quando o professor registra o
+              relatório.
             </p>
           ) : (
             <ul className="border rounded-lg divide-y">
@@ -425,9 +399,7 @@ export function TurmaDetailDialog({
                       </div>
                     </div>
                     {al.observacao && (
-                      <p className="text-xs text-muted-foreground mt-2 italic">
-                        {al.observacao}
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-2 italic">{al.observacao}</p>
                     )}
                   </li>
                 );
@@ -515,11 +487,7 @@ function AgendaGroup({
                     </Button>
                   )}
                   {onReabrir && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onReabrir(ag.id)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => onReabrir(ag.id)}>
                       <RotateCcw /> Reabrir
                     </Button>
                   )}

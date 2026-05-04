@@ -9,11 +9,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export type RelatorioTipo =
-  | "export_completo"
-  | "avaliacoes"
-  | "frequencia"
-  | "outro";
+export type RelatorioTipo = "export_completo" | "avaliacoes" | "frequencia" | "outro";
 
 export const RELATORIO_TIPO_LABEL: Record<RelatorioTipo, string> = {
   export_completo: "Exportação completa",
@@ -117,9 +113,7 @@ export const relatoriosStore = {
   async add(r: Relatorio) {
     relatorios = [r, ...relatorios];
     emit();
-    const { error } = await supabase
-      .from("relatorios_exportados")
-      .insert(toRow(r));
+    const { error } = await supabase.from("relatorios_exportados").insert(toRow(r));
     if (error) {
       console.error("[relatorios] add error", error);
       toast.error(`Erro ao registrar relatório: ${error.message}`);
@@ -128,10 +122,7 @@ export const relatoriosStore = {
   async remove(id: string) {
     relatorios = relatorios.filter((r) => r.id !== id);
     emit();
-    const { error } = await supabase
-      .from("relatorios_exportados")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("relatorios_exportados").delete().eq("id", id);
     if (error) {
       console.error("[relatorios] remove error", error);
       toast.error(`Erro ao remover relatório: ${error.message}`);
@@ -142,10 +133,7 @@ export const relatoriosStore = {
     relatorios = [];
     emit();
     if (ids.length === 0) return;
-    const { error } = await supabase
-      .from("relatorios_exportados")
-      .delete()
-      .in("id", ids);
+    const { error } = await supabase.from("relatorios_exportados").delete().in("id", ids);
     if (error) {
       console.error("[relatorios] clear error", error);
       toast.error(`Erro ao limpar relatórios: ${error.message}`);
@@ -162,9 +150,7 @@ export function useRelatorios(): Relatorio[] {
   const [snap, setSnap] = useState<Relatorio[]>(relatoriosStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = relatoriosStore.subscribe(() =>
-      setSnap([...relatoriosStore.getAll()]),
-    );
+    const unsub = relatoriosStore.subscribe(() => setSnap([...relatoriosStore.getAll()]));
     return () => {
       unsub();
     };

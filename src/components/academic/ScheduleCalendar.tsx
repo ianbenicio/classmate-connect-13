@@ -87,10 +87,7 @@ export function ScheduleCalendar({
 }: Props) {
   const [refDate, setRefDate] = useState(new Date());
 
-  const cursoMap = useMemo(
-    () => new Map(cursos.map((c) => [c.id, c])),
-    [cursos],
-  );
+  const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
   return (
     <Tabs defaultValue="semana" className="w-full">
@@ -160,7 +157,7 @@ export function ScheduleCalendar({
 const CURSO_HUES: Record<string, number> = {
   MP: 220, // azul
   GP: 150, // verde
-  AD: 35,  // âmbar
+  AD: 35, // âmbar
   RB: 295, // fúcsia
 };
 const FALLBACK_HUES = [0, 200, 270, 110, 50, 320, 180, 25];
@@ -184,9 +181,9 @@ export function turmaColor(
 ) {
   const hue = cursoHue(curso, turma.cursoId);
   const h = hashStr(turma.id);
-  const dh = (h % 25) - 12;            // -12..+12 matiz
-  const dl = ((h >> 5) % 31) - 15;     // -15..+15 luminosidade
-  const ds = ((h >> 10) % 21) - 10;    // -10..+10 saturação
+  const dh = (h % 25) - 12; // -12..+12 matiz
+  const dl = ((h >> 5) % 31) - 15; // -15..+15 luminosidade
+  const ds = ((h >> 10) % 21) - 10; // -10..+10 saturação
   const finalHue = (hue + dh + 360) % 360;
   const sat = Math.max(45, Math.min(85, 65 + ds));
   const lum = Math.max(40, Math.min(70, 55 + dl));
@@ -199,7 +196,6 @@ export function turmaColor(
     } as React.CSSProperties,
   };
 }
-
 
 // ---------- Estados visuais por estado de slot ----------
 const ESTADO_LABEL: Record<SlotEstado, string> = {
@@ -214,17 +210,31 @@ const ESTADO_LABEL: Record<SlotEstado, string> = {
 function StateBadge({ estado }: { estado: SlotEstado }) {
   switch (estado) {
     case "vazio_futuro":
-      return <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" aria-label="Pronta" />;
+      return (
+        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" aria-label="Pronta" />
+      );
     case "vazio_passado":
-      return <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/50" aria-label="Indisponível" />;
+      return (
+        <span
+          className="inline-block w-2 h-2 rounded-full bg-muted-foreground/50"
+          aria-label="Indisponível"
+        />
+      );
     case "agendado":
       return <FileText className="h-3 w-3 text-primary" aria-label="Agendada" />;
     case "concluido":
       return <FileText className="h-3 w-3 text-emerald-600" aria-label="Relatório registrado" />;
     case "atrasado":
-      return <span className="inline-block w-2 h-2 rounded-full bg-amber-500" aria-label="Atrasada" />;
+      return (
+        <span className="inline-block w-2 h-2 rounded-full bg-amber-500" aria-label="Atrasada" />
+      );
     case "expirado":
-      return <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/40" aria-label="Expirada" />;
+      return (
+        <span
+          className="inline-block w-2 h-2 rounded-full bg-muted-foreground/40"
+          aria-label="Expirada"
+        />
+      );
   }
 }
 
@@ -288,9 +298,7 @@ function findAgsDoSlot(
 ): Agendamento[] {
   return ags.filter(
     (a) =>
-      a.turmaId === turmaId &&
-      a.data === dataKey &&
-      (a.slotInicio ?? a.inicio) === slotInicioRef,
+      a.turmaId === turmaId && a.data === dataKey && (a.slotInicio ?? a.inicio) === slotInicioRef,
   );
 }
 
@@ -328,10 +336,7 @@ function SlotChip({
   const now = new Date();
   const dataKey = format(date, "yyyy-MM-dd");
   const duracaoAulaMin = curso ? getDuracaoAulaMin(curso) : 60;
-  const totalBlocos = slotBlocosCount(
-    { inicio: slotInicio, fim: slotFim },
-    duracaoAulaMin,
-  );
+  const totalBlocos = slotBlocosCount({ inicio: slotInicio, fim: slotFim }, duracaoAulaMin);
 
   const agByBloco = new Map<number, Agendamento>();
   for (const a of agsDoSlot) {
@@ -340,14 +345,8 @@ function SlotChip({
     for (let k = 0; k < len; k++) agByBloco.set(start + k, a);
   }
 
-  const headerEstadoSrc =
-    agsDoSlot.find((a) => a.status !== "concluido") ?? agsDoSlot[0];
-  const headerEstado = computeSlotEstado(
-    dataKey,
-    slotFim,
-    headerEstadoSrc,
-    now,
-  );
+  const headerEstadoSrc = agsDoSlot.find((a) => a.status !== "concluido") ?? agsDoSlot[0];
+  const headerEstado = computeSlotEstado(dataKey, slotFim, headerEstadoSrc, now);
   const headerClass = slotChipClasses(headerEstado);
   const colors = turmaColor(turma, curso);
   // Aplica a cor da turma só quando o estado não tem cor própria (vazio_futuro).
@@ -375,11 +374,7 @@ function SlotChip({
       title={`${turma.cod} · ${slotInicio}–${slotFim} — ${ESTADO_LABEL[headerEstado]}`}
     >
       {/* Barra lateral identificadora da turma (cor do curso + variação) */}
-      <span
-        aria-hidden
-        className="absolute left-0 top-0 bottom-0 w-1"
-        style={colors.bar}
-      />
+      <span aria-hidden className="absolute left-0 top-0 bottom-0 w-1" style={colors.bar} />
       {/* Cabeçalho clicável: abre dialog de detalhes da turma/dia */}
       <button
         type="button"
@@ -391,22 +386,20 @@ function SlotChip({
           <span className={cn("font-semibold truncate", compact ? "text-[10px]" : "text-xs")}>
             {turma.cod}
           </span>
-          <span className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}>
+          <span
+            className={cn("ml-auto opacity-70 shrink-0", compact ? "text-[9px]" : "text-[10px]")}
+          >
             {slotInicio}–{slotFim}
           </span>
         </div>
         <span className={cn("text-muted-foreground pl-3", compact ? "text-[8px]" : "text-[9px]")}>
-          {totalBlocos} {totalBlocos === 1 ? "aula" : "aulas"} · {formatMinutos(duracaoAulaMin)} cada
+          {totalBlocos} {totalBlocos === 1 ? "aula" : "aulas"} · {formatMinutos(duracaoAulaMin)}{" "}
+          cada
         </span>
       </button>
 
       {/* Stack vertical de blocos: 1 linha por bloco (estende altura da célula) */}
-      <div
-        className={cn(
-          "flex flex-col",
-          compact ? "gap-0.5" : "gap-1",
-        )}
-      >
+      <div className={cn("flex flex-col", compact ? "gap-0.5" : "gap-1")}>
         {Array.from({ length: totalBlocos }).map((_, idx) => {
           const ag = agByBloco.get(idx);
           const blocoStart = blocoInicio({ inicio: slotInicio }, idx, duracaoAulaMin);
@@ -415,19 +408,13 @@ function SlotChip({
           const clickable = isClickable(estadoBloco);
 
           if (ag) {
-            const isOwner =
-              hasRole("admin") || ag.criadoPorUserId === authUser?.id;
+            const isOwner = hasRole("admin") || ag.criadoPorUserId === authUser?.id;
             const startOfDay = new Date(`${dataKey}T00:00:00`);
             const slotEnd24 = new Date(
-              new Date(`${dataKey}T${blocoEnd}:00`).getTime() +
-                REPORT_DEADLINE_HOURS * MS_PER_HOUR,
+              new Date(`${dataKey}T${blocoEnd}:00`).getTime() + REPORT_DEADLINE_HOURS * MS_PER_HOUR,
             );
-            const dentroJanelaRelatorio =
-              now >= startOfDay && now <= slotEnd24;
-            const podeRegistrar =
-              isOwner &&
-              dentroJanelaRelatorio &&
-              ag.status !== "concluido";
+            const dentroJanelaRelatorio = now >= startOfDay && now <= slotEnd24;
+            const podeRegistrar = isOwner && dentroJanelaRelatorio && ag.status !== "concluido";
             const profLabel = ag.criadoPorNome ?? ag.professor ?? "—";
             // Código resumido da 1ª atividade
             const codigoAula = ag.atividadeIds[0]?.slice(0, 8) ?? "";
@@ -477,7 +464,9 @@ function SlotChip({
                         : "text-primary",
                     )}
                   />
-                  <span className={cn("truncate font-medium", compact ? "text-[9px]" : "text-[10px]")}>
+                  <span
+                    className={cn("truncate font-medium", compact ? "text-[9px]" : "text-[10px]")}
+                  >
                     {profLabel}
                   </span>
                 </button>
@@ -553,9 +542,7 @@ function SlotChip({
               title={`${blocoStart}–${blocoEnd} — Disponível`}
             >
               {!compact && (
-                <span className="text-[9px] text-muted-foreground">
-                  + Aula {idx + 1}
-                </span>
+                <span className="text-[9px] text-muted-foreground">+ Aula {idx + 1}</span>
               )}
             </button>
           );
@@ -664,9 +651,7 @@ function MonthView({
                   );
                 })}
                 {items.length > 3 && (
-                  <div className="text-[10px] text-muted-foreground">
-                    +{items.length - 3}
-                  </div>
+                  <div className="text-[10px] text-muted-foreground">+{items.length - 3}</div>
                 )}
               </div>
             </div>
@@ -828,10 +813,7 @@ function FragmentRow({
           return ih === hour;
         });
         return (
-          <div
-            key={d.value}
-            className="border-b border-r p-1 min-h-[44px] space-y-1"
-          >
+          <div key={d.value} className="border-b border-r p-1 min-h-[44px] space-y-1">
             {items.map((it, idx) => {
               const ags = findAgsDoSlot(agendamentos, it.turma.id, dayKey, it.inicio);
               return (

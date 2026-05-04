@@ -1,10 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, Plus, X } from "lucide-react";
 import type { Habilidade } from "@/lib/academic-types";
 
@@ -29,9 +25,7 @@ export function SkillSelector({ habilidades, selectedIds, onChange }: Props) {
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2 items-center">
         {selected.length === 0 && (
-          <span className="text-sm text-muted-foreground">
-            Nenhuma habilidade vinculada
-          </span>
+          <span className="text-sm text-muted-foreground">Nenhuma habilidade vinculada</span>
         )}
         {selected.map((h) => (
           <Badge key={h.id} variant="secondary" className="gap-1">
@@ -72,15 +66,9 @@ export function SkillSelector({ habilidades, selectedIds, onChange }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">{h.sigla}</span>
-                      {h.grupo && (
-                        <span className="text-xs text-muted-foreground">
-                          {h.grupo}
-                        </span>
-                      )}
+                      {h.grupo && <span className="text-xs text-muted-foreground">{h.grupo}</span>}
                     </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {h.descricao}
-                    </p>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{h.descricao}</p>
                   </div>
                 </button>
               );

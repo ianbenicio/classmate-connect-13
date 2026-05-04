@@ -31,15 +31,8 @@ import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useAlunos } from "@/lib/alunos-store";
 import { toast } from "sonner";
-import type {
-  Agendamento,
-  Curso,
-  Turma,
-} from "@/lib/academic-types";
-import type {
-  Nota1a5,
-  RelatorioProfessorDados,
-} from "@/lib/formularios-types";
+import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
+import type { Nota1a5, RelatorioProfessorDados } from "@/lib/formularios-types";
 import type { Nota } from "@/lib/avaliacoes-types";
 
 interface Props {
@@ -64,25 +57,40 @@ interface Props {
   }) => void;
 }
 
-export function RelatorioProfessorDialog({
+export function RelatorioProfessorDialog(props: Props) {
+  // Early return ANTES dos hooks (Rules of Hooks).
+  if (!props.agendamento || !props.turma || !props.curso) return null;
+  return (
+    <RelatorioProfessorDialogContent
+      {...props}
+      agendamento={props.agendamento}
+      turma={props.turma}
+      curso={props.curso}
+    />
+  );
+}
+
+interface ContentProps extends Omit<Props, "agendamento" | "turma" | "curso"> {
+  agendamento: NonNullable<Props["agendamento"]>;
+  turma: NonNullable<Props["turma"]>;
+  curso: NonNullable<Props["curso"]>;
+}
+
+function RelatorioProfessorDialogContent({
   open,
   onOpenChange,
   agendamento,
   turma,
   curso,
   onSaved,
-}: Props) {
-  if (!agendamento || !turma || !curso) return null;
+}: ContentProps) {
   const todosAlunos = useAlunos();
   const alunosTurma = useMemo(
     () => todosAlunos.filter((a) => a.turmaId === turma.id),
     [todosAlunos, turma.id],
   );
 
-  const existing = avaliacoesStore.find<RelatorioProfessorDados>(
-    "relatorio_prof",
-    agendamento.id,
-  );
+  const existing = avaliacoesStore.find<RelatorioProfessorDados>("relatorio_prof", agendamento.id);
 
   const [resumo, setResumo] = useState("");
   const [engajamento, setEngajamento] = useState<Nota | null>(null);
@@ -232,8 +240,7 @@ export function RelatorioProfessorDialog({
             <ClipboardCheck className="h-5 w-5 text-primary" /> Relatório da aula
           </DialogTitle>
           <DialogDescription>
-            {curso.nome} · {turma.nome} · {dataFmt} · {agendamento.inicio}–
-            {agendamento.fim}
+            {curso.nome} · {turma.nome} · {dataFmt} · {agendamento.inicio}–{agendamento.fim}
           </DialogDescription>
         </DialogHeader>
 
@@ -260,9 +267,7 @@ export function RelatorioProfessorDialog({
                 >
                   <Checkbox
                     checked={presencas[a.id] ?? true}
-                    onCheckedChange={(v) =>
-                      setPresencas((p) => ({ ...p, [a.id]: !!v }))
-                    }
+                    onCheckedChange={(v) => setPresencas((p) => ({ ...p, [a.id]: !!v }))}
                   />
                   <span className="text-sm flex-1">{a.nome}</span>
                   <span className="text-[11px] text-muted-foreground">

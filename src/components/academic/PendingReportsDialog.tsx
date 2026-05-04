@@ -34,13 +34,7 @@ interface Props {
   atividades: Atividade[];
 }
 
-export function PendingReportsDialog({
-  open,
-  onOpenChange,
-  cursos,
-  turmas,
-  atividades,
-}: Props) {
+export function PendingReportsDialog({ open, onOpenChange, cursos, turmas, atividades }: Props) {
   const agendamentos = useAgendamentos();
   const { user: authUser, hasRole, displayName } = useAuth();
   const isAdmin = hasRole("admin");
@@ -53,14 +47,8 @@ export function PendingReportsDialog({
     curso: Curso;
   } | null>(null);
 
-  const cursoMap = useMemo(
-    () => new Map(cursos.map((c) => [c.id, c])),
-    [cursos],
-  );
-  const turmaMap = useMemo(
-    () => new Map(turmas.map((t) => [t.id, t])),
-    [turmas],
-  );
+  const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
+  const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
 
   const pendencias = useMemo(() => {
     const now = new Date();
@@ -102,14 +90,8 @@ export function PendingReportsDialog({
               {pendencias.map(({ a, estado }) => {
                 const turma = turmaMap.get(a.turmaId);
                 const curso = turma ? cursoMap.get(turma.cursoId) : undefined;
-                const ativs = atividades.filter((x) =>
-                  a.atividadeIds.includes(x.id),
-                );
-                const dataFmt = format(
-                  new Date(`${a.data}T00:00:00`),
-                  "PPP",
-                  { locale: ptBR },
-                );
+                const ativs = atividades.filter((x) => a.atividadeIds.includes(x.id));
+                const dataFmt = format(new Date(`${a.data}T00:00:00`), "PPP", { locale: ptBR });
                 return (
                   <li
                     key={a.id}
@@ -144,10 +126,7 @@ export function PendingReportsDialog({
                       {ativs.length > 0 && (
                         <div className="text-xs text-muted-foreground mt-1 truncate">
                           {ativs
-                            .map(
-                              (x) =>
-                                `${x.tipo === 0 ? "🎓" : "📋"} ${x.codigo}`,
-                            )
+                            .map((x) => `${x.tipo === 0 ? "🎓" : "📋"} ${x.codigo}`)
                             .join(" · ")}
                         </div>
                       )}
@@ -155,9 +134,7 @@ export function PendingReportsDialog({
                     <Button
                       size="sm"
                       onClick={() =>
-                        turma &&
-                        curso &&
-                        setSelecionado({ agendamento: a, turma, curso })
+                        turma && curso && setSelecionado({ agendamento: a, turma, curso })
                       }
                     >
                       Registrar

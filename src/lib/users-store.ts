@@ -27,11 +27,8 @@ import { useProfessores } from "./professores-store";
  * o admin da própria sessão.
  */
 function makeIsolatedClient() {
-  const url =
-    import.meta.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
-  const key =
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.SUPABASE_PUBLISHABLE_KEY;
+  const url = import.meta.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) throw new Error("Supabase env vars ausentes.");
   return createClient<Database>(url, key, {
     auth: {
@@ -167,9 +164,7 @@ export const usersStore = {
       toast.error(`Erro ao salvar: ${error.message}`);
       return;
     }
-    users = users.map((u) =>
-      u.userId === userId ? { ...u, displayName: trimmed } : u,
-    );
+    users = users.map((u) => (u.userId === userId ? { ...u, displayName: trimmed } : u));
     emit();
   },
 
@@ -227,9 +222,7 @@ export const usersStore = {
         user_id: newUserId,
         role,
       }));
-      const { error: roleErr } = await supabase
-        .from("user_roles")
-        .insert(rows);
+      const { error: roleErr } = await supabase.from("user_roles").insert(rows);
       if (roleErr) {
         console.error("[users] createUser addRoles error", roleErr);
         toast.error(`Usuário criado, mas falhou ao atribuir papéis: ${roleErr.message}`);
@@ -252,17 +245,13 @@ export const usersStore = {
   async addRole(userId: string, role: AppRole): Promise<void> {
     const target = users.find((u) => u.userId === userId);
     if (target?.roles.includes(role)) return;
-    const { error } = await supabase
-      .from("user_roles")
-      .insert({ user_id: userId, role });
+    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
     if (error) {
       console.error("[users] addRole error", error);
       toast.error(`Erro ao atribuir papel: ${error.message}`);
       return;
     }
-    users = users.map((u) =>
-      u.userId === userId ? { ...u, roles: [...u.roles, role] } : u,
-    );
+    users = users.map((u) => (u.userId === userId ? { ...u, roles: [...u.roles, role] } : u));
     emit();
   },
 
@@ -281,19 +270,13 @@ export const usersStore = {
    */
   async removeUser(userId: string): Promise<void> {
     // Ordem: roles → profile (FK lógica via user_id; sem cascade SQL).
-    const { error: rolesErr } = await supabase
-      .from("user_roles")
-      .delete()
-      .eq("user_id", userId);
+    const { error: rolesErr } = await supabase.from("user_roles").delete().eq("user_id", userId);
     if (rolesErr) {
       console.error("[users] removeUser roles error", rolesErr);
       toast.error(`Erro ao remover papéis: ${rolesErr.message}`);
       return;
     }
-    const { error: profErr } = await supabase
-      .from("profiles")
-      .delete()
-      .eq("user_id", userId);
+    const { error: profErr } = await supabase.from("profiles").delete().eq("user_id", userId);
     if (profErr) {
       console.error("[users] removeUser profile error", profErr);
       toast.error(`Erro ao remover perfil: ${profErr.message}`);
@@ -315,9 +298,7 @@ export const usersStore = {
       return;
     }
     users = users.map((u) =>
-      u.userId === userId
-        ? { ...u, roles: u.roles.filter((r) => r !== role) }
-        : u,
+      u.userId === userId ? { ...u, roles: u.roles.filter((r) => r !== role) } : u,
     );
     emit();
   },
@@ -334,9 +315,7 @@ export function useUsers(): UserRow[] {
   const [snap, setSnap] = useState<UserRow[]>(usersStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = usersStore.subscribe(() =>
-      setSnap([...usersStore.getAll()]),
-    );
+    const unsub = usersStore.subscribe(() => setSnap([...usersStore.getAll()]));
     return () => {
       unsub();
     };
@@ -391,8 +370,7 @@ export async function updateUserProfessorFields(
   if (fields.fotoUrl !== undefined) dbFields.foto_url = fields.fotoUrl;
   if (fields.cargaHorariaSemanalMin !== undefined)
     dbFields.carga_horaria_semanal_min = fields.cargaHorariaSemanalMin;
-  if (fields.habilidadesIds !== undefined)
-    dbFields.habilidades_ids = fields.habilidadesIds;
+  if (fields.habilidadesIds !== undefined) dbFields.habilidades_ids = fields.habilidadesIds;
   if (fields.ativo !== undefined) dbFields.ativo = fields.ativo;
 
   const { error } = await supabase

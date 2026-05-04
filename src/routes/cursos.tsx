@@ -79,26 +79,19 @@ function CursosPage() {
   const [turmaFormOpen, setTurmaFormOpen] = useState(false);
   const [editingTurma, setEditingTurma] = useState<Turma | undefined>();
   const [turmaDetalhe, setTurmaDetalhe] = useState<Turma | null>(null);
-  const [confirmDeleteTurma, setConfirmDeleteTurma] = useState<Turma | null>(
-    null,
-  );
+  const [confirmDeleteTurma, setConfirmDeleteTurma] = useState<Turma | null>(null);
 
-  const [habilidadeDetalhe, setHabilidadeDetalhe] =
-    useState<Habilidade | null>(null);
+  const [habilidadeDetalhe, setHabilidadeDetalhe] = useState<Habilidade | null>(null);
 
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
 
   const [quadroCurso, setQuadroCurso] = useState<Curso | null>(null);
 
-  const habilidadeMap = useMemo(
-    () => new Map(habilidades.map((h) => [h.id, h])),
-    [habilidades],
-  );
+  const habilidadeMap = useMemo(() => new Map(habilidades.map((h) => [h.id, h])), [habilidades]);
 
   const turmasPorCurso = useMemo(() => {
     const map = new Map<string, number>();
-    for (const t of turmas)
-      map.set(t.cursoId, (map.get(t.cursoId) ?? 0) + 1);
+    for (const t of turmas) map.set(t.cursoId, (map.get(t.cursoId) ?? 0) + 1);
     return map;
   }, [turmas]);
 
@@ -141,7 +134,6 @@ function CursosPage() {
     return dadasPorCurso;
   }, [atividades, alunos, cursos]);
 
-
   const agendamentos = useAgendamentos();
 
   useEffect(() => {
@@ -157,8 +149,6 @@ function CursosPage() {
       setCursoSelecionado(nextCurso);
     }
   }, [cursos, cursoSelecionado]);
-
-
 
   const handleSaveCurso = (curso: Curso) => {
     cursosStore.upsert(curso);
@@ -254,9 +244,7 @@ function CursosPage() {
                 </div>
                 <h2 className="text-xl font-semibold mb-1">{c.nome}</h2>
                 {c.descricao && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                    {c.descricao}
-                  </p>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{c.descricao}</p>
                 )}
                 <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
@@ -349,33 +337,24 @@ function CursosPage() {
 
       <TurmaDetailDialog
         turma={turmaDetalhe}
-        curso={
-          turmaDetalhe
-            ? cursos.find((c) => c.id === turmaDetalhe.cursoId)
-            : undefined
-        }
+        curso={turmaDetalhe ? cursos.find((c) => c.id === turmaDetalhe.cursoId) : undefined}
         alunos={alunos}
         atividades={atividades}
         onOpenChange={(open) => !open && setTurmaDetalhe(null)}
       />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(open) => !open && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover atividade?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser desfeita. A atividade{" "}
-              <strong>{confirmDelete?.nome}</strong> será removida permanentemente.
+              Esta ação não pode ser desfeita. A atividade <strong>{confirmDelete?.nome}</strong>{" "}
+              será removida permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => confirmDelete && handleDelete(confirmDelete)}
-            >
+            <AlertDialogAction onClick={() => confirmDelete && handleDelete(confirmDelete)}>
               Remover
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -390,16 +369,14 @@ function CursosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remover turma?</AlertDialogTitle>
             <AlertDialogDescription>
-              A turma <strong>{confirmDeleteTurma?.nome}</strong> será removida.
-              Esta ação não pode ser desfeita.
+              A turma <strong>{confirmDeleteTurma?.nome}</strong> será removida. Esta ação não pode
+              ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() =>
-                confirmDeleteTurma && handleDeleteTurma(confirmDeleteTurma)
-              }
+              onClick={() => confirmDeleteTurma && handleDeleteTurma(confirmDeleteTurma)}
             >
               Remover
             </AlertDialogAction>
@@ -413,9 +390,7 @@ function CursosPage() {
         curso={quadroCurso}
         atividades={atividades}
         aulasDadasIds={
-          quadroCurso
-            ? aulasDadasPorCurso.get(quadroCurso.id) ?? new Set()
-            : new Set()
+          quadroCurso ? (aulasDadasPorCurso.get(quadroCurso.id) ?? new Set()) : new Set()
         }
       />
     </div>

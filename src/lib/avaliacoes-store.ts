@@ -70,9 +70,7 @@ function avaliacaoToRow(a: AvaliacaoRecord): Row {
 
 async function topUpAvaliacoes(existingIds: Set<string>) {
   if (SEED_AVALIACOES.length === 0) return false;
-  const missing = SEED_AVALIACOES.filter(
-    (a) => !existingIds.has(toUuid(a.id)),
-  );
+  const missing = SEED_AVALIACOES.filter((a) => !existingIds.has(toUuid(a.id)));
   if (missing.length === 0) return false;
   const rows = missing.map(avaliacaoToRow);
   const chunkSize = 100;
@@ -81,7 +79,7 @@ async function topUpAvaliacoes(existingIds: Set<string>) {
     const chunk = rows.slice(i, i + chunkSize);
     const { error } = await supabase
       .from("avaliacoes")
-      .upsert(chunk, { onConflict: "id", ignoreDuplicates: true });
+      .upsert(chunk as never, { onConflict: "id", ignoreDuplicates: true });
     if (error) {
       console.error("[avaliacoes] top-up error (chunk)", error);
       continue;
@@ -103,7 +101,7 @@ async function loadFromDb() {
     console.error("[avaliacoes] load error", error);
     return;
   }
-  const rows = (data as Row[] | null ?? []);
+  const rows = (data as Row[] | null) ?? [];
   const existingIds = new Set(rows.map((r) => r.id));
   const inserted = await topUpAvaliacoes(existingIds);
   if (inserted) {
@@ -118,7 +116,13 @@ async function loadFromDb() {
 }
 
 async function ensureInit(): Promise<void> {
-  if (initialized) return;
+  // Recarrega sempre — consistente com agendamentos-store. Garante que
+  // avaliações criadas em outra aba/sessão fiquem visíveis ao reabrir uma rota.
+  if (initialized) {
+    await loadFromDb();
+    emit();
+    return;
+  }
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;
@@ -145,9 +149,7 @@ export const avaliacoesStore = {
       (r) =>
         r.tipo === tipo &&
         (r.agendamentoId === agId || r.agendamentoId === agendamentoId) &&
-        (alId
-          ? r.alunoId === alId || r.alunoId === alunoId
-          : r.alunoId === null),
+        (alId ? r.alunoId === alId || r.alunoId === alunoId : r.alunoId === null),
     ) as AvaliacaoRecord<T> | undefined;
   },
 
@@ -155,32 +157,19 @@ export const avaliacoesStore = {
   listByAgendamento(tipo: FormularioTipo, agendamentoId: string): AvaliacaoRecord[] {
     const agId = toUuid(agendamentoId);
     return registros.filter(
-      (r) =>
-        r.tipo === tipo &&
-        (r.agendamentoId === agId || r.agendamentoId === agendamentoId),
+      (r) => r.tipo === tipo && (r.agendamentoId === agId || r.agendamentoId === agendamentoId),
     );
   },
 
-  async saveRelatorioProf(
-    agendamentoId: string,
-    dados: RelatorioProfessorDados,
-  ) {
+  async saveRelatorioProf(agendamentoId: string, dados: RelatorioProfessorDados) {
     return this.save("relatorio_prof", agendamentoId, null, null, dados);
   },
 
-  async saveChecklistAluno(
-    agendamentoId: string,
-    alunoId: string,
-    dados: ChecklistAlunoDados,
-  ) {
+  async saveChecklistAluno(agendamentoId: string, alunoId: string, dados: ChecklistAlunoDados) {
     return this.save("checklist_aluno", agendamentoId, alunoId, null, dados);
   },
 
-  async saveRelatorioAluno(
-    agendamentoId: string,
-    alunoId: string,
-    dados: RelatorioAlunoDados,
-  ) {
+  async saveRelatorioAluno(agendamentoId: string, alunoId: string, dados: RelatorioAlunoDados) {
     return this.save("relatorio_aluno", agendamentoId, alunoId, null, dados);
   },
 
@@ -203,9 +192,7 @@ export const avaliacoesStore = {
 
     // — snapshot de contexto (congela curso/turma/atividades/habilidades)
     const dadosObj = (dados ?? {}) as Record<string, unknown>;
-    const habilidadeIds = Object.keys(
-      (dadosObj.habilidadesNotas ?? {}) as Record<string, unknown>,
-    );
+    const habilidadeIds = Object.keys((dadosObj.habilidadesNotas ?? {}) as Record<string, unknown>);
     const snapshot = buildAvaliacaoSnapshot(agendamentoId, habilidadeIds);
     const dadosComSnapshot = { ...dadosObj, _snapshot: snapshot };
 
@@ -228,13 +215,9 @@ export const avaliacoesStore = {
       dados: dadosComSnapshot,
       criadoEm: existing?.criadoEm ?? new Date().toISOString(),
     };
-    registros = existing
-      ? registros.map((r) => (r.id === id ? local : r))
-      : [local, ...registros];
+    registros = existing ? registros.map((r) => (r.id === id ? local : r)) : [local, ...registros];
     emit();
-    const { error } = await supabase
-      .from("avaliacoes")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabase.from("avaliacoes").upsert(row, { onConflict: "id" });
     if (error) {
       console.error("[avaliacoes] save error", error);
       toast.error(`Erro ao salvar avaliação: ${error.message}`);
@@ -257,19 +240,11 @@ export const avaliacoesStore = {
    * Usado pelo CheckInRapido (#10). Idempotente — pode ser chamado várias
    * vezes para o mesmo aluno (upsert).
    */
-  async marcarPresenca(
-    agendamentoId: string,
-    alunoId: string,
-    presente: boolean,
-  ): Promise<void> {
+  async marcarPresenca(agendamentoId: string, alunoId: string, presente: boolean): Promise<void> {
     const {
       data: { user: authUser },
     } = await supabase.auth.getUser();
-    await syncPresencas(
-      agendamentoId,
-      { [alunoId]: presente },
-      authUser?.id ?? null,
-    );
+    await syncPresencas(agendamentoId, { [alunoId]: presente }, authUser?.id ?? null);
   },
 
   async remove(id: string) {
@@ -296,13 +271,7 @@ export const avaliacoesStore = {
   },
   /** @deprecated use saveRelatorioAluno */
   upsert(av: AvaliacaoAula) {
-    void this.save(
-      "relatorio_aluno",
-      av.agendamentoId,
-      av.alunoId,
-      null,
-      av as unknown,
-    );
+    void this.save("relatorio_aluno", av.agendamentoId, av.alunoId, null, av as unknown);
   },
 };
 
@@ -310,9 +279,7 @@ export function useAvaliacoes(): AvaliacaoRecord[] {
   const [snap, setSnap] = useState<AvaliacaoRecord[]>(avaliacoesStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = avaliacoesStore.subscribe(() =>
-      setSnap([...avaliacoesStore.getAll()]),
-    );
+    const unsub = avaliacoesStore.subscribe(() => setSnap([...avaliacoesStore.getAll()]));
     return () => {
       unsub();
     };

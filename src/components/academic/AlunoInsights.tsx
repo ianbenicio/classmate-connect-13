@@ -7,15 +7,7 @@
 import { useMemo } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { CalendarCheck, ClipboardCheck, Star, MessageSquare } from "lucide-react";
 import type { Agendamento, Aluno, Habilidade } from "@/lib/academic-types";
@@ -78,10 +70,7 @@ export function AlunoTimeline({ aluno, agendamentos, avaliacoes }: TimelineProps
           data: d,
           tipo: "checklist",
           titulo: "Checklist do professor",
-          detalhe:
-            tags.length > 0
-              ? `${tags.length} tag(s) atribuída(s)`
-              : "sem tags",
+          detalhe: tags.length > 0 ? `${tags.length} tag(s) atribuída(s)` : "sem tags",
         });
       } else if (av.tipo === "relatorio_aluno") {
         out.push({
@@ -97,11 +86,7 @@ export function AlunoTimeline({ aluno, agendamentos, avaliacoes }: TimelineProps
   }, [aluno, agendamentos, avaliacoes]);
 
   if (eventos.length === 0) {
-    return (
-      <p className="text-xs text-muted-foreground italic">
-        Sem eventos registrados ainda.
-      </p>
-    );
+    return <p className="text-xs text-muted-foreground italic">Sem eventos registrados ainda.</p>;
   }
 
   return (
@@ -116,11 +101,7 @@ export function AlunoTimeline({ aluno, agendamentos, avaliacoes }: TimelineProps
               {format(e.data, "dd/MM/yy HH:mm", { locale: ptBR })}
             </Badge>
           </div>
-          {e.detalhe && (
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              {e.detalhe}
-            </p>
-          )}
+          {e.detalhe && <p className="text-[11px] text-muted-foreground mt-0.5">{e.detalhe}</p>}
         </li>
       ))}
       {eventos.length > 50 && (
@@ -166,11 +147,7 @@ const PALETA = [
   "#84cc16", // lime
 ];
 
-export function AlunoHabilidadesChart({
-  aluno,
-  habilidadesCurso,
-  avaliacoes,
-}: ChartProps) {
+export function AlunoHabilidadesChart({ aluno, habilidadesCurso, avaliacoes }: ChartProps) {
   const dados = useMemo(() => {
     if (habilidadesCurso.length === 0) return [];
     // Filtra checklists deste aluno, ordena por data crescente
@@ -215,8 +192,8 @@ export function AlunoHabilidadesChart({
   if (dados.length === 0) {
     return (
       <p className="text-xs text-muted-foreground italic">
-        Sem checklists registrados ainda. Após o professor avaliar o
-        aluno em uma aula, o gráfico mostra a evolução.
+        Sem checklists registrados ainda. Após o professor avaliar o aluno em uma aula, o gráfico
+        mostra a evolução.
       </p>
     );
   }
@@ -225,12 +202,7 @@ export function AlunoHabilidadesChart({
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={dados} margin={{ top: 6, right: 12, left: 0, bottom: 0 }}>
-          <XAxis
-            dataKey="x"
-            tick={{ fontSize: 10 }}
-            tickLine={false}
-            axisLine={false}
-          />
+          <XAxis dataKey="x" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
           <YAxis
             domain={[0, 5]}
             ticks={[1, 2, 3, 4, 5]}

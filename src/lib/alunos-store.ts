@@ -107,7 +107,12 @@ async function loadFromDb() {
     // backend retorne `pageSize` linhas indefinidamente. Em produção real
     // qualquer dataset que se aproxime disso deveria mudar para fetch lazy.
     const MAX_PAGES = 500;
-    const all: Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }> = [];
+    const all: Array<{
+      aluno_id: string;
+      atividade_id: string;
+      presente: boolean;
+      observacao: string | null;
+    }> = [];
     for (let page = 0; page < MAX_PAGES; page++) {
       const from = page * pageSize;
       const { data, error } = await supabase
@@ -119,7 +124,9 @@ async function loadFromDb() {
       all.push(...rows);
       if (rows.length < pageSize) return { data: all, error: null as null };
     }
-    console.warn(`[alunos] presencas: atingiu cap de ${MAX_PAGES} páginas (${MAX_PAGES * pageSize} linhas) — possível dataset truncado.`);
+    console.warn(
+      `[alunos] presencas: atingiu cap de ${MAX_PAGES} páginas (${MAX_PAGES * pageSize} linhas) — possível dataset truncado.`,
+    );
     return { data: all, error: null as null };
   }
   const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([
@@ -140,10 +147,22 @@ async function loadFromDb() {
     const { data: data2 } = await supabase.from("alunos").select("*").order("nome");
     alunosRows = (data2 ?? []) as AlunoRow[];
   }
-  const presByAluno = new Map<string, { atividadeId: string; presente: boolean; observacao?: string }[]>();
-  for (const p of (presData ?? []) as Array<{ aluno_id: string; atividade_id: string; presente: boolean; observacao: string | null }>) {
+  const presByAluno = new Map<
+    string,
+    { atividadeId: string; presente: boolean; observacao?: string }[]
+  >();
+  for (const p of (presData ?? []) as Array<{
+    aluno_id: string;
+    atividade_id: string;
+    presente: boolean;
+    observacao: string | null;
+  }>) {
     const arr = presByAluno.get(p.aluno_id) ?? [];
-    arr.push({ atividadeId: p.atividade_id, presente: !!p.presente, observacao: p.observacao ?? undefined });
+    arr.push({
+      atividadeId: p.atividade_id,
+      presente: !!p.presente,
+      observacao: p.observacao ?? undefined,
+    });
     presByAluno.set(p.aluno_id, arr);
   }
   alunos = alunosRows.map((r) => {

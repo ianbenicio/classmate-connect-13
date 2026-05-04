@@ -43,14 +43,7 @@ interface Props {
   onSave: (turma: Turma) => void;
 }
 
-export function TurmaFormDialog({
-  open,
-  onOpenChange,
-  cursoId,
-  curso,
-  editing,
-  onSave,
-}: Props) {
+export function TurmaFormDialog({ open, onOpenChange, cursoId, curso, editing, onSave }: Props) {
   const [nome, setNome] = useState("");
   const [cod, setCod] = useState("");
   const [data, setData] = useState("");
@@ -74,10 +67,7 @@ export function TurmaFormDialog({
     () =>
       (slot: Pick<HorarioSlot, "inicio" | "fim" | "diaSemana">): HorarioSlot => ({
         ...slot,
-        fim:
-          turnoMin > 0
-            ? addMinutesToHHMM(slot.inicio, turnoMin)
-            : slot.fim,
+        fim: turnoMin > 0 ? addMinutesToHHMM(slot.inicio, turnoMin) : slot.fim,
       }),
     [turnoMin],
   );
@@ -117,15 +107,12 @@ export function TurmaFormDialog({
       }),
     );
 
-  const removeHorario = (i: number) =>
-    setHorarios((prev) => prev.filter((_, idx) => idx !== i));
+  const removeHorario = (i: number) => setHorarios((prev) => prev.filter((_, idx) => idx !== i));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cursoOk) {
-      toast.error(
-        "Defina o 'Turno diário' do curso antes de cadastrar turmas.",
-      );
+      toast.error("Defina o 'Turno diário' do curso antes de cadastrar turmas.");
       return;
     }
     if (!nome.trim() || !cod.trim()) {
@@ -159,18 +146,20 @@ export function TurmaFormDialog({
         <form onSubmit={handleSubmit} className="space-y-4">
           {!cursoOk && (
             <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
-              ⚠️ Este curso ainda não tem o <strong>Turno diário</strong>{" "}
-              definido. Edite o curso e configure o turno antes de criar turmas.
+              ⚠️ Este curso ainda não tem o <strong>Turno diário</strong> definido. Edite o curso e
+              configure o turno antes de criar turmas.
             </div>
           )}
           {cursoOk && (
             <div className="rounded-md border bg-muted/30 p-3 text-[11px] text-muted-foreground space-y-2">
               <div>
                 Turno: <strong>{formatMinutos(turnoMin)}</strong> ·{" "}
-                <strong>{blocosDia} aula(s)</strong> de{" "}
-                <strong>{formatMinutos(aulaMin)}</strong>
+                <strong>{blocosDia} aula(s)</strong> de <strong>{formatMinutos(aulaMin)}</strong>
                 {cargaTotal > 0 && (
-                  <> · Carga total: <strong>{formatMinutos(cargaTotal)}</strong></>
+                  <>
+                    {" "}
+                    · Carga total: <strong>{formatMinutos(cargaTotal)}</strong>
+                  </>
                 )}
               </div>
               {habilidadesDoCurso.length > 0 && (
@@ -214,11 +203,7 @@ export function TurmaFormDialog({
             </div>
             <div className="space-y-2">
               <Label>Data início</Label>
-              <Input
-                type="date"
-                value={data}
-                onChange={(e) => setData(e.target.value)}
-              />
+              <Input type="date" value={data} onChange={(e) => setData(e.target.value)} />
             </div>
 
             <div className="space-y-2 col-span-2">
@@ -241,19 +226,12 @@ export function TurmaFormDialog({
               ) : (
                 <div className="space-y-2">
                   {horarios.map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex items-end gap-2 rounded-md border p-2"
-                    >
+                    <div key={i} className="flex items-end gap-2 rounded-md border p-2">
                       <div className="space-y-1 flex-1 min-w-0">
-                        <Label className="text-[10px] uppercase text-muted-foreground">
-                          Dia
-                        </Label>
+                        <Label className="text-[10px] uppercase text-muted-foreground">Dia</Label>
                         <Select
                           value={h.diaSemana}
-                          onValueChange={(v) =>
-                            updateHorario(i, { diaSemana: v as DiaSemana })
-                          }
+                          onValueChange={(v) => updateHorario(i, { diaSemana: v as DiaSemana })}
                         >
                           <SelectTrigger>
                             <SelectValue />
@@ -274,9 +252,7 @@ export function TurmaFormDialog({
                         <Input
                           type="time"
                           value={h.inicio}
-                          onChange={(e) =>
-                            updateHorario(i, { inicio: e.target.value })
-                          }
+                          onChange={(e) => updateHorario(i, { inicio: e.target.value })}
                           className="w-[110px]"
                         />
                       </div>
@@ -311,19 +287,11 @@ export function TurmaFormDialog({
 
             <div className="space-y-2 col-span-2">
               <Label>Descrição</Label>
-              <Textarea
-                value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
-                rows={2}
-              />
+              <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={2} />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit" disabled={!cursoOk}>

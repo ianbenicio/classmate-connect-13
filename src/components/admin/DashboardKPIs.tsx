@@ -54,11 +54,7 @@ export function DashboardKPIs() {
     const monthEnd = endOfMonth(now);
 
     // Helpers
-    const inInterval = (
-      isoDate: string,
-      start: Date,
-      end: Date,
-    ): boolean => {
+    const inInterval = (isoDate: string, start: Date, end: Date): boolean => {
       try {
         return isWithinInterval(parseISO(isoDate), { start, end });
       } catch {
@@ -87,14 +83,10 @@ export function DashboardKPIs() {
         .map((av) => av.agendamentoId as string),
     );
     const concluidasMes = mes.filter((a) => a.status === "concluido");
-    const relPendentes = concluidasMes.filter(
-      (a) => !relProfFeitas.has(a.id),
-    ).length;
+    const relPendentes = concluidasMes.filter((a) => !relProfFeitas.has(a.id)).length;
     const relCobertura =
       concluidasMes.length > 0
-        ? Math.round(
-            ((concluidasMes.length - relPendentes) / concluidasMes.length) * 100,
-          )
+        ? Math.round(((concluidasMes.length - relPendentes) / concluidasMes.length) * 100)
         : 100;
 
     // Avaliações dos alunos no mês — quantos agendamentos do mês têm pelo
@@ -167,9 +159,7 @@ export function DashboardKPIs() {
                 {stats.hojeCanceladas} canc.
               </Badge>
             )}
-            {stats.hojeTotal === 0 && (
-              <span className="text-[11px] text-muted-foreground">—</span>
-            )}
+            {stats.hojeTotal === 0 && <span className="text-[11px] text-muted-foreground">—</span>}
           </div>
         }
       />
@@ -179,9 +169,7 @@ export function DashboardKPIs() {
         label="Aulas esta semana"
         value={stats.semanaConcluidas}
         sub={
-          <span className="text-xs text-muted-foreground">
-            de {stats.semanaTotal} agendadas
-          </span>
+          <span className="text-xs text-muted-foreground">de {stats.semanaTotal} agendadas</span>
         }
       />
 
@@ -189,11 +177,7 @@ export function DashboardKPIs() {
         icon={<CalendarCheck className="h-4 w-4" />}
         label="Concluídas no mês"
         value={stats.mesConcluidas}
-        sub={
-          <span className="text-xs text-muted-foreground">
-            de {stats.mesTotal} agendadas
-          </span>
-        }
+        sub={<span className="text-xs text-muted-foreground">de {stats.mesTotal} agendadas</span>}
       />
 
       <KPI
@@ -209,9 +193,7 @@ export function DashboardKPIs() {
                 : "text-emerald-600 dark:text-emerald-400",
             )}
           >
-            {stats.relPendentes > 0
-              ? `${stats.relPendentes} pendente(s)`
-              : "Tudo em dia"}
+            {stats.relPendentes > 0 ? `${stats.relPendentes} pendente(s)` : "Tudo em dia"}
           </span>
         }
         tone={stats.relPendentes > 0 ? "warn" : "good"}
@@ -279,9 +261,7 @@ function KPI({
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
           {icon}
           <span className="truncate">{label}</span>
-          {tone === "warn" && (
-            <AlertTriangle className="h-3 w-3 text-amber-500 ml-auto" />
-          )}
+          {tone === "warn" && <AlertTriangle className="h-3 w-3 text-amber-500 ml-auto" />}
         </div>
         <p className="text-2xl font-bold mt-1">{value}</p>
         {sub && <div className="mt-1.5">{sub}</div>}

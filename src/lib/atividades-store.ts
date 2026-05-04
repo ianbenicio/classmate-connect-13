@@ -36,7 +36,6 @@ type AtividadeRow = {
   prazo: string | null;
   criado_por: string | null;
   professor: string | null;
-  professor_id: string | null; // @deprecated FK to professores
   professor_user_id: string | null; // FK direta para auth.users (Fase 7)
   habilidade_ids: unknown;
   descricao_conteudo: string | null;
@@ -76,7 +75,6 @@ function rowToAtividade(r: AtividadeRow): Atividade {
     prazo: r.prazo ?? "",
     criadoPor: r.criado_por ?? "",
     professor: r.professor ?? "",
-    professorId: r.professor_id ?? undefined,
     professorUserId: r.professor_user_id ?? undefined,
     habilidadeIds: toUuidArray(
       (Array.isArray(r.habilidade_ids) ? r.habilidade_ids : []) as string[],
@@ -86,11 +84,10 @@ function rowToAtividade(r: AtividadeRow): Atividade {
     resultadosEsperados: r.resultados_esperados ?? undefined,
     notasInstrutor: r.notas_instrutor ?? undefined,
     preRequisitos: r.pre_requisitos ?? undefined,
-    niveisAlvo: (Array.isArray(r.niveis_alvo) ? r.niveis_alvo : [])
-      .map((n) => ({
-        habilidadeId: toUuid((n as HabilidadeNivelAlvo).habilidadeId),
-        nivelAlvo: (n as HabilidadeNivelAlvo).nivelAlvo,
-      })) as HabilidadeNivelAlvo[],
+    niveisAlvo: (Array.isArray(r.niveis_alvo) ? r.niveis_alvo : []).map((n) => ({
+      habilidadeId: toUuid((n as HabilidadeNivelAlvo).habilidadeId),
+      nivelAlvo: (n as HabilidadeNivelAlvo).nivelAlvo,
+    })) as HabilidadeNivelAlvo[],
     criteriosSucesso: r.criterios_sucesso ?? undefined,
     metodologias: r.metodologias ?? undefined,
     roteiro: (Array.isArray(r.roteiro) ? r.roteiro : []) as RoteiroBloco[],
@@ -116,7 +113,6 @@ function atividadeToRow(a: Atividade) {
     prazo: a.prazo || null,
     criado_por: a.criadoPor || null,
     professor: a.professor || null,
-    professor_id: a.professorId ? toUuid(a.professorId) : null,
     professor_user_id: a.professorUserId ? toUuid(a.professorUserId) : null,
     habilidade_ids: toUuidArray(a.habilidadeIds) as never,
     descricao_conteudo: a.descricaoConteudo ?? null,
@@ -124,10 +120,10 @@ function atividadeToRow(a: Atividade) {
     resultados_esperados: a.resultadosEsperados ?? null,
     notas_instrutor: a.notasInstrutor ?? null,
     pre_requisitos: a.preRequisitos ?? null,
-    niveis_alvo: ((a.niveisAlvo ?? []).map((n) => ({
+    niveis_alvo: (a.niveisAlvo ?? []).map((n) => ({
       habilidadeId: toUuid(n.habilidadeId),
       nivelAlvo: n.nivelAlvo,
-    }))) as never,
+    })) as never,
     criterios_sucesso: a.criteriosSucesso ?? null,
     metodologias: a.metodologias ?? null,
     roteiro: (a.roteiro ?? []) as never,
@@ -144,10 +140,7 @@ function atividadeToRow(a: Atividade) {
 // sobrescrever edições existentes). Necessário porque a versão anterior só
 // semeava quando a tabela estava *totalmente* vazia — se um chunk falhou no
 // primeiro seed, grupos inteiros ficavam faltando sem nunca serem recuperados.
-async function topUpSeed(
-  existingIds: Set<string>,
-  existingCodigos: Set<string>,
-) {
+async function topUpSeed(existingIds: Set<string>, existingCodigos: Set<string>) {
   // Filtra também por `codigo` (UNIQUE) — sem isso, um id de seed novo
   // para um codigo já existente quebrava o upsert com 409 a cada load.
   const missing = SEED_ATIVIDADES.filter(

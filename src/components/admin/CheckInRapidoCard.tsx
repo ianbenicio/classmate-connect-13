@@ -16,13 +16,7 @@
 // - Aluno/viewer: não renderiza (return null)
 
 import { useMemo, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CalendarClock, Check, X as XIcon, ChevronDown, ChevronRight } from "lucide-react";
@@ -48,15 +42,11 @@ export function CheckInRapidoCard() {
 
   const aulasHoje = useMemo(() => {
     const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-    let lista = agendamentos.filter(
-      (ag) => ag.status === "pendente" && ag.data === todayKey,
-    );
+    let lista = agendamentos.filter((ag) => ag.status === "pendente" && ag.data === todayKey);
     // Se for só professor (não staff), filtra pelas aulas dele
     if (!isStaff && isProfessor && displayName) {
       const myKey = displayName.trim().toLowerCase();
-      lista = lista.filter(
-        (ag) => ag.professor?.trim().toLowerCase() === myKey,
-      );
+      lista = lista.filter((ag) => ag.professor?.trim().toLowerCase() === myKey);
     }
     return lista.sort((a, b) => a.inicio.localeCompare(b.inicio));
   }, [agendamentos, isStaff, isProfessor, displayName]);
@@ -85,10 +75,7 @@ export function CheckInRapidoCard() {
             key={ag.id}
             agendamento={ag}
             alunos={alunos.filter((a) => a.turmaId === ag.turmaId)}
-            turmaNome={
-              turmas.find((t) => t.id === ag.turmaId)?.nome ??
-              ag.turmaId.slice(0, 8)
-            }
+            turmaNome={turmas.find((t) => t.id === ag.turmaId)?.nome ?? ag.turmaId.slice(0, 8)}
           />
         ))}
       </CardContent>
@@ -132,11 +119,7 @@ function AulaRow({
     setMarcas((prev) => ({ ...prev, [alunoId]: status }));
     setSalvando((prev) => ({ ...prev, [alunoId]: true }));
     try {
-      await avaliacoesStore.marcarPresenca(
-        agendamento.id,
-        alunoId,
-        status === "p",
-      );
+      await avaliacoesStore.marcarPresenca(agendamento.id, alunoId, status === "p");
     } catch (e) {
       toast.error("Erro ao salvar presença");
       // Reverte
@@ -183,9 +166,7 @@ function AulaRow({
               {dataLabel} · {agendamento.inicio}–{agendamento.fim}
             </span>
             {agendamento.professor && (
-              <span className="text-xs text-muted-foreground">
-                · {agendamento.professor}
-              </span>
+              <span className="text-xs text-muted-foreground">· {agendamento.professor}</span>
             )}
           </div>
         </div>
@@ -198,24 +179,19 @@ function AulaRow({
         <div className="border-t px-3 py-2 space-y-1 bg-muted/10">
           {semAtividades && (
             <p className="text-[11px] text-amber-600 dark:text-amber-400 italic">
-              ⚠ Esta aula não tem atividades cadastradas. Adicione atividades
-              antes de marcar presença (presença é por atividade × aluno).
+              ⚠ Esta aula não tem atividades cadastradas. Adicione atividades antes de marcar
+              presença (presença é por atividade × aluno).
             </p>
           )}
           {alunos.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic">
-              Sem alunos na turma.
-            </p>
+            <p className="text-xs text-muted-foreground italic">Sem alunos na turma.</p>
           ) : (
             <ul className="divide-y">
               {alunos.map((a) => {
                 const m = marcas[a.id];
                 const sav = salvando[a.id];
                 return (
-                  <li
-                    key={a.id}
-                    className="flex items-center gap-2 py-1.5 text-sm"
-                  >
+                  <li key={a.id} className="flex items-center gap-2 py-1.5 text-sm">
                     <span className="flex-1 truncate">{a.nome}</span>
                     <div className="flex gap-1 shrink-0">
                       <Button
@@ -223,8 +199,7 @@ function AulaRow({
                         variant={m === "p" ? "default" : "outline"}
                         className={cn(
                           "h-7 px-2",
-                          m === "p" &&
-                            "bg-emerald-500 hover:bg-emerald-600 text-white",
+                          m === "p" && "bg-emerald-500 hover:bg-emerald-600 text-white",
                         )}
                         disabled={sav || semAtividades}
                         onClick={() => marcar(a.id, "p")}

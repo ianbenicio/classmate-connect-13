@@ -14,12 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, User, ShieldCheck, GraduationCap, Calendar, Clock } from "lucide-react";
 import { format, parseISO } from "date-fns";
@@ -39,22 +34,16 @@ interface Props {
   onOpenProfessorProfile?: (professorId: string) => void;
 }
 
-export function UserPerfilDialog({
-  open,
-  onOpenChange,
-  user,
-  onOpenProfessorProfile,
-}: Props) {
-  if (!user) return null;
-
+export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProfile }: Props) {
+  // Hooks DEVEM ser chamados antes de qualquer early return (Rules of Hooks).
   const agendamentos = useAgendamentos();
   const avaliacoes = useAvaliacoes();
 
   // Fase 8: usuário "é" professor se tem a role. Dados estão no próprio user.
-  const isProfessor = user.roles.includes("professor");
+  const isProfessor = !!user && user.roles.includes("professor");
   const linkedProf = useMemo(
     () =>
-      isProfessor
+      isProfessor && user
         ? {
             id: user.userId, // id === userId agora
             userId: user.userId,
@@ -63,12 +52,12 @@ export function UserPerfilDialog({
             ativo: user.ativo ?? true,
           }
         : null,
-    [isProfessor, user.userId, user.displayName, user.formacao, user.ativo],
+    [isProfessor, user],
   );
 
   // Calcula horas de aula do professor baseado em agendamentos e avaliações
   const professorHours = useMemo(() => {
-    if (!isProfessor || !linkedProf) return null;
+    if (!user || !isProfessor || !linkedProf) return null;
 
     // Usa o display name do usuário como identificador do professor
     const professorName = user.displayName || "";
@@ -92,6 +81,8 @@ export function UserPerfilDialog({
       aulasAvaliadas: profData?.classesAvaliadas ?? 0,
     };
   }, [isProfessor, linkedProf, user, agendamentos, avaliacoes]);
+
+  if (!user) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -144,9 +135,7 @@ export function UserPerfilDialog({
             </CardHeader>
             <CardContent>
               {user.roles.length === 0 ? (
-                <p className="text-sm text-muted-foreground italic">
-                  Sem papéis atribuídos.
-                </p>
+                <p className="text-sm text-muted-foreground italic">Sem papéis atribuídos.</p>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
                   {user.roles.map((r) => (
@@ -177,9 +166,7 @@ export function UserPerfilDialog({
                     <p className="text-xs text-muted-foreground">Total de Horas</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">
-                      {professorHours.totalAulas}
-                    </p>
+                    <p className="text-2xl font-bold">{professorHours.totalAulas}</p>
                     <p className="text-xs text-muted-foreground">Aulas Totais</p>
                   </div>
                   <div>
@@ -213,9 +200,7 @@ export function UserPerfilDialog({
                     <div>
                       <p className="text-sm font-medium">{linkedProf.nome}</p>
                       {linkedProf.formacao && (
-                        <p className="text-xs text-muted-foreground">
-                          {linkedProf.formacao}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{linkedProf.formacao}</p>
                       )}
                     </div>
                     <Badge variant={linkedProf.ativo ? "default" : "secondary"}>
@@ -235,9 +220,9 @@ export function UserPerfilDialog({
                 </div>
               ) : user.roles.includes("professor") ? (
                 <p className="text-sm text-muted-foreground italic">
-                  Este usuário tem papel "Professor" mas ainda não há registro
-                  vinculado em Professores. Abra a janela de Professores — o
-                  sync automático vai criar o registro.
+                  Este usuário tem papel "Professor" mas ainda não há registro vinculado em
+                  Professores. Abra a janela de Professores — o sync automático vai criar o
+                  registro.
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground italic">

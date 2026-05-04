@@ -54,9 +54,7 @@ export function getDuracaoAulaMin(curso: Pick<Curso, "duracaoAulaMin">): number 
 }
 
 /** Duração do turno diário (em minutos). Default = duracaoAulaMin. */
-export function getTurnoDiarioMin(
-  curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">,
-): number {
+export function getTurnoDiarioMin(curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">): number {
   const v = curso.turnoDiarioMin ?? 0;
   return v > 0 ? v : getDuracaoAulaMin(curso);
 }
@@ -71,9 +69,7 @@ export function addMinutesToHHMM(hhmm: string, addMin: number): string {
 }
 
 /** Quantas aulas (blocos) cabem num turno do curso. */
-export function blocosPorTurno(
-  curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">,
-): number {
+export function blocosPorTurno(curso: Pick<Curso, "turnoDiarioMin" | "duracaoAulaMin">): number {
   const turno = getTurnoDiarioMin(curso);
   const aula = getDuracaoAulaMin(curso);
   if (aula <= 0) return 1;
@@ -119,10 +115,7 @@ export function blocoFim(
 }
 
 /** Quantos blocos uma atividade consome. 0 → 0 (livre, não bloqueia). */
-export function atividadeBlocos(
-  cargaHorariaMin: number,
-  duracaoAulaMin: number,
-): number {
+export function atividadeBlocos(cargaHorariaMin: number, duracaoAulaMin: number): number {
   if (!cargaHorariaMin || cargaHorariaMin <= 0) return 0;
   return Math.max(1, Math.ceil(cargaHorariaMin / duracaoAulaMin));
 }
@@ -157,17 +150,11 @@ export function getGrupoNome(
   cursoKey: string,
   grupoCod: string,
 ): string {
-  return (
-    grupos[cursoKey]?.find((g) => g.cod === grupoCod)?.nome ?? grupoCod
-  );
+  return grupos[cursoKey]?.find((g) => g.cod === grupoCod)?.nome ?? grupoCod;
 }
 
 /** Gera código de atividade no padrão `<CURSO><GRUPO><NN>`. */
-export function formatCodigoAtividade(
-  cursoCod: string,
-  grupoCod: string,
-  seq: number,
-): string {
+export function formatCodigoAtividade(cursoCod: string, grupoCod: string, seq: number): string {
   return `${cursoCod}${grupoCod}${String(seq).padStart(2, "0")}`;
 }
 
@@ -308,9 +295,7 @@ export interface Atividade {
   prazo: string; // ISO date (referência didática)
   criadoPor: string;
   professor: string; // professor responsável pela atividade (string para compatibilidade)
-  /** @deprecated FK para professores.id — usar `professorUserId`. Mantido p/ compat. */
-  professorId?: string;
-  /** FK direta para auth.users.id — fonte de verdade do professor (Fase 7). */
+  /** FK direta para auth.users.id — fonte de verdade do professor. */
   professorUserId?: string;
   habilidadeIds: string[];
 
@@ -402,9 +387,7 @@ export interface Agendamento {
   observacao?: string;
   /** Nome do professor (legado / display). Mantido para compatibilidade. */
   professor?: string;
-  /** @deprecated FK para professores.id — usar `professorUserId`. Mantido p/ compat. */
-  professorId?: string;
-  /** FK direta para auth.users.id — fonte de verdade do professor (Fase 7). */
+  /** FK direta para auth.users.id — fonte de verdade do professor. */
   professorUserId?: string;
   criadoPorUserId?: string;
   criadoPorNome?: string;
@@ -504,4 +487,3 @@ export function computeSlotEstado(
   if (now <= slotEnd24) return "atrasado";
   return "expirado";
 }
-

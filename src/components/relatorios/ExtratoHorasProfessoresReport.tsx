@@ -5,13 +5,7 @@
 // Permite filtro por data, sorting, e export para PDF.
 
 import { useMemo, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -141,8 +135,8 @@ export function ExtratoHorasProfessoresReport() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Extrato de Horas - Professores</h1>
         <p className="text-sm text-muted-foreground">
-          Relatório de aulas concluídas e avaliadas por professor. Apenas aulas com
-          pelo menos uma avaliação são incluídas no total.
+          Relatório de aulas concluídas e avaliadas por professor. Apenas aulas com pelo menos uma
+          avaliação são incluídas no total.
         </p>
       </div>
 
@@ -231,11 +225,7 @@ export function ExtratoHorasProfessoresReport() {
         </Card>
         <Card>
           <CardContent className="pt-6 flex gap-2">
-            <Button
-              size="sm"
-              onClick={handleExportPDF}
-              disabled={relatorio.totalClasses === 0}
-            >
+            <Button size="sm" onClick={handleExportPDF} disabled={relatorio.totalClasses === 0}>
               <Download className="h-3.5 w-3.5" />
               PDF
             </Button>
@@ -246,12 +236,8 @@ export function ExtratoHorasProfessoresReport() {
       {/* Tabela Principal */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
-            {professoresFiltrados.length} Professor(es)
-          </CardTitle>
-          <CardDescription className="text-xs">
-            Clique na coluna para ordenar
-          </CardDescription>
+          <CardTitle className="text-base">{professoresFiltrados.length} Professor(es)</CardTitle>
+          <CardDescription className="text-xs">Clique na coluna para ordenar</CardDescription>
         </CardHeader>
         <CardContent>
           {professoresFiltrados.length === 0 ? (
@@ -274,9 +260,7 @@ export function ExtratoHorasProfessoresReport() {
                     </div>
                     <div className="flex gap-4 text-right">
                       <div>
-                        <p className="text-2xl font-bold">
-                          {formatarHoras(prof.totalHoras)}
-                        </p>
+                        <p className="text-2xl font-bold">{formatarHoras(prof.totalHoras)}</p>
                         <p className="text-xs text-muted-foreground">Total</p>
                       </div>
                       <div>
@@ -310,9 +294,7 @@ export function ExtratoHorasProfessoresReport() {
                             <TableCell>
                               <Badge
                                 variant={
-                                  cls.avaliacaoStatus === "com_avaliacao"
-                                    ? "default"
-                                    : "secondary"
+                                  cls.avaliacaoStatus === "com_avaliacao" ? "default" : "secondary"
                                 }
                                 className="text-[10px]"
                               >
@@ -354,22 +336,14 @@ export function ExtratoHorasProfessoresReport() {
               {professoresFiltrados.map((prof) => (
                 <tr key={prof.professorUserId || prof.professorNome}>
                   <td className="border border-gray-300 p-2">{prof.professorNome}</td>
-                  <td className="border border-gray-300 p-2 text-right">
-                    {prof.totalClasses}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-right">
-                    {prof.totalHoras}
-                  </td>
+                  <td className="border border-gray-300 p-2 text-right">{prof.totalClasses}</td>
+                  <td className="border border-gray-300 p-2 text-right">{prof.totalHoras}</td>
                 </tr>
               ))}
               <tr className="font-bold bg-gray-50">
                 <td className="border border-gray-300 p-2">TOTAL</td>
-                <td className="border border-gray-300 p-2 text-right">
-                  {relatorio.totalClasses}
-                </td>
-                <td className="border border-gray-300 p-2 text-right">
-                  {relatorio.totalHoras}
-                </td>
+                <td className="border border-gray-300 p-2 text-right">{relatorio.totalClasses}</td>
+                <td className="border border-gray-300 p-2 text-right">{relatorio.totalHoras}</td>
               </tr>
             </tbody>
           </table>

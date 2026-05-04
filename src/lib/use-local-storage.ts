@@ -6,10 +6,7 @@
 
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 
-export function useLocalStorage<T>(
-  key: string,
-  initial: T,
-): [T, Dispatch<SetStateAction<T>>] {
+export function useLocalStorage<T>(key: string, initial: T): [T, Dispatch<SetStateAction<T>>] {
   const [value, setValue] = useState<T>(() => {
     if (typeof window === "undefined") return initial;
     try {

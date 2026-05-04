@@ -86,9 +86,12 @@ export function gerarExtratoHoras(
   dataInicio?: string,
   dataFim?: string,
 ): ExtratoHorasPayload {
-  // Monta set de agendamentos com avaliações para lookup rápido
+  // Monta set de agendamentos com relatório do professor para lookup rápido.
+  // Considera "avaliado" apenas quando o professor enviou o relatorio_prof —
+  // checklists/relatórios de aluno não contam como avaliação da aula.
   const agendamentosComAvaliacao = new Set<string>();
   for (const av of avaliacoes) {
+    if (av.tipo !== "relatorio_prof") continue;
     if (av.agendamentoId) {
       agendamentosComAvaliacao.add(av.agendamentoId);
     }
@@ -162,9 +165,8 @@ export function gerarExtratoHoras(
   let totalHorasGeral = 0;
   let totalClassesGeral = 0;
 
-  for (const [_chave, classes] of Array.from(posProfessor.entries()).sort(
-    ([, a], [, b]) =>
-      (a[0]?.professorNome || "").localeCompare(b[0]?.professorNome || ""),
+  for (const [_chave, classes] of Array.from(posProfessor.entries()).sort(([, a], [, b]) =>
+    (a[0]?.professorNome || "").localeCompare(b[0]?.professorNome || ""),
   )) {
     const totalClasses = classes.length;
     const totalHoras = classes.reduce((sum, c) => sum + c.duracaoHoras, 0);

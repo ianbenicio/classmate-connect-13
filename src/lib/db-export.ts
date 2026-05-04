@@ -45,13 +45,13 @@ function toCSV(rows: unknown[]): string {
 }
 
 async function fetchPayload(): Promise<DbExportPayload> {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session?.access_token) {
     throw new Error("Sessão expirada. Faça login novamente.");
   }
-  return exportDbSnapshot({
-    headers: { Authorization: `Bearer ${session.access_token}` },
-  });
+  return exportDbSnapshot();
 }
 
 /** Baixa o snapshot completo do banco como JSON. */

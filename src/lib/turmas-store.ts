@@ -68,10 +68,7 @@ function turmaToRow(t: Turma) {
 //   seed mudava entre deploys.
 // - `curso_id` é FK NOT NULL — se o curso pai ainda não existe, o INSERT
 //   quebra com 23503. Pulamos a turma órfã em vez de derrubar o batch.
-async function topUpTurmas(
-  existingIds: Set<string>,
-  existingCods: Set<string>,
-) {
+async function topUpTurmas(existingIds: Set<string>, existingCods: Set<string>) {
   const { data: cursoRows } = await supabase.from("cursos").select("id");
   const validCursoIds = new Set((cursoRows ?? []).map((r: { id: string }) => r.id));
 
@@ -141,9 +138,7 @@ export const turmasStore = {
     const row = turmaToRow(t);
     const local: Turma = { ...t, id: row.id, cursoId: row.curso_id };
     const exists = turmas.some((x) => x.id === local.id);
-    turmas = exists
-      ? turmas.map((x) => (x.id === local.id ? local : x))
-      : [...turmas, local];
+    turmas = exists ? turmas.map((x) => (x.id === local.id ? local : x)) : [...turmas, local];
     emit();
     const { error } = await supabase.from("turmas").upsert(row, { onConflict: "id" });
     if (error) {

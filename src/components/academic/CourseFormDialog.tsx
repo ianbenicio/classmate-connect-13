@@ -12,11 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import {
-  formatMinutos,
-  MAX_HABILIDADES_POR_CURSO,
-  type Curso,
-} from "@/lib/academic-types";
+import { formatMinutos, MAX_HABILIDADES_POR_CURSO, type Curso } from "@/lib/academic-types";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { SkillSelector } from "./SkillSelector";
 
@@ -72,11 +68,11 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
     }
   }, [open, editing]);
 
-  const duracaoAulaMin = useMemo(() => slotToMin(slots[0] ?? { horas: "0", minutos: "0" }), [slots]);
-  const turnoTotalMin = useMemo(
-    () => slots.reduce((acc, s) => acc + slotToMin(s), 0),
+  const duracaoAulaMin = useMemo(
+    () => slotToMin(slots[0] ?? { horas: "0", minutos: "0" }),
     [slots],
   );
+  const turnoTotalMin = useMemo(() => slots.reduce((acc, s) => acc + slotToMin(s), 0), [slots]);
   const slotsIguais = useMemo(
     () => slots.length > 0 && slots.every((s) => slotToMin(s) === duracaoAulaMin),
     [slots, duracaoAulaMin],
@@ -107,8 +103,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
       return;
     }
     const cargaTotalMin =
-      (parseInt(cargaHoras || "0", 10) || 0) * 60 +
-      (parseInt(cargaMin || "0", 10) || 0);
+      (parseInt(cargaHoras || "0", 10) || 0) * 60 + (parseInt(cargaMin || "0", 10) || 0);
     if (slots.length === 0) {
       toast.error("Adicione pelo menos um slot de aula.");
       return;
@@ -202,12 +197,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                 <Label className="text-xs uppercase tracking-wide text-muted-foreground">
                   Slots de aula *
                 </Label>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={addSlot}
-                >
+                <Button type="button" size="sm" variant="outline" onClick={addSlot}>
                   <Plus className="h-3.5 w-3.5" />
                   Adicionar slot
                 </Button>
@@ -223,9 +213,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                       Aula {idx + 1}
                     </div>
                     <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">
-                        Horas
-                      </Label>
+                      <Label className="text-[10px] text-muted-foreground">Horas</Label>
                       <Input
                         type="number"
                         min={0}
@@ -234,17 +222,13 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                       />
                     </div>
                     <div className="flex-1 space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">
-                        Minutos
-                      </Label>
+                      <Label className="text-[10px] text-muted-foreground">Minutos</Label>
                       <Input
                         type="number"
                         min={0}
                         max={59}
                         value={s.minutos}
-                        onChange={(e) =>
-                          updateSlot(idx, { minutos: e.target.value })
-                        }
+                        onChange={(e) => updateSlot(idx, { minutos: e.target.value })}
                       />
                     </div>
                     <Button
@@ -263,16 +247,15 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               </div>
 
               <p className="text-[10px] text-muted-foreground">
-                Define quantas aulas cabem em um turno e a duração de cada uma.
-                Todos os slots têm a mesma duração. Cada slot poderá receber
-                uma atividade + professor no agendamento.
+                Define quantas aulas cabem em um turno e a duração de cada uma. Todos os slots têm a
+                mesma duração. Cada slot poderá receber uma atividade + professor no agendamento.
               </p>
 
               {turnoTotalMin > 0 && (
                 <div className="rounded-md border border-primary/30 bg-primary/5 p-2 text-xs">
                   <strong>{slots.length} aula(s)</strong> de{" "}
-                  <strong>{formatMinutos(duracaoAulaMin)}</strong> = turno
-                  diário de <strong>{formatMinutos(turnoTotalMin)}</strong>
+                  <strong>{formatMinutos(duracaoAulaMin)}</strong> = turno diário de{" "}
+                  <strong>{formatMinutos(turnoTotalMin)}</strong>
                 </div>
               )}
             </div>
@@ -284,15 +267,13 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               Habilidades gerais do curso
             </Label>
             <p className="text-[11px] text-muted-foreground">
-              Escolha até <strong>{MAX_HABILIDADES_POR_CURSO}</strong>{" "}
-              habilidades trabalhadas ao longo do curso. Aparecem como
-              característica do curso e ficam disponíveis para vincular às
-              atividades.
+              Escolha até <strong>{MAX_HABILIDADES_POR_CURSO}</strong> habilidades trabalhadas ao
+              longo do curso. Aparecem como característica do curso e ficam disponíveis para
+              vincular às atividades.
             </p>
             {todasHabilidades.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">
-                Nenhuma habilidade cadastrada. Cadastre em Habilidades (no
-                header).
+                Nenhuma habilidade cadastrada. Cadastre em Habilidades (no header).
               </p>
             ) : (
               <SkillSelector
@@ -300,9 +281,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
                 selectedIds={habilidadeIds}
                 onChange={(ids) => {
                   if (ids.length > MAX_HABILIDADES_POR_CURSO) {
-                    toast.error(
-                      `Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`,
-                    );
+                    toast.error(`Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`);
                     return;
                   }
                   setHabilidadeIds(ids);
@@ -316,11 +295,7 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
 
           <div className="space-y-2">
             <Label>Descrição</Label>
-            <Textarea
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              rows={3}
-            />
+            <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} />
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

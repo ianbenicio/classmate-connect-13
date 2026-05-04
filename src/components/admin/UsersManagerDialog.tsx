@@ -47,11 +47,7 @@ import {
 } from "lucide-react";
 import { UserPerfilDialog } from "./UserPerfilDialog";
 import { toast } from "sonner";
-import {
-  useUsers,
-  usersStore,
-  type UserRow,
-} from "@/lib/users-store";
+import { useUsers, usersStore, type UserRow } from "@/lib/users-store";
 import { APP_ROLE_LABELS, useAuth, type AppRole } from "@/lib/auth";
 import { professoresStore } from "@/lib/professores-store";
 
@@ -61,13 +57,7 @@ interface Props {
 }
 
 // Ordem de exibição dos grupos no acordeon.
-const ROLE_ORDER: AppRole[] = [
-  "admin",
-  "coordenacao",
-  "professor",
-  "aluno",
-  "viewer",
-];
+const ROLE_ORDER: AppRole[] = ["admin", "coordenacao", "professor", "aluno", "viewer"];
 
 export function UsersManagerDialog({ open, onOpenChange }: Props) {
   const all = useUsers();
@@ -88,9 +78,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
     const q = filtro.trim().toLowerCase();
     if (!q) return all;
     return all.filter(
-      (u) =>
-        u.displayName.toLowerCase().includes(q) ||
-        (u.email ?? "").toLowerCase().includes(q),
+      (u) => u.displayName.toLowerCase().includes(q) || (u.email ?? "").toLowerCase().includes(q),
     );
   }, [all, filtro]);
 
@@ -136,11 +124,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
 
   const toggleRole = async (u: UserRow, role: AppRole, want: boolean) => {
     // Trava: admin não pode remover o próprio papel admin.
-    if (
-      !want &&
-      role === "admin" &&
-      authUser?.id === u.userId
-    ) {
+    if (!want && role === "admin" && authUser?.id === u.userId) {
       toast.error("Você não pode remover seu próprio papel de admin.");
       return;
     }
@@ -163,10 +147,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
     const isEditing = editingId === u.userId;
     const isSelf = authUser?.id === u.userId;
     return (
-      <div
-        key={u.userId}
-        className="rounded-lg border p-3 flex flex-col gap-3 bg-background"
-      >
+      <div key={u.userId} className="rounded-lg border p-3 flex flex-col gap-3 bg-background">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1 space-y-1">
             {isEditing ? (
@@ -197,9 +178,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                 )}
               </div>
             )}
-            <div className="text-xs text-muted-foreground truncate">
-              {u.email ?? "—"}
-            </div>
+            <div className="text-xs text-muted-foreground truncate">{u.email ?? "—"}</div>
           </div>
           <div className="flex flex-col gap-1 shrink-0">
             {isEditing ? (
@@ -249,11 +228,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                   className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={() => setConfirmRemove(u)}
                   disabled={isSelf}
-                  title={
-                    isSelf
-                      ? "Você não pode remover a si mesmo"
-                      : "Remover usuário"
-                  }
+                  title={isSelf ? "Você não pode remover a si mesmo" : "Remover usuário"}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
@@ -268,20 +243,13 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
             // Self-lockout: admin não pode desmarcar o próprio admin.
             const isProtected = checked && r === "admin" && isSelf;
             return (
-              <label
-                key={r}
-                className="inline-flex items-center gap-1.5 text-xs cursor-pointer"
-              >
+              <label key={r} className="inline-flex items-center gap-1.5 text-xs cursor-pointer">
                 <Checkbox
                   checked={checked}
                   disabled={isProtected}
                   onCheckedChange={(v) => void toggleRole(u, r, !!v)}
                 />
-                <span
-                  className={
-                    checked ? "font-medium" : "text-muted-foreground"
-                  }
-                >
+                <span className={checked ? "font-medium" : "text-muted-foreground"}>
                   {APP_ROLE_LABELS[r]}
                 </span>
               </label>
@@ -301,8 +269,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
             Gestão de Usuários
           </DialogTitle>
           <DialogDescription>
-            Edite nomes e papéis. Cada usuário aparece em todos os grupos
-            aos quais pertence.
+            Edite nomes e papéis. Cada usuário aparece em todos os grupos aos quais pertence.
           </DialogDescription>
         </DialogHeader>
 
@@ -316,11 +283,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
               className="pl-9 h-9"
             />
           </div>
-          <Button
-            size="sm"
-            onClick={() => setCreateOpen(true)}
-            className="shrink-0"
-          >
+          <Button size="sm" onClick={() => setCreateOpen(true)} className="shrink-0">
             <UserPlus className="h-3.5 w-3.5" />
             Novo usuário
           </Button>
@@ -335,13 +298,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
           ) : (
             <Accordion
               type="multiple"
-              defaultValue={[
-                "admin",
-                "coordenacao",
-                "professor",
-                "aluno",
-                "viewer",
-              ]}
+              defaultValue={["admin", "coordenacao", "professor", "aluno", "viewer"]}
               className="w-full"
             >
               {ROLE_ORDER.map((r) => {
@@ -362,9 +319,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                           Nenhum usuário neste grupo.
                         </p>
                       ) : (
-                        <div className="grid gap-2">
-                          {list.map(renderUser)}
-                        </div>
+                        <div className="grid gap-2">{list.map(renderUser)}</div>
                       )}
                     </AccordionContent>
                   </AccordionItem>
@@ -382,9 +337,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="grid gap-2">
-                      {buckets.sem_papel.map(renderUser)}
-                    </div>
+                    <div className="grid gap-2">{buckets.sem_papel.map(renderUser)}</div>
                   </AccordionContent>
                 </AccordionItem>
               )}
@@ -393,32 +346,26 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
         </ScrollArea>
 
         <p className="text-[11px] text-muted-foreground pt-2 border-t">
-          <Label className="inline">Importante:</Label> esta janela altera
-          papéis e nomes de exibição. E-mail de login e senha são
-          gerenciados pelo Supabase Auth e não podem ser editados aqui.
+          <Label className="inline">Importante:</Label> esta janela altera papéis e nomes de
+          exibição. E-mail de login e senha são gerenciados pelo Supabase Auth e não podem ser
+          editados aqui.
         </p>
       </DialogContent>
 
-      <AlertDialog
-        open={!!confirmRemove}
-        onOpenChange={(o) => !o && setConfirmRemove(null)}
-      >
+      <AlertDialog open={!!confirmRemove} onOpenChange={(o) => !o && setConfirmRemove(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover usuário?</AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <span className="block">
                 Apaga o perfil e todos os papéis de{" "}
-                <strong>
-                  {confirmRemove?.displayName || confirmRemove?.email || "?"}
-                </strong>
-                . O usuário perderá acesso aos dados do app.
+                <strong>{confirmRemove?.displayName || confirmRemove?.email || "?"}</strong>. O
+                usuário perderá acesso aos dados do app.
               </span>
               <span className="block text-amber-600 dark:text-amber-400">
-                ⚠️ A conta de login (Supabase Auth) NÃO é apagada por aqui —
-                apenas perfil e papéis. Para remoção total, use o painel
-                do Supabase ou peça ao usuário para excluir a própria
-                conta.
+                ⚠️ A conta de login (Supabase Auth) NÃO é apagada por aqui — apenas perfil e papéis.
+                Para remoção total, use o painel do Supabase ou peça ao usuário para excluir a
+                própria conta.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -431,9 +378,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                 const target = confirmRemove;
                 setConfirmRemove(null);
                 await usersStore.removeUser(target.userId);
-                toast.success(
-                  `${target.displayName || target.email || "Usuário"} removido.`,
-                );
+                toast.success(`${target.displayName || target.email || "Usuário"} removido.`);
               }}
             >
               Remover
@@ -442,10 +387,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
         </AlertDialogContent>
       </AlertDialog>
 
-      <CreateUserDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
+      <CreateUserDialog open={createOpen} onOpenChange={setCreateOpen} />
 
       <UserPerfilDialog
         open={!!perfilOpen}
@@ -507,9 +449,8 @@ function CreateUserDialog({
             Novo usuário
           </DialogTitle>
           <DialogDescription>
-            Cria a conta no Supabase Auth e o perfil no app. O usuário pode
-            precisar confirmar o e-mail antes do primeiro login (depende da
-            configuração do projeto).
+            Cria a conta no Supabase Auth e o perfil no app. O usuário pode precisar confirmar o
+            e-mail antes do primeiro login (depende da configuração do projeto).
           </DialogDescription>
         </DialogHeader>
 
@@ -553,10 +494,7 @@ function CreateUserDialog({
             <Label>Papel</Label>
             <div className="flex flex-wrap gap-3" role="radiogroup">
               {ROLE_ORDER.map((r) => (
-                <label
-                  key={r}
-                  className="inline-flex items-center gap-1.5 text-xs cursor-pointer"
-                >
+                <label key={r} className="inline-flex items-center gap-1.5 text-xs cursor-pointer">
                   <input
                     type="radio"
                     name="create-user-role"
@@ -565,29 +503,21 @@ function CreateUserDialog({
                     onChange={() => setRole(r)}
                     className="h-3.5 w-3.5 accent-primary"
                   />
-                  <span
-                    className={
-                      role === r ? "font-medium" : "text-muted-foreground"
-                    }
-                  >
+                  <span className={role === r ? "font-medium" : "text-muted-foreground"}>
                     {APP_ROLE_LABELS[r]}
                   </span>
                 </label>
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Um único papel na criação. Para acumular papéis (ex.: professor
-              que também coordena), edite o usuário depois.
+              Um único papel na criação. Para acumular papéis (ex.: professor que também coordena),
+              edite o usuário depois.
             </p>
           </div>
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={saving}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
             Cancelar
           </Button>
           <Button onClick={handleCreate} disabled={saving}>

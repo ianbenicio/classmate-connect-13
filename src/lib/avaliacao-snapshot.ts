@@ -32,9 +32,7 @@ export function buildAvaliacaoSnapshot(
   const snap: AvaliacaoSnapshot = { capturadoEm: new Date().toISOString() };
   if (!agendamentoId) return snap;
 
-  const ag = agendamentosStore
-    .getAll()
-    .find((g) => g.id === agendamentoId);
+  const ag = agendamentosStore.getAll().find((g) => g.id === agendamentoId);
   if (!ag) return snap;
 
   snap.agendamento = {
@@ -54,9 +52,7 @@ export function buildAvaliacaoSnapshot(
     }
   }
 
-  const ativs = atividadesStore
-    .getAll()
-    .filter((a) => ag.atividadeIds.includes(a.id));
+  const ativs = atividadesStore.getAll().filter((a) => ag.atividadeIds.includes(a.id));
   if (ativs.length > 0) {
     snap.atividades = ativs.map((a) => ({
       id: a.id,

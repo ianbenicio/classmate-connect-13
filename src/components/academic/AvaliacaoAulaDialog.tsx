@@ -27,10 +27,7 @@ import {
   type Curso,
   type Turma,
 } from "@/lib/academic-types";
-import type {
-  Nota1a5,
-  RelatorioAlunoDados,
-} from "@/lib/formularios-types";
+import type { Nota1a5, RelatorioAlunoDados } from "@/lib/formularios-types";
 import type { Nota } from "@/lib/avaliacoes-types";
 
 interface Props {
@@ -145,8 +142,8 @@ export function AvaliacaoAulaDialog({
               {curso.nome} · {turma.nome} · {dataFmt}
             </span>
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <Lock className="h-3 w-3" /> O professor não vê suas respostas
-              individuais — só a média da turma.
+              <Lock className="h-3 w-3" /> O professor não vê suas respostas individuais — só a
+              média da turma.
             </span>
           </DialogDescription>
         </DialogHeader>
@@ -207,9 +204,7 @@ export function AvaliacaoAulaDialog({
                 <p className="text-sm">🙋 Me ajudou quando travei?</p>
                 <FaceRating
                   value={prof.ajudaQuandoTrava}
-                  onChange={(n) =>
-                    setProf((p) => ({ ...p, ajudaQuandoTrava: n }))
-                  }
+                  onChange={(n) => setProf((p) => ({ ...p, ajudaQuandoTrava: n }))}
                 />
               </div>
               <div className="space-y-1.5">
@@ -237,9 +232,7 @@ export function AvaliacaoAulaDialog({
                 <p className="text-sm">🌱 Aprendeu algo novo?</p>
                 <FaceRating
                   value={eu.aprendiAlgoNovo}
-                  onChange={(n) =>
-                    setEu((p) => ({ ...p, aprendiAlgoNovo: n }))
-                  }
+                  onChange={(n) => setEu((p) => ({ ...p, aprendiAlgoNovo: n }))}
                 />
               </div>
             </section>

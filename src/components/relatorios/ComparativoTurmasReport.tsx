@@ -12,13 +12,7 @@
 // Filtros: curso. Ordenação: clique no header da coluna.
 
 import { useMemo, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -38,12 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowUpDown, BarChart3 } from "lucide-react";
-import {
-  startOfMonth,
-  endOfMonth,
-  isWithinInterval,
-  parseISO,
-} from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useCursos } from "@/lib/cursos-store";
@@ -52,14 +41,7 @@ import { useAlunos } from "@/lib/alunos-store";
 import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { cn } from "@/lib/utils";
 
-type SortKey =
-  | "nome"
-  | "alunos"
-  | "aulas"
-  | "relProf"
-  | "avalAluno"
-  | "media"
-  | "comportamento";
+type SortKey = "nome" | "alunos" | "aulas" | "relProf" | "avalAluno" | "media" | "comportamento";
 
 interface Linha {
   turmaId: string;
@@ -107,21 +89,16 @@ export function ComparativoTurmasReport() {
       if (cursoFiltro !== "__all__" && t.cursoId !== cursoFiltro) continue;
 
       const alunosTurma = alunos.filter((a) => a.turmaId === t.id);
-      const agsTurmaMes = agendamentos.filter(
-        (ag) => ag.turmaId === t.id && inMonth(ag.data),
-      );
+      const agsTurmaMes = agendamentos.filter((ag) => ag.turmaId === t.id && inMonth(ag.data));
       const concluidas = agsTurmaMes.filter((ag) => ag.status === "concluido");
       const concluidasIds = new Set(concluidas.map((ag) => ag.id));
 
       // Relatórios prof
       const comRelatorio = avaliacoes.filter(
         (av) =>
-          av.tipo === "relatorio_prof" &&
-          av.agendamentoId &&
-          concluidasIds.has(av.agendamentoId),
+          av.tipo === "relatorio_prof" && av.agendamentoId && concluidasIds.has(av.agendamentoId),
       ).length;
-      const relProfPct =
-        concluidas.length > 0 ? (comRelatorio / concluidas.length) * 100 : 0;
+      const relProfPct = concluidas.length > 0 ? (comRelatorio / concluidas.length) * 100 : 0;
 
       // Avaliação alunos: count de aulas concluídas com pelo menos um relatorio_aluno
       const agsComAval = new Set<string>();
@@ -131,10 +108,7 @@ export function ComparativoTurmasReport() {
         if (!concluidasIds.has(av.agendamentoId)) continue;
         agsComAval.add(av.agendamentoId);
       }
-      const avalAlunoPct =
-        concluidas.length > 0
-          ? (agsComAval.size / concluidas.length) * 100
-          : 0;
+      const avalAlunoPct = concluidas.length > 0 ? (agsComAval.size / concluidas.length) * 100 : 0;
 
       // Média de habilidades + comportamento, agregando checklists desta turma
       const checklistsTurma = avaliacoes.filter((av) => {
@@ -147,12 +121,10 @@ export function ComparativoTurmasReport() {
       let pos = 0;
       let neg = 0;
       for (const av of checklistsTurma) {
-        const dados = av.dados as
-          | {
-              habilidadesNotas?: Record<string, number>;
-              comportamento?: string[];
-            }
-          | null;
+        const dados = av.dados as {
+          habilidadesNotas?: Record<string, number>;
+          comportamento?: string[];
+        } | null;
         const notas = dados?.habilidadesNotas;
         if (notas) {
           for (const v of Object.values(notas)) {
@@ -182,10 +154,7 @@ export function ComparativoTurmasReport() {
         aulasConcluidas: concluidas.length,
         relProfPct: Math.round(relProfPct),
         avalAlunoPct: Math.round(avalAlunoPct),
-        mediaHabilidades:
-          mediaHabilidades !== null
-            ? Math.round(mediaHabilidades * 10) / 10
-            : null,
+        mediaHabilidades: mediaHabilidades !== null ? Math.round(mediaHabilidades * 10) / 10 : null,
         saldoComportamento,
       });
     }
@@ -225,10 +194,7 @@ export function ComparativoTurmasReport() {
     return arr;
   }, [linhas, sortKey, desc]);
 
-  const cursoMap = useMemo(
-    () => new Map(cursos.map((c) => [c.id, c])),
-    [cursos],
-  );
+  const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
   const toggleSort = (k: SortKey) => {
     if (sortKey === k) setDesc(!desc);
@@ -261,9 +227,7 @@ export function ComparativoTurmasReport() {
     ]);
     const csv = [
       header.join(","),
-      ...rows.map((r) =>
-        r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","),
-      ),
+      ...rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")),
     ].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -384,12 +348,8 @@ export function ComparativoTurmasReport() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {l.alunos}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {l.aulasConcluidas}
-                    </TableCell>
+                    <TableCell className="text-right tabular-nums">{l.alunos}</TableCell>
+                    <TableCell className="text-right tabular-nums">{l.aulasConcluidas}</TableCell>
                     <TableCell className="text-right">
                       <PctBar value={l.relProfPct} />
                     </TableCell>
@@ -397,9 +357,7 @@ export function ComparativoTurmasReport() {
                       <PctBar value={l.avalAlunoPct} />
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {l.mediaHabilidades !== null
-                        ? `${l.mediaHabilidades}/5`
-                        : "—"}
+                      {l.mediaHabilidades !== null ? `${l.mediaHabilidades}/5` : "—"}
                     </TableCell>
                     <TableCell className="text-right">
                       <Badge
@@ -452,26 +410,15 @@ function ThSort({
         )}
       >
         {label}
-        <ArrowUpDown
-          className={cn("h-3 w-3", active ? "text-primary" : "opacity-50")}
-        />
-        {active && (
-          <span className="text-[10px] text-muted-foreground">
-            {desc ? "↓" : "↑"}
-          </span>
-        )}
+        <ArrowUpDown className={cn("h-3 w-3", active ? "text-primary" : "opacity-50")} />
+        {active && <span className="text-[10px] text-muted-foreground">{desc ? "↓" : "↑"}</span>}
       </button>
     </TableHead>
   );
 }
 
 function PctBar({ value }: { value: number }) {
-  const tone =
-    value >= 80
-      ? "good"
-      : value >= 50
-        ? "warn"
-        : "bad";
+  const tone = value >= 80 ? "good" : value >= 50 ? "warn" : "bad";
   const color =
     tone === "good"
       ? "[&>div]:bg-emerald-500"

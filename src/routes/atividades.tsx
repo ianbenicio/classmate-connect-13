@@ -29,11 +29,7 @@ import { useHabilidades } from "@/lib/habilidades-store";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
 import { PendingReportsDialog } from "@/components/academic/PendingReportsDialog";
-import type {
-  Atividade,
-  AtividadeTipo,
-  Curso,
-} from "@/lib/academic-types";
+import type { Atividade, AtividadeTipo, Curso } from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/atividades")({
@@ -42,8 +38,7 @@ export const Route = createFileRoute("/atividades")({
       { title: "Atividades — Sistema Acadêmico" },
       {
         name: "description",
-        content:
-          "Veja a quantidade de aulas e tarefas cadastradas em cada curso.",
+        content: "Veja a quantidade de aulas e tarefas cadastradas em cada curso.",
       },
       { property: "og:title", content: "Atividades — Sistema Acadêmico" },
       {
@@ -64,9 +59,7 @@ function AtividadesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Atividade | undefined>();
   const [defaultTipo, setDefaultTipo] = useState<AtividadeTipo>(0);
-  const [selectedCursoState, setSelectedCursoState] = useState<Curso | null>(
-    null,
-  );
+  const [selectedCursoState, setSelectedCursoState] = useState<Curso | null>(null);
   // Persiste só o ID; objeto Curso é re-resolvido após cursos carregarem
   const [persistedCursoId, setPersistedCursoId] = useLocalStorage<string | null>(
     "atividades.filtro.cursoId",
@@ -99,9 +92,7 @@ function AtividadesPage() {
 
   useEffect(() => {
     if (!selectedCurso) return;
-    const nextCurso = cursos.find(
-      (c) => c.id === selectedCurso.id || c.cod === selectedCurso.cod,
-    );
+    const nextCurso = cursos.find((c) => c.id === selectedCurso.id || c.cod === selectedCurso.cod);
     if (!nextCurso) {
       setSelectedCurso(null);
       return;
@@ -141,18 +132,11 @@ function AtividadesPage() {
       <div className="container mx-auto max-w-6xl px-4 py-8">
         <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              📋 Atividades
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Aulas e tarefas organizadas por curso.
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight">📋 Atividades</h1>
+            <p className="text-muted-foreground mt-1">Aulas e tarefas organizadas por curso.</p>
           </div>
           <div className="flex gap-2 flex-wrap">
-            <Button
-              variant="outline"
-              onClick={() => setPendentesOpen(true)}
-            >
+            <Button variant="outline" onClick={() => setPendentesOpen(true)}>
               <ClipboardCheck /> Registrar Relatório
             </Button>
             <Button
@@ -206,9 +190,7 @@ function AtividadesPage() {
         {/* Cursos com contagem de atividades */}
         <section>
           <div className="flex items-baseline justify-between mb-4">
-            <h2 className="text-xl font-semibold tracking-tight">
-              Atividades por curso
-            </h2>
+            <h2 className="text-xl font-semibold tracking-tight">Atividades por curso</h2>
             <p className="text-xs text-muted-foreground">
               Clique em um curso para ver suas atividades
             </p>
@@ -230,9 +212,7 @@ function AtividadesPage() {
                   <Badge variant="outline" className="shrink-0">
                     {curso.cod}
                   </Badge>
-                  <span className="font-semibold truncate flex-1 min-w-0">
-                    {curso.nome}
-                  </span>
+                  <span className="font-semibold truncate flex-1 min-w-0">{curso.nome}</span>
                   <div className="flex items-center gap-3 shrink-0 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <GraduationCap className="h-3.5 w-3.5" />
@@ -286,23 +266,17 @@ function AtividadesPage() {
         onSave={handleSave}
       />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(open) => !open && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remover atividade?</AlertDialogTitle>
             <AlertDialogDescription>
-              A atividade <strong>{confirmDelete?.nome}</strong> será removida
-              permanentemente.
+              A atividade <strong>{confirmDelete?.nome}</strong> será removida permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => confirmDelete && handleDelete(confirmDelete)}
-            >
+            <AlertDialogAction onClick={() => confirmDelete && handleDelete(confirmDelete)}>
               Remover
             </AlertDialogAction>
           </AlertDialogFooter>

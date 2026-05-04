@@ -13,11 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -127,15 +123,11 @@ export function AgendarAtividadeDialog({
     setDraftTarefaId("");
     // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
     // muda. Os setters são estáveis e não precisam constar nas deps.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, defaultTurmaId, defaultData, defaultProfessorId, defaultProfessorUserId, turmas]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
   // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
-  const turmaSelecionada = useMemo(
-    () => turmas.find((t) => t.id === turmaId),
-    [turmas, turmaId],
-  );
+  const turmaSelecionada = useMemo(() => turmas.find((t) => t.id === turmaId), [turmas, turmaId]);
 
   const slotsDisponiveis = useMemo(() => {
     if (!turmaSelecionada || !date) return [];
@@ -156,15 +148,11 @@ export function AgendarAtividadeDialog({
     );
     if (idx < 0) {
       idx = turmaSelecionada.horarios.findIndex(
-        (h) =>
-          h.diaSemana === defaultSlot.diaSemana &&
-          h.inicio === defaultSlot.inicio,
+        (h) => h.diaSemana === defaultSlot.diaSemana && h.inicio === defaultSlot.inicio,
       );
     }
     if (idx < 0) {
-      idx = turmaSelecionada.horarios.findIndex(
-        (h) => h.diaSemana === defaultSlot.diaSemana,
-      );
+      idx = turmaSelecionada.horarios.findIndex((h) => h.diaSemana === defaultSlot.diaSemana);
     }
     if (idx >= 0) setSlotIdx(String(idx));
   }, [open, defaultSlot, turmaSelecionada]);
@@ -175,9 +163,8 @@ export function AgendarAtividadeDialog({
     }
   }, [slotsDisponiveis]);
 
-  const slotAtual = slotIdx !== "" && turmaSelecionada
-    ? turmaSelecionada.horarios[Number(slotIdx)]
-    : undefined;
+  const slotAtual =
+    slotIdx !== "" && turmaSelecionada ? turmaSelecionada.horarios[Number(slotIdx)] : undefined;
 
   const totalBlocosSlot = slotAtual ? slotBlocosCount(slotAtual, duracaoAulaMin) : 0;
 
@@ -228,9 +215,7 @@ export function AgendarAtividadeDialog({
       if (ag.data !== dataIso) continue;
       const matchesSlot =
         (ag.slotInicio === slotAtual.inicio && ag.slotFim === slotAtual.fim) ||
-        (ag.slotInicio === undefined &&
-          ag.inicio === slotAtual.inicio &&
-          ag.fim === slotAtual.fim);
+        (ag.slotInicio === undefined && ag.inicio === slotAtual.inicio && ag.fim === slotAtual.fim);
       if (!matchesSlot) {
         // Compat: agendamento antigo sem slot* mas que cobre o slot inteiro
         if (
@@ -378,8 +363,7 @@ export function AgendarAtividadeDialog({
         ? professores.find((p) => p.userId === selectedProfessorUserId)
         : undefined;
       const professor = professorSelecionado?.displayName || undefined;
-      const professorUserId =
-        selectedProfessorUserId || defaultProfessorUserId || undefined;
+      const professorUserId = selectedProfessorUserId || defaultProfessorUserId || undefined;
       return {
         id: crypto.randomUUID(),
         turmaId: turmaSelecionada.id,
@@ -403,34 +387,24 @@ export function AgendarAtividadeDialog({
     });
 
     // Persistir agendamentos
-    const results = await Promise.allSettled(
-      novos.map((n) => agendamentosStore.add(n)),
-    );
+    const results = await Promise.allSettled(novos.map((n) => agendamentosStore.add(n)));
     const failures = results.filter((r) => r.status === "rejected").length;
 
     if (failures > 0) {
-      toast.error(
-        `${failures} de ${novos.length} agendamento(s) falharam ao salvar.`,
-      );
+      toast.error(`${failures} de ${novos.length} agendamento(s) falharam ao salvar.`);
       return;
     }
 
     // Notificações: por agendamento, gera para cada aluno; agrupa por professor
     await gerarNotificacoes(novos);
 
-    toast.success(
-      novos.length > 1
-        ? `${novos.length} blocos agendados.`
-        : "Atividade agendada.",
-    );
+    toast.success(novos.length > 1 ? `${novos.length} blocos agendados.` : "Atividade agendada.");
     onOpenChange(false);
   };
 
   const gerarNotificacoes = async (novos: Agendamento[]) => {
     if (!turmaSelecionada || novos.length === 0) return;
-    const alunosDaTurma = alunosStore.getAll().filter(
-      (al) => al.turmaId === turmaSelecionada.id,
-    );
+    const alunosDaTurma = alunosStore.getAll().filter((al) => al.turmaId === turmaSelecionada.id);
     const dataFmt = format(parse(novos[0].data, "yyyy-MM-dd", new Date()), "PPP", {
       locale: ptBR,
     });
@@ -440,9 +414,7 @@ export function AgendarAtividadeDialog({
     // Por agendamento → notificação individual para cada aluno
     for (const ag of novos) {
       const ativs = atividades.filter((a) => ag.atividadeIds.includes(a.id));
-      const partes = ativs
-        .map((a) => `${a.tipo === 0 ? "Aula" : "Tarefa"}: ${a.nome}`)
-        .join(" · ");
+      const partes = ativs.map((a) => `${a.tipo === 0 ? "Aula" : "Tarefa"}: ${a.nome}`).join(" · ");
       const titulo = `Atividade agendada — ${turmaSelecionada.cod}`;
       const mensagem = `${curso.nome} · ${turmaSelecionada.nome} · ${dataFmt} ${ag.inicio}–${ag.fim}${
         ag.professor ? ` · ${ag.professor}` : ""
@@ -586,9 +558,7 @@ export function AgendarAtividadeDialog({
                     )}
                   >
                     <CalendarIcon />
-                    {date
-                      ? format(date, "PPP", { locale: ptBR })
-                      : "Escolher data"}
+                    {date ? format(date, "PPP", { locale: ptBR }) : "Escolher data"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -612,9 +582,7 @@ export function AgendarAtividadeDialog({
               ) : !date ? (
                 <p className="text-xs text-muted-foreground">Selecione a data.</p>
               ) : slotsDisponiveis.length === 0 ? (
-                <p className="text-xs text-destructive">
-                  A turma não tem horário neste dia.
-                </p>
+                <p className="text-xs text-destructive">A turma não tem horário neste dia.</p>
               ) : lockTurmaEHorario && slotAtual ? (
                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
                   <Clock className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
@@ -663,9 +631,7 @@ export function AgendarAtividadeDialog({
               </Select>
             )}
             {professores.length === 0 && (
-              <p className="text-xs text-muted-foreground">
-                Nenhum professor cadastrado.
-              </p>
+              <p className="text-xs text-muted-foreground">Nenhum professor cadastrado.</p>
             )}
           </div>
 
@@ -674,8 +640,8 @@ export function AgendarAtividadeDialog({
             <div className="space-y-2">
               <Label>Blocos do horário</Label>
               <p className="text-xs text-muted-foreground">
-                Clique em um bloco para atribuir uma aula/tarefa. Cada bloco recebe
-                uma atribuição independente.
+                Clique em um bloco para atribuir uma aula/tarefa. Cada bloco recebe uma atribuição
+                independente.
               </p>
               <div className="space-y-2">
                 {Array.from({ length: totalBlocosSlot }).map((_, idx) => {
@@ -693,10 +659,11 @@ export function AgendarAtividadeDialog({
                       className={cn(
                         "rounded-md border transition-colors",
                         ocupadoExistente && "opacity-60 bg-muted",
-                        !ocupadoExistente && assigned && !isEditing &&
+                        !ocupadoExistente &&
+                          assigned &&
+                          !isEditing &&
                           "border-emerald-500/50 bg-emerald-500/10",
-                        !ocupadoExistente && !assigned && !isEditing &&
-                          "hover:bg-accent",
+                        !ocupadoExistente && !assigned && !isEditing && "hover:bg-accent",
                         isEditing && "border-primary bg-primary/5",
                       )}
                     >
@@ -715,22 +682,19 @@ export function AgendarAtividadeDialog({
                           </div>
                           <div className="text-sm min-w-0 truncate">
                             {ocupadoExistente ? (
-                              <span className="text-muted-foreground">
-                                ocupado
-                              </span>
+                              <span className="text-muted-foreground">ocupado</span>
                             ) : assigned ? (
                               <span className="flex items-center gap-1.5 truncate">
                                 <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                                 <span className="truncate">
                                   {aulaA && (
-                                    <span className="font-mono text-xs mr-1">
-                                      {aulaA.codigo}
-                                    </span>
+                                    <span className="font-mono text-xs mr-1">{aulaA.codigo}</span>
                                   )}
                                   {aulaA?.nome ?? tarefaA?.nome ?? "(sem nome)"}
                                   {aulaA && tarefaA && (
                                     <span className="text-muted-foreground">
-                                      {" "}+ {tarefaA.codigo}
+                                      {" "}
+                                      + {tarefaA.codigo}
                                     </span>
                                   )}
                                 </span>
@@ -778,9 +742,7 @@ export function AgendarAtividadeDialog({
                                 <Label className="text-xs">Aula</Label>
                                 <Select
                                   value={draftAulaId || "__none__"}
-                                  onValueChange={(v) =>
-                                    setDraftAulaId(v === "__none__" ? "" : v)
-                                  }
+                                  onValueChange={(v) => setDraftAulaId(v === "__none__" ? "" : v)}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder="Sem aula" />
@@ -803,9 +765,7 @@ export function AgendarAtividadeDialog({
                                 <Label className="text-xs">Tarefa</Label>
                                 <Select
                                   value={draftTarefaId || "__none__"}
-                                  onValueChange={(v) =>
-                                    setDraftTarefaId(v === "__none__" ? "" : v)
-                                  }
+                                  onValueChange={(v) => setDraftTarefaId(v === "__none__" ? "" : v)}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder="Sem tarefa" />
@@ -844,12 +804,7 @@ export function AgendarAtividadeDialog({
                                 Remover
                               </Button>
                             )}
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={cancelEditor}
-                            >
+                            <Button type="button" variant="ghost" size="sm" onClick={cancelEditor}>
                               Cancelar
                             </Button>
                             <Button type="button" size="sm" onClick={confirmEditor}>
@@ -878,9 +833,7 @@ export function AgendarAtividadeDialog({
 
           {turmaSelecionada && date && slotIdx !== "" && (
             <div className="rounded-md bg-muted/40 border p-3 text-sm">
-              <div className="text-xs uppercase text-muted-foreground mb-1">
-                Resumo
-              </div>
+              <div className="text-xs uppercase text-muted-foreground mb-1">Resumo</div>
               <div className="inline-flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
                 {format(date, "PPP", { locale: ptBR })} ·{" "}

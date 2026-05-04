@@ -23,13 +23,7 @@ import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
-import type {
-  Agendamento,
-  Atividade,
-  Curso,
-  HorarioSlot,
-  Turma,
-} from "@/lib/academic-types";
+import type { Agendamento, Atividade, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
@@ -38,14 +32,12 @@ export const Route = createFileRoute("/")({
       { title: "Painel — Sistema Acadêmico" },
       {
         name: "description",
-        content:
-          "Visão geral de cursos, turmas, alunos e próximas aulas e tarefas.",
+        content: "Visão geral de cursos, turmas, alunos e próximas aulas e tarefas.",
       },
       { property: "og:title", content: "Painel — Sistema Acadêmico" },
       {
         property: "og:description",
-        content:
-          "Visão geral de cursos, turmas, alunos e próximas atividades.",
+        content: "Visão geral de cursos, turmas, alunos e próximas atividades.",
       },
     ],
   }),
@@ -92,10 +84,7 @@ function DashboardPage() {
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
 
-  const cursoMap = useMemo(
-    () => new Map(cursos.map((c) => [c.id, c])),
-    [cursos],
-  );
+  const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
   const proximas = useMemo(() => {
     const hoje = new Date().toISOString().slice(0, 10);
@@ -131,9 +120,7 @@ function DashboardPage() {
       <div className="container mx-auto max-w-6xl px-4 py-8">
         <header className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">📊 {displayName || "Painel"}</h1>
-          <p className="text-muted-foreground mt-1">
-            Visão geral do sistema acadêmico.
-          </p>
+          <p className="text-muted-foreground mt-1">Visão geral do sistema acadêmico.</p>
         </header>
 
         {/* Cards-resumo */}
@@ -191,17 +178,12 @@ function DashboardPage() {
             onRemoverAgendamento={(agendamento, turma) => {
               const isOwner =
                 isAdmin ||
-                (currentUserId !== null &&
-                  agendamento.criadoPorUserId === currentUserId);
+                (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
               if (!isOwner) {
                 toast.info("Apenas o professor que agendou pode remover.");
                 return;
               }
-              if (
-                !window.confirm(
-                  "Remover este agendamento? O slot ficará disponível novamente.",
-                )
-              )
+              if (!window.confirm("Remover este agendamento? O slot ficará disponível novamente."))
                 return;
               agendamentosStore.remove(agendamento.id);
               toast.success("Agendamento removido.");
@@ -211,8 +193,7 @@ function DashboardPage() {
               if (!curso) return;
               const podeRegistrar =
                 isAdmin ||
-                (currentUserId !== null &&
-                  agendamento.criadoPorUserId === currentUserId);
+                (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
               if (!podeRegistrar) {
                 toast.info(
                   `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
@@ -280,9 +261,7 @@ function DashboardPage() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline">{c.cod}</Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {ativs.length} atividades
-                    </span>
+                    <span className="text-xs text-muted-foreground">{ativs.length} atividades</span>
                   </div>
                   <h3 className="font-semibold mb-1">{c.nome}</h3>
                   <div className="flex gap-3 text-xs text-muted-foreground mt-2">
@@ -304,9 +283,7 @@ function DashboardPage() {
               <GraduationCap className="h-5 w-5" />
               Alunos
             </h2>
-            <span className="text-sm text-muted-foreground">
-              {alunos.length} no total
-            </span>
+            <span className="text-sm text-muted-foreground">{alunos.length} no total</span>
           </div>
           <div className="bg-card border rounded-lg divide-y">
             {cursos.map((c) => {
@@ -319,9 +296,7 @@ function DashboardPage() {
                   <Badge variant="outline" className="font-mono">
                     {c.cod}
                   </Badge>
-                  <span className="font-medium flex-1 min-w-0 truncate">
-                    {c.nome}
-                  </span>
+                  <span className="font-medium flex-1 min-w-0 truncate">{c.nome}</span>
                   <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Users className="h-3.5 w-3.5" />
                     <span className="font-mono tabular-nums">{total}</span>
@@ -366,10 +341,7 @@ function DashboardPage() {
                     key={a.id}
                     className="p-4 flex items-start gap-3 hover:bg-muted/40 transition-colors"
                   >
-                    <Badge
-                      variant={isAula ? "default" : "secondary"}
-                      className="gap-1 mt-0.5"
-                    >
+                    <Badge variant={isAula ? "default" : "secondary"} className="gap-1 mt-0.5">
                       {isAula ? (
                         <GraduationCap className="h-3 w-3" />
                       ) : (
@@ -380,9 +352,7 @@ function DashboardPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-medium truncate">{a.nome}</span>
-                        <span className="text-xs font-mono text-muted-foreground">
-                          {a.codigo}
-                        </span>
+                        <span className="text-xs font-mono text-muted-foreground">{a.codigo}</span>
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
                         {curso && <span>{curso.nome}</span>}
@@ -408,9 +378,7 @@ function DashboardPage() {
           defaultTurmaId={agendarCtx.turma.id}
           defaultData={agendarCtx.data}
           defaultSlot={agendarCtx.slot}
-          defaultProfessorUserId={
-            hasRole("professor") && authUser?.id ? authUser.id : undefined
-          }
+          defaultProfessorUserId={hasRole("professor") && authUser?.id ? authUser.id : undefined}
           lockTurmaEHorario
         />
       )}
@@ -468,18 +436,12 @@ function DashboardPage() {
           }}
           onRemoverAgendamento={(agendamento) => {
             const isOwner =
-              isAdmin ||
-              (currentUserId !== null &&
-                agendamento.criadoPorUserId === currentUserId);
+              isAdmin || (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
             if (!isOwner) {
               toast.info("Apenas o professor que agendou pode remover.");
               return;
             }
-            if (
-              !window.confirm(
-                "Remover este agendamento? O slot ficará disponível novamente.",
-              )
-            )
+            if (!window.confirm("Remover este agendamento? O slot ficará disponível novamente."))
               return;
             agendamentosStore.remove(agendamento.id);
             toast.success("Agendamento removido.");

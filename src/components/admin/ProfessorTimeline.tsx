@@ -44,8 +44,7 @@ export function ProfessorTimeline({ professor, agendamentos, avaliacoes }: Props
     for (const ag of agendamentos) {
       if (ag.status !== "concluido") continue;
       const isProf =
-        ag.professorId === professor.id ||
-        ag.professor?.trim().toLowerCase() === profKey;
+        ag.professorUserId === professor.userId || ag.professor?.trim().toLowerCase() === profKey;
       if (!isProf) continue;
       let d: Date | null = null;
       try {
@@ -90,11 +89,7 @@ export function ProfessorTimeline({ professor, agendamentos, avaliacoes }: Props
   }, [professor, agendamentos, avaliacoes]);
 
   if (eventos.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground italic">
-        Sem eventos registrados ainda.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground italic">Sem eventos registrados ainda.</p>;
   }
 
   return (
@@ -109,11 +104,7 @@ export function ProfessorTimeline({ professor, agendamentos, avaliacoes }: Props
               {format(e.data, "dd/MM/yy HH:mm", { locale: ptBR })}
             </Badge>
           </div>
-          {e.detalhe && (
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              {e.detalhe}
-            </p>
-          )}
+          {e.detalhe && <p className="text-[11px] text-muted-foreground mt-0.5">{e.detalhe}</p>}
         </li>
       ))}
       {eventos.length > 50 && (

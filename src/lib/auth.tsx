@@ -18,7 +18,11 @@ export const APP_ROLE_LABELS: Record<AppRole, string> = {
  * Adicionar um novo papel aqui propaga automaticamente para toda a lógica
  * que usa `isStaff()` — sem precisar tocar em condicionais espalhados.
  */
-export const STAFF_ROLES = ["admin", "coordenacao", "professor"] as const satisfies readonly AppRole[];
+export const STAFF_ROLES = [
+  "admin",
+  "coordenacao",
+  "professor",
+] as const satisfies readonly AppRole[];
 
 export interface AuthState {
   user: User | null;

@@ -36,10 +36,7 @@ function emit() {
 async function loadFromDb() {
   // Garante que cursos foram carregados (e o top-up de grupos rodou).
   await cursosStore.ensureInit();
-  const { data, error } = await supabase
-    .from("grupos")
-    .select("*")
-    .order("cod");
+  const { data, error } = await supabase.from("grupos").select("*").order("cod");
   if (error) {
     console.error("[grupos] load error", error);
     grupos = [];
@@ -114,17 +111,11 @@ export const gruposStore = {
 
 /** Hook que expõe `Record<cursoCod, Grupo[]>` reagindo a mudanças. */
 export function useGruposByCursoCod(): Record<string, Grupo[]> {
-  const [snap, setSnap] = useState<Record<string, Grupo[]>>(() =>
-    buildMapByCursoCod(),
-  );
+  const [snap, setSnap] = useState<Record<string, Grupo[]>>(() => buildMapByCursoCod());
   useEffect(() => {
     void ensureInit();
-    const unsubGrupos = gruposStore.subscribe(() =>
-      setSnap(buildMapByCursoCod()),
-    );
-    const unsubCursos = cursosStore.subscribe(() =>
-      setSnap(buildMapByCursoCod()),
-    );
+    const unsubGrupos = gruposStore.subscribe(() => setSnap(buildMapByCursoCod()));
+    const unsubCursos = cursosStore.subscribe(() => setSnap(buildMapByCursoCod()));
     return () => {
       unsubGrupos();
       unsubCursos();
@@ -134,9 +125,7 @@ export function useGruposByCursoCod(): Record<string, Grupo[]> {
 }
 
 /** Hook reativo que devolve grupos de um curso específico. */
-export function useGruposDoCurso(
-  curso: { id: string; cod: string } | null | undefined,
-): Grupo[] {
+export function useGruposDoCurso(curso: { id: string; cod: string } | null | undefined): Grupo[] {
   const map = useGruposByCursoCod();
   if (!curso) return [];
   return map[curso.cod] ?? map[curso.id] ?? [];

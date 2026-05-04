@@ -66,9 +66,7 @@ export function CourseActivitiesDialog({
   const [viewing, setViewing] = useState<Atividade | null>(null);
   const gruposCurso = useGruposDoCurso(curso);
   const { aulas, tarefas } = useMemo(() => {
-    const list = curso
-      ? atividades.filter((a) => a.cursoId === curso.id)
-      : [];
+    const list = curso ? atividades.filter((a) => a.cursoId === curso.id) : [];
     return {
       aulas: list.filter((a) => a.tipo === 0),
       tarefas: list.filter((a) => a.tipo === 1),
@@ -83,9 +81,7 @@ export function CourseActivitiesDialog({
             <Badge variant="outline">{curso?.cod}</Badge>
             <DialogTitle>{curso?.nome}</DialogTitle>
           </div>
-          {curso?.descricao && (
-            <DialogDescription>{curso.descricao}</DialogDescription>
-          )}
+          {curso?.descricao && <DialogDescription>{curso.descricao}</DialogDescription>}
         </DialogHeader>
 
         <div className="flex justify-end">
@@ -175,9 +171,7 @@ function Column({
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter(
-        (a) =>
-          a.nome.toLowerCase().includes(q) ||
-          a.codigo.toLowerCase().includes(q),
+        (a) => a.nome.toLowerCase().includes(q) || a.codigo.toLowerCase().includes(q),
       );
     }
     return list;
@@ -213,9 +207,7 @@ function Column({
         {icon}
         <h3 className="text-sm font-semibold">{title}</h3>
         <Badge variant="secondary" className="ml-auto">
-          {filtered.length !== items.length
-            ? `${filtered.length}/${items.length}`
-            : items.length}
+          {filtered.length !== items.length ? `${filtered.length}/${items.length}` : items.length}
         </Badge>
         {!isAluno && (
           <Button size="sm" variant="ghost" onClick={onAdd} className="h-7">
@@ -255,9 +247,7 @@ function Column({
 
       <div className="p-2 space-y-1 max-h-[50vh] overflow-y-auto">
         {items.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-4">
-            {emptyText}
-          </p>
+          <p className="text-xs text-muted-foreground text-center py-4">{emptyText}</p>
         ) : filtered.length === 0 ? (
           <p className="text-xs text-muted-foreground text-center py-4">
             Nenhum resultado para a busca.
@@ -270,9 +260,7 @@ function Column({
                   <Badge variant="outline" className="text-[10px] font-mono">
                     {group.cod}
                   </Badge>
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    {group.nome}
-                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">{group.nome}</span>
                   <span className="text-[10px] text-muted-foreground ml-auto">
                     {group.items.length}
                   </span>
@@ -295,9 +283,7 @@ function Column({
                   >
                     <div className="min-w-0">
                       <div className="text-sm font-medium truncate">{a.nome}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">
-                        {a.codigo}
-                      </div>
+                      <div className="text-[11px] text-muted-foreground truncate">{a.codigo}</div>
                     </div>
                     {!isAluno && (
                       <div className="flex gap-0.5 shrink-0">

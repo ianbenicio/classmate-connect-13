@@ -21,9 +21,7 @@ export function StarRating({ value, max = 10 }: Props) {
       {Array.from({ length: full }).map((_, i) => (
         <Star key={`f${i}`} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
       ))}
-      {half && (
-        <StarHalf className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-      )}
+      {half && <StarHalf className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />}
       {Array.from({ length: empty }).map((_, i) => (
         <Star key={`e${i}`} className="h-3.5 w-3.5 text-muted-foreground/40" />
       ))}

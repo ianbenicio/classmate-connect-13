@@ -2,7 +2,20 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useChildMatches } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Download, FileText, Trash2, ShieldCheck, ArrowLeft, Database, FileArchive, Loader2, ClipboardList, Users, GraduationCap, BarChart3 } from "lucide-react";
+import {
+  Download,
+  FileText,
+  Trash2,
+  ShieldCheck,
+  ArrowLeft,
+  Database,
+  FileArchive,
+  Loader2,
+  ClipboardList,
+  Users,
+  GraduationCap,
+  BarChart3,
+} from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
@@ -10,13 +23,7 @@ import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -71,6 +78,32 @@ function CoordenacaoDashboard() {
   const userNome =
     displayName || (authUser?.user_metadata?.name as string | undefined) || authUser?.email || "—";
 
+  // Hooks DEVEM vir antes de qualquer early return (Rules of Hooks).
+  const tiposPresentes = useMemo(() => {
+    const set = new Set<RelatorioTipo>();
+    for (const r of relatorios) set.add(r.tipo);
+    return Array.from(set);
+  }, [relatorios]);
+
+  const grupos = useMemo(() => {
+    const filtrados = relatorios.filter((r) => filtro === "all" || r.tipo === filtro);
+    // Agrupa por tipo
+    const byTipo = new Map<RelatorioTipo, typeof relatorios>();
+    for (const r of filtrados) {
+      const arr = byTipo.get(r.tipo) ?? [];
+      arr.push(r);
+      byTipo.set(r.tipo, arr);
+    }
+    // Ordena cada grupo por data desc
+    for (const arr of byTipo.values()) {
+      arr.sort((a, b) => b.geradoEm.localeCompare(a.geradoEm));
+    }
+    // Ordena os tipos pelo relatório mais recente
+    return Array.from(byTipo.entries()).sort(([, a], [, b]) =>
+      b[0].geradoEm.localeCompare(a[0].geradoEm),
+    );
+  }, [relatorios, filtro]);
+
   if (!canAccess) {
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12">
@@ -80,8 +113,8 @@ function CoordenacaoDashboard() {
               <ShieldCheck className="h-5 w-5" /> Acesso restrito
             </CardTitle>
             <CardDescription>
-              Esta área é exclusiva para usuários com perfil <b>Admin</b> ou{" "}
-              <b>Coordenação</b>. Você está logado como <b>{userNome}</b>
+              Esta área é exclusiva para usuários com perfil <b>Admin</b> ou <b>Coordenação</b>.
+              Você está logado como <b>{userNome}</b>
               {roles.length > 0 && ` (${roles.join(", ")})`}.
             </CardDescription>
           </CardHeader>
@@ -96,33 +129,6 @@ function CoordenacaoDashboard() {
       </main>
     );
   }
-
-  const tiposPresentes = useMemo(() => {
-    const set = new Set<RelatorioTipo>();
-    for (const r of relatorios) set.add(r.tipo);
-    return Array.from(set);
-  }, [relatorios]);
-
-  const grupos = useMemo(() => {
-    const filtrados = relatorios.filter(
-      (r) => filtro === "all" || r.tipo === filtro,
-    );
-    // Agrupa por tipo
-    const byTipo = new Map<RelatorioTipo, typeof relatorios>();
-    for (const r of filtrados) {
-      const arr = byTipo.get(r.tipo) ?? [];
-      arr.push(r);
-      byTipo.set(r.tipo, arr);
-    }
-    // Ordena cada grupo por data desc
-    for (const arr of byTipo.values()) {
-      arr.sort((a, b) => b.geradoEm.localeCompare(a.geradoEm));
-    }
-    // Ordena os tipos pelo relatório mais recente
-    return Array.from(byTipo.entries()).sort(
-      ([, a], [, b]) => b[0].geradoEm.localeCompare(a[0].geradoEm),
-    );
-  }, [relatorios, filtro]);
 
   const handleGerarAgora = async () => {
     const { sizeBytes, filename } = await downloadExportJSON({
@@ -183,10 +189,7 @@ function CoordenacaoDashboard() {
           <Button onClick={handleGerarAgora} variant="outline">
             <FileText /> Snapshot do app (seed)
           </Button>
-          <Button
-            onClick={handleExportDbJson}
-            disabled={exportandoJson || exportandoCsv}
-          >
+          <Button onClick={handleExportDbJson} disabled={exportandoJson || exportandoCsv}>
             {exportandoJson ? <Loader2 className="animate-spin" /> : <Database />}
             Exportar banco (JSON)
           </Button>
@@ -204,9 +207,7 @@ function CoordenacaoDashboard() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Visão geral</CardTitle>
-          <CardDescription className="text-xs">
-            Hoje, esta semana e o mês corrente.
-          </CardDescription>
+          <CardDescription className="text-xs">Hoje, esta semana e o mês corrente.</CardDescription>
         </CardHeader>
         <CardContent>
           <DashboardKPIs />
@@ -255,11 +256,11 @@ function CoordenacaoDashboard() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Sobre as exportações</CardTitle>
           <CardDescription className="text-xs leading-relaxed">
-            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as tabelas
-            (cursos, turmas, alunos, atividades, agendamentos, avaliações, relatórios, notificações,
-            habilidades). Use o JSON para reimportar em outro sistema; o ZIP de CSVs para abrir no
-            Excel/Sheets/DuckDB. <strong>Snapshot do app:</strong> dados em memória do seed — útil só
-            como backup do estado da sessão.
+            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as
+            tabelas (cursos, turmas, alunos, atividades, agendamentos, avaliações, relatórios,
+            notificações, habilidades). Use o JSON para reimportar em outro sistema; o ZIP de CSVs
+            para abrir no Excel/Sheets/DuckDB. <strong>Snapshot do app:</strong> dados em memória do
+            seed — útil só como backup do estado da sessão.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -275,10 +276,7 @@ function CoordenacaoDashboard() {
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <Select
-              value={filtro}
-              onValueChange={(v) => setFiltro(v as typeof filtro)}
-            >
+            <Select value={filtro} onValueChange={(v) => setFiltro(v as typeof filtro)}>
               <SelectTrigger className="h-8 w-[180px] text-xs">
                 <SelectValue placeholder="Filtrar por tipo" />
               </SelectTrigger>
@@ -335,9 +333,7 @@ function CoordenacaoDashboard() {
                       >
                         <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium truncate">
-                            {r.titulo}
-                          </div>
+                          <div className="text-sm font-medium truncate">{r.titulo}</div>
                           <div className="text-xs text-muted-foreground mt-0.5">
                             {format(new Date(r.geradoEm), "PPp", { locale: ptBR })}
                             {r.geradoPorNome && ` · ${r.geradoPorNome}`}
@@ -345,11 +341,7 @@ function CoordenacaoDashboard() {
                             {(r.sizeBytes / 1024).toFixed(1)} KB · {r.formato.toUpperCase()}
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => downloadRelatorio(r)}
-                        >
+                        <Button size="sm" variant="outline" onClick={() => downloadRelatorio(r)}>
                           <Download /> Baixar
                         </Button>
                         <Button
@@ -370,13 +362,8 @@ function CoordenacaoDashboard() {
         </CardContent>
       </Card>
 
-      {isAdmin && (
-        <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />
-      )}
-      <ProfessoresManagerDialog
-        open={professoresOpen}
-        onOpenChange={setProfessoresOpen}
-      />
+      {isAdmin && <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />}
+      <ProfessoresManagerDialog open={professoresOpen} onOpenChange={setProfessoresOpen} />
     </main>
   );
 }

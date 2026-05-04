@@ -99,13 +99,22 @@ function AuthPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="login-password">Senha</Label>
-                  <Input id="login-password" name="password" type="password" required autoComplete="current-password" />
+                  <Input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    required
+                    autoComplete="current-password"
+                  />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Entrando…" : "Entrar"}
                 </Button>
                 <div className="text-center text-sm">
-                  <Link to="/reset-password" className="text-muted-foreground hover:text-foreground">
+                  <Link
+                    to="/reset-password"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
                     Esqueci minha senha
                   </Link>
                 </div>
@@ -120,11 +129,24 @@ function AuthPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">E-mail</Label>
-                  <Input id="signup-email" name="email" type="email" required autoComplete="email" />
+                  <Input
+                    id="signup-email"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Senha</Label>
-                  <Input id="signup-password" name="password" type="password" required minLength={6} autoComplete="new-password" />
+                  <Input
+                    id="signup-password"
+                    name="password"
+                    type="password"
+                    required
+                    minLength={6}
+                    autoComplete="new-password"
+                  />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Criando…" : "Criar conta"}
@@ -142,7 +164,13 @@ function AuthPage() {
             </div>
           </div>
 
-          <Button type="button" variant="outline" className="w-full" onClick={handleGoogle} disabled={loading}>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogle}
+            disabled={loading}
+          >
             Continuar com Google
           </Button>
         </CardContent>

@@ -3,17 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ComparativoTurmasReport } from "@/components/relatorios/ComparativoTurmasReport";
 import { useAuth } from "@/lib/auth";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
-export const Route = createFileRoute(
-  "/coordenacao/relatorios/comparativo-turmas",
-)({
+export const Route = createFileRoute("/coordenacao/relatorios/comparativo-turmas")({
   component: ComparativoTurmasRoute,
 });
 
@@ -28,8 +20,7 @@ function ComparativoTurmasRoute() {
           <CardHeader>
             <CardTitle>Acesso restrito</CardTitle>
             <CardDescription>
-              Este relatório é exclusivo para usuários com perfil Admin ou
-              Coordenação.
+              Este relatório é exclusivo para usuários com perfil Admin ou Coordenação.
             </CardDescription>
           </CardHeader>
           <CardContent>

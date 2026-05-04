@@ -41,14 +41,7 @@ const empty = (): Aluno => ({
   trabalhos: [],
 });
 
-export function AlunoFormDialog({
-  open,
-  onOpenChange,
-  editing,
-  cursos,
-  turmas,
-  onSave,
-}: Props) {
+export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, onSave }: Props) {
   const [form, setForm] = useState<Aluno>(empty());
 
   useEffect(() => {
@@ -57,8 +50,7 @@ export function AlunoFormDialog({
 
   const turmasDoCurso = turmas.filter((t) => t.cursoId === form.cursoId);
 
-  const update = <K extends keyof Aluno>(k: K, v: Aluno[K]) =>
-    setForm((f) => ({ ...f, [k]: v }));
+  const update = <K extends keyof Aluno>(k: K, v: Aluno[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,9 +67,7 @@ export function AlunoFormDialog({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>{editing ? "Editar aluno" : "Novo aluno"}</DialogTitle>
-          <DialogDescription>
-            Dados cadastrais e vínculo com curso e turma.
-          </DialogDescription>
+          <DialogDescription>Dados cadastrais e vínculo com curso e turma.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
@@ -98,10 +88,7 @@ export function AlunoFormDialog({
                 type="number"
                 value={form.idade ?? ""}
                 onChange={(e) =>
-                  update(
-                    "idade",
-                    e.target.value ? parseInt(e.target.value, 10) : undefined,
-                  )
+                  update("idade", e.target.value ? parseInt(e.target.value, 10) : undefined)
                 }
               />
             </div>
@@ -197,11 +184,7 @@ export function AlunoFormDialog({
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit">{editing ? "Salvar" : "Cadastrar"}</Button>

@@ -14,12 +14,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import {
-  usersStore,
-  useUsers,
-  updateUserProfessorFields,
-  type UserRow,
-} from "./users-store";
+import { usersStore, useUsers, updateUserProfessorFields, type UserRow } from "./users-store";
 
 // ---------------------------------------------------------------------
 // Tipos públicos (mantidos por compatibilidade)
@@ -90,7 +85,6 @@ function isProfessor(u: UserRow): boolean {
 // ---------------------------------------------------------------------
 type ProfessorAvaliacaoRow = {
   id: string;
-  professor_id: string | null;
   professor_user_id: string;
   avaliador_user_id: string;
   avaliador_tipo: string;
@@ -137,9 +131,7 @@ async function loadAvaliacoes(): Promise<void> {
     avaliacoes = [];
     return;
   }
-  avaliacoes = ((data ?? []) as unknown as ProfessorAvaliacaoRow[]).map(
-    rowToAvaliacao,
-  );
+  avaliacoes = ((data ?? []) as unknown as ProfessorAvaliacaoRow[]).map(rowToAvaliacao);
 }
 
 async function ensureInitAvaliacoes(): Promise<void> {
@@ -175,9 +167,7 @@ export const professoresStore = {
   },
   getByNome(nome: string): Professor | undefined {
     const norm = nome.trim().toLowerCase();
-    return professoresStore
-      .getAll()
-      .find((p) => p.nome.trim().toLowerCase() === norm);
+    return professoresStore.getAll().find((p) => p.nome.trim().toLowerCase() === norm);
   },
   getAvaliacoes(): ProfessorAvaliacao[] {
     return avaliacoes;
@@ -264,8 +254,6 @@ export const professoresStore = {
 
     const row = {
       id: entry.id,
-      // professor_id é nullable agora — só preenche se vier explícito
-      professor_id: null as string | null,
       professor_user_id: entry.professorUserId,
       avaliador_user_id: entry.avaliadorUserId,
       avaliador_tipo: entry.avaliadorTipo,
@@ -289,10 +277,7 @@ export const professoresStore = {
     avaliacoes = avaliacoes.filter((a) => a.id !== id);
     emit();
 
-    const { error } = await supabase
-      .from("professor_avaliacoes")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("professor_avaliacoes").delete().eq("id", id);
     if (error) {
       console.error("[professor_avaliacoes] remove error", error);
       toast.error(`Erro ao remover avaliação: ${error.message}`);
@@ -327,10 +312,7 @@ export const professoresStore = {
 // ---------------------------------------------------------------------
 export function useProfessores(): Professor[] {
   const allUsers = useUsers();
-  return useMemo(
-    () => allUsers.filter(isProfessor).map(userToProfessor),
-    [allUsers],
-  );
+  return useMemo(() => allUsers.filter(isProfessor).map(userToProfessor), [allUsers]);
 }
 
 export function useProfessoresAtivos(): Professor[] {
@@ -338,18 +320,14 @@ export function useProfessoresAtivos(): Professor[] {
   return useMemo(() => todos.filter((p) => p.ativo), [todos]);
 }
 
-export function useProfessorAvaliacoes(
-  professorId?: string,
-): ProfessorAvaliacao[] {
+export function useProfessorAvaliacoes(professorId?: string): ProfessorAvaliacao[] {
   const [snap, setSnap] = useState<ProfessorAvaliacao[]>(avaliacoes);
   useEffect(() => {
     void professoresStore.ensureInit();
     const unsub = professoresStore.subscribe(() => setSnap([...avaliacoes]));
     return unsub;
   }, []);
-  return professorId
-    ? snap.filter((a) => a.professorUserId === professorId)
-    : snap;
+  return professorId ? snap.filter((a) => a.professorUserId === professorId) : snap;
 }
 
 // ---------------------------------------------------------------------
@@ -365,10 +343,7 @@ export function getAgendamentosDoProfessor<
     professorId?: string;
     professor?: string;
   },
->(
-  professor: { id: string; userId?: string | null; nome: string },
-  agendamentos: T[],
-): T[] {
+>(professor: { id: string; userId?: string | null; nome: string }, agendamentos: T[]): T[] {
   const userId = professor.userId ?? professor.id;
   const nomeNorm = professor.nome.trim().toLowerCase();
   return agendamentos.filter(
@@ -385,10 +360,7 @@ export function getAtividadesDoProfessor<
     professorId?: string;
     professor?: string;
   },
->(
-  professor: { id: string; userId?: string | null; nome: string },
-  atividades: T[],
-): T[] {
+>(professor: { id: string; userId?: string | null; nome: string }, atividades: T[]): T[] {
   return getAgendamentosDoProfessor(professor, atividades);
 }
 
@@ -495,14 +467,9 @@ export function calcularDesempenhoHabilidades(
   }
   const checklistsDoProf = avaliacoes.filter(
     (av) =>
-      av.tipo === "checklist_aluno" &&
-      av.agendamentoId &&
-      agendamentosDoProf.has(av.agendamentoId),
+      av.tipo === "checklist_aluno" && av.agendamentoId && agendamentosDoProf.has(av.agendamentoId),
   );
-  const desempenho: Record<
-    string,
-    { notas: number[]; min: number; max: number }
-  > = {};
+  const desempenho: Record<string, { notas: number[]; min: number; max: number }> = {};
   for (const checklist of checklistsDoProf) {
     const dados = checklist.dados as { habilidadesNotas?: Record<string, unknown> } | null;
     const habilidadesNotas = dados?.habilidadesNotas ?? {};
@@ -518,9 +485,7 @@ export function calcularDesempenhoHabilidades(
   const resultado: Record<string, DesempenhoHabilidade> = {};
   for (const [habilidadeId, entry] of Object.entries(desempenho)) {
     const media =
-      entry.notas.length > 0
-        ? entry.notas.reduce((a, b) => a + b, 0) / entry.notas.length
-        : 0;
+      entry.notas.length > 0 ? entry.notas.reduce((a, b) => a + b, 0) / entry.notas.length : 0;
     resultado[habilidadeId] = {
       habilidadeId,
       media: Math.round(media * 100) / 100,

@@ -82,8 +82,14 @@ function TagFormDialog({
 
   const handleSubmit = async () => {
     const v = value.trim().toLowerCase().replace(/\s+/g, "_");
-    if (!v) { toast.error("Valor (slug) é obrigatório."); return; }
-    if (!label.trim()) { toast.error("Rótulo é obrigatório."); return; }
+    if (!v) {
+      toast.error("Valor (slug) é obrigatório.");
+      return;
+    }
+    if (!label.trim()) {
+      toast.error("Rótulo é obrigatório.");
+      return;
+    }
 
     const entry: ComportamentoTagEntry = {
       id: editing?.id ?? crypto.randomUUID(),
@@ -121,8 +127,7 @@ function TagFormDialog({
             />
             {editing && (
               <p className="text-[11px] text-muted-foreground">
-                O slug não pode ser alterado — ele está salvo em avaliações
-                existentes.
+                O slug não pode ser alterado — ele está salvo em avaliações existentes.
               </p>
             )}
           </div>
@@ -194,9 +199,7 @@ function TagFormDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit}>
-            {editing ? "Salvar" : "Criar tag"}
-          </Button>
+          <Button onClick={handleSubmit}>{editing ? "Salvar" : "Criar tag"}</Button>
         </InnerDialogFooter>
       </InnerDialogContent>
     </InnerDialog>
@@ -218,14 +221,17 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
     if (tomFiltro !== "__all__" && t.tom !== tomFiltro) return false;
     if (!filtro) return true;
     const q = filtro.toLowerCase();
-    return (
-      t.value.includes(q) ||
-      t.label.toLowerCase().includes(q)
-    );
+    return t.value.includes(q) || t.label.toLowerCase().includes(q);
   });
 
-  const handleNova = () => { setEditing(null); setFormOpen(true); };
-  const handleEditar = (t: ComportamentoTagEntry) => { setEditing(t); setFormOpen(true); };
+  const handleNova = () => {
+    setEditing(null);
+    setFormOpen(true);
+  };
+  const handleEditar = (t: ComportamentoTagEntry) => {
+    setEditing(t);
+    setFormOpen(true);
+  };
 
   return (
     <>
@@ -237,9 +243,9 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
               Tags de Comportamento
             </DialogTitle>
             <DialogDescription>
-              Gerencie as tags usadas no Checklist Individual do aluno. Novas
-              tags aparecem imediatamente no formulário do professor. O slug
-              nunca muda — apenas o rótulo e o emoji podem ser editados.
+              Gerencie as tags usadas no Checklist Individual do aluno. Novas tags aparecem
+              imediatamente no formulário do professor. O slug nunca muda — apenas o rótulo e o
+              emoji podem ser editados.
             </DialogDescription>
           </DialogHeader>
 
@@ -253,10 +259,7 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
                 className="pl-8"
               />
             </div>
-            <Select
-              value={tomFiltro}
-              onValueChange={(v) => setTomFiltro(v as typeof tomFiltro)}
-            >
+            <Select value={tomFiltro} onValueChange={(v) => setTomFiltro(v as typeof tomFiltro)}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue />
               </SelectTrigger>
@@ -320,9 +323,7 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
                         variant="secondary"
                         className={cn(
                           "text-[10px]",
-                          t.tom === "pos"
-                            ? "text-primary"
-                            : "text-amber-600",
+                          t.tom === "pos" ? "text-primary" : "text-amber-600",
                         )}
                       >
                         {t.tom === "pos" ? "Positivo" : "Negativo"}
@@ -339,9 +340,7 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
                         {t.descricao}
                       </p>
                     )}
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      ordem: {t.ordem}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">ordem: {t.ordem}</p>
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
@@ -351,9 +350,11 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
                       title={t.ativo ? "Desativar" : "Ativar"}
                       onClick={() => comportamentoTagsStore.toggleAtivo(t.id)}
                     >
-                      {t.ativo
-                        ? <Eye className="h-4 w-4 text-muted-foreground" />
-                        : <EyeOff className="h-4 w-4 text-muted-foreground" />}
+                      {t.ativo ? (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      )}
                     </Button>
                     <Button
                       size="icon"
@@ -379,28 +380,19 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
         </DialogContent>
       </Dialog>
 
-      <TagFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        editing={editing}
-      />
+      <TagFormDialog open={formOpen} onOpenChange={setFormOpen} editing={editing} />
 
-      <AlertDialog
-        open={!!confirmDelete}
-        onOpenChange={(o) => !o && setConfirmDelete(null)}
-      >
+      <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir tag?</AlertDialogTitle>
             <AlertDialogDescription>
               A tag <strong>"{confirmDelete?.label}"</strong> (slug:{" "}
-              <code>{confirmDelete?.value}</code>) será removida do banco.
-              Avaliações já registradas com esse slug não são afetadas, mas a
-              tag não aparecerá mais nos checklists novos.
+              <code>{confirmDelete?.value}</code>) será removida do banco. Avaliações já registradas
+              com esse slug não são afetadas, mas a tag não aparecerá mais nos checklists novos.
               <br />
               <br />
-              Prefira <strong>Desativar</strong> se quiser preservar o histórico
-              com melhor UX.
+              Prefira <strong>Desativar</strong> se quiser preservar o histórico com melhor UX.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -427,21 +419,51 @@ export function TagsManagerDialog({ open, onOpenChange }: Props) {
 // =====================================================================
 const EMOJI_OPTIONS = [
   // Positivos / engajados
-  "🙋", "🤝", "🎯", "💡", "⭐", "🌟", "🚀", "🏆", "👏", "🧠",
-  "📚", "📝", "🔍", "🎨", "🤔", "😊", "😄", "😎", "💪", "✨",
+  "🙋",
+  "🤝",
+  "🎯",
+  "💡",
+  "⭐",
+  "🌟",
+  "🚀",
+  "🏆",
+  "👏",
+  "🧠",
+  "📚",
+  "📝",
+  "🔍",
+  "🎨",
+  "🤔",
+  "😊",
+  "😄",
+  "😎",
+  "💪",
+  "✨",
   // Neutros / observação
-  "🙂", "😐", "👀", "🌱", "🌿", "🪴", "🧩", "🎲", "🎭", "🎤",
+  "🙂",
+  "😐",
+  "👀",
+  "🌱",
+  "🌿",
+  "🪴",
+  "🧩",
+  "🎲",
+  "🎭",
+  "🎤",
   // Negativos / atenção
-  "🌀", "⚡", "🙊", "😶", "😤", "😴", "😟", "😬", "💢", "🚫",
+  "🌀",
+  "⚡",
+  "🙊",
+  "😶",
+  "😤",
+  "😴",
+  "😟",
+  "😬",
+  "💢",
+  "🚫",
 ];
 
-function EmojiPicker({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (e: string) => void;
-}) {
+function EmojiPicker({ value, onChange }: { value: string; onChange: (e: string) => void }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">

@@ -2,11 +2,7 @@
 // Espelha o padrão de turmas-store / atividades-store: ensureInit + loadFromDb
 // + top-up do seed + cache em memória + pub/sub.
 import { useEffect, useState } from "react";
-import type {
-  Agendamento,
-  DiaSemana,
-  StatusAgendamento,
-} from "./academic-types";
+import type { Agendamento, DiaSemana, StatusAgendamento } from "./academic-types";
 import { SEED_AGENDAMENTOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
@@ -34,7 +30,6 @@ type AgendamentoRow = {
   concluido_em: string | null;
   observacao: string | null;
   professor: string | null;
-  professor_id: string | null;
   professor_user_id: string | null;
   criado_por_user_id: string | null;
   criado_por_nome: string | null;
@@ -72,7 +67,6 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
     concluidoEm: r.concluido_em ?? undefined,
     observacao: r.observacao ?? undefined,
     professor: r.professor ?? undefined,
-    professorId: r.professor_id ?? undefined,
     professorUserId: r.professor_user_id ?? undefined,
     criadoPorUserId: r.criado_por_user_id ?? undefined,
     criadoPorNome: r.criado_por_nome ?? undefined,
@@ -122,9 +116,7 @@ async function topUpAgendamentos(existingIds: Set<string>) {
   let inserted = 0;
   for (let i = 0; i < rows.length; i += chunkSize) {
     const chunk = rows.slice(i, i + chunkSize);
-    const { error } = await supabase
-      .from("agendamentos")
-      .upsert(chunk, { onConflict: "id" });
+    const { error } = await supabase.from("agendamentos").upsert(chunk, { onConflict: "id" });
     if (error) {
       console.error("[agendamentos] top-up error (chunk)", error);
       continue;
@@ -155,9 +147,7 @@ async function loadFromDb() {
       .from("agendamentos")
       .select("*")
       .order("data", { ascending: true });
-    agendamentos = ((data2 ?? []) as unknown as AgendamentoRow[]).map(
-      rowToAgendamento,
-    );
+    agendamentos = ((data2 ?? []) as unknown as AgendamentoRow[]).map(rowToAgendamento);
   } else {
     agendamentos = rows.map(rowToAgendamento);
   }
@@ -192,9 +182,7 @@ export const agendamentosStore = {
     };
     agendamentos = [local, ...agendamentos];
     emit();
-    const { error } = await supabase
-      .from("agendamentos")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabase.from("agendamentos").upsert(row, { onConflict: "id" });
     if (error) {
       console.error("[agendamentos] add error", error);
       toast.error(`Erro ao salvar agendamento: ${error.message}`);
@@ -205,12 +193,13 @@ export const agendamentosStore = {
     const current = agendamentos.find((x) => x.id === dbId || x.id === id);
     if (!current) return;
     const next: Agendamento = { ...current, ...patch, id: dbId };
-    agendamentos = agendamentos.map((x) => (x.id === dbId ? next : x));
+    // Bugfix: comparar tanto dbId quanto id original — caso o item em memória
+    // ainda esteja com seedId (não-UUID), o map antes só comparava dbId e
+    // não trocava, deixando estado obsoleto.
+    agendamentos = agendamentos.map((x) => (x.id === dbId || x.id === id ? next : x));
     emit();
     const row = agendamentoToRow(next);
-    const { error } = await supabase
-      .from("agendamentos")
-      .upsert(row, { onConflict: "id" });
+    const { error } = await supabase.from("agendamentos").upsert(row, { onConflict: "id" });
     if (error) {
       console.error("[agendamentos] update error", error);
       toast.error(`Erro ao atualizar agendamento: ${error.message}`);
@@ -220,10 +209,7 @@ export const agendamentosStore = {
     const dbId = toUuid(id);
     agendamentos = agendamentos.filter((x) => x.id !== dbId && x.id !== id);
     emit();
-    const { error } = await supabase
-      .from("agendamentos")
-      .delete()
-      .eq("id", dbId);
+    const { error } = await supabase.from("agendamentos").delete().eq("id", dbId);
     if (error) {
       console.error("[agendamentos] remove error", error);
       toast.error(`Erro ao remover agendamento: ${error.message}`);
@@ -252,9 +238,7 @@ export function useAgendamentos(): Agendamento[] {
   const [snapshot, setSnapshot] = useState(agendamentosStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = agendamentosStore.subscribe(() =>
-      setSnapshot([...agendamentosStore.getAll()]),
-    );
+    const unsub = agendamentosStore.subscribe(() => setSnapshot([...agendamentosStore.getAll()]));
     return () => {
       unsub();
     };

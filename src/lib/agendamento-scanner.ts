@@ -16,11 +16,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { agendamentosStore } from "./agendamentos-store";
 import { notificacoesStore } from "./notificacoes-store";
-import {
-  computeSlotEstado,
-  type Agendamento,
-  type Notificacao,
-} from "./academic-types";
+import { computeSlotEstado, type Agendamento, type Notificacao } from "./academic-types";
 import { alunosStore } from "./alunos-store";
 import { cursosStore } from "./cursos-store";
 import { turmasStore } from "./turmas-store";

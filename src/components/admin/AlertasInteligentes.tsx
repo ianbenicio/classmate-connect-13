@@ -40,10 +40,7 @@ export function AlertasInteligentes() {
     // Map turma -> alunos count
     const turmaAlunoCount = new Map<string, number>();
     for (const aluno of alunos) {
-      turmaAlunoCount.set(
-        aluno.turmaId,
-        (turmaAlunoCount.get(aluno.turmaId) ?? 0) + 1,
-      );
+      turmaAlunoCount.set(aluno.turmaId, (turmaAlunoCount.get(aluno.turmaId) ?? 0) + 1);
     }
 
     // Map agendamento -> count alunos avaliaram (relatorio_aluno)
@@ -82,20 +79,14 @@ export function AlertasInteligentes() {
         const pct = avaliaram / alunosTurma;
         return { ag, alunosTurma, avaliaram, pct };
       })
-      .filter(
-        (x): x is NonNullable<typeof x> =>
-          x !== null && x.pct < COBERTURA_BAIXA_THRESHOLD,
-      )
+      .filter((x): x is NonNullable<typeof x> => x !== null && x.pct < COBERTURA_BAIXA_THRESHOLD)
       .sort((a, b) => a.pct - b.pct)
       .slice(0, MAX_ITENS_POR_CATEGORIA);
 
     return { relAtrasados, cobertura };
   }, [agendamentos, avaliacoes, alunos]);
 
-  const turmaMap = useMemo(
-    () => new Map(turmas.map((t) => [t.id, t])),
-    [turmas],
-  );
+  const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
   const turmaNome = (id: string) => turmaMap.get(id)?.nome ?? id.slice(0, 8);
   const fmtData = (iso: string) => {
     try {

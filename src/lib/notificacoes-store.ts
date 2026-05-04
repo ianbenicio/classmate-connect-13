@@ -113,9 +113,7 @@ export const notificacoesStore = {
     notificacoes = [...local, ...notificacoes];
     emit();
     const rows = items.map(notifToRow);
-    const { error } = await supabase
-      .from("notificacoes")
-      .insert(rows);
+    const { error } = await supabase.from("notificacoes").insert(rows);
     if (error) {
       console.error("[notificacoes] insert error", error);
       toast.error(`Erro ao registrar notificações: ${error.message}`);
@@ -127,10 +125,7 @@ export const notificacoesStore = {
       n.id === dbId || n.id === id ? { ...n, lida: true } : n,
     );
     emit();
-    const { error } = await supabase
-      .from("notificacoes")
-      .update({ lida: true })
-      .eq("id", dbId);
+    const { error } = await supabase.from("notificacoes").update({ lida: true }).eq("id", dbId);
     if (error) {
       console.error("[notificacoes] marcarLida error", error);
       toast.error(`Erro ao marcar notificação: ${error.message}`);
@@ -139,10 +134,7 @@ export const notificacoesStore = {
   async marcarTodasLidas() {
     notificacoes = notificacoes.map((n) => ({ ...n, lida: true }));
     emit();
-    const { error } = await supabase
-      .from("notificacoes")
-      .update({ lida: true })
-      .eq("lida", false);
+    const { error } = await supabase.from("notificacoes").update({ lida: true }).eq("lida", false);
     if (error) {
       console.error("[notificacoes] marcarTodasLidas error", error);
       toast.error(`Erro ao marcar todas: ${error.message}`);
@@ -152,10 +144,7 @@ export const notificacoesStore = {
     const dbId = toUuid(id);
     notificacoes = notificacoes.filter((n) => n.id !== dbId && n.id !== id);
     emit();
-    const { error } = await supabase
-      .from("notificacoes")
-      .delete()
-      .eq("id", dbId);
+    const { error } = await supabase.from("notificacoes").delete().eq("id", dbId);
     if (error) {
       console.error("[notificacoes] remove error", error);
       toast.error(`Erro ao remover notificação: ${error.message}`);
@@ -172,9 +161,7 @@ export function useNotificacoes(): Notificacao[] {
   const [snap, setSnap] = useState(notificacoesStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = notificacoesStore.subscribe(() =>
-      setSnap([...notificacoesStore.getAll()]),
-    );
+    const unsub = notificacoesStore.subscribe(() => setSnap([...notificacoesStore.getAll()]));
     return () => {
       unsub();
     };

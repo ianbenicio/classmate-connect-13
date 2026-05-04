@@ -25,12 +25,7 @@ import {
 } from "@/lib/formularios-types";
 import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import type { Nota } from "@/lib/avaliacoes-types";
-import type {
-  Agendamento,
-  Aluno,
-  Atividade,
-  Curso,
-} from "@/lib/academic-types";
+import type { Agendamento, Aluno, Atividade, Curso } from "@/lib/academic-types";
 import { toast } from "sonner";
 
 interface Props {
@@ -61,9 +56,7 @@ export function ChecklistAlunoDialog({
   }, [todasHabilidades, curso.habilidadeIds]);
 
   const habilidadesEspecificas = useMemo(() => {
-    const ativs = atividades.filter((a) =>
-      agendamento.atividadeIds.includes(a.id),
-    );
+    const ativs = atividades.filter((a) => agendamento.atividadeIds.includes(a.id));
     const ids = new Set<string>();
     for (const a of ativs) for (const id of a.habilidadeIds ?? []) ids.add(id);
     return todasHabilidades.filter((h) => ids.has(h.id));
@@ -102,9 +95,7 @@ export function ChecklistAlunoDialog({
   };
 
   const toggleComp = (t: ComportamentoTag) => {
-    setComp((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t],
-    );
+    setComp((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
   };
 
   const handleSubmit = async () => {
@@ -124,12 +115,9 @@ export function ChecklistAlunoDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="inline-flex items-center gap-2">
-            <CheckSquare className="h-5 w-5 text-primary" /> Checklist —{" "}
-            {aluno.nome}
+            <CheckSquare className="h-5 w-5 text-primary" /> Checklist — {aluno.nome}
           </DialogTitle>
-          <DialogDescription>
-            {curso.nome} · Avaliação individual da aula.
-          </DialogDescription>
+          <DialogDescription>{curso.nome} · Avaliação individual da aula.</DialogDescription>
         </DialogHeader>
 
         {/* Engajamento */}
@@ -156,10 +144,7 @@ export function ChecklistAlunoDialog({
                     </Badge>
                     <span className="text-xs">{h.descricao}</span>
                   </div>
-                  <FaceRating
-                    value={notas[h.id] ?? null}
-                    onChange={(n) => setNota(h.id, n)}
-                  />
+                  <FaceRating value={notas[h.id] ?? null} onChange={(n) => setNota(h.id, n)} />
                 </div>
               ))}
             </div>
@@ -184,10 +169,7 @@ export function ChecklistAlunoDialog({
                     </Badge>
                     <span className="text-xs">{h.descricao}</span>
                   </div>
-                  <FaceRating
-                    value={notas[h.id] ?? null}
-                    onChange={(n) => setNota(h.id, n)}
-                  />
+                  <FaceRating value={notas[h.id] ?? null} onChange={(n) => setNota(h.id, n)} />
                 </div>
               ))}
             </div>
@@ -196,8 +178,8 @@ export function ChecklistAlunoDialog({
 
         {habilidadesGerais.length === 0 && habilidadesEspecificas.length === 0 && (
           <div className="rounded-md bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-            Nenhuma habilidade cadastrada para este curso/atividade. Cadastre em
-            "Habilidades" no header.
+            Nenhuma habilidade cadastrada para este curso/atividade. Cadastre em "Habilidades" no
+            header.
           </div>
         )}
 
