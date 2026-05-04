@@ -47,7 +47,7 @@ function AuthPage() {
     const password = String(fd.get("password") ?? "");
     const displayName = String(fd.get("displayName") ?? "");
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -60,6 +60,24 @@ function AuthPage() {
       toast.error(error.message);
       return;
     }
+
+    // Sincroniza profile se o trigger não tiver criado (fallback)
+    if (data.user?.id) {
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("user_id", data.user.id)
+        .single();
+
+      if (!existingProfile) {
+        await supabase.from("profiles").insert({
+          user_id: data.user.id,
+          display_name: displayName,
+          email,
+        });
+      }
+    }
+
     toast.success("Conta criada! Verifique seu e-mail para confirmar.");
   };
 
