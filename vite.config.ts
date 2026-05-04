@@ -6,4 +6,14 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+export default defineConfig({
+  // Disable Cloudflare adapter — we deploy on Vercel as static SPA.
+  cloudflare: false,
+  // Build as a Single Page Application (no SSR server required).
+  // Generates a static index.html that Vercel serves directly.
+  tanstackStart: {
+    spa: {
+      enabled: true,
+    },
+  },
+});
