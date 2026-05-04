@@ -88,11 +88,20 @@ function DashboardPage() {
 
   const proximas = useMemo(() => {
     const hoje = new Date().toISOString().slice(0, 10);
+
     return [...atividades]
       .filter((a) => a.prazo >= hoje)
+      .filter((a) => {
+        // Se o usuário é professor, filtra apenas suas atividades
+        if (hasRole("professor")) {
+          return a.professorUserId === currentUserId || a.professor === displayName;
+        }
+        // Caso contrário, mostra todas as atividades
+        return true;
+      })
       .sort((a, b) => a.prazo.localeCompare(b.prazo))
       .slice(0, 8);
-  }, [atividades]);
+  }, [atividades, currentUserId, displayName, hasRole]);
 
   const stats = [
     {
