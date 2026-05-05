@@ -150,6 +150,39 @@ export const notificacoesStore = {
       toast.error(`Erro ao remover notificação: ${error.message}`);
     }
   },
+  /**
+   * Remove notificações órfãs — aquelas com `agendamentoId` definido mas que
+   * referenciam agendamentos que não existem mais (foram removidos antes
+   * da correção que apaga notificações no cancelamento).
+   *
+   * Recebe a lista de IDs de agendamentos válidos (do agendamentos-store)
+   * para evitar dependência circular.
+   *
+   * Retorna o número de notificações removidas.
+   */
+  async cleanupOrphans(idsAgendamentosValidos: string[]): Promise<number> {
+    const validSet = new Set<string>();
+    for (const id of idsAgendamentosValidos) {
+      validSet.add(id);
+      validSet.add(toUuid(id));
+    }
+    const orfas = notificacoes.filter(
+      (n) => n.agendamentoId && !validSet.has(n.agendamentoId),
+    );
+    if (orfas.length === 0) return 0;
+
+    const orfasIds = orfas.map((n) => n.id);
+    notificacoes = notificacoes.filter((n) => !orfasIds.includes(n.id));
+    emit();
+
+    const { error } = await supabase.from("notificacoes").delete().in("id", orfasIds);
+    if (error) {
+      console.error("[notificacoes] cleanupOrphans error", error);
+      toast.error(`Erro ao limpar notificações órfãs: ${error.message}`);
+      return 0;
+    }
+    return orfas.length;
+  },
   subscribe(fn: () => void) {
     listeners.add(fn);
     return () => listeners.delete(fn);

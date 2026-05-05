@@ -15,6 +15,7 @@ import {
   Users,
   GraduationCap,
   BarChart3,
+  BellOff,
 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
@@ -41,6 +42,8 @@ import {
 } from "@/lib/relatorios-store";
 import { downloadExportJSON } from "@/lib/data-export";
 import { downloadDbJSON, downloadDbCSVZip } from "@/lib/db-export";
+import { notificacoesStore } from "@/lib/notificacoes-store";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/coordenacao")({
@@ -67,11 +70,13 @@ function CoordenacaoPage() {
 function CoordenacaoDashboard() {
   const { user: authUser, roles, hasRole, displayName } = useAuth();
   const relatorios = useRelatorios();
+  const agendamentos = useAgendamentos();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
   const [exportandoJson, setExportandoJson] = useState(false);
   const [exportandoCsv, setExportandoCsv] = useState(false);
   const [usersOpen, setUsersOpen] = useState(false);
   const [professoresOpen, setProfessoresOpen] = useState(false);
+  const [limpandoOrfas, setLimpandoOrfas] = useState(false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao");
   const isAdmin = hasRole("admin");
@@ -174,6 +179,26 @@ function CoordenacaoDashboard() {
     }
   };
 
+  const handleLimparOrfas = async () => {
+    if (!confirm("Remover notificações de agendamentos que não existem mais?")) return;
+    setLimpandoOrfas(true);
+    try {
+      const idsValidos = agendamentos.map((a) => a.id);
+      const removidas = await notificacoesStore.cleanupOrphans(idsValidos);
+      if (removidas === 0) {
+        toast.info("Nenhuma notificação órfã encontrada.");
+      } else {
+        toast.success(`${removidas} notificação(ões) órfã(s) removida(s).`);
+      }
+    } catch (e) {
+      toast.error("Falha ao limpar notificações órfãs", {
+        description: e instanceof Error ? e.message : String(e),
+      });
+    } finally {
+      setLimpandoOrfas(false);
+    }
+  };
+
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
       <header className="flex items-start justify-between gap-4 flex-wrap">
@@ -248,6 +273,10 @@ function CoordenacaoDashboard() {
           )}
           <Button variant="outline" onClick={() => setProfessoresOpen(true)}>
             <GraduationCap /> Professores
+          </Button>
+          <Button variant="outline" onClick={handleLimparOrfas} disabled={limpandoOrfas}>
+            {limpandoOrfas ? <Loader2 className="animate-spin" /> : <BellOff />}
+            Limpar notificações órfãs
           </Button>
         </CardContent>
       </Card>
