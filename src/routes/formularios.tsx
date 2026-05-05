@@ -40,6 +40,7 @@ import {
   type FormularioTemplate,
 } from "@/lib/formularios-store";
 import { useAuth } from "@/lib/auth";
+import { FormularioBlocoEditor, type Bloco } from "@/components/FormularioBlocoEditor";
 
 export const Route = createFileRoute("/formularios")({
   component: FormulariosPage,
@@ -255,15 +256,20 @@ function FormularioFormDialog({
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [destinatario, setDestinatario] = useState<FormularioDestinatario>("professor");
-  const [estruturaJson, setEstruturaJson] = useState('{\n  "blocos": []\n}');
+  const [blocos, setBlocos] = useState<Bloco[]>([]);
   const [saving, setSaving] = useState(false);
+  const [editorMode, setEditorMode] = useState<"visual" | "json">("visual");
+  const [estruturaJson, setEstruturaJson] = useState('{\n  "blocos": []\n}');
 
   useEffect(() => {
     if (!open) return;
     setNome(initial?.nome ?? "");
     setDescricao(initial?.descricao ?? "");
     setDestinatario(initial?.destinatario ?? "professor");
-    setEstruturaJson(JSON.stringify(initial?.estrutura ?? { blocos: [] }, null, 2));
+    const estrutura = initial?.estrutura ?? { blocos: [] };
+    setBlocos((estrutura as { blocos?: Bloco[] }).blocos ?? []);
+    setEstruturaJson(JSON.stringify(estrutura, null, 2));
+    setEditorMode("visual");
   }, [open, initial]);
 
   const handleSubmit = async () => {
@@ -271,13 +277,19 @@ function FormularioFormDialog({
       toast.error("Nome é obrigatório.");
       return;
     }
+
     let estrutura: Record<string, unknown>;
-    try {
-      estrutura = JSON.parse(estruturaJson);
-    } catch (e) {
-      toast.error("Estrutura JSON inválida.");
-      return;
+    if (editorMode === "visual") {
+      estrutura = { blocos };
+    } else {
+      try {
+        estrutura = JSON.parse(estruturaJson);
+      } catch (e) {
+        toast.error("Estrutura JSON inválida.");
+        return;
+      }
     }
+
     setSaving(true);
     if (initial) {
       await formulariosStore.update(initial.id, {
@@ -304,7 +316,7 @@ function FormularioFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{initial ? "Editar formulário" : "Novo formulário"}</DialogTitle>
           <DialogDescription>
@@ -352,18 +364,43 @@ function FormularioFormDialog({
             </Select>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="form-estrutura">Estrutura (JSON)</Label>
-            <Textarea
-              id="form-estrutura"
-              rows={14}
-              value={estruturaJson}
-              onChange={(e) => setEstruturaJson(e.target.value)}
-              className="font-mono text-xs"
-            />
-            <p className="text-[11px] text-muted-foreground">
-              Edição avançada via JSON. Em breve, editor visual de blocos e perguntas.
-            </p>
+          <div className="space-y-2">
+            <div className="flex gap-2 border-b">
+              <Button
+                variant={editorMode === "visual" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setEditorMode("visual")}
+              >
+                Editor Visual
+              </Button>
+              <Button
+                variant={editorMode === "json" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setEditorMode("json")}
+              >
+                JSON Avançado
+              </Button>
+            </div>
+
+            {editorMode === "visual" ? (
+              <div className="space-y-3">
+                <FormularioBlocoEditor blocos={blocos} onChange={setBlocos} />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="form-estrutura">Estrutura (JSON)</Label>
+                <Textarea
+                  id="form-estrutura"
+                  rows={14}
+                  value={estruturaJson}
+                  onChange={(e) => setEstruturaJson(e.target.value)}
+                  className="font-mono text-xs"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  Edição avançada para desenvolvedores. Use o editor visual para uso geral.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
