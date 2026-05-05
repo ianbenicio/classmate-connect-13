@@ -629,8 +629,8 @@ function MonthView({
                   {format(d, "d")}
                 </span>
               </div>
-              <div className="space-y-1 overflow-hidden">
-                {items.slice(0, 3).map((it, i) => {
+              <div className="space-y-1">
+                {items.map((it, i) => {
                   const ags = findAgsDoSlot(agendamentos, it.turma.id, dayKey, it.inicio);
                   return (
                     <SlotChip
@@ -650,9 +650,6 @@ function MonthView({
                     />
                   );
                 })}
-                {items.length > 3 && (
-                  <div className="text-[10px] text-muted-foreground">+{items.length - 3}</div>
-                )}
               </div>
             </div>
           );
