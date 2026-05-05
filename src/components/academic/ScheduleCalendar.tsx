@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import {
   addDays,
   addMonths,
+  addWeeks,
   endOfMonth,
   endOfWeek,
   format,
@@ -10,6 +11,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths,
+  subWeeks,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, FileText, Send } from "lucide-react";
@@ -86,34 +88,34 @@ export function ScheduleCalendar({
   onRemoverAgendamento,
 }: Props) {
   const [refDate, setRefDate] = useState(new Date());
+  const [activeTab, setActiveTab] = useState<"mes" | "semana">("semana");
 
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
+  const handlePrev = () =>
+    setRefDate((d) => (activeTab === "semana" ? subWeeks(d, 1) : subMonths(d, 1)));
+  const handleNext = () =>
+    setRefDate((d) => (activeTab === "semana" ? addWeeks(d, 1) : addMonths(d, 1)));
+
   return (
-    <Tabs defaultValue="semana" className="w-full">
+    <Tabs
+      defaultValue="semana"
+      className="w-full"
+      onValueChange={(v) => setActiveTab(v as "mes" | "semana")}
+    >
       <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
         <TabsList>
           <TabsTrigger value="mes">Mês</TabsTrigger>
           <TabsTrigger value="semana">Semana</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-2">
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => setRefDate((d) => subMonths(d, 1))}
-            aria-label="Anterior"
-          >
+          <Button size="icon" variant="outline" onClick={handlePrev} aria-label="Anterior">
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button size="sm" variant="ghost" onClick={() => setRefDate(new Date())}>
             Hoje
           </Button>
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={() => setRefDate((d) => addMonths(d, 1))}
-            aria-label="Próximo"
-          >
+          <Button size="icon" variant="outline" onClick={handleNext} aria-label="Próximo">
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
