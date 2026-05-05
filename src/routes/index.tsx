@@ -25,6 +25,7 @@ import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
 import type { Agendamento, Atividade, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
+import { AvaliacaoTipoPicker } from "@/components/academic/AvaliacaoTipoPicker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -172,6 +173,9 @@ function DashboardPage() {
               <CalendarDays className="h-5 w-5" />
               Calendário
             </h2>
+            {(hasRole("aluno") || hasRole("professor")) && (
+              <AvaliacaoTipoPicker variant="outline" size="sm" label="Avaliação" />
+            )}
           </div>
           <ScheduleCalendar
             turmas={turmas}
