@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Bell, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -11,12 +11,45 @@ import { useAlunos } from "@/lib/alunos-store";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useCursos } from "@/lib/cursos-store";
+import { useAuth } from "@/lib/auth";
 import { AvaliacaoAulaDialog } from "@/components/academic/AvaliacaoAulaDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
 import type { Notificacao } from "@/lib/academic-types";
 
 export function NotificationsBell() {
-  const notifs = useNotificacoes();
+  const allNotifs = useNotificacoes();
+  const { user, displayName, hasRole } = useAuth();
+
+  // Filtra notificações de acordo com o papel do usuário logado.
+  // - admin/coordenacao: vê todas (visão geral)
+  // - professor: apenas notifs endereçadas ao próprio professor (por nome)
+  // - aluno: apenas notifs endereçadas ao próprio aluno (por id ou nome)
+  // - sem papel: nenhuma
+  const notifs = useMemo(() => {
+    if (hasRole("admin") || hasRole("coordenacao")) return allNotifs;
+
+    const nomeKey = (displayName ?? "").trim().toLowerCase();
+    const userId = user?.id ?? "";
+
+    if (hasRole("professor")) {
+      return allNotifs.filter((n) => {
+        if (n.destinatarioTipo !== "professor") return false;
+        const ref = (n.destinatarioId ?? "").trim().toLowerCase();
+        return ref === nomeKey || ref === userId;
+      });
+    }
+
+    if (hasRole("aluno")) {
+      return allNotifs.filter((n) => {
+        if (n.destinatarioTipo !== "aluno") return false;
+        const ref = (n.destinatarioId ?? "").trim().toLowerCase();
+        return ref === nomeKey || ref === userId;
+      });
+    }
+
+    return [];
+  }, [allNotifs, displayName, user?.id, hasRole]);
+
   const naoLidas = notifs.filter((n) => !n.lida).length;
 
   // Stores necessários para resolver o contexto da notificação ao abrir
