@@ -105,18 +105,54 @@ export const notificacoesStore = {
   },
   async addMany(items: Notificacao[]) {
     if (items.length === 0) return;
-    // Atualiza memória de forma otimista, mantendo IDs locais já em UUID.
-    const local: Notificacao[] = items.map((n) => ({
+
+    // 1) Dedup LOCAL — remove duplicatas dentro do próprio batch.
+    //    O índice parcial uq_notificacoes_dedup_scanner sobre
+    //    (destinatario_ref, agendamento_id, kind) rejeita duplicatas no banco.
+    //    Como ON CONFLICT (cols) não funciona com índice parcial via
+    //    PostgREST (precisaria do WHERE), fazemos dedup proativo aqui.
+    //    Casos comuns: o RelatorioProfessorDialog gera N tarefasChecklist
+    //    (uma por aluno) todas com mesmo prof+agendamento+kind="agendado".
+    const seen = new Set<string>();
+    const itemsLimpos = items.filter((n) => {
+      if (!n.agendamentoId || !n.kind) return true; // sem chave de dedup, passa
+      const key = `${n.destinatarioId}|${n.agendamentoId}|${n.kind}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    if (itemsLimpos.length === 0) return;
+
+    // 2) Atualização otimista local (apenas os deduplicados).
+    const local: Notificacao[] = itemsLimpos.map((n) => ({
       ...n,
       id: toUuid(n.id),
     }));
     notificacoes = [...local, ...notificacoes];
     emit();
-    const rows = items.map(notifToRow);
-    const { error } = await supabase.from("notificacoes").insert(rows);
-    if (error) {
-      console.error("[notificacoes] insert error", error);
-      toast.error(`Erro ao registrar notificações: ${error.message}`);
+
+    // 3) Insert no banco. Se uma linha conflitar com algo já no banco
+    //    (ex.: scanner já criou a notif antes), o batch inteiro falha
+    //    em transação atômica. Para evitar isso, tentamos linha por linha
+    //    em paralelo e ignoramos 23505 (unique_violation) silenciosamente.
+    const rows = itemsLimpos.map(notifToRow);
+    const results = await Promise.all(
+      rows.map(async (row) => {
+        const { error } = await supabase.from("notificacoes").insert(row);
+        return error;
+      }),
+    );
+    const erros = results.filter((e): e is NonNullable<typeof e> => e !== null);
+    const fatais = erros.filter((e) => e.code !== "23505");
+    if (erros.length > fatais.length) {
+      // Dedup pelo banco — comportamento esperado, log silencioso.
+      console.debug(
+        `[notificacoes] ${erros.length - fatais.length} dedup(s) absorvidos pelo índice único.`,
+      );
+    }
+    if (fatais.length > 0) {
+      console.error("[notificacoes] insert errors", fatais);
+      toast.error(`Erro ao registrar notificações: ${fatais[0].message}`);
     }
   },
   async marcarLida(id: string) {

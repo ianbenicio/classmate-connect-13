@@ -109,9 +109,16 @@ export function AgendarAtividadeDialog({
   const professores = useUsersByRole("professor");
 
   // ---------- Reset ao abrir ----------
+  // ⚠️ Não dependa de `turmas` (prop array) aqui — chamadores frequentemente
+  // passam `turmas.filter(...)` inline, que vira referência nova a cada
+  // render do pai. Se um re-render do pai (ex.: useAgendamentos refletindo
+  // store) disparasse este effect, ele resetaria `editingBloco`/draft e
+  // fecharia o editor inline no meio de um clique no Select — exatamente
+  // o sintoma "abre e fecha rápido" antes de F5.
+  const fallbackTurmaId = turmas[0]?.id ?? "";
   useEffect(() => {
     if (!open) return;
-    setTurmaId(defaultTurmaId ?? turmas[0]?.id ?? "");
+    setTurmaId(defaultTurmaId ?? fallbackTurmaId);
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
     setObservacao("");
@@ -122,8 +129,9 @@ export function AgendarAtividadeDialog({
     setDraftAulaId("");
     setDraftTarefaId("");
     // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
-    // muda. Os setters são estáveis e não precisam constar nas deps.
-  }, [open, defaultTurmaId, defaultData, defaultProfessorId, defaultProfessorUserId, turmas]);
+    // muda. `fallbackTurmaId` é uma string estável (não array).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, defaultTurmaId, defaultData, defaultProfessorId, defaultProfessorUserId, fallbackTurmaId]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
   // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
@@ -190,9 +198,27 @@ export function AgendarAtividadeDialog({
     () => (draftGrupo ? ativsDoCurso.filter((a) => a.grupo === draftGrupo) : []),
     [ativsDoCurso, draftGrupo],
   );
+
+  // IDs de aulas já agendadas/concluídas para a turma selecionada — não
+  // devem aparecer no dropdown (uma aula só é dada uma vez por turma).
+  // Cancelados não bloqueiam: a aula volta a ficar disponível.
+  const aulasIndisponiveisParaTurma = useMemo((): Set<string> => {
+    const indisponiveis = new Set<string>();
+    if (!turmaSelecionada) return indisponiveis;
+    for (const ag of todosAgendamentos) {
+      if (ag.turmaId !== turmaSelecionada.id) continue;
+      if (ag.status === "cancelado") continue;
+      for (const ativId of ag.atividadeIds) indisponiveis.add(ativId);
+    }
+    return indisponiveis;
+  }, [todosAgendamentos, turmaSelecionada]);
+
   const aulasDoGrupoDraft = useMemo(
-    () => ativsDoGrupoDraft.filter((a) => a.tipo === 0),
-    [ativsDoGrupoDraft],
+    () =>
+      ativsDoGrupoDraft.filter(
+        (a) => a.tipo === 0 && !aulasIndisponiveisParaTurma.has(a.id),
+      ),
+    [ativsDoGrupoDraft, aulasIndisponiveisParaTurma],
   );
   const tarefasDoGrupoDraft = useMemo(
     () => ativsDoGrupoDraft.filter((a) => a.tipo === 1),

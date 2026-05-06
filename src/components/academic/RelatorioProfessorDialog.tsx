@@ -29,7 +29,7 @@ import { FaceRating } from "./FaceRating";
 import { avaliacoesStore } from "@/lib/avaliacoes-store";
 import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
-import { useAlunos } from "@/lib/alunos-store";
+import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { toast } from "sonner";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import type { Nota1a5, RelatorioProfessorDados } from "@/lib/formularios-types";
@@ -208,7 +208,7 @@ function RelatorioProfessorDialogContent({
       mensagem: `Conte como foi a aula de ${dataFmt} (até 24h).`,
       kind: "agendado" as const,
     }));
-    notificacoesStore.addMany([
+    await notificacoesStore.addMany([
       ...alunosTurma.map((al) => ({
         ...notifConcluido,
         id: crypto.randomUUID(),
@@ -219,6 +219,11 @@ function RelatorioProfessorDialogContent({
       ...tarefasChecklist,
       ...tarefasAluno,
     ]);
+
+    // Recarrega alunos do banco para atualizar `aluno.aulas` em memória
+    // (Quadro de Aulas lê isso). syncPresencas já gravou no banco — agora
+    // precisamos refletir no cliente sem exigir F5.
+    void alunosStore.ensureInit();
 
     toast.success("Relatório registrado e frequência atualizada.");
     onOpenChange(false);

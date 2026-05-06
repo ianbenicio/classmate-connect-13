@@ -192,11 +192,16 @@ function DashboardPage() {
               });
             }}
             onRemoverAgendamento={(agendamento, turma) => {
+              // Pode remover: admin, quem agendou, OU o professor designado.
+              // (Quando admin/coord agenda em nome do professor, o professor
+              // designado também precisa poder gerenciar a aula.)
               const isOwner =
                 isAdmin ||
-                (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
+                (currentUserId !== null &&
+                  (agendamento.criadoPorUserId === currentUserId ||
+                    agendamento.professorUserId === currentUserId));
               if (!isOwner) {
-                toast.info("Apenas o professor que agendou pode remover.");
+                toast.info("Apenas o professor responsável ou quem agendou pode remover.");
                 return;
               }
               if (!window.confirm("Remover este agendamento? O slot ficará disponível novamente."))
@@ -207,12 +212,15 @@ function DashboardPage() {
             onRegistrarRelatorio={(agendamento, turma) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
+              // Pode registrar: admin, quem agendou, OU o professor designado.
               const podeRegistrar =
                 isAdmin ||
-                (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
+                (currentUserId !== null &&
+                  (agendamento.criadoPorUserId === currentUserId ||
+                    agendamento.professorUserId === currentUserId));
               if (!podeRegistrar) {
                 toast.info(
-                  `Apenas ${agendamento.criadoPorNome ?? "o professor que agendou"} pode registrar o relatório.`,
+                  `Apenas ${agendamento.criadoPorNome ?? "o professor responsável"} pode registrar o relatório.`,
                 );
                 return;
               }

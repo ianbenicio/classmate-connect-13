@@ -59,14 +59,12 @@ function emit() {
   for (const l of listeners) l();
 }
 
-// Top-up: insere os templates de SEED_FORMULARIOS que ainda não existem
-// no banco. Conflito é resolvido por `slug` (chave estável de lookup)
-// — não pelo id, porque a app procura templates por slug.
+// Top-up: insere ou atualiza todos os templates de SEED_FORMULARIOS.
+// Formulários de sistema são sempre sincronizados com o seed (upsert),
+// garantindo que mudanças no código sejam refletidas no banco.
 async function topUpFormularios(existingSlugs: Set<string>) {
   if (SEED_FORMULARIOS.length === 0) return false;
-  const missing = SEED_FORMULARIOS.filter((f) => !existingSlugs.has(f.slug));
-  if (missing.length === 0) return false;
-  const rows = missing.map((f) => ({
+  const rows = SEED_FORMULARIOS.map((f) => ({
     id: toUuid(`form-${f.slug}`),
     slug: f.slug,
     nome: f.nome,
@@ -75,14 +73,16 @@ async function topUpFormularios(existingSlugs: Set<string>) {
     estrutura: f.estrutura as never,
     is_system: f.isSystem,
   }));
+  // ignoreDuplicates: false → atualiza registros existentes com o conteúdo do seed
   const { error } = await supabase
     .from("formularios")
-    .upsert(rows, { onConflict: "slug", ignoreDuplicates: true });
+    .upsert(rows, { onConflict: "slug", ignoreDuplicates: false });
   if (error) {
     console.error("[formularios] top-up error", error);
     return false;
   }
-  devInfo(`[formularios] top-up: +${missing.length} templates do seed`);
+  const missing = SEED_FORMULARIOS.filter((f) => !existingSlugs.has(f.slug));
+  devInfo(`[formularios] top-up: seed sincronizado (${missing.length} novos, ${SEED_FORMULARIOS.length - missing.length} atualizados)`);
   return true;
 }
 
@@ -97,16 +97,13 @@ async function loadFromDb() {
   }
   const rows = (data as Row[] | null) ?? [];
   const existingSlugs = new Set(rows.map((r) => r.slug));
-  const inserted = await topUpFormularios(existingSlugs);
-  if (inserted) {
-    const { data: data2 } = await supabase
-      .from("formularios")
-      .select("*")
-      .order("nome", { ascending: true });
-    registros = ((data2 as Row[] | null) ?? []).map(rowTo);
-  } else {
-    registros = rows.map(rowTo);
-  }
+  // Sempre sincroniza o seed (insere novos + atualiza existentes do sistema)
+  await topUpFormularios(existingSlugs);
+  const { data: data2 } = await supabase
+    .from("formularios")
+    .select("*")
+    .order("nome", { ascending: true });
+  registros = ((data2 as Row[] | null) ?? []).map(rowTo);
 }
 
 async function ensureInit(): Promise<void> {

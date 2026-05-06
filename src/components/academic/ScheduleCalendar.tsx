@@ -410,14 +410,24 @@ function SlotChip({
           const clickable = isClickable(estadoBloco);
 
           if (ag) {
-            const isOwner = hasRole("admin") || ag.criadoPorUserId === authUser?.id;
+            // Pode gerenciar a aula: admin, quem agendou, OU o professor
+            // designado para a aula. Cobre o caso comum de coord/admin agendar
+            // em nome do professor — sem isso o professor perde acesso aos
+            // botões Remover/Relatório no próprio bloco.
+            const isOwner =
+              hasRole("admin") ||
+              ag.criadoPorUserId === authUser?.id ||
+              ag.professorUserId === authUser?.id;
             const startOfDay = new Date(`${dataKey}T00:00:00`);
             const slotEnd24 = new Date(
               new Date(`${dataKey}T${blocoEnd}:00`).getTime() + REPORT_DEADLINE_HOURS * MS_PER_HOUR,
             );
             const dentroJanelaRelatorio = now >= startOfDay && now <= slotEnd24;
             const podeRegistrar = isOwner && dentroJanelaRelatorio && ag.status !== "concluido";
-            const profLabel = ag.criadoPorNome ?? ag.professor ?? "—";
+            // Só o primeiro nome para caber nas células estreitas do calendário.
+            // O nome completo continua no `title` do bloco (tooltip).
+            const profFullName = ag.professor ?? ag.criadoPorNome ?? "—";
+            const profLabel = profFullName.trim().split(/\s+/)[0] || profFullName;
             // Código resumido da 1ª atividade
             const codigoAula = ag.atividadeIds[0]?.slice(0, 8) ?? "";
 
@@ -434,7 +444,7 @@ function SlotChip({
                         ? "bg-muted border-muted-foreground/30 opacity-70"
                         : "bg-primary/15 border-primary/40",
                 )}
-                title={`${blocoStart}–${blocoEnd} · ${profLabel} — ${ESTADO_LABEL[estadoBloco]}`}
+                title={`${blocoStart}–${blocoEnd} · ${profFullName} — ${ESTADO_LABEL[estadoBloco]}`}
               >
                 <button
                   type="button"

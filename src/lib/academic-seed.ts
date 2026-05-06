@@ -3293,22 +3293,76 @@ export const SEED_FORMULARIOS: SeedFormulario[] = [
   {
     slug: "relatorio_professor",
     nome: "Relatório do Professor",
-    descricao: "Registro pós-aula do professor: conteúdo, observações e próximos passos.",
+    descricao: "Registro pós-aula do professor: chamada, engajamento, cumprimento do plano e observações.",
     destinatario: "professor",
     estrutura: {
       blocos: [
-        { id: "conteudo", tipo: "texto_longo", label: "Conteúdo aplicado", obrigatorio: true },
         {
-          id: "observacoes",
-          tipo: "texto_longo",
-          label: "Observações da turma",
-          obrigatorio: false,
+          titulo: "Chamada",
+          descricao: "Registre a presença dos alunos nesta aula.",
+          perguntas: [
+            {
+              id: "chamada_presentes",
+              tipo: "texto_longo",
+              label: "Alunos presentes",
+              descricao: "Liste os alunos presentes (preenchido automaticamente pelo sistema).",
+              obrigatorio: false,
+            },
+          ],
         },
         {
-          id: "proximos_passos",
-          tipo: "texto_longo",
-          label: "Próximos passos",
-          obrigatorio: false,
+          titulo: "Avaliação da Aula",
+          descricao: "Como foi o andamento da aula?",
+          perguntas: [
+            {
+              id: "engajamento_turma",
+              tipo: "escala_1_5",
+              label: "Engajamento da turma",
+              descricao: "Como você avalia o envolvimento e participação dos alunos?",
+              obrigatorio: true,
+            },
+            {
+              id: "cumprimento_plano",
+              tipo: "escala_1_5",
+              label: "Cumprimento do plano de aula",
+              descricao: "O conteúdo planejado foi aplicado conforme o esperado?",
+              obrigatorio: true,
+            },
+          ],
+        },
+        {
+          titulo: "Registro Narrativo",
+          descricao: "Descreva com suas palavras como foi a aula.",
+          perguntas: [
+            {
+              id: "resumo_aula",
+              tipo: "texto_longo",
+              label: "Resumo da aula",
+              descricao: "O que foi abordado? Como foi o desenvolvimento?",
+              obrigatorio: true,
+            },
+            {
+              id: "destaques",
+              tipo: "texto_longo",
+              label: "Destaques positivos",
+              descricao: "O que funcionou bem? Alunos que se destacaram?",
+              obrigatorio: false,
+            },
+            {
+              id: "dificuldades",
+              tipo: "texto_longo",
+              label: "Dificuldades encontradas",
+              descricao: "Houve algum problema no conteúdo, comportamento ou estrutura?",
+              obrigatorio: false,
+            },
+            {
+              id: "sugestoes",
+              tipo: "texto_longo",
+              label: "Sugestões e próximos passos",
+              descricao: "O que pode ser melhorado? O que deve ser retomado na próxima aula?",
+              obrigatorio: false,
+            },
+          ],
         },
       ],
     },
@@ -3321,9 +3375,60 @@ export const SEED_FORMULARIOS: SeedFormulario[] = [
     destinatario: "aluno",
     estrutura: {
       blocos: [
-        { id: "clareza", tipo: "escala_1_5", label: "Quão clara foi a aula?", obrigatorio: true },
-        { id: "dificuldade", tipo: "escala_1_5", label: "Nível de dificuldade", obrigatorio: true },
-        { id: "comentario", tipo: "texto_longo", label: "Comentário livre", obrigatorio: false },
+        {
+          titulo: "Como foi a aula para você?",
+          descricao: "Avalie sua experiência nesta aula.",
+          perguntas: [
+            {
+              id: "clareza_aula",
+              tipo: "escala_1_5",
+              label: "Clareza do conteúdo",
+              descricao: "O conteúdo foi apresentado de forma fácil de entender?",
+              obrigatorio: true,
+            },
+            {
+              id: "nivel_dificuldade",
+              tipo: "escala_1_5",
+              label: "Nível de dificuldade",
+              descricao: "Como você avalia a dificuldade do que foi ensinado?",
+              obrigatorio: true,
+            },
+            {
+              id: "engajamento_pessoal",
+              tipo: "escala_1_5",
+              label: "Seu engajamento",
+              descricao: "Quanto você se sentiu envolvido e participativo?",
+              obrigatorio: false,
+            },
+          ],
+        },
+        {
+          titulo: "Seu aprendizado",
+          descricao: "Reflita sobre o que você aprendeu hoje.",
+          perguntas: [
+            {
+              id: "aprendizado",
+              tipo: "texto_longo",
+              label: "O que você aprendeu hoje?",
+              descricao: "Resumo do que ficou de mais importante para você.",
+              obrigatorio: false,
+            },
+            {
+              id: "duvidas",
+              tipo: "texto_longo",
+              label: "Ficou com alguma dúvida?",
+              descricao: "Descreva o que não ficou claro ou o que gostaria de aprofundar.",
+              obrigatorio: false,
+            },
+            {
+              id: "comentario_livre",
+              tipo: "texto_longo",
+              label: "Comentário livre",
+              descricao: "Qualquer outro feedback sobre a aula de hoje.",
+              obrigatorio: false,
+            },
+          ],
+        },
       ],
     },
     isSystem: true,
