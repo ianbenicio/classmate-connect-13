@@ -6,7 +6,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { FileText } from "lucide-react";
 import {
   FIELD_VISIBILITY,
   type Atividade,
@@ -14,6 +16,7 @@ import {
   type Habilidade,
   type PerfilAcesso,
 } from "@/lib/academic-types";
+import { generateAulaPDF } from "@/lib/pdf-generator";
 
 interface Props {
   atividade: Atividade | null;
@@ -37,14 +40,25 @@ export function ActivityViewDialog({ atividade, curso, habilidades, perfil, onOp
     <Dialog open={!!atividade} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="outline">{isAula ? "Aula" : "Tarefa"}</Badge>
-            {canSee("codigo", perfil) && (
-              <Badge variant="secondary" className="font-mono">
-                {atividade.codigo}
-              </Badge>
-            )}
-            {curso && <Badge variant="outline">{curso.nome}</Badge>}
+          <div className="flex items-start justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap flex-1">
+              <Badge variant="outline">{isAula ? "Aula" : "Tarefa"}</Badge>
+              {canSee("codigo", perfil) && (
+                <Badge variant="secondary" className="font-mono">
+                  {atividade.codigo}
+                </Badge>
+              )}
+              {curso && <Badge variant="outline">{curso.nome}</Badge>}
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => generateAulaPDF(atividade, curso, habilidades, perfil)}
+              title="Baixar PDF com capítulos por seção"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
+            </Button>
           </div>
           <DialogTitle>{atividade.nome}</DialogTitle>
           {canSee("descricao", perfil) && atividade.descricao && (

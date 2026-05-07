@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/select";
 import { SkillSelector } from "./SkillSelector";
 import { FieldVisibilityBadge } from "./FieldVisibilityBadge";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { generateAulaPDFFromForm } from "@/lib/pdf-generator";
 import {
   formatCodigoAtividade,
   getDuracaoAulaMin,
@@ -372,7 +373,60 @@ export function ActivityFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Editar Atividade" : "Nova Atividade"}</DialogTitle>
+          <div className="flex items-center justify-between gap-2">
+            <DialogTitle>{isEdit ? "Editar Atividade" : "Nova Atividade"}</DialogTitle>
+            {nome && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  const codigoParaPDF = isEdit
+                    ? editing!.codigo
+                    : cursoSelecionado
+                      ? formatCodigoAtividade(
+                          cursoSelecionado.cod,
+                          grupo,
+                          Math.floor(Math.random() * 90) + 10,
+                        )
+                      : "TEMP";
+
+                  generateAulaPDFFromForm(
+                    tipo,
+                    nome,
+                    codigoParaPDF,
+                    cursoSelecionado,
+                    grupo,
+                    prazo,
+                    descricao,
+                    professor,
+                    cargaHoras,
+                    cargaMin,
+                    objetivoResultados,
+                    resultadosEsperados,
+                    notasInstrutor,
+                    habilidadeIds,
+                    habilidades,
+                    niveisAlvo,
+                    preRequisitos,
+                    criteriosSucesso,
+                    descricaoConteudo,
+                    metodologias,
+                    roteiro,
+                    materiais,
+                    referencias,
+                    formularios,
+                    rubricas,
+                    sugestoesPais,
+                    instrucoes,
+                  );
+                }}
+                title="Baixar PDF com todos os dados da aula"
+              >
+                <FileText className="h-4 w-4 mr-1" />
+                PDF
+              </Button>
+            )}
+          </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
