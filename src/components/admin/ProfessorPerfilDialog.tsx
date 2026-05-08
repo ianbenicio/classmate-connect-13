@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Mail, Phone, BookOpen, GraduationCap, Eye, Calendar, Star } from "lucide-react";
+import { X, Mail, Phone, BookOpen, GraduationCap, Eye, Calendar, Star, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Professor } from "@/lib/professores-store";
 import {
@@ -44,6 +44,8 @@ interface Props {
   avaliacoes: ProfessorAvaliacao[];
   agendamentos: Agendamento[];
   userName?: string; // display_name do usuário vinculado (se houver)
+  onEditClick?: () => void; // Callback para editar perfil (usado em MeuPerfilProfessorDialog)
+  onDeleteClick?: () => void; // Callback para deletar conta (usado em MeuPerfilProfessorDialog)
 }
 
 export function ProfessorPerfilDialog(props: Props) {
@@ -55,6 +57,8 @@ export function ProfessorPerfilDialog(props: Props) {
 
 interface ContentProps extends Omit<Props, "professor"> {
   professor: Professor;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
 }
 
 function ProfessorPerfilDialogContent({
@@ -64,6 +68,8 @@ function ProfessorPerfilDialogContent({
   avaliacoes,
   agendamentos,
   userName,
+  onEditClick,
+  onDeleteClick,
 }: ContentProps) {
   // Get all avaliacoes from store (for skill performance calculation)
   const allAvaliacoes = useAvaliacoes();
@@ -185,10 +191,36 @@ function ProfessorPerfilDialogContent({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="inline-flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-primary" />
-            {professor.nome}
-          </DialogTitle>
+          <div className="flex items-start justify-between gap-2">
+            <DialogTitle className="inline-flex items-center gap-2">
+              <GraduationCap className="h-5 w-5 text-primary" />
+              {professor.nome}
+            </DialogTitle>
+            {(onEditClick || onDeleteClick) && (
+              <div className="flex gap-1">
+                {onEditClick && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={onEditClick}
+                    title="Editar perfil"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                )}
+                {onDeleteClick && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={onDeleteClick}
+                    title="Excluir conta"
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
           <DialogDescription>
             Perfil do professor · {professor.ativo ? "Ativo" : "Inativo"}
           </DialogDescription>

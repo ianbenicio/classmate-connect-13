@@ -161,7 +161,8 @@ export function generateAulaPDFFromForm(
     addSection("Descrição", descricao);
   }
 
-  const cargaTotal = (parseInt(cargaHoras || "0", 10) || 0) * 60 + (parseInt(cargaMin || "0", 10) || 0);
+  const cargaTotal =
+    (parseInt(cargaHoras || "0", 10) || 0) * 60 + (parseInt(cargaMin || "0", 10) || 0);
   if (cargaTotal > 0) {
     const h = Math.floor(cargaTotal / 60);
     const m = cargaTotal % 60;
@@ -254,9 +255,7 @@ export function generateAulaPDFFromForm(
     addChapterTitle("4. Avaliação");
 
     if (rubricas && rubricas.length > 0) {
-      const rubricasText = rubricas
-        .map((r) => `• ${r.descricao} (Peso: ${r.peso})`)
-        .join("\n");
+      const rubricasText = rubricas.map((r) => `• ${r.descricao} (Peso: ${r.peso})`).join("\n");
       addSection("Rubricas", rubricasText);
     } else {
       addWrappedText("Nenhuma rubrica definida.");
