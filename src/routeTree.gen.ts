@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as FormulariosRouteImport } from './routes/formularios'
 import { Route as CursosRouteImport } from './routes/cursos'
 import { Route as CoordenacaoRouteImport } from './routes/coordenacao'
@@ -24,6 +25,11 @@ import { Route as CoordenacaoRelatoriosComparativoTurmasRouteImport } from './ro
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinhaAreaRoute = MinhaAreaRouteImport.update({
+  id: '/minha-area',
+  path: '/minha-area',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormulariosRoute = FormulariosRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/coordenacao': typeof CoordenacaoRouteWithChildren
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
+  '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/coordenacao'
     | '/cursos'
     | '/formularios'
+    | '/minha-area'
     | '/reset-password'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/coordenacao'
     | '/cursos'
     | '/formularios'
+    | '/minha-area'
     | '/reset-password'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/coordenacao'
     | '/cursos'
     | '/formularios'
+    | '/minha-area'
     | '/reset-password'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -169,6 +181,7 @@ export interface RootRouteChildren {
   CoordenacaoRoute: typeof CoordenacaoRouteWithChildren
   CursosRoute: typeof CursosRoute
   FormulariosRoute: typeof FormulariosRoute
+  MinhaAreaRoute: typeof MinhaAreaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -179,6 +192,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minha-area': {
+      id: '/minha-area'
+      path: '/minha-area'
+      fullPath: '/minha-area'
+      preLoaderRoute: typeof MinhaAreaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/formularios': {
@@ -290,6 +310,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoordenacaoRoute: CoordenacaoRouteWithChildren,
   CursosRoute: CursosRoute,
   FormulariosRoute: FormulariosRoute,
+  MinhaAreaRoute: MinhaAreaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport

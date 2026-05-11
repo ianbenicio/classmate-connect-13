@@ -106,6 +106,7 @@ function AppShell() {
   const { hasRole, isStaff: isStaffFn, isAuthenticated, loading } = useAuth();
   const isStaff = isStaffFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
+  const isAluno = hasRole("aluno") && !isStaff;
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [tagsOpen, setTagsOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -145,39 +146,54 @@ function AppShell() {
     <>
       <header className="border-b bg-card sticky top-0 z-40">
         <div className="container mx-auto max-w-6xl px-4 h-14 flex items-center gap-6">
-          <Link to="/" className="font-bold tracking-tight">
+          <Link
+            to={isAluno ? "/minha-area" : "/"}
+            className="font-bold tracking-tight"
+          >
             🎓 Acadêmico
           </Link>
           <nav className="flex items-center gap-4 text-sm flex-1">
-            <Link
-              to="/"
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "text-foreground font-medium" }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Início
-            </Link>
-            <Link
-              to="/cursos"
-              activeProps={{ className: "text-foreground font-medium" }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cursos
-            </Link>
-            <Link
-              to="/atividades"
-              activeProps={{ className: "text-foreground font-medium" }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Atividades
-            </Link>
-            <Link
-              to="/alunos"
-              activeProps={{ className: "text-foreground font-medium" }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Alunos
-            </Link>
+            {isAluno ? (
+              <Link
+                to="/minha-area"
+                activeProps={{ className: "text-foreground font-medium" }}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <Sparkles className="h-3.5 w-3.5" /> Minha área
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/"
+                  activeOptions={{ exact: true }}
+                  activeProps={{ className: "text-foreground font-medium" }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Início
+                </Link>
+                <Link
+                  to="/cursos"
+                  activeProps={{ className: "text-foreground font-medium" }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Cursos
+                </Link>
+                <Link
+                  to="/atividades"
+                  activeProps={{ className: "text-foreground font-medium" }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Atividades
+                </Link>
+                <Link
+                  to="/alunos"
+                  activeProps={{ className: "text-foreground font-medium" }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Alunos
+                </Link>
+              </>
+            )}
             {isStaff && (
               <button
                 type="button"
