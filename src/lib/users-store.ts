@@ -269,6 +269,25 @@ export const usersStore = {
    * Supabase ou via Edge Function dedicada.
    */
   async removeUser(userId: string): Promise<void> {
+    // P1.7 — Backfill attribution before wiping profile.
+    // agendamentos rows where criado_por_nome/professor is null but the FK
+    // still points to this user will permanently lose the name after the
+    // profile row is deleted. Stamp displayName first.
+    const userRecord = users.find((u) => u.userId === userId);
+    if (userRecord?.displayName) {
+      const nome = userRecord.displayName;
+      await supabase
+        .from("agendamentos")
+        .update({ criado_por_nome: nome })
+        .eq("criado_por_user_id", userId)
+        .is("criado_por_nome", null);
+      await supabase
+        .from("agendamentos")
+        .update({ professor: nome })
+        .eq("professor_user_id", userId)
+        .is("professor", null);
+    }
+
     // Ordem: roles → profile (FK lógica via user_id; sem cascade SQL).
     const { error: rolesErr } = await supabase.from("user_roles").delete().eq("user_id", userId);
     if (rolesErr) {
