@@ -116,13 +116,7 @@ async function loadFromDb() {
 }
 
 async function ensureInit(): Promise<void> {
-  // Recarrega sempre — consistente com agendamentos-store. Garante que
-  // avaliações criadas em outra aba/sessão fiquem visíveis ao reabrir uma rota.
-  if (initialized) {
-    await loadFromDb();
-    emit();
-    return;
-  }
+  if (initialized) return;
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;

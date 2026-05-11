@@ -111,8 +111,10 @@ function agendamentoToRow(a: Agendamento) {
 
 async function topUpAgendamentos(existingIds: Set<string>) {
   if (SEED_AGENDAMENTOS.length === 0) return false;
-  // Upsert ALL seed agendamentos to ensure updated fields (like professor) are synced
-  const rows = SEED_AGENDAMENTOS.map(agendamentoToRow);
+  // Only insert seeds missing from DB — don't overwrite existing records
+  const missing = SEED_AGENDAMENTOS.filter((s) => !existingIds.has(toUuid(s.id)));
+  if (missing.length === 0) return false;
+  const rows = missing.map(agendamentoToRow);
   const chunkSize = 100;
   let inserted = 0;
   for (let i = 0; i < rows.length; i += chunkSize) {
@@ -155,11 +157,7 @@ async function loadFromDb() {
 }
 
 async function ensureInit(): Promise<void> {
-  if (initialized) {
-    await loadFromDb();
-    emit();
-    return;
-  }
+  if (initialized) return;
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;

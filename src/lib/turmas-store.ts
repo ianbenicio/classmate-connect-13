@@ -111,11 +111,7 @@ async function loadFromDb() {
 }
 
 async function ensureInit(): Promise<void> {
-  if (initialized) {
-    await loadFromDb();
-    emit();
-    return;
-  }
+  if (initialized) return;
   if (!initPromise) {
     initPromise = loadFromDb().then(() => {
       initialized = true;
