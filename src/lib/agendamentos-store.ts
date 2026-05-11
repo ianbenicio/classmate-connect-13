@@ -179,10 +179,13 @@ export const agendamentosStore = {
       turmaId: row.turma_id,
       atividadeIds: toUuidArray(a.atividadeIds),
     };
+    const snap = agendamentos;
     agendamentos = [local, ...agendamentos];
     emit();
     const { error } = await supabase.from("agendamentos").upsert(row, { onConflict: "id" });
     if (error) {
+      agendamentos = snap;
+      emit();
       console.error("[agendamentos] add error", error);
       toast.error(`Erro ao salvar agendamento: ${error.message}`);
     }
@@ -195,30 +198,38 @@ export const agendamentosStore = {
     // Bugfix: comparar tanto dbId quanto id original — caso o item em memória
     // ainda esteja com seedId (não-UUID), o map antes só comparava dbId e
     // não trocava, deixando estado obsoleto.
+    const snap = agendamentos;
     agendamentos = agendamentos.map((x) => (x.id === dbId || x.id === id ? next : x));
     emit();
     const row = agendamentoToRow(next);
     const { error } = await supabase.from("agendamentos").upsert(row, { onConflict: "id" });
     if (error) {
+      agendamentos = snap;
+      emit();
       console.error("[agendamentos] update error", error);
       toast.error(`Erro ao atualizar agendamento: ${error.message}`);
     }
   },
   async remove(id: string) {
     const dbId = toUuid(id);
+    const snap = agendamentos;
     agendamentos = agendamentos.filter((x) => x.id !== dbId && x.id !== id);
     emit();
 
     // Remove notificações associadas a este agendamento
     await notificacoesStore.ensureInit();
     const notificacoes = notificacoesStore.getAll();
-    const notifsRelacionadas = notificacoes.filter((n) => n.agendamentoId === id || n.agendamentoId === dbId);
+    const notifsRelacionadas = notificacoes.filter(
+      (n) => n.agendamentoId === id || n.agendamentoId === dbId,
+    );
     for (const notif of notifsRelacionadas) {
       await notificacoesStore.remove(notif.id);
     }
 
     const { error } = await supabase.from("agendamentos").delete().eq("id", dbId);
     if (error) {
+      agendamentos = snap;
+      emit();
       console.error("[agendamentos] remove error", error);
       toast.error(`Erro ao remover agendamento: ${error.message}`);
     }
