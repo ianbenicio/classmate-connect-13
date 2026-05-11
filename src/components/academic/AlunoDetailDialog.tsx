@@ -29,7 +29,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { useAgendamentos } from "@/lib/agendamentos-store";
-import { useAlunos } from "@/lib/alunos-store";
+import { useAlunos, alunosStore } from "@/lib/alunos-store";
+import { toast } from "sonner";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { useComportamentoTags } from "@/lib/comportamento-tags-store";
 import { StarRating } from "./StarRating";
@@ -69,6 +70,23 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
   const todasHabilidades = useHabilidades();
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
   const [quadroOpen, setQuadroOpen] = useState(false);
+  const [convidando, setConvidando] = useState(false);
+
+  const handleEnviarConvite = async () => {
+    if (!aluno) return;
+    setConvidando(true);
+    const result = await alunosStore.invite(aluno.id);
+    setConvidando(false);
+    if (!result) {
+      toast.error("Falha ao enviar convite. Verifique email/curso/turma e tente de novo.");
+      return;
+    }
+    if (result.status === "invited") {
+      toast.success("Convite enviado por email.");
+    } else {
+      toast.success("Conta de aluno vinculada (email já existia).");
+    }
+  };
   const todasTagsComp = useComportamentoTags();
 
   // Aulas desta semana — agendamentos da turma do aluno entre seg–dom
@@ -337,11 +355,16 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                   <span>{aluno.idade != null ? `${aluno.idade} anos` : "—"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <span className="text-muted-foreground">Contato:</span>
-                  <span>{aluno.contato || "—"}</span>
+                  <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <span className="text-muted-foreground">Email:</span>
+                  <span className="truncate">{aluno.email || "—"}</span>
                 </div>
                 <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <span className="text-muted-foreground">Telefone:</span>
+                  <span>{aluno.contato || "—"}</span>
+                </div>
+                <div className="flex items-center gap-2 sm:col-span-2">
                   <span className="text-muted-foreground">Responsável:</span>
                   <span>
                     {aluno.responsavel || "—"}
@@ -349,6 +372,34 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                   </span>
                 </div>
               </div>
+
+              {/* Conta de acesso — invite/link status */}
+              {(hasRole("admin") || hasRole("coordenacao") || hasRole("professor")) && (
+                <div className="mt-3 border-t pt-3 flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-muted-foreground">Conta de acesso:</span>
+                    {aluno.userId ? (
+                      <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40">
+                        <CheckCircle2 className="h-3 w-3 mr-1" /> Vinculada
+                      </Badge>
+                    ) : aluno.email ? (
+                      <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-300">
+                        <AlertTriangle className="h-3 w-3 mr-1" /> Não vinculada
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-muted-foreground">
+                        Sem email
+                      </Badge>
+                    )}
+                  </div>
+                  {!aluno.userId && aluno.email && aluno.cursoId && aluno.turmaId && (
+                    <Button size="sm" variant="outline" onClick={handleEnviarConvite} disabled={convidando}>
+                      <Mail className="h-3.5 w-3.5 mr-1" />
+                      {convidando ? "Enviando…" : "Enviar convite"}
+                    </Button>
+                  )}
+                </div>
+              )}
 
               {aluno.observacao && (
                 <p className="mt-3 text-sm text-muted-foreground border-t pt-2">
