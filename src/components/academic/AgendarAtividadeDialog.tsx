@@ -103,7 +103,9 @@ export function AgendarAtividadeDialog({
 
   const todosAgendamentos = useAgendamentos();
   const gruposByCursoCod = useGruposByCursoCod();
-  const { user: authUser, displayName } = useAuth();
+  const { user: authUser, displayName, hasRole } = useAuth();
+  // Professor users see their own slot locked; admins/coordenacao can change it
+  const isProfessorOnly = hasRole("professor") && !hasRole("admin") && !hasRole("coordenacao");
   const duracaoAulaMin = getDuracaoAulaMin(curso);
   // Professores são usuários com role "professor" (Fase 8 — fonte única).
   const professores = useUsersByRole("professor");
@@ -369,6 +371,10 @@ export function AgendarAtividadeDialog({
       toast.error("Selecione um horário.");
       return;
     }
+    if (!selectedProfessorUserId) {
+      toast.error("Selecione um professor.");
+      return;
+    }
     const entries = Object.entries(assignments)
       .map(([k, v]) => ({ blocoIndex: Number(k), assign: v }))
       .sort((a, b) => a.blocoIndex - b.blocoIndex);
@@ -481,15 +487,16 @@ export function AgendarAtividadeDialog({
       }
     }
 
-    // Agrupa por professor: uma notificação por professor listando todas as aulas
-    const porProfessor = new Map<string, Agendamento[]>();
+    // Agrupa por professor: uma notificação por professor listando todas as aulas.
+    // Usa professorUserId como chave canônica — evita ambiguidade por nome.
+    const porProfessorUserId = new Map<string, Agendamento[]>();
     for (const ag of novos) {
-      if (!ag.professor) continue;
-      const list = porProfessor.get(ag.professor) ?? [];
+      if (!ag.professorUserId) continue;
+      const list = porProfessorUserId.get(ag.professorUserId) ?? [];
       list.push(ag);
-      porProfessor.set(ag.professor, list);
+      porProfessorUserId.set(ag.professorUserId, list);
     }
-    for (const [prof, ags] of porProfessor.entries()) {
+    for (const [profUserId, ags] of porProfessorUserId.entries()) {
       const linhas = ags.map((ag) => {
         const ativs = atividades.filter((a) => ag.atividadeIds.includes(a.id));
         const partes = ativs
@@ -502,7 +509,9 @@ export function AgendarAtividadeDialog({
       allNotifs.push({
         id: crypto.randomUUID(),
         destinatarioTipo: "professor",
-        destinatarioId: prof,
+        // destinatarioId = userId para roteamento canônico;
+        // NotificationsBell já aceita ref === userId (linha: ref === userId).
+        destinatarioId: profUserId,
         titulo,
         mensagem,
         cursoId: curso.id,
@@ -510,7 +519,7 @@ export function AgendarAtividadeDialog({
         data: ags[0].data,
         inicio: ags[0].inicio,
         fim: ags[ags.length - 1].fim,
-        professor: prof,
+        professor: ags[0].professor,
         atividadeIds: Array.from(new Set(ags.flatMap((a) => a.atividadeIds))),
         criadoEm,
         lida: false,
@@ -637,7 +646,7 @@ export function AgendarAtividadeDialog({
 
           <div className="space-y-2">
             <Label>Professor *</Label>
-            {lockTurmaEHorario && selectedProfessorUserId ? (
+            {isProfessorOnly && selectedProfessorUserId ? (
               <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted/40 px-3 text-sm">
                 {professores.find((p) => p.userId === selectedProfessorUserId)?.displayName ||
                   "Professor desconhecido"}
