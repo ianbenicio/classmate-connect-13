@@ -34,6 +34,10 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
+import {
+  canDeleteAgendamento,
+  canManageAgendamento,
+} from "@/lib/agendamento-permissions";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {
@@ -410,20 +414,23 @@ function SlotChip({
           const clickable = isClickable(estadoBloco);
 
           if (ag) {
-            // Pode gerenciar a aula: admin, quem agendou, OU o professor
-            // designado para a aula. Cobre o caso comum de coord/admin agendar
-            // em nome do professor — sem isso o professor perde acesso aos
-            // botões Remover/Relatório no próprio bloco.
-            const isOwner =
-              hasRole("admin") ||
-              ag.criadoPorUserId === authUser?.id ||
-              ag.professorUserId === authUser?.id;
+            // Permissoes vindas do helper centralizado.
+            // - podeGerenciar: cobre relatorio/checkin (admin, criador, OU professor titular).
+            // - podeRemover: estrita (admin OU criador) — professor titular nao pode deletar
+            //   aula montada por outro.
+            const actor = {
+              userId: authUser?.id ?? null,
+              isStaff: hasRole("admin"),
+            };
+            const podeGerenciar = canManageAgendamento(actor, ag);
+            const podeRemover = canDeleteAgendamento(actor, ag);
             const startOfDay = new Date(`${dataKey}T00:00:00`);
             const slotEnd24 = new Date(
               new Date(`${dataKey}T${blocoEnd}:00`).getTime() + REPORT_DEADLINE_HOURS * MS_PER_HOUR,
             );
             const dentroJanelaRelatorio = now >= startOfDay && now <= slotEnd24;
-            const podeRegistrar = isOwner && dentroJanelaRelatorio && ag.status !== "concluido";
+            const podeRegistrar =
+              podeGerenciar && dentroJanelaRelatorio && ag.status !== "concluido";
             // Só o primeiro nome para caber nas células estreitas do calendário.
             // O nome completo continua no `title` do bloco (tooltip).
             const profFullName = ag.professor ?? ag.criadoPorNome ?? "—";
@@ -505,7 +512,7 @@ function SlotChip({
                     Relatório
                   </button>
                 )}
-                {isOwner && estadoBloco !== "concluido" && onRemoverAgendamento && (
+                {podeRemover && estadoBloco !== "concluido" && onRemoverAgendamento && (
                   <button
                     type="button"
                     onClick={(e) => {

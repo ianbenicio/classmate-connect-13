@@ -17,7 +17,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Mail, Phone, BookOpen, GraduationCap, Eye, Calendar, Star, Pencil, Trash2 } from "lucide-react";
+import {
+  X,
+  Mail,
+  Phone,
+  BookOpen,
+  GraduationCap,
+  Eye,
+  Calendar,
+  Star,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Professor } from "@/lib/professores-store";
 import {
@@ -199,22 +210,12 @@ function ProfessorPerfilDialogContent({
             {(onEditClick || onDeleteClick) && (
               <div className="flex gap-1">
                 {onEditClick && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={onEditClick}
-                    title="Editar perfil"
-                  >
+                  <Button size="sm" variant="outline" onClick={onEditClick} title="Editar perfil">
                     <Pencil className="h-4 w-4" />
                   </Button>
                 )}
                 {onDeleteClick && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={onDeleteClick}
-                    title="Excluir conta"
-                  >
+                  <Button size="sm" variant="outline" onClick={onDeleteClick} title="Excluir conta">
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 )}

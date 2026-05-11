@@ -23,6 +23,10 @@ import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
+import {
+  canDeleteAgendamento,
+  canManageAgendamento,
+} from "@/lib/agendamento-permissions";
 import type { Agendamento, Atividade, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
 import { AvaliacaoTipoPicker } from "@/components/academic/AvaliacaoTipoPicker";
@@ -192,16 +196,14 @@ function DashboardPage() {
               });
             }}
             onRemoverAgendamento={(agendamento, turma) => {
-              // Pode remover: admin, quem agendou, OU o professor designado.
-              // (Quando admin/coord agenda em nome do professor, o professor
-              // designado também precisa poder gerenciar a aula.)
-              const isOwner =
-                isAdmin ||
-                (currentUserId !== null &&
-                  (agendamento.criadoPorUserId === currentUserId ||
-                    agendamento.professorUserId === currentUserId));
-              if (!isOwner) {
-                toast.info("Apenas o professor responsável ou quem agendou pode remover.");
+              // Regra estrita para delete: somente admin ou criador.
+              // Professor titular pode operar a aula mas nao deletar.
+              const podeRemover = canDeleteAgendamento(
+                { userId: currentUserId, isStaff: isAdmin },
+                agendamento,
+              );
+              if (!podeRemover) {
+                toast.info("Apenas quem agendou ou um administrador pode remover.");
                 return;
               }
               if (!window.confirm("Remover este agendamento? O slot ficará disponível novamente."))
@@ -213,11 +215,10 @@ function DashboardPage() {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
               // Pode registrar: admin, quem agendou, OU o professor designado.
-              const podeRegistrar =
-                isAdmin ||
-                (currentUserId !== null &&
-                  (agendamento.criadoPorUserId === currentUserId ||
-                    agendamento.professorUserId === currentUserId));
+              const podeRegistrar = canManageAgendamento(
+                { userId: currentUserId, isStaff: isAdmin },
+                agendamento,
+              );
               if (!podeRegistrar) {
                 toast.info(
                   `Apenas ${agendamento.criadoPorNome ?? "o professor responsável"} pode registrar o relatório.`,
@@ -459,10 +460,12 @@ function DashboardPage() {
             });
           }}
           onRemoverAgendamento={(agendamento) => {
-            const isOwner =
-              isAdmin || (currentUserId !== null && agendamento.criadoPorUserId === currentUserId);
-            if (!isOwner) {
-              toast.info("Apenas o professor que agendou pode remover.");
+            const podeRemover = canDeleteAgendamento(
+              { userId: currentUserId, isStaff: isAdmin },
+              agendamento,
+            );
+            if (!podeRemover) {
+              toast.info("Apenas quem agendou ou um administrador pode remover.");
               return;
             }
             if (!window.confirm("Remover este agendamento? O slot ficará disponível novamente."))
@@ -503,15 +506,21 @@ function ChecklistQueueRunner({
     setIdx(0);
   }, [ctx]);
 
+  const current = ctx?.alunos[idx] ?? null;
+  const alunoFull = current ? alunosAll.find((a) => a.id === current.id) : null;
+
+  // Se o aluno corrente desapareceu do store (ex.: removido entre o
+  // relatório e o checklist), avanca o cursor por efeito — nao em render,
+  // para nao violar Rules of Hooks nem disparar warning de setState during render.
+  useEffect(() => {
+    if (current && !alunoFull) {
+      setIdx((i) => i + 1);
+    }
+  }, [current, alunoFull]);
+
   if (!ctx) return null;
-  const current = ctx.alunos[idx];
   if (!current) return null;
-  const alunoFull = alunosAll.find((a) => a.id === current.id);
-  if (!alunoFull) {
-    // Aluno desapareceu do store entre o relatório e o checklist; pula.
-    setIdx((i) => i + 1);
-    return null;
-  }
+  if (!alunoFull) return null;
 
   const isLast = idx >= ctx.alunos.length - 1;
 

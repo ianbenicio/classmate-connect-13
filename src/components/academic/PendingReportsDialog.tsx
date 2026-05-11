@@ -23,6 +23,7 @@ import {
 } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
+import { canManageAgendamento } from "@/lib/agendamento-permissions";
 import { RelatorioProfessorDialog } from "./RelatorioProfessorDialog";
 import { cn } from "@/lib/utils";
 
@@ -54,10 +55,9 @@ export function PendingReportsDialog({ open, onOpenChange, cursos, turmas, ativi
     const now = new Date();
     return agendamentos
       .filter((a) => a.status !== "concluido")
-      .filter((a) => {
-        if (isAdmin) return true;
-        return currentUserId !== null && a.criadoPorUserId === currentUserId;
-      })
+      .filter((a) =>
+        canManageAgendamento({ userId: currentUserId, isStaff: isAdmin }, a),
+      )
       .map((a) => ({
         a,
         estado: computeSlotEstado(a.data, a.fim, a, now),

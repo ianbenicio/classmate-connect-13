@@ -25,6 +25,10 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
+import {
+  canDeleteAgendamento,
+  canManageAgendamento,
+} from "@/lib/agendamento-permissions";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -95,7 +99,11 @@ export function TurmaDiaDetailDialog({
             const inicio = blocoInicio(slot, idx, duracaoAulaMin);
             const fim = blocoFim(slot, idx, duracaoAulaMin);
             const estado = computeSlotEstado(dataKey, fim, ag, now);
-            const isOwner = ag ? hasRole("admin") || ag.criadoPorUserId === user?.id : false;
+            // podeGerenciar: relatorio/checkin (admin, criador ou professor titular).
+            // podeRemover: estrita (admin ou criador) — professor titular nao deleta.
+            const actor = { userId: user?.id ?? null, isStaff: hasRole("admin") };
+            const podeGerenciar = ag ? canManageAgendamento(actor, ag) : false;
+            const podeRemover = ag ? canDeleteAgendamento(actor, ag) : false;
 
             // Janela do relatório: do início do dia da aula até 24h após o fim
             const slotEnd = endSlotDate({ data: dataKey, fim });
@@ -104,7 +112,7 @@ export function TurmaDiaDetailDialog({
             const dentroJanelaRelatorio = now >= startOfDay && now <= slotEnd24;
 
             const podeRegistrarRelatorio =
-              !!ag && isOwner && dentroJanelaRelatorio && ag.status !== "concluido";
+              !!ag && podeGerenciar && dentroJanelaRelatorio && ag.status !== "concluido";
 
             const ativsDoAg = ag ? atividades.filter((a) => ag.atividadeIds.includes(a.id)) : [];
 
@@ -185,7 +193,7 @@ export function TurmaDiaDetailDialog({
                           Relatório de Aula
                         </Button>
                       )}
-                      {isOwner && estado !== "concluido" && (
+                      {podeRemover && estado !== "concluido" && (
                         <Button
                           size="sm"
                           variant="outline"

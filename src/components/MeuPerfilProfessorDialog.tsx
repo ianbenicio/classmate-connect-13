@@ -90,8 +90,8 @@ export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
             </DialogHeader>
             <div className="text-sm text-muted-foreground space-y-2">
               <p>
-                Sua conta tem o papel <strong>Professor</strong>, mas o registro detalhado ainda
-                não foi criado. Peça à coordenação para abrir a janela de Professores — o sync
+                Sua conta tem o papel <strong>Professor</strong>, mas o registro detalhado ainda não
+                foi criado. Peça à coordenação para abrir a janela de Professores — o sync
                 automático vai criar o registro.
               </p>
               <p className="text-xs">
@@ -101,16 +101,8 @@ export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
           </DialogContent>
         </Dialog>
 
-        <UserProfileEditDialog
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          user={currentUser}
-        />
-        <DeleteAccountDialog
-          open={deleteOpen}
-          onOpenChange={setDeleteOpen}
-          user={currentUser}
-        />
+        <UserProfileEditDialog open={editOpen} onOpenChange={setEditOpen} user={currentUser} />
+        <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} user={currentUser} />
       </>
     );
   }
@@ -128,16 +120,8 @@ export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
         onDeleteClick={() => setDeleteOpen(true)}
       />
 
-      <UserProfileEditDialog
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        user={currentUser}
-      />
-      <DeleteAccountDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        user={currentUser}
-      />
+      <UserProfileEditDialog open={editOpen} onOpenChange={setEditOpen} user={currentUser} />
+      <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} user={currentUser} />
     </>
   );
 }

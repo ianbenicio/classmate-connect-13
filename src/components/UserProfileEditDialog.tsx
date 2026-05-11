@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -32,16 +32,19 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
     bio: user?.bio ?? "",
   });
 
-  // Sincroniza com prop user quando muda
-  if (user && open && formData.displayName !== user.displayName) {
-    setFormData({
-      displayName: user.displayName,
-      telefone: user.telefone ?? "",
-      cpf: user.cpf ?? "",
-      formacao: user.formacao ?? "",
-      bio: user.bio ?? "",
-    });
-  }
+  // Sincroniza com prop user quando dialog abre ou user muda.
+  // Usa useEffect para evitar setState em render.
+  useEffect(() => {
+    if (user && open) {
+      setFormData({
+        displayName: user.displayName,
+        telefone: user.telefone ?? "",
+        cpf: user.cpf ?? "",
+        formacao: user.formacao ?? "",
+        bio: user.bio ?? "",
+      });
+    }
+  }, [user, open]);
 
   if (!user) return null;
 
@@ -78,9 +81,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
-          <DialogDescription>
-            Atualize suas informações pessoais
-          </DialogDescription>
+          <DialogDescription>Atualize suas informações pessoais</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -90,9 +91,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
             <Input
               id="displayName"
               value={formData.displayName}
-              onChange={(e) =>
-                setFormData({ ...formData, displayName: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
               placeholder="Seu nome completo"
               required
             />
@@ -105,9 +104,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
               id="telefone"
               type="tel"
               value={formData.telefone}
-              onChange={(e) =>
-                setFormData({ ...formData, telefone: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
               placeholder="(11) 99999-9999"
             />
           </div>
@@ -118,9 +115,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
             <Input
               id="cpf"
               value={formData.cpf}
-              onChange={(e) =>
-                setFormData({ ...formData, cpf: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
               placeholder="000.000.000-00"
             />
           </div>
@@ -131,9 +126,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
             <Input
               id="formacao"
               value={formData.formacao}
-              onChange={(e) =>
-                setFormData({ ...formData, formacao: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, formacao: e.target.value })}
               placeholder="Ex: Licenciatura em Matemática"
             />
           </div>
@@ -144,9 +137,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
             <Textarea
               id="bio"
               value={formData.bio}
-              onChange={(e) =>
-                setFormData({ ...formData, bio: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               placeholder="Uma breve descrição sobre você"
               className="resize-none"
               rows={4}
@@ -170,11 +161,7 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
 
           {/* Buttons */}
           <div className="flex gap-2 pt-4">
-            <Button
-              type="submit"
-              disabled={loading}
-              className="flex-1 gap-2"
-            >
+            <Button type="submit" disabled={loading} className="flex-1 gap-2">
               <Save className="h-4 w-4" />
               {loading ? "Salvando..." : "Salvar"}
             </Button>
