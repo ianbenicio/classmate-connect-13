@@ -34,6 +34,8 @@ export function NotificationsBell() {
     if (hasRole("professor")) {
       return allNotifs.filter((n) => {
         if (n.destinatarioTipo !== "professor") return false;
+        // Canônico: destinatarioUserId. Fallback: destinatarioId por userId/nome (legado).
+        if (n.destinatarioUserId && n.destinatarioUserId === user?.id) return true;
         const ref = (n.destinatarioId ?? "").trim().toLowerCase();
         return ref === nomeKey || ref === userId;
       });
@@ -42,6 +44,7 @@ export function NotificationsBell() {
     if (hasRole("aluno")) {
       return allNotifs.filter((n) => {
         if (n.destinatarioTipo !== "aluno") return false;
+        if (n.destinatarioUserId && n.destinatarioUserId === user?.id) return true;
         const ref = (n.destinatarioId ?? "").trim().toLowerCase();
         return ref === nomeKey || ref === userId;
       });
@@ -95,7 +98,11 @@ export function NotificationsBell() {
   const avaliacaoFromNotif = (() => {
     if (!avaliacaoCtx) return null;
     const ag = agendamentos.find((g) => g.id === avaliacaoCtx.agendamentoId);
-    const aluno = alunos.find((a) => a.id === avaliacaoCtx.destinatarioId);
+    const aluno = alunos.find(
+      (a) =>
+        a.id === avaliacaoCtx.destinatarioId ||
+        (!!avaliacaoCtx.destinatarioUserId && a.userId === avaliacaoCtx.destinatarioUserId),
+    );
     const turma = turmas.find((t) => t.id === avaliacaoCtx.turmaId);
     const curso = cursos.find((c) => c.id === avaliacaoCtx.cursoId);
     if (!ag || !aluno || !turma || !curso) return null;

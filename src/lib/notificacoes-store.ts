@@ -39,6 +39,7 @@ function rowToNotif(r: NotifRow): Notificacao {
     id: r.id,
     destinatarioTipo: (r.destinatario_tipo as Notificacao["destinatarioTipo"]) ?? "aluno",
     destinatarioId: r.destinatario_ref ?? "",
+    destinatarioUserId: r.destinatario_user_id ?? undefined,
     titulo: r.titulo,
     mensagem: r.mensagem,
     cursoId: r.curso_id ?? "",
@@ -58,7 +59,7 @@ function rowToNotif(r: NotifRow): Notificacao {
 function notifToRow(n: Notificacao) {
   return {
     id: toUuid(n.id),
-    destinatario_user_id: null as string | null,
+    destinatario_user_id: n.destinatarioUserId ?? null,
     destinatario_tipo: n.destinatarioTipo,
     destinatario_ref: n.destinatarioId,
     titulo: n.titulo,

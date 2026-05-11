@@ -61,18 +61,22 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
       id: crypto.randomUUID(),
       destinatarioTipo: "aluno",
       destinatarioId: al.id,
+      // userId quando aluno tem conta vinculada — habilita RLS por auth.uid.
+      destinatarioUserId: al.userId,
       titulo: opts.tituloAluno,
       mensagem: `${ctx} — ${opts.mensagemAluno}`,
     });
   }
 
   // Professor responsável.
-  if (a.professor) {
+  if (a.professor || a.professorUserId) {
     out.push({
       ...baseShared,
       id: crypto.randomUUID(),
       destinatarioTipo: "professor",
-      destinatarioId: a.professor,
+      // Prefere userId no destinatarioId; cai pro nome se ainda sem vínculo.
+      destinatarioId: a.professorUserId ?? a.professor ?? "",
+      destinatarioUserId: a.professorUserId,
       titulo: opts.tituloProfessor,
       mensagem: `${ctx} — ${opts.mensagemProfessor}`,
     });

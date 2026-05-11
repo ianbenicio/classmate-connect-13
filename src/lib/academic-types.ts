@@ -419,7 +419,10 @@ export interface Agendamento {
 export interface Notificacao {
   id: string;
   destinatarioTipo: "aluno" | "professor";
-  destinatarioId: string; // alunoId ou nome do professor
+  destinatarioId: string; // alunoId, professorUserId, ou nome do professor (legado)
+  /** auth.users.id do destinatário — fonte canônica de roteamento, preenchida
+   *  quando o aluno/professor tem conta auth vinculada. Permite RLS por uid. */
+  destinatarioUserId?: string;
   titulo: string;
   mensagem: string;
   cursoId: string;

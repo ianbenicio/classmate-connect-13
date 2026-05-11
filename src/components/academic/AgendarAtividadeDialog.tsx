@@ -133,7 +133,14 @@ export function AgendarAtividadeDialog({
     // Intencional: reset apenas quando o diálogo abre ou o contexto-padrão
     // muda. `fallbackTurmaId` é uma string estável (não array).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, defaultTurmaId, defaultData, defaultProfessorId, defaultProfessorUserId, fallbackTurmaId]);
+  }, [
+    open,
+    defaultTurmaId,
+    defaultData,
+    defaultProfessorId,
+    defaultProfessorUserId,
+    fallbackTurmaId,
+  ]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
   // (que resetariam editingBloco e fechariam o editor inline ao clicar num bloco).
@@ -216,10 +223,7 @@ export function AgendarAtividadeDialog({
   }, [todosAgendamentos, turmaSelecionada]);
 
   const aulasDoGrupoDraft = useMemo(
-    () =>
-      ativsDoGrupoDraft.filter(
-        (a) => a.tipo === 0 && !aulasIndisponiveisParaTurma.has(a.id),
-      ),
+    () => ativsDoGrupoDraft.filter((a) => a.tipo === 0 && !aulasIndisponiveisParaTurma.has(a.id)),
     [ativsDoGrupoDraft, aulasIndisponiveisParaTurma],
   );
   const tarefasDoGrupoDraft = useMemo(
@@ -483,6 +487,7 @@ export function AgendarAtividadeDialog({
           id: crypto.randomUUID(),
           destinatarioTipo: "aluno" as const,
           destinatarioId: al.id,
+          destinatarioUserId: al.userId,
         });
       }
     }
@@ -512,6 +517,7 @@ export function AgendarAtividadeDialog({
         // destinatarioId = userId para roteamento canônico;
         // NotificationsBell já aceita ref === userId (linha: ref === userId).
         destinatarioId: profUserId,
+        destinatarioUserId: profUserId,
         titulo,
         mensagem,
         cursoId: curso.id,
