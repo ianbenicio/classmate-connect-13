@@ -33,6 +33,7 @@ interface Props {
 const empty = (): Aluno => ({
   id: crypto.randomUUID(),
   nome: "",
+  email: "",
   contato: "",
   cursoId: "",
   turmaId: "",
@@ -40,6 +41,8 @@ const empty = (): Aluno => ({
   aulas: [],
   trabalhos: [],
 });
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, onSave }: Props) {
   const [form, setForm] = useState<Aluno>(empty());
@@ -57,7 +60,11 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
     if (!form.nome.trim()) return toast.error("Informe o nome do aluno.");
     if (!form.cursoId) return toast.error("Selecione um curso.");
     if (!form.turmaId) return toast.error("Selecione uma turma.");
-    onSave(form);
+    const emailTrim = (form.email ?? "").trim();
+    if (emailTrim && !EMAIL_RE.test(emailTrim)) return toast.error("Email inválido.");
+    // Email obrigatório para criar novo aluno (futuro: convite auto-enviado).
+    if (!editing && !emailTrim) return toast.error("Informe o email do aluno.");
+    onSave({ ...form, email: emailTrim || undefined });
     toast.success(editing ? "Aluno atualizado" : "Aluno cadastrado");
     onOpenChange(false);
   };
@@ -103,12 +110,36 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
           </div>
 
           <div>
-            <Label htmlFor="contato">Contato *</Label>
+            <Label htmlFor="email">
+              Email *{" "}
+              {form.userId && (
+                <span className="ml-2 inline-flex items-center rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 text-[10px] font-medium">
+                  Conta vinculada
+                </span>
+              )}
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={form.email ?? ""}
+              onChange={(e) => update("email", e.target.value)}
+              placeholder="aluno@exemplo.com"
+              autoComplete="email"
+            />
+            {!editing && (
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Ao salvar, será enviado um email de convite para definição de senha.
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="contato">Telefone</Label>
             <Input
               id="contato"
               value={form.contato}
               onChange={(e) => update("contato", e.target.value)}
-              placeholder="Telefone, email…"
+              placeholder="(DDD) número"
             />
           </div>
 

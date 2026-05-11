@@ -22,6 +22,8 @@ type AlunoRow = {
   idade: number | null;
   contato: string | null;
   cpf: string | null;
+  email: string | null;
+  user_id: string | null;
   curso_id: string | null;
   turma_id: string | null;
   responsavel: string | null;
@@ -36,6 +38,8 @@ function rowToAluno(r: AlunoRow): Aluno {
     idade: r.idade ?? undefined,
     contato: r.contato ?? "",
     cpf: r.cpf ?? undefined,
+    email: r.email ?? undefined,
+    userId: r.user_id ?? undefined,
     cursoId: r.curso_id ?? "",
     turmaId: r.turma_id ?? "",
     habilidadeIds: [],
@@ -54,12 +58,57 @@ function alunoToRow(a: Aluno) {
     idade: a.idade ?? null,
     contato: a.contato || null,
     cpf: a.cpf ?? null,
+    email: a.email?.trim().toLowerCase() || null,
+    user_id: a.userId ?? null,
     curso_id: a.cursoId ? toUuid(a.cursoId) : null,
     turma_id: a.turmaId ? toUuid(a.turmaId) : null,
     responsavel: a.responsavel ?? null,
     contato_resp: a.contatoResp ?? null,
     observacao: a.observacao ?? null,
   };
+}
+
+/**
+ * Dispara a Edge Function `invite-aluno-user` para o aluno.
+ * Pré-condições (verificadas server-side): email + curso_id + turma_id + sem user_id.
+ * Retorna o status retornado ou null em erro.
+ */
+async function inviteAlunoUser(alunoId: string): Promise<{
+  status: "invited" | "linked_existing";
+  userId: string;
+} | null> {
+  const { data, error } = await supabase.functions.invoke("invite-aluno-user", {
+    body: { alunoId },
+  });
+  if (error) {
+    console.error("[alunos] invite error", error);
+    return null;
+  }
+  return data as { status: "invited" | "linked_existing"; userId: string };
+}
+
+/**
+ * Auto-invite: chamado após add/update bem-sucedido. Só dispara se:
+ *  - email presente
+ *  - cursoId + turmaId presentes
+ *  - ainda sem userId (não foi vinculado antes)
+ * Atualiza o aluno em memória com o userId recebido e mostra toast.
+ */
+async function maybeAutoInvite(a: Aluno): Promise<void> {
+  if (!a.email || !a.cursoId || !a.turmaId || a.userId) return;
+  const result = await inviteAlunoUser(a.id);
+  if (!result) {
+    toast.error("Aluno salvo, mas o convite para criar conta falhou. Tente reenviar.");
+    return;
+  }
+  // Atualiza in-memory snapshot com o userId vinculado.
+  alunos = alunos.map((x) => (x.id === a.id ? { ...x, userId: result.userId } : x));
+  emit();
+  if (result.status === "invited") {
+    toast.success("Convite enviado por email. O aluno define a senha pelo link recebido.");
+  } else {
+    toast.success("Conta de aluno vinculada (email já existia).");
+  }
 }
 
 // Top-up: insere os alunos do seed ainda ausentes. O store não tinha
@@ -196,7 +245,10 @@ export const alunosStore = {
     if (error) {
       console.error("[alunos] add error", error);
       toast.error(`Erro ao salvar aluno: ${error.message}`);
+      return;
     }
+    // Auto-invite: novo aluno com email + curso + turma e sem user_id.
+    await maybeAutoInvite(local);
   },
   async update(id: string, patch: Partial<Aluno>) {
     const dbId = toUuid(id);
@@ -210,7 +262,10 @@ export const alunosStore = {
     if (error) {
       console.error("[alunos] update error", error);
       toast.error(`Erro ao atualizar aluno: ${error.message}`);
+      return;
     }
+    // Auto-invite: se acabou de ganhar email + curso + turma e ainda sem user_id.
+    await maybeAutoInvite(merged);
   },
   async remove(id: string) {
     const dbId = toUuid(id);
@@ -227,6 +282,8 @@ export const alunosStore = {
     return () => listeners.delete(fn);
   },
   ensureInit,
+  /** Reenvia/dispara o convite manualmente (botão "Reenviar convite"). */
+  invite: inviteAlunoUser,
 };
 
 export function useAlunos(): Aluno[] {

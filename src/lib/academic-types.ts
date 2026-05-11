@@ -229,6 +229,10 @@ export interface Aluno {
   contato: string;
   /** CPF do aluno — opcional, usado para identificação documental */
   cpf?: string;
+  /** Email do aluno — obrigatório para gerar conta auth (invite via Edge Function). */
+  email?: string;
+  /** FK auth.users.id — preenchido após convite aceito ou link a usuário existente. */
+  userId?: string;
   cursoId: string;
   turmaId: string;
   habilidadeIds: string[];
