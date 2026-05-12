@@ -5,7 +5,8 @@
 // e link para o registro de professor se vinculado.
 // Para professores, exibe também suas horas de aula baseado em avaliações.
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
 import {
   Dialog,
   DialogContent,
@@ -53,6 +54,7 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
   const atividades = useAtividades();
   const notificacoes = useNotificacoes();
   const tagsComportamento = useComportamentoTags();
+  const [alunoDetailOpen, setAlunoDetailOpen] = useState(false);
 
   // Aluno linkado: aluno.user_id === user.userId
   const isAluno = !!user && user.roles.includes("aluno");
@@ -105,7 +107,8 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
 
   // Tags de comportamento agregadas dos checklists do aluno.
   const alunoTags = useMemo(() => {
-    if (!linkedAluno) return [] as Array<{ slug: string; count: number; label?: string; emoji?: string }>;
+    if (!linkedAluno)
+      return [] as Array<{ slug: string; count: number; label?: string; emoji?: string }>;
     const counts = new Map<string, number>();
     for (const av of avaliacoes) {
       if (av.alunoId !== linkedAluno.id) continue;
@@ -411,9 +414,7 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
                               </span>
                               <span className="font-medium">
                                 {v.media.toFixed(1)}/5{" "}
-                                <span className="text-muted-foreground text-[10px]">
-                                  ({v.n}x)
-                                </span>
+                                <span className="text-muted-foreground text-[10px]">({v.n}x)</span>
                               </span>
                             </div>
                           ))}
@@ -451,9 +452,7 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
                             <li key={n.id} className="flex items-center gap-1.5">
                               <span
                                 className={
-                                  n.lida
-                                    ? "text-muted-foreground"
-                                    : "text-foreground font-medium"
+                                  n.lida ? "text-muted-foreground" : "text-foreground font-medium"
                                 }
                               >
                                 {n.titulo}
@@ -468,6 +467,18 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
                         </ul>
                       )}
                     </div>
+
+                    {/* Botão pro perfil acadêmico completo (AlunoDetailDialog) —
+                        preserva infos antigas: frequência por atividade,
+                        habilidades do curso com notas, tarefas avaliadas,
+                        observações consolidadas, evolução de habilidades. */}
+                    <Button
+                      variant="default"
+                      className="w-full"
+                      onClick={() => setAlunoDetailOpen(true)}
+                    >
+                      Ver perfil acadêmico completo
+                    </Button>
                   </>
                 )}
               </CardContent>
@@ -476,51 +487,51 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
 
           {/* Vínculo com professor — só mostra se user é professor */}
           {isProfessor && (
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base inline-flex items-center gap-2">
-                <GraduationCap className="h-4 w-4" />
-                Registro de Professor
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {linkedProf ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">{linkedProf.nome}</p>
-                      {linkedProf.formacao && (
-                        <p className="text-xs text-muted-foreground">{linkedProf.formacao}</p>
-                      )}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base inline-flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4" />
+                  Registro de Professor
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {linkedProf ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">{linkedProf.nome}</p>
+                        {linkedProf.formacao && (
+                          <p className="text-xs text-muted-foreground">{linkedProf.formacao}</p>
+                        )}
+                      </div>
+                      <Badge variant={linkedProf.ativo ? "default" : "secondary"}>
+                        {linkedProf.ativo ? "Ativo" : "Inativo"}
+                      </Badge>
                     </div>
-                    <Badge variant={linkedProf.ativo ? "default" : "secondary"}>
-                      {linkedProf.ativo ? "Ativo" : "Inativo"}
-                    </Badge>
+                    {onOpenProfessorProfile && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => onOpenProfessorProfile(linkedProf.id)}
+                      >
+                        Ver perfil completo do professor
+                      </Button>
+                    )}
                   </div>
-                  {onOpenProfessorProfile && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => onOpenProfessorProfile(linkedProf.id)}
-                    >
-                      Ver perfil completo do professor
-                    </Button>
-                  )}
-                </div>
-              ) : user.roles.includes("professor") ? (
-                <p className="text-sm text-muted-foreground italic">
-                  Este usuário tem papel "Professor" mas ainda não há registro vinculado em
-                  Professores. Abra a janela de Professores — o sync automático vai criar o
-                  registro.
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">
-                  Não vinculado a um registro de professor.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+                ) : user.roles.includes("professor") ? (
+                  <p className="text-sm text-muted-foreground italic">
+                    Este usuário tem papel "Professor" mas ainda não há registro vinculado em
+                    Professores. Abra a janela de Professores — o sync automático vai criar o
+                    registro.
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">
+                    Não vinculado a um registro de professor.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
           )}
 
           {/* Metadados */}
@@ -531,6 +542,16 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
           </div>
         </div>
       </DialogContent>
+
+      {/* Perfil acadêmico completo do aluno linkado — abre por cima quando
+          admin clica "Ver perfil acadêmico completo" no UserPerfilDialog. */}
+      <AlunoDetailDialog
+        aluno={alunoDetailOpen ? linkedAluno ?? null : null}
+        curso={alunoCurso ?? undefined}
+        turma={alunoTurma ?? undefined}
+        atividades={atividades}
+        onOpenChange={(o) => !o && setAlunoDetailOpen(false)}
+      />
     </Dialog>
   );
 }
