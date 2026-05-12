@@ -11,7 +11,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ClipboardCheck, Send, Users, FolderSearch } from "lucide-react";
+import { ClipboardCheck, Send, Users, FolderSearch, RefreshCw, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -129,6 +130,63 @@ function RelatorioProfessorDialogContent({
   const [tarefas, setTarefas] = useState<
     Record<string, Record<string, { completou: boolean; observacao?: string }>>
   >({});
+  const [verificandoDrive, setVerificandoDrive] = useState(false);
+
+  // Verifica Drive em batch para todos (aluno × tarefa) do agendamento.
+  // Edge Function `check-drive-tarefa` navega o path resolvido e marca
+  // tarefas_alunos.completou = (fileCount > 0).
+  const handleVerificarDrive = async () => {
+    setVerificandoDrive(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("check-drive-tarefa", {
+        body: { agendamentoId: agendamento.id },
+      });
+      if (error) {
+        toast.error(`Verificação Drive falhou: ${error.message}`);
+        return;
+      }
+      if (!data?.ok && data?.error) {
+        const hint =
+          data.error === "drive_not_configured"
+            ? "Configure a Service Account em Coordenação → Configurações → Service Google."
+            : data.detail ?? data.error;
+        toast.error(`Verificação Drive falhou: ${hint}`);
+        return;
+      }
+      const results = (data?.results ?? []) as Array<{
+        alunoId: string;
+        atividadeId: string;
+        completou: boolean;
+        fileCount?: number;
+        error?: string;
+      }>;
+      const ok = results.filter((r) => r.completou).length;
+      const fail = results.filter((r) => !r.completou && !r.error).length;
+      const errs = results.filter((r) => r.error).length;
+      toast.success(`Drive: ${ok} entregue(s), ${fail} pendente(s)${errs ? `, ${errs} erro(s)` : ""}.`);
+
+      // Reaplica resultado ao state local
+      setTarefas((prev) => {
+        const next = { ...prev };
+        for (const r of results) {
+          if (!next[r.alunoId]) next[r.alunoId] = {};
+          next[r.alunoId][r.atividadeId] = {
+            completou: r.completou,
+            observacao: r.error
+              ? `Drive: ${r.error}`
+              : r.completou
+                ? `Drive: ${r.fileCount ?? 1} arquivo(s)`
+                : "Drive: pasta vazia",
+          };
+        }
+        return next;
+      });
+      // Refresh store em background
+      void tarefasAlunosStore.ensureInit();
+    } finally {
+      setVerificandoDrive(false);
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -377,14 +435,33 @@ function RelatorioProfessorDialogContent({
         {/* Tarefas dos alunos — só aparece se atividade tipo=tarefa */}
         {temTarefas && (
           <section className="space-y-2 border-t pt-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
               <Label className="inline-flex items-center gap-2">📝 Tarefas dos alunos</Label>
-              <Badge variant="secondary">
-                {tarefasDoAgendamento.length} tarefa(s) · {alunosTurma.length} aluno(s)
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">
+                  {tarefasDoAgendamento.length} tarefa(s) · {alunosTurma.length} aluno(s)
+                </Badge>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[11px]"
+                  onClick={handleVerificarDrive}
+                  disabled={verificandoDrive}
+                  title="Verifica no Google Drive quais alunos entregaram cada tarefa"
+                >
+                  {verificandoDrive ? (
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-3 w-3 mr-1" />
+                  )}
+                  {verificandoDrive ? "Verificando…" : "Verificar Drive"}
+                </Button>
+              </div>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Marque quais alunos entregaram/completaram cada tarefa atribuída na aula.
+              Marque quais alunos entregaram/completaram cada tarefa, ou clique "Verificar Drive"
+              para checar automaticamente nas pastas do Google Drive.
             </p>
             <div className="border rounded-md max-h-72 overflow-y-auto divide-y">
               {alunosTurma.length === 0 ? (
@@ -436,7 +513,12 @@ function RelatorioProfessorDialogContent({
                                         userId: agendamento.professorUserId,
                                       }
                                     : undefined,
-                                  turma: { cod: turma.cod, id: turma.id, cursoCod: curso.cod, cursoId: curso.id },
+                                  turma: {
+                                    cod: turma.cod,
+                                    id: turma.id,
+                                    cursoCod: curso.cod,
+                                    cursoId: curso.id,
+                                  },
                                   agendamentoData: agendamento.data,
                                   atividade: { codigo: tar.codigo, nome: tar.nome, id: tar.id },
                                   aluno: { nome: a.nome, id: a.id },
