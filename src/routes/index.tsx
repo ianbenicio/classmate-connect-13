@@ -16,6 +16,7 @@ import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
+import { MinhasAtividadesTable } from "@/components/professor/MinhasAtividadesTable";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
@@ -171,6 +172,15 @@ function DashboardPage() {
         <section className="mb-10">
           <CheckInRapidoCard />
         </section>
+
+        {/* Minhas Atividades — só para professores (tabela tipo planilha) */}
+        {isProfessor && (
+          <section className="mb-10">
+            <MinhasAtividadesTable
+              onAbrirRelatorio={(info) => setRelatorioCtx(info)}
+            />
+          </section>
+        )}
 
         {/* Calendário */}
         <section className="mb-10">

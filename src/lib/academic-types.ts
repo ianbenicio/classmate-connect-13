@@ -413,6 +413,14 @@ export interface Agendamento {
   parteNum?: number;
   /** Total de partes do grupo. */
   partesTotal?: number;
+
+  // ----- Fase A: status pós-aula (planilha "Anne - Aulas Maio 2026") -----
+  /** ISO timestamp — quando recursos da aula foram marcados como entregues. */
+  recursosEntreguesEm?: string;
+  /** Path/URL pasta Google Drive (para futura verificação automática). */
+  recursosDrivePath?: string;
+  /** ISO timestamp — auto-set quando RelatorioProfessorDialog salva com sugestoesPais. */
+  paisNotificadosEm?: string;
 }
 
 // ---------- Notificação ----------

@@ -41,6 +41,10 @@ type AgendamentoRow = {
   partes_total: number;
   meta: unknown;
   created_at: string;
+  // Fase A — status pós-aula
+  recursos_entregues_em: string | null;
+  recursos_drive_path: string | null;
+  pais_notificados_em: string | null;
 };
 
 type AgendamentoMeta = {
@@ -78,6 +82,9 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
     parteGrupoId: r.parte_grupo_id ?? undefined,
     parteNum: r.parte_num,
     partesTotal: r.partes_total,
+    recursosEntreguesEm: r.recursos_entregues_em ?? undefined,
+    recursosDrivePath: r.recursos_drive_path ?? undefined,
+    paisNotificadosEm: r.pais_notificados_em ?? undefined,
   };
 }
 
@@ -106,6 +113,9 @@ function agendamentoToRow(a: Agendamento) {
     parte_num: a.parteNum ?? 1,
     partes_total: a.partesTotal ?? 1,
     meta: meta as never,
+    recursos_entregues_em: a.recursosEntreguesEm ?? null,
+    recursos_drive_path: a.recursosDrivePath ?? null,
+    pais_notificados_em: a.paisNotificadosEm ?? null,
   };
 }
 
@@ -244,6 +254,16 @@ export const agendamentosStore = {
     await this.update(id, {
       status: "pendente",
       concluidoEm: undefined,
+    });
+  },
+  /**
+   * Toggle "RECURSOS" — flag manual da planilha de controle do professor.
+   * Quando entregue=true, grava timestamp atual; senão limpa.
+   * Futuro: scanner do Google Drive pode setar isso automaticamente.
+   */
+  async marcarRecursos(id: string, entregue: boolean) {
+    await this.update(id, {
+      recursosEntreguesEm: entregue ? new Date().toISOString() : undefined,
     });
   },
   subscribe(fn: () => void) {
