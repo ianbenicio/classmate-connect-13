@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,10 +23,7 @@ import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
-import {
-  canDeleteAgendamento,
-  canManageAgendamento,
-} from "@/lib/agendamento-permissions";
+import { canDeleteAgendamento, canManageAgendamento } from "@/lib/agendamento-permissions";
 import type { Agendamento, Atividade, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
 import { toast } from "sonner";
 import { AvaliacaoTipoPicker } from "@/components/academic/AvaliacaoTipoPicker";
@@ -55,9 +52,14 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
-  const { user: authUser, hasRole, displayName } = useAuth();
+  const { user: authUser, hasRole, displayName, isStaff } = useAuth();
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
+
+  // Aluno acessou /? Redireciona pra área dele.
+  if (hasRole("aluno") && !isStaff()) {
+    return <Navigate to="/minha-area" />;
+  }
 
   const [agendarCtx, setAgendarCtx] = useState<{
     curso: Curso;
