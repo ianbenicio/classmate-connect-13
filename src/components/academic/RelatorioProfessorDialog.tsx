@@ -31,6 +31,7 @@ import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { useAtividades } from "@/lib/atividades-store";
+import { tarefasAlunosStore } from "@/lib/tarefas-alunos-store";
 import { toast } from "sonner";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import type { Nota1a5, RelatorioProfessorDados } from "@/lib/formularios-types";
@@ -102,6 +103,17 @@ function RelatorioProfessorDialogContent({
     return trechos.length > 0 ? trechos.join("\n\n---\n\n") : "";
   }, [agendamento.atividadeIds, todasAtividades]);
 
+  // Atividades tipo=tarefa deste agendamento. Quando há, exibe seção
+  // "Tarefas dos alunos" no relatório (resposta 3 do usuário).
+  const tarefasDoAgendamento = useMemo(
+    () =>
+      agendamento.atividadeIds
+        .map((id) => todasAtividades.find((a) => a.id === id))
+        .filter((a): a is NonNullable<typeof a> => !!a && a.tipo === 1),
+    [agendamento.atividadeIds, todasAtividades],
+  );
+  const temTarefas = tarefasDoAgendamento.length > 0;
+
   const existing = avaliacoesStore.find<RelatorioProfessorDados>("relatorio_prof", agendamento.id);
 
   const [resumo, setResumo] = useState("");
@@ -112,6 +124,10 @@ function RelatorioProfessorDialogContent({
   const [sugestoes, setSugestoes] = useState("");
   const [sugestoesPais, setSugestoesPais] = useState("");
   const [presencas, setPresencas] = useState<Record<string, boolean>>({});
+  // Estado das tarefas: alunoId → atividadeId → { completou, observacao? }.
+  const [tarefas, setTarefas] = useState<
+    Record<string, Record<string, { completou: boolean; observacao?: string }>>
+  >({});
 
   useEffect(() => {
     if (!open) return;
@@ -131,10 +147,40 @@ function RelatorioProfessorDialogContent({
       initialPres[a.id] = d?.presencas?.[a.id] ?? true;
     });
     setPresencas(initialPres);
+
+    // Carrega tarefas existentes do agendamento (se houver atividade tarefa)
+    if (temTarefas) {
+      void tarefasAlunosStore.ensureInit().then(() => {
+        const saved = tarefasAlunosStore.getByAgendamento(agendamento.id);
+        const map: Record<
+          string,
+          Record<string, { completou: boolean; observacao?: string }>
+        > = {};
+        for (const t of saved) {
+          if (!map[t.alunoId]) map[t.alunoId] = {};
+          map[t.alunoId][t.atividadeId] = {
+            completou: t.completou,
+            observacao: t.observacao,
+          };
+        }
+        // Default: não completou para alunos × tarefas sem registro.
+        for (const al of alunosTurma) {
+          if (!map[al.id]) map[al.id] = {};
+          for (const tar of tarefasDoAgendamento) {
+            if (!map[al.id][tar.id]) {
+              map[al.id][tar.id] = { completou: false };
+            }
+          }
+        }
+        setTarefas(map);
+      });
+    } else {
+      setTarefas({});
+    }
     // Intencional: reset apenas ao abrir/mudar agendamento. `existing` e
     // `alunosTurma` mudam de referência a cada render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, agendamento.id]);
+  }, [open, agendamento.id, temTarefas]);
 
   const dataFmt = format(new Date(`${agendamento.data}T00:00:00`), "PPP", {
     locale: ptBR,
@@ -174,6 +220,31 @@ function RelatorioProfessorDialogContent({
 
     // 2) Marca o agendamento como concluído.
     await agendamentosStore.marcarConcluido(agendamento.id);
+
+    // 2.1) Salva tarefas dos alunos (quando agendamento contém atividade tipo=1).
+    if (temTarefas) {
+      const batch: Array<{
+        agendamentoId: string;
+        alunoId: string;
+        atividadeId: string;
+        completou: boolean;
+        observacao?: string;
+      }> = [];
+      for (const al of alunosTurma) {
+        const porAtv = tarefas[al.id] ?? {};
+        for (const tar of tarefasDoAgendamento) {
+          const entry = porAtv[tar.id];
+          batch.push({
+            agendamentoId: agendamento.id,
+            alunoId: al.id,
+            atividadeId: tar.id,
+            completou: !!entry?.completou,
+            observacao: entry?.observacao,
+          });
+        }
+      }
+      await tarefasAlunosStore.saveMany(batch);
+    }
 
     // 3) Notificações + tarefas-formulário (porteado de RegistrarRelatorioDialog).
     const baseSlot = {
@@ -304,6 +375,70 @@ function RelatorioProfessorDialogContent({
             )}
           </div>
         </section>
+
+        {/* Tarefas dos alunos — só aparece se atividade tipo=tarefa */}
+        {temTarefas && (
+          <section className="space-y-2 border-t pt-3">
+            <div className="flex items-center justify-between">
+              <Label className="inline-flex items-center gap-2">
+                📝 Tarefas dos alunos
+              </Label>
+              <Badge variant="secondary">
+                {tarefasDoAgendamento.length} tarefa(s) · {alunosTurma.length} aluno(s)
+              </Badge>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Marque quais alunos entregaram/completaram cada tarefa atribuída na aula.
+            </p>
+            <div className="border rounded-md max-h-72 overflow-y-auto divide-y">
+              {alunosTurma.length === 0 ? (
+                <p className="text-sm text-muted-foreground p-3">
+                  Nenhum aluno cadastrado nesta turma.
+                </p>
+              ) : (
+                alunosTurma.map((a) => (
+                  <div key={a.id} className="px-3 py-2 space-y-1">
+                    <div className="text-sm font-medium">{a.nome}</div>
+                    <div className="grid gap-1.5">
+                      {tarefasDoAgendamento.map((tar) => {
+                        const entry = tarefas[a.id]?.[tar.id] ?? { completou: false };
+                        return (
+                          <label
+                            key={tar.id}
+                            className="flex items-center gap-2 text-xs hover:bg-accent rounded px-1 py-0.5 cursor-pointer"
+                          >
+                            <Checkbox
+                              checked={entry.completou}
+                              onCheckedChange={(v) =>
+                                setTarefas((prev) => ({
+                                  ...prev,
+                                  [a.id]: {
+                                    ...(prev[a.id] ?? {}),
+                                    [tar.id]: {
+                                      ...(prev[a.id]?.[tar.id] ?? { completou: false }),
+                                      completou: !!v,
+                                    },
+                                  },
+                                }))
+                              }
+                            />
+                            <span className="font-mono text-[10px] text-muted-foreground">
+                              {tar.codigo}
+                            </span>
+                            <span className="flex-1 truncate">{tar.nome}</span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {entry.completou ? "Completou" : "Pendente"}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Avaliação geral */}
         <section className="space-y-3 border-t pt-3">
