@@ -8,7 +8,9 @@
 // mas a UI já é genérica — basta INSERIR mais settings no DB que aparecem.
 
 import { useEffect, useState } from "react";
-import { Settings as SettingsIcon, Save, Info } from "lucide-react";
+import { Settings as SettingsIcon, Save, Info, KeyRound } from "lucide-react";
+import { GoogleServiceDialog } from "./GoogleServiceDialog";
+import { useAuth } from "@/lib/auth";
 import {
   Dialog,
   DialogContent,
@@ -42,10 +44,21 @@ const CATEGORY_LABELS: Record<string, string> = {
   audit: "🗄️ Auditoria",
 };
 
+// Keys gerenciadas pelo GoogleServiceDialog (escondidas da listagem genérica)
+const GOOGLE_MANAGED_KEYS = new Set<string>([
+  "integration.drive.service_account_json",
+  "integration.drive.service_account_email",
+  "integration.drive.last_validated_at",
+  "integration.drive.root_folder_id",
+]);
+
 export function SettingsDialog({ open, onOpenChange }: Props) {
   const settings = useSettings();
+  const { hasRole } = useAuth();
+  const isAdmin = hasRole("admin");
   const categories = Array.from(new Set(settings.map((s) => s.category))).sort();
   const [activeTab, setActiveTab] = useState<string>(categories[0] ?? "integration");
+  const [googleOpen, setGoogleOpen] = useState(false);
 
   useEffect(() => {
     if (open && categories.length > 0 && !categories.includes(activeTab)) {
@@ -80,9 +93,35 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
             </TabsList>
             {categories.map((c) => (
               <TabsContent key={c} value={c} className="space-y-4 pt-2">
-                {settingsStore.byCategory(c).map((s) => (
-                  <SettingRow key={s.key} setting={s} />
-                ))}
+                {/* Bloco especial: Service Google (apenas tab integration) */}
+                {c === "integration" && (
+                  <div className="border rounded-md p-3 flex items-center justify-between gap-3 bg-muted/30">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium inline-flex items-center gap-1.5">
+                        <KeyRound className="h-4 w-4 text-primary" /> Service Google (Drive)
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Cadastre a Service Account + ID da pasta raiz para verificar entrega de
+                        tarefas no Drive.
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => setGoogleOpen(true)}
+                      disabled={!isAdmin}
+                      title={isAdmin ? "Configurar" : "Apenas admin pode editar credenciais"}
+                    >
+                      Configurar
+                    </Button>
+                  </div>
+                )}
+                {/* Settings genéricas (exclui as geridas pelo GoogleServiceDialog) */}
+                {settingsStore
+                  .byCategory(c)
+                  .filter((s) => !GOOGLE_MANAGED_KEYS.has(s.key))
+                  .map((s) => (
+                    <SettingRow key={s.key} setting={s} />
+                  ))}
               </TabsContent>
             ))}
           </Tabs>
@@ -94,6 +133,8 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <GoogleServiceDialog open={googleOpen} onOpenChange={setGoogleOpen} />
     </Dialog>
   );
 }
