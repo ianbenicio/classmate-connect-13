@@ -16,7 +16,19 @@
 import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Check, Clock, FileText, Send, Minus, CalendarDays, Download } from "lucide-react";
+import {
+  Check,
+  Clock,
+  FileText,
+  Send,
+  Minus,
+  CalendarDays,
+  Download,
+  RefreshCw,
+  Loader2,
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -40,7 +52,7 @@ import { useTurmas } from "@/lib/turmas-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
-import { useTarefasAlunos } from "@/lib/tarefas-alunos-store";
+import { useTarefasAlunos, tarefasAlunosStore } from "@/lib/tarefas-alunos-store";
 import { useAuth } from "@/lib/auth";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
@@ -142,6 +154,70 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
     onAbrirRelatorio({ agendamento: ag, turma, curso });
   };
 
+  // Batch: verifica Drive para todos agendamentos do mês que têm atividade tipo=tarefa
+  const [verificandoDrive, setVerificandoDrive] = useState(false);
+  const agendamentosComTarefa = useMemo(
+    () => linhas.filter((ag) => ag.atividadeIds.some((id) => ativMap.get(id)?.tipo === 1)),
+    [linhas, ativMap],
+  );
+  const handleVerificarMes = async () => {
+    if (agendamentosComTarefa.length === 0) {
+      toast.info("Nenhuma aula com atividade tipo=tarefa neste mês.");
+      return;
+    }
+    setVerificandoDrive(true);
+    let okTotal = 0;
+    let failTotal = 0;
+    let errTotal = 0;
+    let primeiroErro: string | null = null;
+    try {
+      for (const ag of agendamentosComTarefa) {
+        try {
+          const { data, error } = await supabase.functions.invoke("check-drive-tarefa", {
+            body: { agendamentoId: ag.id },
+          });
+          if (error) {
+            errTotal++;
+            primeiroErro = primeiroErro ?? error.message;
+            continue;
+          }
+          if (!data?.ok && data?.error) {
+            errTotal++;
+            primeiroErro =
+              primeiroErro ??
+              (data.error === "drive_not_configured"
+                ? "Service Account não configurada (Coordenação → Configurações → Service Google)"
+                : (data.detail ?? data.error));
+            // Se Drive não configurado, aborta loop — todas falharão igual.
+            if (data.error === "drive_not_configured") break;
+            continue;
+          }
+          const results = (data?.results ?? []) as Array<{
+            completou: boolean;
+            error?: string;
+          }>;
+          okTotal += results.filter((r) => r.completou).length;
+          failTotal += results.filter((r) => !r.completou && !r.error).length;
+          errTotal += results.filter((r) => r.error).length;
+        } catch (e) {
+          errTotal++;
+          primeiroErro = primeiroErro ?? String(e);
+        }
+      }
+      // Refresh store após batch — UI das linhas reflete trab=true/false
+      await tarefasAlunosStore.ensureInit();
+      if (errTotal > 0 && okTotal + failTotal === 0) {
+        toast.error(`Verificação Drive falhou: ${primeiroErro ?? "erro desconhecido"}`);
+      } else {
+        toast.success(
+          `Drive: ${okTotal} entregue(s), ${failTotal} pendente(s)${errTotal ? `, ${errTotal} erro(s)` : ""}.`,
+        );
+      }
+    } finally {
+      setVerificandoDrive(false);
+    }
+  };
+
   // Export CSV — espelha colunas da planilha "Anne - Aulas Maio 2026".
   // Separador `;` + BOM UTF-8 pra Excel pt-BR detectar corretamente.
   const handleExportarCsv = () => {
@@ -178,8 +254,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
         s.trab === null ? "" : s.trab ? "OK" : "",
       ];
     });
-    const escape = (v: string) =>
-      /[;"\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    const escape = (v: string) => (/[;"\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
     const csv = [header, ...rows].map((r) => r.map(escape).join(";")).join("\r\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -228,6 +303,25 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
             ))}
           </SelectContent>
         </Select>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8 text-xs"
+          onClick={handleVerificarMes}
+          disabled={agendamentosComTarefa.length === 0 || verificandoDrive}
+          title={
+            agendamentosComTarefa.length === 0
+              ? "Nenhuma aula com atividade tipo=tarefa neste mês"
+              : `Verifica no Drive entrega de tarefas em ${agendamentosComTarefa.length} aula(s)`
+          }
+        >
+          {verificandoDrive ? (
+            <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+          ) : (
+            <RefreshCw className="h-3.5 w-3.5 mr-1" />
+          )}
+          {verificandoDrive ? "Verificando…" : "Verificar Drive"}
+        </Button>
         <Button
           size="sm"
           variant="outline"
