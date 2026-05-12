@@ -19,7 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Aluno, Curso, Turma } from "@/lib/academic-types";
+import { alunosStore } from "@/lib/alunos-store";
 import { toast } from "sonner";
+import { Send, CheckCircle2 } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -27,7 +29,8 @@ interface Props {
   editing?: Aluno;
   cursos: Curso[];
   turmas: Turma[];
-  onSave: (a: Aluno) => void;
+  /** Salva o aluno. Pode ser sync ou async; o dialog faz await. */
+  onSave: (a: Aluno) => void | Promise<void>;
 }
 
 const empty = (): Aluno => ({
@@ -46,28 +49,85 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, onSave }: Props) {
   const [form, setForm] = useState<Aluno>(empty());
+  const [exportando, setExportando] = useState(false);
 
   useEffect(() => {
-    if (open) setForm(editing ? { ...editing } : empty());
+    if (open) {
+      setForm(editing ? { ...editing } : empty());
+      setExportando(false);
+    }
   }, [open, editing]);
 
   const turmasDoCurso = turmas.filter((t) => t.cursoId === form.cursoId);
 
   const update = <K extends keyof Aluno>(k: K, v: Aluno[K]) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.nome.trim()) return toast.error("Informe o nome do aluno.");
-    if (!form.cursoId) return toast.error("Selecione um curso.");
-    if (!form.turmaId) return toast.error("Selecione uma turma.");
+  /** Valida e devolve aluno normalizado (email trim+lower) ou null se inválido. */
+  const validar = (): Aluno | null => {
+    if (!form.nome.trim()) {
+      toast.error("Informe o nome do aluno.");
+      return null;
+    }
+    if (!form.cursoId) {
+      toast.error("Selecione um curso.");
+      return null;
+    }
+    if (!form.turmaId) {
+      toast.error("Selecione uma turma.");
+      return null;
+    }
     const emailTrim = (form.email ?? "").trim();
-    if (emailTrim && !EMAIL_RE.test(emailTrim)) return toast.error("Email inválido.");
-    // Email obrigatório para criar novo aluno (futuro: convite auto-enviado).
-    if (!editing && !emailTrim) return toast.error("Informe o email do aluno.");
-    onSave({ ...form, email: emailTrim || undefined });
+    if (emailTrim && !EMAIL_RE.test(emailTrim)) {
+      toast.error("Email inválido.");
+      return null;
+    }
+    if (!editing && !emailTrim) {
+      toast.error("Informe o email do aluno.");
+      return null;
+    }
+    return { ...form, email: emailTrim || undefined };
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const aluno = validar();
+    if (!aluno) return;
+    await onSave(aluno);
     toast.success(editing ? "Aluno atualizado" : "Aluno cadastrado");
     onOpenChange(false);
   };
+
+  // Exportar: salva + dispara Edge Function pra criar/linkar auth user.
+  const handleExportar = async () => {
+    const aluno = validar();
+    if (!aluno) return;
+    if (!aluno.email) {
+      toast.error("Email obrigatório para exportar como usuário.");
+      return;
+    }
+    setExportando(true);
+    try {
+      await onSave(aluno);
+      const result = await alunosStore.invite(aluno.id);
+      if (!result) {
+        toast.error("Aluno salvo, mas falha ao criar usuário. Tente reenviar pelo detalhe do aluno.");
+        return;
+      }
+      if (result.status === "invited") {
+        toast.success("Aluno salvo e convite enviado por email.");
+      } else {
+        toast.success("Aluno salvo e conta vinculada (email já existia).");
+      }
+      onOpenChange(false);
+    } finally {
+      setExportando(false);
+    }
+  };
+
+  // Estado do botão Exportar
+  const emailOk = !!(form.email ?? "").trim() && EMAIL_RE.test((form.email ?? "").trim());
+  const podeExportar = emailOk && !!form.cursoId && !!form.turmaId && !form.userId;
+  const jaVinculado = !!form.userId;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -214,11 +274,32 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
             />
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-2 flex-col sm:flex-row sm:justify-end">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit">{editing ? "Salvar" : "Cadastrar"}</Button>
+            <Button type="submit" variant="secondary" disabled={exportando}>
+              {editing ? "Salvar" : "Cadastrar"}
+            </Button>
+            {jaVinculado ? (
+              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-300 px-3">
+                <CheckCircle2 className="h-4 w-4" /> Conta vinculada
+              </span>
+            ) : (
+              <Button
+                type="button"
+                onClick={handleExportar}
+                disabled={!podeExportar || exportando}
+                title={
+                  podeExportar
+                    ? "Salva e cria conta de usuário (envia email de convite)"
+                    : "Preencha email + curso + turma para exportar"
+                }
+              >
+                <Send className="h-3.5 w-3.5 mr-1" />
+                {exportando ? "Exportando…" : "Exportar como usuário"}
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>

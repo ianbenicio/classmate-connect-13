@@ -84,31 +84,19 @@ async function inviteAlunoUser(alunoId: string): Promise<{
     console.error("[alunos] invite error", error);
     return null;
   }
-  return data as { status: "invited" | "linked_existing"; userId: string };
+  const result = data as { status: "invited" | "linked_existing"; userId: string };
+  // Atualiza snapshot in-memory para UI refletir vínculo imediato.
+  patchAlunoUserId(alunoId, result.userId);
+  return result;
 }
 
 /**
- * Auto-invite: chamado após add/update bem-sucedido. Só dispara se:
- *  - email presente
- *  - cursoId + turmaId presentes
- *  - ainda sem userId (não foi vinculado antes)
- * Atualiza o aluno em memória com o userId recebido e mostra toast.
+ * Após invite bem-sucedido, atualiza snapshot in-memory com o userId.
+ * Chamado pelo UI (AlunoFormDialog Exportar / AlunoDetailDialog).
  */
-async function maybeAutoInvite(a: Aluno): Promise<void> {
-  if (!a.email || !a.cursoId || !a.turmaId || a.userId) return;
-  const result = await inviteAlunoUser(a.id);
-  if (!result) {
-    toast.error("Aluno salvo, mas o convite para criar conta falhou. Tente reenviar.");
-    return;
-  }
-  // Atualiza in-memory snapshot com o userId vinculado.
-  alunos = alunos.map((x) => (x.id === a.id ? { ...x, userId: result.userId } : x));
+function patchAlunoUserId(alunoId: string, userId: string): void {
+  alunos = alunos.map((x) => (x.id === alunoId ? { ...x, userId } : x));
   emit();
-  if (result.status === "invited") {
-    toast.success("Convite enviado por email. O aluno define a senha pelo link recebido.");
-  } else {
-    toast.success("Conta de aluno vinculada (email já existia).");
-  }
 }
 
 // Top-up: insere os alunos do seed ainda ausentes. O store não tinha
@@ -245,10 +233,8 @@ export const alunosStore = {
     if (error) {
       console.error("[alunos] add error", error);
       toast.error(`Erro ao salvar aluno: ${error.message}`);
-      return;
     }
-    // Auto-invite: novo aluno com email + curso + turma e sem user_id.
-    await maybeAutoInvite(local);
+    // Invite agora é ação explícita via store.invite(alunoId) (botão "Exportar").
   },
   async update(id: string, patch: Partial<Aluno>) {
     const dbId = toUuid(id);
@@ -262,10 +248,8 @@ export const alunosStore = {
     if (error) {
       console.error("[alunos] update error", error);
       toast.error(`Erro ao atualizar aluno: ${error.message}`);
-      return;
     }
-    // Auto-invite: se acabou de ganhar email + curso + turma e ainda sem user_id.
-    await maybeAutoInvite(merged);
+    // Invite agora é ação explícita via store.invite(alunoId).
   },
   async remove(id: string) {
     const dbId = toUuid(id);

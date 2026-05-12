@@ -96,10 +96,10 @@ function AlunosPage() {
     });
   }, [alunos, busca, cursoFiltro, turmaFiltro]);
 
-  const handleSave = (a: Aluno) => {
+  const handleSave = async (a: Aluno) => {
     const exists = alunos.some((x) => x.id === a.id);
-    if (exists) alunosStore.update(a.id, a);
-    else alunosStore.add(a);
+    if (exists) await alunosStore.update(a.id, a);
+    else await alunosStore.add(a);
   };
 
   const handleDelete = (a: Aluno) => {
