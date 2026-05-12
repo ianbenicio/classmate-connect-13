@@ -20,6 +20,13 @@ export interface RelatorioProfessorDados {
   dificuldades?: string;
   /** Sugestões para próxima aula. */
   sugestoes?: string;
+  /**
+   * Sugestões para os pais — texto enviado/comunicado aos responsáveis.
+   * Obrigatório. Pré-populado pelo dialog com `atividade.sugestoesPais`
+   * (concatenado quando múltiplas atividades). Professor pode editar.
+   * Quando salvo, dispara `agendamentos.pais_notificados_em = now()`.
+   */
+  sugestoesPais: string;
   /** Chamada — alunoId → presente. */
   presencas: Record<string, boolean>;
 }

@@ -30,6 +30,7 @@ import { avaliacoesStore } from "@/lib/avaliacoes-store";
 import { agendamentosStore } from "@/lib/agendamentos-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
+import { useAtividades } from "@/lib/atividades-store";
 import { toast } from "sonner";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import type { Nota1a5, RelatorioProfessorDados } from "@/lib/formularios-types";
@@ -85,10 +86,21 @@ function RelatorioProfessorDialogContent({
   onSaved,
 }: ContentProps) {
   const todosAlunos = useAlunos();
+  const todasAtividades = useAtividades();
   const alunosTurma = useMemo(
     () => todosAlunos.filter((a) => a.turmaId === turma.id),
     [todosAlunos, turma.id],
   );
+
+  // Sugestões para os pais — fonte: cada atividade do agendamento tem o seu
+  // campo `sugestoesPais`. Concatena (separador `\n\n---\n\n`) quando há
+  // múltiplas atividades. Pré-popula o textarea no open.
+  const sugestoesPaisInicial = useMemo(() => {
+    const trechos = agendamento.atividadeIds
+      .map((id) => todasAtividades.find((a) => a.id === id)?.sugestoesPais)
+      .filter((s): s is string => !!s && s.trim().length > 0);
+    return trechos.length > 0 ? trechos.join("\n\n---\n\n") : "";
+  }, [agendamento.atividadeIds, todasAtividades]);
 
   const existing = avaliacoesStore.find<RelatorioProfessorDados>("relatorio_prof", agendamento.id);
 
@@ -98,6 +110,7 @@ function RelatorioProfessorDialogContent({
   const [destaques, setDestaques] = useState("");
   const [dificuldades, setDificuldades] = useState("");
   const [sugestoes, setSugestoes] = useState("");
+  const [sugestoesPais, setSugestoesPais] = useState("");
   const [presencas, setPresencas] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -109,6 +122,9 @@ function RelatorioProfessorDialogContent({
     setDestaques(d?.destaques ?? "");
     setDificuldades(d?.dificuldades ?? "");
     setSugestoes(d?.sugestoes ?? "");
+    // Sugestões pais: usa o que já foi salvo (edição) OU pré-popula com o
+    // texto agregado das atividades do agendamento.
+    setSugestoesPais(d?.sugestoesPais ?? sugestoesPaisInicial);
     // default: todos presentes
     const initialPres: Record<string, boolean> = {};
     alunosTurma.forEach((a) => {
@@ -132,6 +148,10 @@ function RelatorioProfessorDialogContent({
       toast.error("Escreva um resumo da aula.");
       return;
     }
+    if (!sugestoesPais.trim()) {
+      toast.error("Preencha as sugestões para os pais (obrigatório).");
+      return;
+    }
     if (alunosTurma.length > 0 && agendamento.atividadeIds.length === 0) {
       // Sem atividades vinculadas, syncPresencas faz early-return silencioso —
       // alerta o professor para evitar "salvou mas frequência não registrou".
@@ -146,6 +166,7 @@ function RelatorioProfessorDialogContent({
       destaques: destaques.trim() || undefined,
       dificuldades: dificuldades.trim() || undefined,
       sugestoes: sugestoes.trim() || undefined,
+      sugestoesPais: sugestoesPais.trim(),
       presencas,
     };
     // 1) Salva avaliação + sincroniza tabela `presencas`.
@@ -338,6 +359,24 @@ function RelatorioProfessorDialogContent({
               value={sugestoes}
               onChange={(e) => setSugestoes(e.target.value)}
             />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="rp-pais">
+              👪 Sugestões para os pais <span className="text-destructive">*</span>
+            </Label>
+            <Textarea
+              id="rp-pais"
+              rows={4}
+              value={sugestoesPais}
+              onChange={(e) => setSugestoesPais(e.target.value)}
+              placeholder="Como os pais podem apoiar o aluno em casa..."
+              required
+            />
+            <p className="text-[11px] text-muted-foreground">
+              {sugestoesPaisInicial
+                ? "Pré-preenchido a partir das sugestões cadastradas nesta(s) atividade(s). Edite ou complemente conforme a aula."
+                : "Esta(s) atividade(s) não tem sugestões cadastradas. Escreva orientações para os responsáveis."}
+            </p>
           </div>
         </section>
 

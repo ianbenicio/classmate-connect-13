@@ -156,7 +156,20 @@ export const avaliacoesStore = {
   },
 
   async saveRelatorioProf(agendamentoId: string, dados: RelatorioProfessorDados) {
-    return this.save("relatorio_prof", agendamentoId, null, null, dados);
+    const rec = await this.save("relatorio_prof", agendamentoId, null, null, dados);
+    // Marca o agendamento como "pais notificados" quando sugestoesPais preenchido.
+    // Coluna criada na migration aulas_pos_status_phase_a (Fase A).
+    if (dados.sugestoesPais && dados.sugestoesPais.trim()) {
+      const { error } = await supabase
+        .from("agendamentos")
+        .update({ pais_notificados_em: new Date().toISOString() })
+        .eq("id", toUuid(agendamentoId));
+      if (error) {
+        // Não bloqueia o save principal — só loga.
+        console.error("[avaliacoes] failed to mark pais_notificados_em", error);
+      }
+    }
+    return rec;
   },
 
   async saveChecklistAluno(agendamentoId: string, alunoId: string, dados: ChecklistAlunoDados) {
