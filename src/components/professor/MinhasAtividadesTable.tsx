@@ -16,7 +16,7 @@
 import { useMemo, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Check, Clock, FileText, Send, Minus, CalendarDays } from "lucide-react";
+import { Check, Clock, FileText, Send, Minus, CalendarDays, Download } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -142,6 +142,56 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
     onAbrirRelatorio({ agendamento: ag, turma, curso });
   };
 
+  // Export CSV — espelha colunas da planilha "Anne - Aulas Maio 2026".
+  // Separador `;` + BOM UTF-8 pra Excel pt-BR detectar corretamente.
+  const handleExportarCsv = () => {
+    const header = [
+      "Data",
+      "Dia",
+      "Turmas",
+      "Código da aula",
+      "Nome",
+      "DE",
+      "RECURSOS",
+      "Frequência",
+      "Pais",
+      "Trab. Alunos",
+    ];
+    const rows = linhas.map((ag) => {
+      const turma = turmaMap.get(ag.turmaId);
+      const ativsAg = ag.atividadeIds.map((id) => ativMap.get(id)).filter(Boolean);
+      const codigos = ativsAg.map((a) => a?.codigo ?? "").join(" / ");
+      const nomes = ativsAg.map((a) => a?.nome ?? "").join(" / ");
+      const dataObj = parseISO(`${ag.data}T00:00:00`);
+      const dia = format(dataObj, "EEE", { locale: ptBR }).replace(/^./, (c) => c.toUpperCase());
+      const s = statusFor(ag);
+      return [
+        format(dataObj, "dd/MM/yyyy"),
+        dia,
+        turma?.cod ?? "",
+        codigos,
+        nomes,
+        s.de ? "OK" : "",
+        s.recursos ? "OK" : "",
+        s.freq ? "OK" : "",
+        s.pais ? "OK" : "",
+        s.trab === null ? "" : s.trab ? "OK" : "",
+      ];
+    });
+    const escape = (v: string) =>
+      /[;"\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    const csv = [header, ...rows].map((r) => r.map(escape).join(";")).join("\r\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `minhas-atividades-${mesAno}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -178,6 +228,17 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
             ))}
           </SelectContent>
         </Select>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8 text-xs"
+          onClick={handleExportarCsv}
+          disabled={linhas.length === 0}
+          title="Exportar para CSV (abre no Excel/Sheets)"
+        >
+          <Download className="h-3.5 w-3.5 mr-1" />
+          Exportar
+        </Button>
       </div>
 
       {linhas.length === 0 ? (

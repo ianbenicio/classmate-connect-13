@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MinhasAtividadesTable } from "@/components/professor/MinhasAtividadesTable";
 import {
   X,
   Mail,
@@ -357,6 +358,19 @@ function ProfessorPerfilDialogContent({
                   })}
                 </ul>
               )}
+            </CardContent>
+          </Card>
+
+          {/* ========== Atividades do mês (tabela tipo planilha) ========== */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Atividades do mês</CardTitle>
+              <CardDescription>
+                Status pós-aula (DE, Recursos, Frequência, Pais, Trabalhos) por agendamento.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MinhasAtividadesTable professorUserId={professor.userId} />
             </CardContent>
           </Card>
 
