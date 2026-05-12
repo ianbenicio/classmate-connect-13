@@ -19,12 +19,14 @@ import { SkillDetailDialog } from "@/components/academic/SkillDetailDialog";
 import { CourseDetailDialog } from "@/components/academic/CourseDetailDialog";
 import { TurmaFormDialog } from "@/components/academic/TurmaFormDialog";
 import { TurmaDetailDialog } from "@/components/academic/TurmaDetailDialog";
+import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
 import { QuadroAulasDialog } from "@/components/academic/QuadroAulasDialog";
 import { Progress } from "@/components/ui/progress";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import {
   addMinutesToHHMM,
   getTurnoDiarioMin,
+  type Aluno,
   type Atividade,
   type AtividadeTipo,
   type Curso,
@@ -79,6 +81,7 @@ function CursosPage() {
   const [turmaFormOpen, setTurmaFormOpen] = useState(false);
   const [editingTurma, setEditingTurma] = useState<Turma | undefined>();
   const [turmaDetalhe, setTurmaDetalhe] = useState<Turma | null>(null);
+  const [alunoDetalhe, setAlunoDetalhe] = useState<Aluno | null>(null);
   const [confirmDeleteTurma, setConfirmDeleteTurma] = useState<Turma | null>(null);
 
   const [habilidadeDetalhe, setHabilidadeDetalhe] = useState<Habilidade | null>(null);
@@ -341,6 +344,15 @@ function CursosPage() {
         alunos={alunos}
         atividades={atividades}
         onOpenChange={(open) => !open && setTurmaDetalhe(null)}
+        onAlunoClick={(al) => setAlunoDetalhe(al)}
+      />
+
+      <AlunoDetailDialog
+        aluno={alunoDetalhe}
+        curso={alunoDetalhe ? cursos.find((c) => c.id === alunoDetalhe.cursoId) : undefined}
+        turma={alunoDetalhe ? turmas.find((t) => t.id === alunoDetalhe.turmaId) : undefined}
+        atividades={atividades}
+        onOpenChange={(open) => !open && setAlunoDetalhe(null)}
       />
 
       <AlertDialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>

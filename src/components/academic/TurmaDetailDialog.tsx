@@ -45,9 +45,18 @@ interface Props {
   alunos: Aluno[];
   atividades: Atividade[];
   onOpenChange: (open: boolean) => void;
+  /** Callback opcional ao clicar num aluno (abre AlunoDetailDialog). */
+  onAlunoClick?: (aluno: Aluno) => void;
 }
 
-export function TurmaDetailDialog({ turma, curso, alunos, atividades, onOpenChange }: Props) {
+export function TurmaDetailDialog({
+  turma,
+  curso,
+  alunos,
+  atividades,
+  onOpenChange,
+  onAlunoClick,
+}: Props) {
   const [quadroOpen, setQuadroOpen] = useState(false);
   const allAgendamentos = useAgendamentos();
   const todasHabilidades = useHabilidades();
@@ -376,14 +385,22 @@ export function TurmaDetailDialog({ turma, curso, alunos, atividades, onOpenChan
               {alunosDaTurma.map((al) => {
                 const presencas = al.aulas.filter((r) => r.presente).length;
                 const entregas = al.trabalhos.filter((t) => t.entregue).length;
-                return (
-                  <li key={al.id} className="p-3">
+                const clicavel = !!onAlunoClick;
+                const inner = (
+                  <>
                     <div className="flex items-center justify-between gap-3 flex-wrap">
                       <div className="min-w-0">
-                        <div className="font-medium truncate">{al.nome}</div>
+                        <div className="font-medium truncate inline-flex items-center gap-1.5">
+                          {al.nome}
+                          {al.userId && (
+                            <span className="inline-flex items-center rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 text-[9px] font-medium">
+                              Conta vinculada
+                            </span>
+                          )}
+                        </div>
                         <div className="text-xs text-muted-foreground inline-flex items-center gap-1">
                           <Mail className="h-3 w-3" />
-                          {al.contato}
+                          {al.email || al.contato || "—"}
                         </div>
                       </div>
                       <div className="flex gap-1.5 flex-wrap">
@@ -401,6 +418,21 @@ export function TurmaDetailDialog({ turma, curso, alunos, atividades, onOpenChan
                     {al.observacao && (
                       <p className="text-xs text-muted-foreground mt-2 italic">{al.observacao}</p>
                     )}
+                  </>
+                );
+                return clicavel ? (
+                  <li key={al.id} className="p-0">
+                    <button
+                      type="button"
+                      onClick={() => onAlunoClick(al)}
+                      className="w-full text-left p-3 hover:bg-accent transition-colors"
+                    >
+                      {inner}
+                    </button>
+                  </li>
+                ) : (
+                  <li key={al.id} className="p-3">
+                    {inner}
                   </li>
                 );
               })}
