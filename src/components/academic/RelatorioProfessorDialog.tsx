@@ -11,7 +11,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ClipboardCheck, Send, Users } from "lucide-react";
+import { ClipboardCheck, Send, Users, FolderSearch } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,7 @@ import { notificacoesStore } from "@/lib/notificacoes-store";
 import { alunosStore, useAlunos } from "@/lib/alunos-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { tarefasAlunosStore } from "@/lib/tarefas-alunos-store";
+import { resolveTarefaDrivePath } from "@/lib/drive-pattern";
 import { toast } from "sonner";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import type { Nota1a5, RelatorioProfessorDados } from "@/lib/formularios-types";
@@ -152,10 +153,7 @@ function RelatorioProfessorDialogContent({
     if (temTarefas) {
       void tarefasAlunosStore.ensureInit().then(() => {
         const saved = tarefasAlunosStore.getByAgendamento(agendamento.id);
-        const map: Record<
-          string,
-          Record<string, { completou: boolean; observacao?: string }>
-        > = {};
+        const map: Record<string, Record<string, { completou: boolean; observacao?: string }>> = {};
         for (const t of saved) {
           if (!map[t.alunoId]) map[t.alunoId] = {};
           map[t.alunoId][t.atividadeId] = {
@@ -380,9 +378,7 @@ function RelatorioProfessorDialogContent({
         {temTarefas && (
           <section className="space-y-2 border-t pt-3">
             <div className="flex items-center justify-between">
-              <Label className="inline-flex items-center gap-2">
-                📝 Tarefas dos alunos
-              </Label>
+              <Label className="inline-flex items-center gap-2">📝 Tarefas dos alunos</Label>
               <Badge variant="secondary">
                 {tarefasDoAgendamento.length} tarefa(s) · {alunosTurma.length} aluno(s)
               </Badge>
@@ -426,6 +422,33 @@ function RelatorioProfessorDialogContent({
                               {tar.codigo}
                             </span>
                             <span className="flex-1 truncate">{tar.nome}</span>
+                            <button
+                              type="button"
+                              title="Copiar caminho Drive da pasta deste aluno × tarefa"
+                              className="text-muted-foreground hover:text-foreground p-0.5"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const path = resolveTarefaDrivePath({
+                                  professor: agendamento.professor
+                                    ? {
+                                        nome: agendamento.professor,
+                                        userId: agendamento.professorUserId,
+                                      }
+                                    : undefined,
+                                  turma: { cod: turma.cod, id: turma.id, cursoCod: curso.cod, cursoId: curso.id },
+                                  agendamentoData: agendamento.data,
+                                  atividade: { codigo: tar.codigo, nome: tar.nome, id: tar.id },
+                                  aluno: { nome: a.nome, id: a.id },
+                                });
+                                void navigator.clipboard
+                                  .writeText(path)
+                                  .then(() => toast.success(`Caminho copiado: ${path}`))
+                                  .catch(() => toast.info(path));
+                              }}
+                            >
+                              <FolderSearch className="h-3 w-3" />
+                            </button>
                             <span className="text-[10px] text-muted-foreground">
                               {entry.completou ? "Completou" : "Pendente"}
                             </span>
