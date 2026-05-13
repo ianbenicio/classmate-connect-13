@@ -68,26 +68,36 @@ function alunoToRow(a: Aluno) {
   };
 }
 
+export type InviteResult =
+  | { ok: true; status: "invited" | "linked_existing"; userId: string }
+  | { ok: false; error: string; detail?: string; hint?: string };
+
 /**
  * Dispara a Edge Function `invite-aluno-user` para o aluno.
  * Pré-condições (verificadas server-side): email + curso_id + turma_id + sem user_id.
- * Retorna o status retornado ou null em erro.
+ * v2 da Edge Function retorna 200 com body.error quando falha conhecida.
  */
-async function inviteAlunoUser(alunoId: string): Promise<{
-  status: "invited" | "linked_existing";
-  userId: string;
-} | null> {
+async function inviteAlunoUser(alunoId: string): Promise<InviteResult> {
   const { data, error } = await supabase.functions.invoke("invite-aluno-user", {
     body: { alunoId },
   });
   if (error) {
-    console.error("[alunos] invite error", error);
-    return null;
+    console.error("[alunos] invite invoke error", error);
+    return { ok: false, error: "invoke_failed", detail: error.message };
+  }
+  // Body com error: falha conhecida (200 OK mas erro semântico).
+  if (data && typeof data === "object" && "error" in data && !("status" in data)) {
+    const errObj = data as { error: string; detail?: string; hint?: string };
+    console.error("[alunos] invite error body", errObj);
+    return { ok: false, error: errObj.error, detail: errObj.detail, hint: errObj.hint };
   }
   const result = data as { status: "invited" | "linked_existing"; userId: string };
+  if (!result?.userId) {
+    return { ok: false, error: "no_user_id_returned" };
+  }
   // Atualiza snapshot in-memory para UI refletir vínculo imediato.
   patchAlunoUserId(alunoId, result.userId);
-  return result;
+  return { ok: true, status: result.status, userId: result.userId };
 }
 
 /**

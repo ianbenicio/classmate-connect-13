@@ -77,8 +77,23 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
     setConvidando(true);
     const result = await alunosStore.invite(aluno.id);
     setConvidando(false);
-    if (!result) {
-      toast.error("Falha ao enviar convite. Verifique email/curso/turma e tente de novo.");
+    if (!result.ok) {
+      const friendly =
+        result.error === "aluno_already_linked"
+          ? "Este aluno já tem conta vinculada."
+          : result.error === "aluno_missing_email"
+            ? "Aluno sem email — edite e salve antes."
+            : result.error === "aluno_missing_curso_or_turma"
+              ? "Vincule curso e turma antes."
+              : result.error === "invalid_email_format"
+                ? "Email inválido."
+                : result.error === "invite_failed"
+                  ? "Convite falhou no Supabase Auth — verifique SMTP/quota."
+                  : result.error === "invoke_failed"
+                    ? "Edge Function não respondeu."
+                    : `Falha ao enviar convite (${result.error}).`;
+      const extra = result.detail ?? result.hint;
+      toast.error(extra ? `${friendly} ${extra}` : friendly);
       return;
     }
     if (result.status === "invited") {
@@ -383,7 +398,10 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                         <CheckCircle2 className="h-3 w-3 mr-1" /> Vinculada
                       </Badge>
                     ) : aluno.email ? (
-                      <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-300">
+                      <Badge
+                        variant="outline"
+                        className="border-amber-500/40 text-amber-700 dark:text-amber-300"
+                      >
                         <AlertTriangle className="h-3 w-3 mr-1" /> Não vinculada
                       </Badge>
                     ) : (
@@ -393,7 +411,12 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                     )}
                   </div>
                   {!aluno.userId && aluno.email && aluno.cursoId && aluno.turmaId && (
-                    <Button size="sm" variant="outline" onClick={handleEnviarConvite} disabled={convidando}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleEnviarConvite}
+                      disabled={convidando}
+                    >
                       <Mail className="h-3.5 w-3.5 mr-1" />
                       {convidando ? "Enviando…" : "Enviar convite"}
                     </Button>

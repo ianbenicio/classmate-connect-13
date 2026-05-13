@@ -109,8 +109,23 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
     try {
       await onSave(aluno);
       const result = await alunosStore.invite(aluno.id);
-      if (!result) {
-        toast.error("Aluno salvo, mas falha ao criar usuário. Tente reenviar pelo detalhe do aluno.");
+      if (!result.ok) {
+        const friendly =
+          result.error === "aluno_already_linked"
+            ? "Este aluno já tem conta vinculada."
+            : result.error === "aluno_missing_email"
+              ? "Aluno sem email — preencha e salve antes."
+              : result.error === "aluno_missing_curso_or_turma"
+                ? "Vincule curso e turma antes de exportar."
+                : result.error === "invalid_email_format"
+                  ? "Email inválido."
+                  : result.error === "invite_failed"
+                    ? "Convite falhou no Supabase Auth — verifique SMTP/quota."
+                    : result.error === "invoke_failed"
+                      ? "Edge Function não respondeu — tente novamente."
+                      : `Aluno salvo, mas falha ao criar usuário (${result.error}).`;
+        const extra = result.detail ?? result.hint;
+        toast.error(extra ? `${friendly} ${extra}` : friendly);
         return;
       }
       if (result.status === "invited") {
