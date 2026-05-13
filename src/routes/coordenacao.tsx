@@ -21,6 +21,7 @@ import {
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { SettingsDialog } from "@/components/admin/SettingsDialog";
+import { RelatoriosCoordenacaoDialog } from "@/components/relatorios/RelatoriosCoordenacaoDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
@@ -79,6 +80,7 @@ function CoordenacaoDashboard() {
   const [usersOpen, setUsersOpen] = useState(false);
   const [professoresOpen, setProfessoresOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [relatoriosOpen, setRelatoriosOpen] = useState(false);
   const [limpandoOrfas, setLimpandoOrfas] = useState(false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao");
@@ -280,6 +282,9 @@ function CoordenacaoDashboard() {
           <Button variant="outline" onClick={() => setSettingsOpen(true)}>
             <SettingsIcon /> Configurações
           </Button>
+          <Button variant="outline" onClick={() => setRelatoriosOpen(true)}>
+            <FileText /> Relatórios
+          </Button>
           <Button variant="outline" onClick={handleLimparOrfas} disabled={limpandoOrfas}>
             {limpandoOrfas ? <Loader2 className="animate-spin" /> : <BellOff />}
             Limpar notificações órfãs
@@ -400,6 +405,7 @@ function CoordenacaoDashboard() {
       {isAdmin && <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />}
       <ProfessoresManagerDialog open={professoresOpen} onOpenChange={setProfessoresOpen} />
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <RelatoriosCoordenacaoDialog open={relatoriosOpen} onOpenChange={setRelatoriosOpen} />
     </main>
   );
 }
