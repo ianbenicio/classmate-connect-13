@@ -23,6 +23,10 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
+import { useState } from "react";
+import { FileText } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useAlunos } from "@/lib/alunos-store";
 import { useCursos } from "@/lib/cursos-store";
@@ -141,16 +145,28 @@ function MinhaAreaPage() {
 
   const fmtData = (iso: string) => format(parseISO(iso), "dd 'de' MMM", { locale: ptBR });
 
+  const [relatoriosOpen, setRelatoriosOpen] = useState(false);
+
   return (
     <div className="container mx-auto max-w-4xl p-4 sm:p-6 space-y-4">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight inline-flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" /> Minha área
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Olá, <strong>{aluno.nome}</strong>! Aqui ficam suas aulas, presenças e avaliações.
-        </p>
+      <header className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight inline-flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" /> Minha área
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Olá, <strong>{aluno.nome}</strong>! Aqui ficam suas aulas, presenças e avaliações.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => setRelatoriosOpen(true)}>
+          <FileText className="h-3.5 w-3.5 mr-1" /> Meus relatórios
+        </Button>
       </header>
+      <MeusRelatoriosDialog
+        open={relatoriosOpen}
+        onOpenChange={setRelatoriosOpen}
+        mode="aluno"
+      />
 
       {/* Perfil */}
       <Card>

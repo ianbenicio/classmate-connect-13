@@ -17,6 +17,7 @@ import { useTurmas } from "@/lib/turmas-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { ScheduleCalendar } from "@/components/academic/ScheduleCalendar";
 import { MinhasAtividadesTable } from "@/components/professor/MinhasAtividadesTable";
+import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
@@ -88,6 +89,7 @@ function DashboardPage() {
     date: Date;
     slot: HorarioSlot;
   } | null>(null);
+  const [meusRelatoriosOpen, setMeusRelatoriosOpen] = useState(false);
 
   const aulasCount = atividades.filter((a) => a.tipo === 0).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
@@ -175,11 +177,26 @@ function DashboardPage() {
 
         {/* Minhas Atividades — só para professores (tabela tipo planilha) */}
         {isProfessor && (
-          <section className="mb-10">
-            <MinhasAtividadesTable
-              onAbrirRelatorio={(info) => setRelatorioCtx(info)}
-            />
+          <section className="mb-10 space-y-2">
+            <div className="flex justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setMeusRelatoriosOpen(true)}
+              >
+                <ClipboardList className="h-3.5 w-3.5 mr-1" />
+                Meus relatórios
+              </Button>
+            </div>
+            <MinhasAtividadesTable onAbrirRelatorio={(info) => setRelatorioCtx(info)} />
           </section>
+        )}
+        {isProfessor && (
+          <MeusRelatoriosDialog
+            open={meusRelatoriosOpen}
+            onOpenChange={setMeusRelatoriosOpen}
+            mode="professor"
+          />
         )}
 
         {/* Calendário */}
