@@ -6,6 +6,7 @@ import type { Agendamento, DiaSemana, StatusAgendamento } from "./academic-types
 import { SEED_AGENDAMENTOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
+import { getCurrentProjectId } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 import { notificacoesStore } from "./notificacoes-store";
@@ -116,6 +117,7 @@ function agendamentoToRow(a: Agendamento) {
     recursos_entregues_em: a.recursosEntreguesEm ?? null,
     recursos_drive_path: a.recursosDrivePath ?? null,
     pais_notificados_em: a.paisNotificadosEm ?? null,
+    project_id: getCurrentProjectId() ?? undefined,
   };
 }
 

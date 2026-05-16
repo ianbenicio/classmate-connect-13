@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
+import { getCurrentProjectId } from "./current-project";
 import { toast } from "sonner";
 import type { AvaliacaoAula, AvaliacaoRecord } from "./avaliacoes-types";
 import type {
@@ -211,6 +212,7 @@ export const avaliacoesStore = {
       tipo,
       dados: dadosComSnapshot as never,
       criado_por_user_id: authUser?.id ?? null,
+      project_id: getCurrentProjectId() ?? undefined,
     };
     // Atualização otimista local
     const local: AvaliacaoRecord = {

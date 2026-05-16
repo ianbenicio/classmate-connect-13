@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
+import { getCurrentProjectId } from "./current-project";
 import { toast } from "sonner";
 
 export interface TarefaAluno {
@@ -51,6 +52,7 @@ function toRow(t: TarefaAluno) {
     atividade_id: toUuid(t.atividadeId),
     completou: t.completou,
     observacao: t.observacao ?? null,
+    project_id: getCurrentProjectId() ?? undefined,
   };
 }
 

@@ -5,6 +5,7 @@ import { SEED_ALUNOS } from "./academic-seed";
 import { devInfo } from "./dev-log";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
+import { getCurrentProjectId } from "./current-project";
 import { toast } from "sonner";
 
 let alunos: Aluno[] = [];
@@ -65,6 +66,7 @@ function alunoToRow(a: Aluno) {
     responsavel: a.responsavel ?? null,
     contato_resp: a.contatoResp ?? null,
     observacao: a.observacao ?? null,
+    project_id: getCurrentProjectId() ?? undefined,
   };
 }
 

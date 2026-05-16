@@ -3,6 +3,7 @@
 // Fonte de verdade: tabela `public.comportamento_tags` no Supabase.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentProjectId } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -50,7 +51,7 @@ function rowToEntry(r: TagRow): ComportamentoTagEntry {
   };
 }
 
-function entryToRow(e: ComportamentoTagEntry): Omit<TagRow, never> {
+function entryToRow(e: ComportamentoTagEntry): Record<string, unknown> {
   return {
     id: e.id,
     value: e.value,
@@ -60,6 +61,8 @@ function entryToRow(e: ComportamentoTagEntry): Omit<TagRow, never> {
     ordem: e.ordem,
     ativo: e.ativo,
     descricao: e.descricao,
+    // NULL = global (catálogo compartilhado); set = exclusivo do projeto
+    project_id: getCurrentProjectId() ?? undefined,
   };
 }
 
