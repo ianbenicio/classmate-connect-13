@@ -103,8 +103,16 @@ const PUBLIC_ROUTES = new Set<string>(["/auth", "/reset-password"]);
 
 function AppShell() {
   useAgendamentoScanner();
-  const { hasRole, isStaff: isStaffFn, isAuthenticated, loading } = useAuth();
+  const {
+    hasRole,
+    isStaff: isStaffFn,
+    isSuperAdmin: isSuperAdminFn,
+    isAuthenticated,
+    loading,
+    currentProject,
+  } = useAuth();
   const isStaff = isStaffFn();
+  const isSuper = isSuperAdminFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
   const isAluno = hasRole("aluno") && !isStaff;
   const [skillsOpen, setSkillsOpen] = useState(false);
@@ -148,9 +156,27 @@ function AppShell() {
         <div className="container mx-auto max-w-6xl px-4 h-14 flex items-center gap-6">
           <Link
             to={isAluno ? "/minha-area" : "/"}
-            className="font-bold tracking-tight"
+            className="font-bold tracking-tight inline-flex items-center gap-2"
           >
             🎓 Acadêmico
+            {isSuper ? (
+              <span className="text-[10px] font-medium uppercase rounded bg-purple-500/15 text-purple-700 dark:text-purple-300 px-1.5 py-0.5">
+                Super
+              </span>
+            ) : currentProject ? (
+              <span
+                className="text-[10px] font-medium uppercase rounded px-1.5 py-0.5"
+                style={{
+                  backgroundColor: currentProject.corPrimaria
+                    ? `${currentProject.corPrimaria}25`
+                    : "rgba(59,130,246,0.15)",
+                  color: currentProject.corPrimaria ?? "#3b82f6",
+                }}
+                title={`Projeto: ${currentProject.nome}`}
+              >
+                {currentProject.nome}
+              </span>
+            ) : null}
           </Link>
           <nav className="flex items-center gap-4 text-sm flex-1">
             {isAluno ? (
