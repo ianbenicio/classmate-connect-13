@@ -17,10 +17,12 @@ import {
   BarChart3,
   BellOff,
   Settings as SettingsIcon,
+  Building2,
 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { SettingsDialog } from "@/components/admin/SettingsDialog";
+import { ProjetosManagerDialog } from "@/components/admin/ProjetosManagerDialog";
 import { RelatoriosCoordenacaoDialog } from "@/components/relatorios/RelatoriosCoordenacaoDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
@@ -71,7 +73,7 @@ function CoordenacaoPage() {
 }
 
 function CoordenacaoDashboard() {
-  const { user: authUser, roles, hasRole, displayName } = useAuth();
+  const { user: authUser, roles, hasRole, displayName, isSuperAdmin } = useAuth();
   const relatorios = useRelatorios();
   const agendamentos = useAgendamentos();
   const [filtro, setFiltro] = useState<"all" | RelatorioTipo>("all");
@@ -80,10 +82,11 @@ function CoordenacaoDashboard() {
   const [usersOpen, setUsersOpen] = useState(false);
   const [professoresOpen, setProfessoresOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [projetosOpen, setProjetosOpen] = useState(false);
   const [relatoriosOpen, setRelatoriosOpen] = useState(false);
   const [limpandoOrfas, setLimpandoOrfas] = useState(false);
 
-  const canAccess = hasRole("admin") || hasRole("coordenacao");
+  const canAccess = hasRole("admin") || hasRole("coordenacao") || isSuperAdmin();
   const isAdmin = hasRole("admin");
   const userNome =
     displayName || (authUser?.user_metadata?.name as string | undefined) || authUser?.email || "—";
@@ -282,6 +285,11 @@ function CoordenacaoDashboard() {
           <Button variant="outline" onClick={() => setSettingsOpen(true)}>
             <SettingsIcon /> Configurações
           </Button>
+          {isSuperAdmin() && (
+            <Button variant="outline" onClick={() => setProjetosOpen(true)}>
+              <Building2 /> Projetos
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setRelatoriosOpen(true)}>
             <FileText /> Relatórios
           </Button>
@@ -405,6 +413,9 @@ function CoordenacaoDashboard() {
       {isAdmin && <UsersManagerDialog open={usersOpen} onOpenChange={setUsersOpen} />}
       <ProfessoresManagerDialog open={professoresOpen} onOpenChange={setProfessoresOpen} />
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      {isSuperAdmin() && (
+        <ProjetosManagerDialog open={projetosOpen} onOpenChange={setProjetosOpen} />
+      )}
       <RelatoriosCoordenacaoDialog open={relatoriosOpen} onOpenChange={setRelatoriosOpen} />
     </main>
   );
