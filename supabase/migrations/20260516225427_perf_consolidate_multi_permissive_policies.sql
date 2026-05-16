@@ -1,0 +1,14 @@
+-- 20260516225427_perf_consolidate_multi_permissive_policies
+--
+-- Body too large for inline dump (~16KB each). Canonical SQL is stored in
+-- supabase_migrations.schema_migrations on the remote project. To fetch:
+--   supabase db pull --schema public
+-- or via MCP:
+--   SELECT array_to_string(statements, E'\n;\n') FROM
+--     supabase_migrations.schema_migrations
+--   WHERE version = '20260516225427';
+--
+-- DR replay: the policy CREATEs in these migrations are idempotent (DROP+CREATE).
+-- They wrap auth.uid() in (SELECT auth.uid()) and consolidate overlapping
+-- permissive policies. Applying advisor-clean state can be done by re-running
+-- the policy generator from current pg_policies on a known-good clone.

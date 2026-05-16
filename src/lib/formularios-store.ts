@@ -83,7 +83,9 @@ async function topUpFormularios(existingSlugs: Set<string>) {
     return false;
   }
   const missing = SEED_FORMULARIOS.filter((f) => !existingSlugs.has(f.slug));
-  devInfo(`[formularios] top-up: seed sincronizado (${missing.length} novos, ${SEED_FORMULARIOS.length - missing.length} atualizados)`);
+  devInfo(
+    `[formularios] top-up: seed sincronizado (${missing.length} novos, ${SEED_FORMULARIOS.length - missing.length} atualizados)`,
+  );
   return true;
 }
 

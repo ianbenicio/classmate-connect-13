@@ -1,0 +1,31 @@
+-- Cria indices em todas FKs sem covering index (advisor INFO).
+
+CREATE INDEX IF NOT EXISTS idx_agendamentos_criado_por_user_id ON public.agendamentos(criado_por_user_id);
+CREATE INDEX IF NOT EXISTS idx_agendamentos_project_id ON public.agendamentos(project_id);
+CREATE INDEX IF NOT EXISTS idx_aluno_habilidades_habilidade_id ON public.aluno_habilidades(habilidade_id);
+CREATE INDEX IF NOT EXISTS idx_alunos_project_id ON public.alunos(project_id);
+CREATE INDEX IF NOT EXISTS idx_atividades_project_id ON public.atividades(project_id);
+CREATE INDEX IF NOT EXISTS idx_avaliacoes_atividade_id ON public.avaliacoes(atividade_id);
+CREATE INDEX IF NOT EXISTS idx_avaliacoes_criado_por_user_id ON public.avaliacoes(criado_por_user_id);
+CREATE INDEX IF NOT EXISTS idx_avaliacoes_project_id ON public.avaliacoes(project_id);
+CREATE INDEX IF NOT EXISTS idx_comportamento_tags_project_id ON public.comportamento_tags(project_id);
+CREATE INDEX IF NOT EXISTS idx_cursos_project_id ON public.cursos(project_id);
+CREATE INDEX IF NOT EXISTS idx_formularios_project_id ON public.formularios(project_id);
+CREATE INDEX IF NOT EXISTS idx_grupos_project_id ON public.grupos(project_id);
+CREATE INDEX IF NOT EXISTS idx_habilidades_project_id ON public.habilidades(project_id);
+CREATE INDEX IF NOT EXISTS idx_notificacoes_curso_id ON public.notificacoes(curso_id);
+CREATE INDEX IF NOT EXISTS idx_notificacoes_project_id ON public.notificacoes(project_id);
+CREATE INDEX IF NOT EXISTS idx_notificacoes_turma_id ON public.notificacoes(turma_id);
+CREATE INDEX IF NOT EXISTS idx_presencas_project_id ON public.presencas(project_id);
+CREATE INDEX IF NOT EXISTS idx_professor_avaliacoes_project_id ON public.professor_avaliacoes(project_id);
+CREATE INDEX IF NOT EXISTS idx_profiles_project_id ON public.profiles(project_id);
+CREATE INDEX IF NOT EXISTS idx_relatorios_criado_por_user_id ON public.relatorios(criado_por_user_id);
+CREATE INDEX IF NOT EXISTS idx_relatorios_project_id ON public.relatorios(project_id);
+CREATE INDEX IF NOT EXISTS idx_relatorios_turma_id ON public.relatorios(turma_id);
+CREATE INDEX IF NOT EXISTS idx_relatorios_exportados_project_id ON public.relatorios_exportados(project_id);
+CREATE INDEX IF NOT EXISTS idx_system_settings_project_id ON public.system_settings(project_id);
+CREATE INDEX IF NOT EXISTS idx_system_settings_updated_by ON public.system_settings(updated_by);
+CREATE INDEX IF NOT EXISTS idx_tarefas_alunos_aluno_id ON public.tarefas_alunos(aluno_id);
+CREATE INDEX IF NOT EXISTS idx_tarefas_alunos_atividade_id ON public.tarefas_alunos(atividade_id);
+CREATE INDEX IF NOT EXISTS idx_tarefas_alunos_project_id ON public.tarefas_alunos(project_id);
+CREATE INDEX IF NOT EXISTS idx_turmas_project_id ON public.turmas(project_id);

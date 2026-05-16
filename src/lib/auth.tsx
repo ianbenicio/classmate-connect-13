@@ -1,8 +1,8 @@
 // Hook de autenticação real (Supabase) com sistema de papéis + tenant (projeto).
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { setCurrentProjectId } from "./current-project";
+import { setCurrentProjectId, setIsSuperAdmin } from "./current-project";
 
 export type AppRole = "super_admin" | "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
 
@@ -62,13 +62,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentProject, setCurrentProject] = useState<Projeto | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // H1: race-guard. Auth events can fire concurrently (initial getSession +
+  // onAuthStateChange burst). Track the most-recent load uid; older completions
+  // are discarded so stale data never overwrites fresh state.
+  const loadGenRef = useRef(0);
+  const lastUidRef = useRef<string | null>(null);
+
   const loadProfile = async (uid: string) => {
+    const gen = ++loadGenRef.current;
+    lastUidRef.current = uid;
     const [{ data: profile }, { data: roleRows }] = await Promise.all([
       supabase.from("profiles").select("display_name, project_id").eq("user_id", uid).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", uid),
     ]);
+    // Stale guard: newer load fired or user switched mid-flight → drop result.
+    if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
     setDisplayName(profile?.display_name ?? "");
-    setRoles((roleRows ?? []).map((r) => r.role as AppRole));
+    const parsedRoles = (roleRows ?? []).map((r) => r.role as AppRole);
+    setRoles(parsedRoles);
+    setIsSuperAdmin(parsedRoles.includes("super_admin"));
 
     // Carrega projeto vinculado (NULL para super_admin sem vínculo).
     const projectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
@@ -78,6 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .select("id, slug, nome, logo_url, cor_primaria")
         .eq("id", projectId)
         .maybeSingle();
+      if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
       if (proj) {
         const p: Projeto = {
           id: proj.id,
@@ -115,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setDisplayName("");
         setCurrentProject(null);
         setCurrentProjectId(null);
+        setIsSuperAdmin(false);
       }
     });
 

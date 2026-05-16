@@ -60,9 +60,7 @@ export function ProjetosManagerDialog({ open, onOpenChange }: Props) {
 
   const remove = async (p: ProjetoRow) => {
     if (
-      !confirm(
-        `Remover projeto "${p.nome}"? Esta ação só funciona se não houver dados vinculados.`,
-      )
+      !confirm(`Remover projeto "${p.nome}"? Esta ação só funciona se não houver dados vinculados.`)
     )
       return;
     await projetosStore.remove(p.id);

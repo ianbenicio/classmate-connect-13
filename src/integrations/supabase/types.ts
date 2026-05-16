@@ -1,8 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5";
   };
@@ -24,11 +22,15 @@ export type Database = {
           inicio: string;
           meta: Json;
           observacao: string | null;
+          pais_notificados_em: string | null;
           parte_grupo_id: string | null;
           parte_num: number;
           partes_total: number;
           professor: string | null;
           professor_user_id: string | null;
+          project_id: string;
+          recursos_drive_path: string | null;
+          recursos_entregues_em: string | null;
           status: Database["public"]["Enums"]["status_agendamento"];
           turma_id: string;
           updated_at: string;
@@ -48,11 +50,15 @@ export type Database = {
           inicio: string;
           meta?: Json;
           observacao?: string | null;
+          pais_notificados_em?: string | null;
           parte_grupo_id?: string | null;
           parte_num?: number;
           partes_total?: number;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
+          recursos_drive_path?: string | null;
+          recursos_entregues_em?: string | null;
           status?: Database["public"]["Enums"]["status_agendamento"];
           turma_id: string;
           updated_at?: string;
@@ -72,54 +78,26 @@ export type Database = {
           inicio?: string;
           meta?: Json;
           observacao?: string | null;
+          pais_notificados_em?: string | null;
           parte_grupo_id?: string | null;
           parte_num?: number;
           partes_total?: number;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
+          recursos_drive_path?: string | null;
+          recursos_entregues_em?: string | null;
           status?: Database["public"]["Enums"]["status_agendamento"];
           turma_id?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "agendamentos_turma_id_fkey";
-            columns: ["turma_id"];
-            isOneToOne: false;
-            referencedRelation: "turmas";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       aluno_habilidades: {
-        Row: {
-          aluno_id: string;
-          habilidade_id: string;
-        };
-        Insert: {
-          aluno_id: string;
-          habilidade_id: string;
-        };
-        Update: {
-          aluno_id?: string;
-          habilidade_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "aluno_habilidades_aluno_id_fkey";
-            columns: ["aluno_id"];
-            isOneToOne: false;
-            referencedRelation: "alunos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "aluno_habilidades_habilidade_id_fkey";
-            columns: ["habilidade_id"];
-            isOneToOne: false;
-            referencedRelation: "habilidades";
-            referencedColumns: ["id"];
-          },
-        ];
+        Row: { aluno_id: string; habilidade_id: string };
+        Insert: { aluno_id: string; habilidade_id: string };
+        Update: { aluno_id?: string; habilidade_id?: string };
+        Relationships: [];
       };
       alunos: {
         Row: {
@@ -128,10 +106,12 @@ export type Database = {
           cpf: string | null;
           created_at: string;
           curso_id: string | null;
+          email: string | null;
           id: string;
           idade: number | null;
           nome: string;
           observacao: string | null;
+          project_id: string;
           responsavel: string | null;
           turma_id: string | null;
           updated_at: string;
@@ -143,10 +123,12 @@ export type Database = {
           cpf?: string | null;
           created_at?: string;
           curso_id?: string | null;
+          email?: string | null;
           id?: string;
           idade?: number | null;
           nome: string;
           observacao?: string | null;
+          project_id?: string;
           responsavel?: string | null;
           turma_id?: string | null;
           updated_at?: string;
@@ -158,31 +140,18 @@ export type Database = {
           cpf?: string | null;
           created_at?: string;
           curso_id?: string | null;
+          email?: string | null;
           id?: string;
           idade?: number | null;
           nome?: string;
           observacao?: string | null;
+          project_id?: string;
           responsavel?: string | null;
           turma_id?: string | null;
           updated_at?: string;
           user_id?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: "alunos_curso_id_fkey";
-            columns: ["curso_id"];
-            isOneToOne: false;
-            referencedRelation: "cursos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "alunos_turma_id_fkey";
-            columns: ["turma_id"];
-            isOneToOne: false;
-            referencedRelation: "turmas";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       atividades: {
         Row: {
@@ -209,6 +178,7 @@ export type Database = {
           pre_requisitos: string | null;
           professor: string | null;
           professor_user_id: string | null;
+          project_id: string;
           referencias: string | null;
           resultados_esperados: string | null;
           roteiro: Json | null;
@@ -241,6 +211,7 @@ export type Database = {
           pre_requisitos?: string | null;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
           referencias?: string | null;
           resultados_esperados?: string | null;
           roteiro?: Json | null;
@@ -273,6 +244,7 @@ export type Database = {
           pre_requisitos?: string | null;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
           referencias?: string | null;
           resultados_esperados?: string | null;
           roteiro?: Json | null;
@@ -281,15 +253,7 @@ export type Database = {
           tipo?: Database["public"]["Enums"]["atividade_tipo"];
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "atividades_curso_id_fkey";
-            columns: ["curso_id"];
-            isOneToOne: false;
-            referencedRelation: "cursos";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       avaliacoes: {
         Row: {
@@ -300,6 +264,7 @@ export type Database = {
           criado_por_user_id: string | null;
           dados: Json;
           id: string;
+          project_id: string;
           tipo: string;
           updated_at: string;
         };
@@ -311,6 +276,7 @@ export type Database = {
           criado_por_user_id?: string | null;
           dados?: Json;
           id?: string;
+          project_id?: string;
           tipo: string;
           updated_at?: string;
         };
@@ -322,32 +288,11 @@ export type Database = {
           criado_por_user_id?: string | null;
           dados?: Json;
           id?: string;
+          project_id?: string;
           tipo?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "avaliacoes_agendamento_id_fkey";
-            columns: ["agendamento_id"];
-            isOneToOne: false;
-            referencedRelation: "agendamentos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "avaliacoes_aluno_id_fkey";
-            columns: ["aluno_id"];
-            isOneToOne: false;
-            referencedRelation: "alunos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "avaliacoes_atividade_id_fkey";
-            columns: ["atividade_id"];
-            isOneToOne: false;
-            referencedRelation: "atividades";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       comportamento_tags: {
         Row: {
@@ -358,6 +303,7 @@ export type Database = {
           id: string;
           label: string;
           ordem: number;
+          project_id: string | null;
           tom: string;
           value: string;
         };
@@ -369,6 +315,7 @@ export type Database = {
           id?: string;
           label: string;
           ordem?: number;
+          project_id?: string | null;
           tom?: string;
           value: string;
         };
@@ -380,6 +327,7 @@ export type Database = {
           id?: string;
           label?: string;
           ordem?: number;
+          project_id?: string | null;
           tom?: string;
           value?: string;
         };
@@ -395,6 +343,7 @@ export type Database = {
           habilidade_ids: Json;
           id: string;
           nome: string;
+          project_id: string;
           turno_diario_min: number;
           updated_at: string;
         };
@@ -407,6 +356,7 @@ export type Database = {
           habilidade_ids?: Json;
           id?: string;
           nome: string;
+          project_id?: string;
           turno_diario_min?: number;
           updated_at?: string;
         };
@@ -419,6 +369,7 @@ export type Database = {
           habilidade_ids?: Json;
           id?: string;
           nome?: string;
+          project_id?: string;
           turno_diario_min?: number;
           updated_at?: string;
         };
@@ -434,6 +385,7 @@ export type Database = {
           id: string;
           is_system: boolean;
           nome: string;
+          project_id: string;
           slug: string;
           updated_at: string;
         };
@@ -446,6 +398,7 @@ export type Database = {
           id?: string;
           is_system?: boolean;
           nome: string;
+          project_id?: string;
           slug: string;
           updated_at?: string;
         };
@@ -458,6 +411,7 @@ export type Database = {
           id?: string;
           is_system?: boolean;
           nome?: string;
+          project_id?: string;
           slug?: string;
           updated_at?: string;
         };
@@ -470,6 +424,7 @@ export type Database = {
           curso_id: string;
           id: string;
           nome: string;
+          project_id: string;
           updated_at: string;
         };
         Insert: {
@@ -478,6 +433,7 @@ export type Database = {
           curso_id: string;
           id?: string;
           nome: string;
+          project_id?: string;
           updated_at?: string;
         };
         Update: {
@@ -486,17 +442,10 @@ export type Database = {
           curso_id?: string;
           id?: string;
           nome?: string;
+          project_id?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "grupos_curso_id_fkey";
-            columns: ["curso_id"];
-            isOneToOne: false;
-            referencedRelation: "cursos";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       habilidades: {
         Row: {
@@ -505,6 +454,7 @@ export type Database = {
           grupo: string | null;
           id: string;
           nome: string | null;
+          project_id: string | null;
           sigla: string;
           tipo: string;
           updated_at: string;
@@ -515,6 +465,7 @@ export type Database = {
           grupo?: string | null;
           id?: string;
           nome?: string | null;
+          project_id?: string | null;
           sigla: string;
           tipo?: string;
           updated_at?: string;
@@ -525,6 +476,7 @@ export type Database = {
           grupo?: string | null;
           id?: string;
           nome?: string | null;
+          project_id?: string | null;
           sigla?: string;
           tipo?: string;
           updated_at?: string;
@@ -549,6 +501,7 @@ export type Database = {
           mensagem: string;
           professor: string | null;
           professor_user_id: string | null;
+          project_id: string;
           titulo: string;
           turma_id: string | null;
         };
@@ -569,6 +522,7 @@ export type Database = {
           mensagem: string;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
           titulo: string;
           turma_id?: string | null;
         };
@@ -589,32 +543,11 @@ export type Database = {
           mensagem?: string;
           professor?: string | null;
           professor_user_id?: string | null;
+          project_id?: string;
           titulo?: string;
           turma_id?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: "notificacoes_agendamento_id_fkey";
-            columns: ["agendamento_id"];
-            isOneToOne: false;
-            referencedRelation: "agendamentos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "notificacoes_curso_id_fkey";
-            columns: ["curso_id"];
-            isOneToOne: false;
-            referencedRelation: "cursos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "notificacoes_turma_id_fkey";
-            columns: ["turma_id"];
-            isOneToOne: false;
-            referencedRelation: "turmas";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       presencas: {
         Row: {
@@ -625,6 +558,7 @@ export type Database = {
           id: string;
           observacao: string | null;
           presente: boolean;
+          project_id: string;
           registrado_por_user_id: string | null;
           updated_at: string;
         };
@@ -636,6 +570,7 @@ export type Database = {
           id?: string;
           observacao?: string | null;
           presente?: boolean;
+          project_id?: string;
           registrado_por_user_id?: string | null;
           updated_at?: string;
         };
@@ -647,32 +582,11 @@ export type Database = {
           id?: string;
           observacao?: string | null;
           presente?: boolean;
+          project_id?: string;
           registrado_por_user_id?: string | null;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "presencas_agendamento_id_fkey";
-            columns: ["agendamento_id"];
-            isOneToOne: false;
-            referencedRelation: "agendamentos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "presencas_aluno_id_fkey";
-            columns: ["aluno_id"];
-            isOneToOne: false;
-            referencedRelation: "alunos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "presencas_atividade_id_fkey";
-            columns: ["atividade_id"];
-            isOneToOne: false;
-            referencedRelation: "atividades";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       professor_avaliacoes: {
         Row: {
@@ -684,6 +598,7 @@ export type Database = {
           id: string;
           notas: Json;
           professor_user_id: string;
+          project_id: string;
           tags: string[];
         };
         Insert: {
@@ -695,6 +610,7 @@ export type Database = {
           id?: string;
           notas?: Json;
           professor_user_id: string;
+          project_id?: string;
           tags?: string[];
         };
         Update: {
@@ -706,17 +622,10 @@ export type Database = {
           id?: string;
           notas?: Json;
           professor_user_id?: string;
+          project_id?: string;
           tags?: string[];
         };
-        Relationships: [
-          {
-            foreignKeyName: "professor_avaliacoes_agendamento_id_fkey";
-            columns: ["agendamento_id"];
-            isOneToOne: false;
-            referencedRelation: "agendamentos";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -731,6 +640,7 @@ export type Database = {
           foto_url: string | null;
           habilidades_ids: string[] | null;
           id: string;
+          project_id: string | null;
           telefone: string | null;
           updated_at: string;
           user_id: string;
@@ -747,6 +657,7 @@ export type Database = {
           foto_url?: string | null;
           habilidades_ids?: string[] | null;
           id?: string;
+          project_id?: string | null;
           telefone?: string | null;
           updated_at?: string;
           user_id: string;
@@ -763,9 +674,37 @@ export type Database = {
           foto_url?: string | null;
           habilidades_ids?: string[] | null;
           id?: string;
+          project_id?: string | null;
           telefone?: string | null;
           updated_at?: string;
           user_id?: string;
+        };
+        Relationships: [];
+      };
+      projetos: {
+        Row: {
+          cor_primaria: string | null;
+          criado_em: string;
+          id: string;
+          logo_url: string | null;
+          nome: string;
+          slug: string;
+        };
+        Insert: {
+          cor_primaria?: string | null;
+          criado_em?: string;
+          id?: string;
+          logo_url?: string | null;
+          nome: string;
+          slug: string;
+        };
+        Update: {
+          cor_primaria?: string | null;
+          criado_em?: string;
+          id?: string;
+          logo_url?: string | null;
+          nome?: string;
+          slug?: string;
         };
         Relationships: [];
       };
@@ -779,6 +718,7 @@ export type Database = {
           id: string;
           observacoes: string | null;
           professor: string | null;
+          project_id: string;
           turma_id: string;
           updated_at: string;
         };
@@ -791,6 +731,7 @@ export type Database = {
           id?: string;
           observacoes?: string | null;
           professor?: string | null;
+          project_id?: string;
           turma_id: string;
           updated_at?: string;
         };
@@ -803,25 +744,11 @@ export type Database = {
           id?: string;
           observacoes?: string | null;
           professor?: string | null;
+          project_id?: string;
           turma_id?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "relatorios_agendamento_id_fkey";
-            columns: ["agendamento_id"];
-            isOneToOne: false;
-            referencedRelation: "agendamentos";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "relatorios_turma_id_fkey";
-            columns: ["turma_id"];
-            isOneToOne: false;
-            referencedRelation: "turmas";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       relatorios_exportados: {
         Row: {
@@ -833,6 +760,7 @@ export type Database = {
           gerado_por_nome: string | null;
           gerado_por_user_id: string | null;
           id: string;
+          project_id: string;
           size_bytes: number;
           tipo: string;
           titulo: string;
@@ -846,6 +774,7 @@ export type Database = {
           gerado_por_nome?: string | null;
           gerado_por_user_id?: string | null;
           id?: string;
+          project_id?: string;
           size_bytes?: number;
           tipo: string;
           titulo: string;
@@ -859,9 +788,76 @@ export type Database = {
           gerado_por_nome?: string | null;
           gerado_por_user_id?: string | null;
           id?: string;
+          project_id?: string;
           size_bytes?: number;
           tipo?: string;
           titulo?: string;
+        };
+        Relationships: [];
+      };
+      system_settings: {
+        Row: {
+          category: string;
+          description: string | null;
+          input_type: string;
+          key: string;
+          label: string;
+          project_id: string | null;
+          updated_at: string;
+          updated_by: string | null;
+          value: Json;
+        };
+        Insert: {
+          category: string;
+          description?: string | null;
+          input_type: string;
+          key: string;
+          label: string;
+          project_id?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          value: Json;
+        };
+        Update: {
+          category?: string;
+          description?: string | null;
+          input_type?: string;
+          key?: string;
+          label?: string;
+          project_id?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+          value?: Json;
+        };
+        Relationships: [];
+      };
+      tarefas_alunos: {
+        Row: {
+          agendamento_id: string;
+          aluno_id: string;
+          atividade_id: string;
+          completou: boolean;
+          observacao: string | null;
+          project_id: string;
+          registrado_em: string;
+        };
+        Insert: {
+          agendamento_id: string;
+          aluno_id: string;
+          atividade_id: string;
+          completou?: boolean;
+          observacao?: string | null;
+          project_id?: string;
+          registrado_em?: string;
+        };
+        Update: {
+          agendamento_id?: string;
+          aluno_id?: string;
+          atividade_id?: string;
+          completou?: boolean;
+          observacao?: string | null;
+          project_id?: string;
+          registrado_em?: string;
         };
         Relationships: [];
       };
@@ -875,6 +871,7 @@ export type Database = {
           horarios: Json;
           id: string;
           nome: string;
+          project_id: string;
           updated_at: string;
         };
         Insert: {
@@ -886,6 +883,7 @@ export type Database = {
           horarios?: Json;
           id?: string;
           nome: string;
+          project_id?: string;
           updated_at?: string;
         };
         Update: {
@@ -897,17 +895,10 @@ export type Database = {
           horarios?: Json;
           id?: string;
           nome?: string;
+          project_id?: string;
           updated_at?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "turmas_curso_id_fkey";
-            columns: ["curso_id"];
-            isOneToOne: false;
-            referencedRelation: "cursos";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       user_roles: {
         Row: {
@@ -949,43 +940,29 @@ export type Database = {
           id?: string;
           viewer_user_id?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "viewer_dependentes_aluno_id_fkey";
-            columns: ["aluno_id"];
-            isOneToOne: false;
-            referencedRelation: "alunos";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
     };
-    Views: {
-      [_ in never]: never;
-    };
+    Views: { [_ in never]: never };
     Functions: {
+      current_project_id: { Args: Record<string, never>; Returns: string };
+      get_projeto_javis_id: { Args: Record<string, never>; Returns: string };
+      has_project_access: { Args: { p: string }; Returns: boolean };
       has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"];
-          _user_id: string;
-        };
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _user_id: string };
         Returns: boolean;
       };
       is_staff: { Args: { _user_id: string }; Returns: boolean };
-      is_viewer_of: {
-        Args: { _aluno_id: string; _user_id: string };
-        Returns: boolean;
-      };
+      is_super_admin: { Args: Record<string, never>; Returns: boolean };
+      is_viewer_of: { Args: { _aluno_id: string; _user_id: string }; Returns: boolean };
     };
     Enums: {
-      app_role: "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
+      app_role: "admin" | "coordenacao" | "professor" | "aluno" | "viewer" | "super_admin";
       atividade_tipo: "aula" | "tarefa";
       dia_semana: "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom";
       status_agendamento: "pendente" | "concluido";
     };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    CompositeTypes: { [_ in never]: never };
   };
 };
 
@@ -1107,7 +1084,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "coordenacao", "professor", "aluno", "viewer"],
+      app_role: ["admin", "coordenacao", "professor", "aluno", "viewer", "super_admin"],
       atividade_tipo: ["aula", "tarefa"],
       dia_semana: ["seg", "ter", "qua", "qui", "sex", "sab", "dom"],
       status_agendamento: ["pendente", "concluido"],
