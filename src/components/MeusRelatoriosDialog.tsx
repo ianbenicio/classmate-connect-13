@@ -31,11 +31,7 @@ import { useTurmas } from "@/lib/turmas-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useAlunos } from "@/lib/alunos-store";
 import { useAtividades } from "@/lib/atividades-store";
-import {
-  gerarPdfRelatorioAluno,
-  gerarPdfRelatorioProf,
-  type PdfCtx,
-} from "@/lib/pdf-relatorios";
+import { gerarPdfRelatorioAluno, gerarPdfRelatorioProf, type PdfCtx } from "@/lib/pdf-relatorios";
 import { toast } from "sonner";
 
 interface Props {

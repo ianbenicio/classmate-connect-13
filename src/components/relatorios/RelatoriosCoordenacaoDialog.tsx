@@ -34,11 +34,7 @@ import { useAtividades } from "@/lib/atividades-store";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useUsersByRole } from "@/lib/users-store";
-import {
-  filtrarAvaliacoes,
-  gerarPdfRelatoriosLote,
-  type LoteFiltros,
-} from "@/lib/pdf-relatorios";
+import { filtrarAvaliacoes, gerarPdfRelatoriosLote, type LoteFiltros } from "@/lib/pdf-relatorios";
 import { toast } from "sonner";
 
 interface Props {

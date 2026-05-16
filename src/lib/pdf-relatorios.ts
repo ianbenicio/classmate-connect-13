@@ -149,10 +149,7 @@ function renderRelatorioProfSection(
   h.addKV("Turma", turma?.cod ?? "—");
   h.addKV("Professor", ag?.professor ?? "—");
   if (ativs.length > 0) {
-    h.addKV(
-      "Atividades",
-      ativs.map((a) => `${a?.codigo} — ${a?.nome}`).join(" | "),
-    );
+    h.addKV("Atividades", ativs.map((a) => `${a?.codigo} — ${a?.nome}`).join(" | "));
   }
   h.addKV("Registrado em", fmtDataHora(rec.criadoEm));
   h.addHr();
@@ -284,7 +281,10 @@ export interface LoteEstatisticas {
   mediaEntendeuConteudoAluno: number | null;
 }
 
-function computaEstatisticas(profs: AvaliacaoRecord[], alunos: AvaliacaoRecord[]): LoteEstatisticas {
+function computaEstatisticas(
+  profs: AvaliacaoRecord[],
+  alunos: AvaliacaoRecord[],
+): LoteEstatisticas {
   const aulasSet = new Set<string>();
   const alunosSet = new Set<string>();
   let presentes = 0;

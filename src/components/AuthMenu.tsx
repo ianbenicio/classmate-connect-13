@@ -11,13 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, GraduationCap } from "lucide-react";
+import { LogOut, User, GraduationCap, FileText } from "lucide-react";
 import { MeuPerfilProfessorDialog } from "@/components/MeuPerfilProfessorDialog";
+import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
 
 export function AuthMenu() {
   const { user, displayName, roles, isAuthenticated, hasRole, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const [perfilOpen, setPerfilOpen] = useState(false);
+  const [relatoriosOpen, setRelatoriosOpen] = useState(false);
 
   if (loading) return null;
 
@@ -57,6 +59,10 @@ export function AuthMenu() {
                 <GraduationCap className="h-4 w-4 mr-2" />
                 Meu perfil
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRelatoriosOpen(true)}>
+                <FileText className="h-4 w-4 mr-2" />
+                Meus relatórios
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
           )}
@@ -73,7 +79,14 @@ export function AuthMenu() {
       </DropdownMenu>
 
       {isProfessor && (
-        <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />
+        <>
+          <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />
+          <MeusRelatoriosDialog
+            open={relatoriosOpen}
+            onOpenChange={setRelatoriosOpen}
+            mode="professor"
+          />
+        </>
       )}
     </>
   );

@@ -162,11 +162,7 @@ function MinhaAreaPage() {
           <FileText className="h-3.5 w-3.5 mr-1" /> Meus relatórios
         </Button>
       </header>
-      <MeusRelatoriosDialog
-        open={relatoriosOpen}
-        onOpenChange={setRelatoriosOpen}
-        mode="aluno"
-      />
+      <MeusRelatoriosDialog open={relatoriosOpen} onOpenChange={setRelatoriosOpen} mode="aluno" />
 
       {/* Perfil */}
       <Card>
