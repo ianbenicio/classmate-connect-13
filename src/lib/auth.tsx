@@ -4,13 +4,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { setCurrentProjectId } from "./current-project";
 
-export type AppRole =
-  | "super_admin"
-  | "admin"
-  | "coordenacao"
-  | "professor"
-  | "aluno"
-  | "viewer";
+export type AppRole = "super_admin" | "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
 
 export const APP_ROLE_LABELS: Record<AppRole, string> = {
   super_admin: "Super Admin",
@@ -70,11 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadProfile = async (uid: string) => {
     const [{ data: profile }, { data: roleRows }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("display_name, project_id")
-        .eq("user_id", uid)
-        .maybeSingle(),
+      supabase.from("profiles").select("display_name, project_id").eq("user_id", uid).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", uid),
     ]);
     setDisplayName(profile?.display_name ?? "");

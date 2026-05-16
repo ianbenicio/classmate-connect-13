@@ -179,11 +179,7 @@ function DashboardPage() {
         {isProfessor && (
           <section className="mb-10 space-y-2">
             <div className="flex justify-end">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setMeusRelatoriosOpen(true)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setMeusRelatoriosOpen(true)}>
                 <ClipboardList className="h-3.5 w-3.5 mr-1" />
                 Meus relatórios
               </Button>

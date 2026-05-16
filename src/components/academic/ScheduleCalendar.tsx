@@ -34,10 +34,7 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
-import {
-  canDeleteAgendamento,
-  canManageAgendamento,
-} from "@/lib/agendamento-permissions";
+import { canDeleteAgendamento, canManageAgendamento } from "@/lib/agendamento-permissions";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {

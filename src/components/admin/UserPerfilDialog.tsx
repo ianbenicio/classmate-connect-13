@@ -546,7 +546,7 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
       {/* Perfil acadêmico completo do aluno linkado — abre por cima quando
           admin clica "Ver perfil acadêmico completo" no UserPerfilDialog. */}
       <AlunoDetailDialog
-        aluno={alunoDetailOpen ? linkedAluno ?? null : null}
+        aluno={alunoDetailOpen ? (linkedAluno ?? null) : null}
         curso={alunoCurso ?? undefined}
         turma={alunoTurma ?? undefined}
         atividades={atividades}

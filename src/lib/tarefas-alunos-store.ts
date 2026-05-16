@@ -97,9 +97,7 @@ export const tarefasAlunosStore = {
   /** Lista as tarefas de um agendamento (todos alunos × atividades-tarefa). */
   getByAgendamento(agendamentoId: string): TarefaAluno[] {
     const dbId = toUuid(agendamentoId);
-    return registros.filter(
-      (r) => r.agendamentoId === dbId || r.agendamentoId === agendamentoId,
-    );
+    return registros.filter((r) => r.agendamentoId === dbId || r.agendamentoId === agendamentoId);
   },
   /** Lista as tarefas de um aluno (para "Minha área" → histórico). */
   getByAluno(alunoId: string): TarefaAluno[] {
@@ -151,9 +149,7 @@ export function useTarefasAlunos(): TarefaAluno[] {
   const [snapshot, setSnapshot] = useState(tarefasAlunosStore.getAll());
   useEffect(() => {
     void ensureInit();
-    const unsub = tarefasAlunosStore.subscribe(() =>
-      setSnapshot([...tarefasAlunosStore.getAll()]),
-    );
+    const unsub = tarefasAlunosStore.subscribe(() => setSnapshot([...tarefasAlunosStore.getAll()]));
     return () => {
       unsub();
     };

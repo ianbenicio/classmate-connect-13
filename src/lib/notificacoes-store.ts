@@ -203,9 +203,7 @@ export const notificacoesStore = {
       validSet.add(id);
       validSet.add(toUuid(id));
     }
-    const orfas = notificacoes.filter(
-      (n) => n.agendamentoId && !validSet.has(n.agendamentoId),
-    );
+    const orfas = notificacoes.filter((n) => n.agendamentoId && !validSet.has(n.agendamentoId));
     if (orfas.length === 0) return 0;
 
     const orfasIds = orfas.map((n) => n.id);

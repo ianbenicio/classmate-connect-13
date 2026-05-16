@@ -48,10 +48,7 @@ export function pathSafe(input: string): string {
 
 /** Pega o pattern atual de settings ou usa o default. */
 export function getCurrentPattern(): string {
-  return settingsStore.get<string>(
-    "integration.drive.tarefas_folder_pattern",
-    DEFAULT_PATTERN,
-  );
+  return settingsStore.get<string>("integration.drive.tarefas_folder_pattern", DEFAULT_PATTERN);
 }
 
 /**

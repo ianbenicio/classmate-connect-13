@@ -55,9 +55,7 @@ export function PendingReportsDialog({ open, onOpenChange, cursos, turmas, ativi
     const now = new Date();
     return agendamentos
       .filter((a) => a.status !== "concluido")
-      .filter((a) =>
-        canManageAgendamento({ userId: currentUserId, isStaff: isAdmin }, a),
-      )
+      .filter((a) => canManageAgendamento({ userId: currentUserId, isStaff: isAdmin }, a))
       .map((a) => ({
         a,
         estado: computeSlotEstado(a.data, a.fim, a, now),

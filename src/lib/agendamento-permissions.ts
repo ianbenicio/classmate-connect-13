@@ -39,8 +39,7 @@ export function canManageAgendamento(
   if (actor.isStaff) return true;
   if (actor.userId === null) return false;
   return (
-    agendamento.criadoPorUserId === actor.userId ||
-    agendamento.professorUserId === actor.userId
+    agendamento.criadoPorUserId === actor.userId || agendamento.professorUserId === actor.userId
   );
 }
 

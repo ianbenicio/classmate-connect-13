@@ -149,7 +149,7 @@ function RelatorioProfessorDialogContent({
         const hint =
           data.error === "drive_not_configured"
             ? "Configure a Service Account em Coordenação → Configurações → Service Google."
-            : data.detail ?? data.error;
+            : (data.detail ?? data.error);
         toast.error(`Verificação Drive falhou: ${hint}`);
         return;
       }
@@ -163,7 +163,9 @@ function RelatorioProfessorDialogContent({
       const ok = results.filter((r) => r.completou).length;
       const fail = results.filter((r) => !r.completou && !r.error).length;
       const errs = results.filter((r) => r.error).length;
-      toast.success(`Drive: ${ok} entregue(s), ${fail} pendente(s)${errs ? `, ${errs} erro(s)` : ""}.`);
+      toast.success(
+        `Drive: ${ok} entregue(s), ${fail} pendente(s)${errs ? `, ${errs} erro(s)` : ""}.`,
+      );
 
       // Reaplica resultado ao state local
       setTarefas((prev) => {
