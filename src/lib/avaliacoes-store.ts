@@ -160,10 +160,13 @@ export const avaliacoesStore = {
     const rec = await this.save("relatorio_prof", agendamentoId, null, null, dados);
     // Marca o agendamento como "pais notificados" quando sugestoesPais preenchido.
     // Coluna criada na migration aulas_pos_status_phase_a (Fase A).
+    // Cast `as never` força PostgREST aceitar payload — Supabase generated
+    // types ainda não conhecem `pais_notificados_em` (regenerar pra remover).
     if (dados.sugestoesPais && dados.sugestoesPais.trim()) {
+      const patch = { pais_notificados_em: new Date().toISOString() } as never;
       const { error } = await supabase
         .from("agendamentos")
-        .update({ pais_notificados_em: new Date().toISOString() })
+        .update(patch)
         .eq("id", toUuid(agendamentoId));
       if (error) {
         // Não bloqueia o save principal — só loga.
