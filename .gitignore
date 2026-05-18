@@ -16,6 +16,12 @@ dist-ssr
 .nitro
 *.local
 
+# Test-only env files with JWTs / credentials — never commit
+.env
+.env.test
+.env.test.local
+.env.local
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
