@@ -12,7 +12,7 @@ import type {
 import { SEED_ATIVIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -134,7 +134,7 @@ function atividadeToRow(a: Atividade) {
     rubricas: (a.rubricas ?? []) as never,
     instrucoes: a.instrucoes ?? null,
     carga_horaria_min: a.cargaHorariaMin ?? 0,
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

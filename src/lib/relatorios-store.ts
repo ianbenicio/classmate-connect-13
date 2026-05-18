@@ -7,7 +7,7 @@
 // permitir re-download.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 
 export type RelatorioTipo = "export_completo" | "avaliacoes" | "frequencia" | "outro";
@@ -72,7 +72,7 @@ function toRow(r: Relatorio) {
     size_bytes: r.sizeBytes,
     filename: r.filename,
     conteudo: r.conteudo,
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

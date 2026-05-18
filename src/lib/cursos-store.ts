@@ -7,7 +7,7 @@ import type { Curso } from "./academic-types";
 import { SEED_CURSOS, SEED_GRUPOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -59,7 +59,7 @@ function cursoToRow(c: Curso) {
     duracao_aula_min: c.duracaoAulaMin ?? 60,
     turno_diario_min: c.turnoDiarioMin ?? c.duracaoAulaMin ?? 60,
     habilidade_ids: toUuidArray(c.habilidadeIds) as never,
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

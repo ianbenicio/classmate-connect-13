@@ -12,7 +12,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import type { AvaliacaoAula, AvaliacaoRecord } from "./avaliacoes-types";
 import type {
@@ -215,7 +215,7 @@ export const avaliacoesStore = {
       tipo,
       dados: dadosComSnapshot as never,
       criado_por_user_id: authUser?.id ?? null,
-      project_id: getCurrentProjectId() ?? undefined,
+      project_id: requireProjectIdForWrite() ?? undefined,
     };
     // Atualização otimista local
     const local: AvaliacaoRecord = {
@@ -227,10 +227,14 @@ export const avaliacoesStore = {
       dados: dadosComSnapshot,
       criadoEm: existing?.criadoEm ?? new Date().toISOString(),
     };
+    const snap = registros;
     registros = existing ? registros.map((r) => (r.id === id ? local : r)) : [local, ...registros];
     emit();
     const { error } = await supabase.from("avaliacoes").upsert(row, { onConflict: "id" });
     if (error) {
+      // C3: rollback optimistic update so UI reflects DB rejection
+      registros = snap;
+      emit();
       console.error("[avaliacoes] save error", error);
       toast.error(`Erro ao salvar avaliação: ${error.message}`);
     }
@@ -260,10 +264,17 @@ export const avaliacoesStore = {
   },
 
   async remove(id: string) {
+    const snap = registros;
     registros = registros.filter((r) => r.id !== id);
     emit();
     const { error } = await supabase.from("avaliacoes").delete().eq("id", id);
-    if (error) console.error("[avaliacoes] remove error", error);
+    if (error) {
+      // C3: rollback so the removed row reappears if DB rejected
+      registros = snap;
+      emit();
+      console.error("[avaliacoes] remove error", error);
+      toast.error(`Erro ao excluir avaliação: ${error.message}`);
+    }
   },
 
   subscribe(fn: () => void) {

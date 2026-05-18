@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SEED_FORMULARIOS } from "./academic-seed";
 import { toUuid } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { devInfo } from "./dev-log";
 
 export type FormularioDestinatario = "professor" | "aluno";
@@ -158,7 +158,7 @@ export const formulariosStore = {
       estrutura: (input.estrutura ?? { blocos: [] }) as never,
       is_system: false,
       criado_por_user_id: authData.user?.id ?? null,
-      project_id: getCurrentProjectId() ?? undefined,
+      project_id: requireProjectIdForWrite() ?? undefined,
     };
     const { data, error } = await supabase.from("formularios").insert(row).select("*").single();
     if (error) {

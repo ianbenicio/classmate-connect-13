@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { Notificacao } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 
 let notificacoes: Notificacao[] = [];
@@ -75,7 +75,7 @@ function notifToRow(n: Notificacao) {
     kind: n.kind ?? null,
     lida: n.lida,
     agendamento_id: n.agendamentoId ? toUuid(n.agendamentoId) : null,
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

@@ -4,7 +4,7 @@ import type { HorarioSlot, Turma } from "./academic-types";
 import { SEED_TURMAS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { alunosStore } from "./alunos-store";
 import { devInfo } from "./dev-log";
@@ -57,7 +57,7 @@ function turmaToRow(t: Turma) {
     data: t.data,
     horarios: t.horarios as never,
     descricao: t.descricao ?? null,
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

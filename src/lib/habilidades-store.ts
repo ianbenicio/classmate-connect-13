@@ -6,7 +6,7 @@ import type { Habilidade } from "./academic-types";
 import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -49,7 +49,7 @@ function habilidadeToRow(h: Habilidade) {
     tipo: "curso" as string,
     // project_id: nullable — quando super_admin (null) insert vai pro
     // catálogo global compartilhado. Quando projeto, fica exclusivo dele.
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 

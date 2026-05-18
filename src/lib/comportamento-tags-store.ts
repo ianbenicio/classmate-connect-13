@@ -3,7 +3,7 @@
 // Fonte de verdade: tabela `public.comportamento_tags` no Supabase.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getCurrentProjectId } from "./current-project";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -62,7 +62,7 @@ function entryToRow(e: ComportamentoTagEntry): Record<string, unknown> {
     ativo: e.ativo,
     descricao: e.descricao,
     // NULL = global (catálogo compartilhado); set = exclusivo do projeto
-    project_id: getCurrentProjectId() ?? undefined,
+    project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 
