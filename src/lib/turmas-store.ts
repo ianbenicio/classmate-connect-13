@@ -105,7 +105,8 @@ async function loadFromDb() {
   const existingCods = new Set(rows.map((r) => r.cod));
   const inserted = await topUpTurmas(existingIds, existingCods);
   if (inserted) {
-    const { data: data2 } = await supabase.from("turmas").select("*").order("cod");
+    const { data: data2, error: err2 } = await supabase.from("turmas").select("*").order("cod");
+    if (err2) console.error("[turmas] reload error", err2);
     turmas = (data2 ?? []).map(rowToTurma);
   } else {
     turmas = rows.map(rowToTurma);

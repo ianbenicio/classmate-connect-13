@@ -193,7 +193,8 @@ async function loadFromDb() {
   const existingIds = new Set(alunosRows.map((r) => r.id));
   const inserted = await topUpAlunos(existingIds);
   if (inserted) {
-    const { data: data2 } = await supabase.from("alunos").select("*").order("nome");
+    const { data: data2, error: err2 } = await supabase.from("alunos").select("*").order("nome");
+    if (err2) console.error("[alunos] reload error", err2);
     alunosRows = (data2 ?? []) as AlunoRow[];
   }
   const presByAluno = new Map<

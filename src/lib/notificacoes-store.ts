@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { Notificacao } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { getCurrentProjectId, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 
 let notificacoes: Notificacao[] = [];
@@ -171,10 +171,17 @@ export const notificacoesStore = {
     }
   },
   async marcarTodasLidas() {
+    const projectId = getCurrentProjectId();
+    const snap = notificacoes;
     notificacoes = notificacoes.map((n) => ({ ...n, lida: true }));
     emit();
-    const { error } = await supabase.from("notificacoes").update({ lida: true }).eq("lida", false);
+    // M3: explicit project_id filter (defense-in-depth alongside RLS)
+    let query = supabase.from("notificacoes").update({ lida: true }).eq("lida", false);
+    if (projectId) query = query.eq("project_id", projectId);
+    const { error } = await query;
     if (error) {
+      notificacoes = snap;
+      emit();
       console.error("[notificacoes] marcarTodasLidas error", error);
       toast.error(`Erro ao marcar todas: ${error.message}`);
     }

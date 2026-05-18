@@ -82,7 +82,8 @@ async function loadFromDb() {
   const existingIds = new Set(rows.map((r) => r.id));
   const inserted = await topUpHabilidades(existingIds);
   if (inserted) {
-    const { data: data2 } = await supabase.from("habilidades").select("*").order("sigla");
+    const { data: data2, error: err2 } = await supabase.from("habilidades").select("*").order("sigla");
+    if (err2) console.error("[habilidades] reload error", err2);
     habilidades = ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
   } else {
     habilidades = rows.map(rowToHabilidade);

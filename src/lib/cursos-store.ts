@@ -139,7 +139,8 @@ async function loadFromDb() {
   const existingCods = new Set(rows.map((r) => r.cod));
   const inserted = await topUpCursos(existingIds, existingCods);
   if (inserted) {
-    const { data: data2 } = await supabase.from("cursos").select("*").order("cod");
+    const { data: data2, error: err2 } = await supabase.from("cursos").select("*").order("cod");
+    if (err2) console.error("[cursos] reload error", err2);
     cursos = (data2 ?? []).map(rowToCurso);
   } else {
     cursos = rows.map(rowToCurso);

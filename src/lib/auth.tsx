@@ -131,6 +131,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
       console.error("[auth] loadProfile unhandled error", err);
       toast.error("Erro ao carregar sessão. Recarregue a página.");
+    } finally {
+      // M4: flip loading false from whichever auth event resolves last.
+      // Stale completions still flip the flag — safe because loading is
+      // monotonic (only goes true→false once) and the gen check above
+      // already prevented stale state writes.
+      if (gen === loadGenRef.current && lastUidRef.current === uid) {
+        setLoading(false);
+      }
     }
   };
 
@@ -148,6 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setCurrentProject(null);
         setCurrentProjectId(null);
         setIsSuperAdmin(false);
+        setLoading(false);
       }
     });
 
@@ -155,7 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void supabase.auth.getSession().then(({ data: { session: sess } }) => {
       setSession(sess);
       setUser(sess?.user ?? null);
-      if (sess?.user) void loadProfile(sess.user.id).finally(() => setLoading(false));
+      if (sess?.user) void loadProfile(sess.user.id);
       else setLoading(false);
     });
 

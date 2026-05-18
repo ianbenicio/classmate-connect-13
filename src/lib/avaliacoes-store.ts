@@ -106,10 +106,11 @@ async function loadFromDb() {
   const existingIds = new Set(rows.map((r) => r.id));
   const inserted = await topUpAvaliacoes(existingIds);
   if (inserted) {
-    const { data: data2 } = await supabase
+    const { data: data2, error: err2 } = await supabase
       .from("avaliacoes")
       .select("*")
       .order("created_at", { ascending: false });
+    if (err2) console.error("[avaliacoes] reload error", err2);
     registros = ((data2 ?? []) as unknown as Row[]).map(rowTo);
   } else {
     registros = rows.map(rowTo);

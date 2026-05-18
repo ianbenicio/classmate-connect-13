@@ -158,10 +158,11 @@ async function loadFromDb() {
   const existingIds = new Set(rows.map((r) => r.id));
   const inserted = await topUpAgendamentos(existingIds);
   if (inserted) {
-    const { data: data2 } = await supabase
+    const { data: data2, error: err2 } = await supabase
       .from("agendamentos")
       .select("*")
       .order("data", { ascending: true });
+    if (err2) console.error("[agendamentos] reload error", err2);
     agendamentos = ((data2 ?? []) as unknown as AgendamentoRow[]).map(rowToAgendamento);
   } else {
     agendamentos = rows.map(rowToAgendamento);
