@@ -7,7 +7,8 @@ import { useAuth, AuthProvider } from "@/lib/auth";
 // ─────────────────────────────────────────────────────────────────────
 // Mocks
 // ─────────────────────────────────────────────────────────────────────
-const toastErrorSpy = vi.fn();
+// vi.mock factories are hoisted — use vi.hoisted to lift the spy out of TDZ.
+const { toastErrorSpy } = vi.hoisted(() => ({ toastErrorSpy: vi.fn() }));
 vi.mock("sonner", () => ({
   toast: { error: toastErrorSpy, warning: vi.fn(), success: vi.fn() },
 }));

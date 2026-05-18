@@ -2,7 +2,8 @@
 // Covers H2 + C1 surface. No React, no Supabase — pure module behaviour.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const toastErrorSpy = vi.fn();
+// vi.mock factories are hoisted — use vi.hoisted to lift the spy out of TDZ.
+const { toastErrorSpy } = vi.hoisted(() => ({ toastErrorSpy: vi.fn() }));
 vi.mock("sonner", () => ({
   toast: {
     error: (...args: unknown[]) => toastErrorSpy(...args),
