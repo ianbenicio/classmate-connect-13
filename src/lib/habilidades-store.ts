@@ -108,22 +108,28 @@ export const habilidadesStore = {
     const row = habilidadeToRow(h);
     const local: Habilidade = { ...h, id: row.id };
     const exists = habilidades.some((x) => x.id === local.id);
+    const snap = habilidades;
     habilidades = exists
       ? habilidades.map((x) => (x.id === local.id ? local : x))
       : [...habilidades, local];
     emit();
     const { error } = await supabase.from("habilidades").upsert(row, { onConflict: "id" });
     if (error) {
+      habilidades = snap;
+      emit();
       console.error("[habilidades] upsert error", error);
       toast.error(`Erro ao salvar habilidade: ${error.message}`);
     }
   },
   async remove(id: string) {
     const dbId = toUuid(id);
+    const snap = habilidades;
     habilidades = habilidades.filter((x) => x.id !== dbId && x.id !== id);
     emit();
     const { error } = await supabase.from("habilidades").delete().eq("id", dbId);
     if (error) {
+      habilidades = snap;
+      emit();
       console.error("[habilidades] remove error", error);
       toast.error(`Erro ao remover habilidade: ${error.message}`);
     }

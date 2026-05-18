@@ -113,19 +113,25 @@ export const relatoriosStore = {
     return relatorios;
   },
   async add(r: Relatorio) {
+    const snap = relatorios;
     relatorios = [r, ...relatorios];
     emit();
     const { error } = await supabase.from("relatorios_exportados").insert(toRow(r));
     if (error) {
+      relatorios = snap;
+      emit();
       console.error("[relatorios] add error", error);
       toast.error(`Erro ao registrar relatório: ${error.message}`);
     }
   },
   async remove(id: string) {
+    const snap = relatorios;
     relatorios = relatorios.filter((r) => r.id !== id);
     emit();
     const { error } = await supabase.from("relatorios_exportados").delete().eq("id", id);
     if (error) {
+      relatorios = snap;
+      emit();
       console.error("[relatorios] remove error", error);
       toast.error(`Erro ao remover relatório: ${error.message}`);
     }

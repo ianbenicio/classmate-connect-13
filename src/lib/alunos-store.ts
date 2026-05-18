@@ -239,36 +239,43 @@ export const alunosStore = {
   async add(a: Aluno) {
     const row = alunoToRow(a);
     const local: Aluno = { ...a, id: row.id };
+    const snap = alunos;
     alunos = [local, ...alunos];
     emit();
     const { error } = await supabase.from("alunos").insert(row);
     if (error) {
+      alunos = snap;
+      emit();
       console.error("[alunos] add error", error);
       toast.error(`Erro ao salvar aluno: ${error.message}`);
     }
-    // Invite agora é ação explícita via store.invite(alunoId) (botão "Exportar").
   },
   async update(id: string, patch: Partial<Aluno>) {
     const dbId = toUuid(id);
     const current = alunos.find((x) => x.id === dbId || x.id === id);
     if (!current) return;
     const merged: Aluno = { ...current, ...patch, id: dbId };
+    const snap = alunos;
     alunos = alunos.map((x) => (x.id === dbId ? merged : x));
     emit();
     const row = alunoToRow(merged);
     const { error } = await supabase.from("alunos").update(row).eq("id", dbId);
     if (error) {
+      alunos = snap;
+      emit();
       console.error("[alunos] update error", error);
       toast.error(`Erro ao atualizar aluno: ${error.message}`);
     }
-    // Invite agora é ação explícita via store.invite(alunoId).
   },
   async remove(id: string) {
     const dbId = toUuid(id);
+    const snap = alunos;
     alunos = alunos.filter((x) => x.id !== dbId && x.id !== id);
     emit();
     const { error } = await supabase.from("alunos").delete().eq("id", dbId);
     if (error) {
+      alunos = snap;
+      emit();
       console.error("[alunos] remove error", error);
       toast.error(`Erro ao remover aluno: ${error.message}`);
     }

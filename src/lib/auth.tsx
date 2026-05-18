@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { setCurrentProjectId, setIsSuperAdmin } from "./current-project";
+import { toast } from "sonner";
 
 export type AppRole = "super_admin" | "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
 
@@ -71,47 +72,65 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loadProfile = async (uid: string) => {
     const gen = ++loadGenRef.current;
     lastUidRef.current = uid;
-    const [{ data: profile }, { data: roleRows }] = await Promise.all([
-      supabase.from("profiles").select("display_name, project_id").eq("user_id", uid).maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", uid),
-    ]);
-    // Stale guard: newer load fired or user switched mid-flight → drop result.
-    if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
-    setDisplayName(profile?.display_name ?? "");
-    const parsedRoles = (roleRows ?? []).map((r) => r.role as AppRole);
-    setRoles(parsedRoles);
-    setIsSuperAdmin(parsedRoles.includes("super_admin"));
-
-    // Carrega projeto vinculado (NULL para super_admin sem vínculo).
-    const projectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
-    if (projectId) {
-      const { data: proj } = await supabase
-        .from("projetos")
-        .select("id, slug, nome, logo_url, cor_primaria")
-        .eq("id", projectId)
-        .maybeSingle();
+    try {
+      const [
+        { data: profile, error: profileErr },
+        { data: roleRows, error: rolesErr },
+      ] = await Promise.all([
+        supabase.from("profiles").select("display_name, project_id").eq("user_id", uid).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", uid),
+      ]);
       if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
-      if (proj) {
-        const p: Projeto = {
-          id: proj.id,
-          slug: proj.slug,
-          nome: proj.nome,
-          logoUrl: proj.logo_url,
-          corPrimaria: proj.cor_primaria,
-        };
-        setCurrentProject(p);
-        setCurrentProjectId(p.id);
-        // Aplica cor primária como CSS variable (branding leve)
-        if (typeof document !== "undefined" && p.corPrimaria) {
-          document.documentElement.style.setProperty("--brand-primary", p.corPrimaria);
+      if (profileErr) {
+        console.error("[auth] profile load error", profileErr);
+        toast.error("Falha ao carregar perfil.");
+      }
+      if (rolesErr) {
+        console.error("[auth] roles load error", rolesErr);
+        toast.error("Falha ao carregar papéis.");
+      }
+      setDisplayName(profile?.display_name ?? "");
+      const parsedRoles = (roleRows ?? []).map((r) => r.role as AppRole);
+      setRoles(parsedRoles);
+      setIsSuperAdmin(parsedRoles.includes("super_admin"));
+
+      const projectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
+      if (projectId) {
+        const { data: proj, error: projErr } = await supabase
+          .from("projetos")
+          .select("id, slug, nome, logo_url, cor_primaria")
+          .eq("id", projectId)
+          .maybeSingle();
+        if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
+        if (projErr) {
+          console.error("[auth] projeto load error", projErr);
+          toast.error("Falha ao carregar projeto vinculado.");
+        }
+        if (proj) {
+          const p: Projeto = {
+            id: proj.id,
+            slug: proj.slug,
+            nome: proj.nome,
+            logoUrl: proj.logo_url,
+            corPrimaria: proj.cor_primaria,
+          };
+          setCurrentProject(p);
+          setCurrentProjectId(p.id);
+          if (typeof document !== "undefined" && p.corPrimaria) {
+            document.documentElement.style.setProperty("--brand-primary", p.corPrimaria);
+          }
+        } else {
+          setCurrentProject(null);
+          setCurrentProjectId(null);
         }
       } else {
         setCurrentProject(null);
         setCurrentProjectId(null);
       }
-    } else {
-      setCurrentProject(null);
-      setCurrentProjectId(null);
+    } catch (err) {
+      if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
+      console.error("[auth] loadProfile unhandled error", err);
+      toast.error("Erro ao carregar sessão. Recarregue a página.");
     }
   };
 

@@ -276,16 +276,27 @@ export const usersStore = {
     const userRecord = users.find((u) => u.userId === userId);
     if (userRecord?.displayName) {
       const nome = userRecord.displayName;
-      await supabase
+      // H5: surface backfill errors so we don't lose attribution silently
+      const { error: bf1Err } = await supabase
         .from("agendamentos")
         .update({ criado_por_nome: nome })
         .eq("criado_por_user_id", userId)
         .is("criado_por_nome", null);
-      await supabase
+      if (bf1Err) {
+        console.error("[users] backfill criado_por_nome error", bf1Err);
+        toast.error(`Falha ao preservar autor: ${bf1Err.message}`);
+        return;
+      }
+      const { error: bf2Err } = await supabase
         .from("agendamentos")
         .update({ professor: nome })
         .eq("professor_user_id", userId)
         .is("professor", null);
+      if (bf2Err) {
+        console.error("[users] backfill professor error", bf2Err);
+        toast.error(`Falha ao preservar professor: ${bf2Err.message}`);
+        return;
+      }
     }
 
     // Ordem: roles → profile (FK lógica via user_id; sem cascade SQL).

@@ -183,22 +183,28 @@ export const comportamentoTagsStore = {
   async upsert(entry: ComportamentoTagEntry) {
     const row = entryToRow(entry);
     const exists = tags.some((x) => x.id === entry.id);
+    const snap = tags;
     tags = exists
       ? tags.map((x) => (x.id === entry.id ? entry : x))
       : [...tags, entry].sort((a, b) => a.ordem - b.ordem);
     emit();
     const { error } = await supabase.from("comportamento_tags").upsert(row, { onConflict: "id" });
     if (error) {
+      tags = snap;
+      emit();
       console.error("[comportamento-tags] upsert error", error);
       toast.error(`Erro ao salvar tag: ${error.message}`);
     }
   },
 
   async remove(id: string) {
+    const snap = tags;
     tags = tags.filter((x) => x.id !== id);
     emit();
     const { error } = await supabase.from("comportamento_tags").delete().eq("id", id);
     if (error) {
+      tags = snap;
+      emit();
       console.error("[comportamento-tags] remove error", error);
       toast.error(`Erro ao remover tag: ${error.message}`);
     }

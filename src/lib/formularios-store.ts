@@ -102,10 +102,16 @@ async function loadFromDb() {
   const existingSlugs = new Set(rows.map((r) => r.slug));
   // Sempre sincroniza o seed (insere novos + atualiza existentes do sistema)
   await topUpFormularios(existingSlugs);
-  const { data: data2 } = await supabase
+  const { data: data2, error: err2 } = await supabase
     .from("formularios")
     .select("*")
     .order("nome", { ascending: true });
+  if (err2) {
+    // H6: keep first-load rows rather than blanking the list on reload failure
+    console.error("[formularios] reload error", err2);
+    registros = rows.map(rowTo);
+    return;
+  }
   registros = ((data2 as Row[] | null) ?? []).map(rowTo);
 }
 

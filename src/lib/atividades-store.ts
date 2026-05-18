@@ -214,22 +214,28 @@ export const atividadesStore = {
       habilidadeIds: toUuidArray(a.habilidadeIds),
     };
     const exists = atividades.some((x) => x.id === local.id);
+    const snap = atividades;
     atividades = exists
       ? atividades.map((x) => (x.id === local.id ? local : x))
       : [local, ...atividades];
     emit();
     const { error } = await supabase.from("atividades").upsert(row, { onConflict: "id" });
     if (error) {
+      atividades = snap;
+      emit();
       console.error("[atividades] upsert error", error);
       toast.error(`Erro ao salvar atividade: ${error.message}`);
     }
   },
   async remove(id: string) {
     const dbId = toUuid(id);
+    const snap = atividades;
     atividades = atividades.filter((x) => x.id !== dbId && x.id !== id);
     emit();
     const { error } = await supabase.from("atividades").delete().eq("id", dbId);
     if (error) {
+      atividades = snap;
+      emit();
       console.error("[atividades] remove error", error);
       toast.error(`Erro ao remover atividade: ${error.message}`);
     }

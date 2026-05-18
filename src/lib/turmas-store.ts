@@ -136,10 +136,13 @@ export const turmasStore = {
     const row = turmaToRow(t);
     const local: Turma = { ...t, id: row.id, cursoId: row.curso_id };
     const exists = turmas.some((x) => x.id === local.id);
+    const snap = turmas;
     turmas = exists ? turmas.map((x) => (x.id === local.id ? local : x)) : [...turmas, local];
     emit();
     const { error } = await supabase.from("turmas").upsert(row, { onConflict: "id" });
     if (error) {
+      turmas = snap;
+      emit();
       console.error("[turmas] upsert error", error);
       toast.error(`Erro ao salvar turma: ${error.message}`);
     }
@@ -157,10 +160,13 @@ export const turmasStore = {
   },
   async remove(id: string) {
     const dbId = toUuid(id);
+    const snap = turmas;
     turmas = turmas.filter((x) => x.id !== dbId && x.id !== id);
     emit();
     const { error } = await supabase.from("turmas").delete().eq("id", dbId);
     if (error) {
+      turmas = snap;
+      emit();
       console.error("[turmas] remove error", error);
       toast.error(`Erro ao remover turma: ${error.message}`);
     }

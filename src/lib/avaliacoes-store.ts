@@ -159,18 +159,16 @@ export const avaliacoesStore = {
   async saveRelatorioProf(agendamentoId: string, dados: RelatorioProfessorDados) {
     const rec = await this.save("relatorio_prof", agendamentoId, null, null, dados);
     // Marca o agendamento como "pais notificados" quando sugestoesPais preenchido.
-    // Coluna criada na migration aulas_pos_status_phase_a (Fase A).
-    // Cast `as never` força PostgREST aceitar payload — Supabase generated
-    // types ainda não conhecem `pais_notificados_em` (regenerar pra remover).
+    // Types regenerated post-C4 — `as never` no longer required.
     if (dados.sugestoesPais && dados.sugestoesPais.trim()) {
-      const patch = { pais_notificados_em: new Date().toISOString() } as never;
       const { error } = await supabase
         .from("agendamentos")
-        .update(patch)
+        .update({ pais_notificados_em: new Date().toISOString() })
         .eq("id", toUuid(agendamentoId));
       if (error) {
-        // Não bloqueia o save principal — só loga.
+        // H3: surface failure to user — main report saved, marker did not.
         console.error("[avaliacoes] failed to mark pais_notificados_em", error);
+        toast.warning("Relatório salvo, mas falha ao marcar pais como notificados.");
       }
     }
     return rec;
