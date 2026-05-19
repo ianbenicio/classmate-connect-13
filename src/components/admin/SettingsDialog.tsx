@@ -137,7 +137,13 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
                               disabled={!isAdmin}
                             />
                             <span>
-                              <span className={storageProvider === p.value ? "font-medium" : "text-muted-foreground"}>
+                              <span
+                                className={
+                                  storageProvider === p.value
+                                    ? "font-medium"
+                                    : "text-muted-foreground"
+                                }
+                              >
                                 {p.label}
                               </span>
                               <span className="block text-muted-foreground">{p.desc}</span>
@@ -160,7 +166,10 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
                             onClick={async () => {
                               setSavingProvider(true);
                               try {
-                                await settingsStore.set("integration.storage.provider", storageProvider);
+                                await settingsStore.set(
+                                  "integration.storage.provider",
+                                  storageProvider,
+                                );
                               } finally {
                                 setSavingProvider(false);
                               }
@@ -200,8 +209,8 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
                     {/* Placeholder OneDrive — Sprint E2 */}
                     {storageProvider === "onedrive" && (
                       <div className="border rounded-md p-3 bg-amber-50 dark:bg-amber-950/20 text-sm text-amber-700 dark:text-amber-400">
-                        🚧 OneDrive estará disponível no Sprint E2. Por enquanto, as verificações
-                        de entrega estão desativadas para este provider.
+                        🚧 OneDrive estará disponível no Sprint E2. Por enquanto, as verificações de
+                        entrega estão desativadas para este provider.
                       </div>
                     )}
 
