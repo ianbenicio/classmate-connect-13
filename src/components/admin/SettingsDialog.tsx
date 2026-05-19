@@ -8,9 +8,10 @@
 // mas a UI já é genérica — basta INSERIR mais settings no DB que aparecem.
 
 import { useEffect, useState } from "react";
-import { Settings as SettingsIcon, Save, Info, KeyRound } from "lucide-react";
+import { Settings as SettingsIcon, Save, Info, KeyRound, HardDrive } from "lucide-react";
 import { GoogleServiceDialog } from "./GoogleServiceDialog";
 import { useAuth } from "@/lib/auth";
+import type { StorageProvider } from "@/lib/storage-interface";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { settingsStore, useSettings, type Setting } from "@/lib/settings-store";
+import { settingsStore, useSettings, useSetting, type Setting } from "@/lib/settings-store";
 import { toast } from "sonner";
 
 interface Props {
@@ -44,13 +45,20 @@ const CATEGORY_LABELS: Record<string, string> = {
   audit: "🗄️ Auditoria",
 };
 
-// Keys gerenciadas pelo GoogleServiceDialog (escondidas da listagem genérica)
-const GOOGLE_MANAGED_KEYS = new Set<string>([
+// Keys com UI customizada — ocultas da listagem genérica.
+const CUSTOM_UI_KEYS = new Set<string>([
   "integration.drive.service_account_json",
   "integration.drive.service_account_email",
   "integration.drive.last_validated_at",
   "integration.drive.root_folder_id",
+  "integration.storage.provider", // gerenciado pelo radio de provider
 ]);
+
+const STORAGE_PROVIDERS: { value: StorageProvider; label: string; desc: string }[] = [
+  { value: "google", label: "Google Drive", desc: "Service Account via JWT." },
+  { value: "onedrive", label: "OneDrive (M365)", desc: "OAuth2 MS Graph — Sprint E2." },
+  { value: "none", label: "Nenhum", desc: "Desabilita verificação de entrega." },
+];
 
 export function SettingsDialog({ open, onOpenChange }: Props) {
   const settings = useSettings();
@@ -59,6 +67,14 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
   const categories = Array.from(new Set(settings.map((s) => s.category))).sort();
   const [activeTab, setActiveTab] = useState<string>(categories[0] ?? "integration");
   const [googleOpen, setGoogleOpen] = useState(false);
+  const storedProvider = useSetting<StorageProvider>("integration.storage.provider", "google");
+  const [storageProvider, setStorageProvider] = useState<StorageProvider>(storedProvider);
+  const [savingProvider, setSavingProvider] = useState(false);
+
+  // Sync provider when settings load/change externally.
+  useEffect(() => {
+    setStorageProvider(storedProvider);
+  }, [storedProvider]);
 
   useEffect(() => {
     if (open && categories.length > 0 && !categories.includes(activeTab)) {
@@ -93,32 +109,115 @@ export function SettingsDialog({ open, onOpenChange }: Props) {
             </TabsList>
             {categories.map((c) => (
               <TabsContent key={c} value={c} className="space-y-4 pt-2">
-                {/* Bloco especial: Service Google (apenas tab integration) */}
+                {/* ---- Bloco especial de integração (apenas tab integration) ---- */}
                 {c === "integration" && (
-                  <div className="border rounded-md p-3 flex items-center justify-between gap-3 bg-muted/30">
-                    <div className="min-w-0">
+                  <>
+                    {/* Provider de armazenamento (E3.1 / E3.2) */}
+                    <div className="border rounded-md p-3 space-y-3 bg-muted/30">
                       <div className="text-sm font-medium inline-flex items-center gap-1.5">
-                        <KeyRound className="h-4 w-4 text-primary" /> Service Google (Drive)
+                        <HardDrive className="h-4 w-4 text-primary" /> Provider de armazenamento
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        Cadastre a Service Account + ID da pasta raiz para verificar entrega de
-                        tarefas no Drive.
+                      <p className="text-xs text-muted-foreground">
+                        Backend usado para verificar entrega de tarefas. Mude com cuidado — exige
+                        reconfiguração de credenciais.
+                      </p>
+                      <div className="flex flex-wrap gap-3" role="radiogroup">
+                        {STORAGE_PROVIDERS.map((p) => (
+                          <label
+                            key={p.value}
+                            className="inline-flex items-start gap-2 text-xs cursor-pointer"
+                          >
+                            <input
+                              type="radio"
+                              name="storage-provider"
+                              value={p.value}
+                              checked={storageProvider === p.value}
+                              onChange={() => setStorageProvider(p.value)}
+                              className="mt-0.5 h-3.5 w-3.5 accent-primary"
+                              disabled={!isAdmin}
+                            />
+                            <span>
+                              <span className={storageProvider === p.value ? "font-medium" : "text-muted-foreground"}>
+                                {p.label}
+                              </span>
+                              <span className="block text-muted-foreground">{p.desc}</span>
+                            </span>
+                          </label>
+                        ))}
                       </div>
+                      {storageProvider !== storedProvider && (
+                        <div className="flex gap-2 pt-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setStorageProvider(storedProvider)}
+                            disabled={savingProvider}
+                          >
+                            Reverter
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={async () => {
+                              setSavingProvider(true);
+                              try {
+                                await settingsStore.set("integration.storage.provider", storageProvider);
+                              } finally {
+                                setSavingProvider(false);
+                              }
+                            }}
+                            disabled={savingProvider}
+                          >
+                            <Save className="h-3.5 w-3.5 mr-1" />
+                            {savingProvider ? "Salvando…" : "Salvar"}
+                          </Button>
+                        </div>
+                      )}
                     </div>
-                    <Button
-                      size="sm"
-                      onClick={() => setGoogleOpen(true)}
-                      disabled={!isAdmin}
-                      title={isAdmin ? "Configurar" : "Apenas admin pode editar credenciais"}
-                    >
-                      Configurar
-                    </Button>
-                  </div>
+
+                    {/* Configuração Google Drive — visível só se provider = google */}
+                    {storageProvider === "google" && (
+                      <div className="border rounded-md p-3 flex items-center justify-between gap-3 bg-muted/30">
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium inline-flex items-center gap-1.5">
+                            <KeyRound className="h-4 w-4 text-primary" /> Service Google (Drive)
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Cadastre a Service Account + ID da pasta raiz para verificar entrega de
+                            tarefas no Drive.
+                          </div>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => setGoogleOpen(true)}
+                          disabled={!isAdmin}
+                          title={isAdmin ? "Configurar" : "Apenas admin pode editar credenciais"}
+                        >
+                          Configurar
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Placeholder OneDrive — Sprint E2 */}
+                    {storageProvider === "onedrive" && (
+                      <div className="border rounded-md p-3 bg-amber-50 dark:bg-amber-950/20 text-sm text-amber-700 dark:text-amber-400">
+                        🚧 OneDrive estará disponível no Sprint E2. Por enquanto, as verificações
+                        de entrega estão desativadas para este provider.
+                      </div>
+                    )}
+
+                    {/* None */}
+                    {storageProvider === "none" && (
+                      <div className="border rounded-md p-3 bg-muted/20 text-sm text-muted-foreground">
+                        Verificação de entrega de tarefas desativada. Alunos e professores não verão
+                        status de drive.
+                      </div>
+                    )}
+                  </>
                 )}
-                {/* Settings genéricas (exclui as geridas pelo GoogleServiceDialog) */}
+                {/* Settings genéricas (exclui keys com UI customizada) */}
                 {settingsStore
                   .byCategory(c)
-                  .filter((s) => !GOOGLE_MANAGED_KEYS.has(s.key))
+                  .filter((s) => !CUSTOM_UI_KEYS.has(s.key))
                   .map((s) => (
                     <SettingRow key={s.key} setting={s} />
                   ))}
