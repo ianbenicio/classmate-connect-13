@@ -140,10 +140,10 @@ function AceitarConvitePage() {
 
       // Marca convite aceito e cria responsavel
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: acceptResult } = await (supabase as any).rpc("accept_invite", {
+      const { data: acceptResult } = (await (supabase as any).rpc("accept_invite", {
         p_token: token,
         p_user_id: userId,
-      }) as { data: { ok: boolean; error?: string } | null };
+      })) as { data: { ok: boolean; error?: string } | null };
 
       if (!acceptResult?.ok) {
         toast.warning("Acesso configurado, mas houve um erro ao vincular o convite.");

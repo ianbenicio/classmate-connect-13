@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResponsavelRouteImport } from './routes/responsavel'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PreferenciasRouteImport } from './routes/preferencias'
 import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as FormulariosRouteImport } from './routes/formularios'
 import { Route as CursosRouteImport } from './routes/cursos'
@@ -32,6 +33,11 @@ const ResponsavelRoute = ResponsavelRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreferenciasRoute = PreferenciasRouteImport.update({
+  id: '/preferencias',
+  path: '/preferencias',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinhaAreaRoute = MinhaAreaRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
+  '/preferencias': typeof PreferenciasRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
+  '/preferencias': typeof PreferenciasRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/cursos': typeof CursosRoute
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
+  '/preferencias': typeof PreferenciasRoute
   '/reset-password': typeof ResetPasswordRoute
   '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/formularios'
     | '/minha-area'
+    | '/preferencias'
     | '/reset-password'
     | '/responsavel'
     | '/aceitar-convite/$token'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/formularios'
     | '/minha-area'
+    | '/preferencias'
     | '/reset-password'
     | '/responsavel'
     | '/aceitar-convite/$token'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/formularios'
     | '/minha-area'
+    | '/preferencias'
     | '/reset-password'
     | '/responsavel'
     | '/aceitar-convite/$token'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   CursosRoute: typeof CursosRoute
   FormulariosRoute: typeof FormulariosRoute
   MinhaAreaRoute: typeof MinhaAreaRoute
+  PreferenciasRoute: typeof PreferenciasRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResponsavelRoute: typeof ResponsavelRoute
   AceitarConviteTokenRoute: typeof AceitarConviteTokenRoute
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferencias': {
+      id: '/preferencias'
+      path: '/preferencias'
+      fullPath: '/preferencias'
+      preLoaderRoute: typeof PreferenciasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/minha-area': {
@@ -351,6 +371,7 @@ const rootRouteChildren: RootRouteChildren = {
   CursosRoute: CursosRoute,
   FormulariosRoute: FormulariosRoute,
   MinhaAreaRoute: MinhaAreaRoute,
+  PreferenciasRoute: PreferenciasRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResponsavelRoute: ResponsavelRoute,
   AceitarConviteTokenRoute: AceitarConviteTokenRoute,

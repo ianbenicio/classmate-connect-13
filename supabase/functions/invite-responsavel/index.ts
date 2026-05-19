@@ -42,10 +42,9 @@ serve(async (req: Request) => {
   const { aluno_id, email, nome, project_id } = body;
 
   if (!email || !project_id) {
-    return new Response(
-      JSON.stringify({ error: "email e project_id são obrigatórios" }),
-      { status: 400 },
-    );
+    return new Response(JSON.stringify({ error: "email e project_id são obrigatórios" }), {
+      status: 400,
+    });
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -60,11 +59,11 @@ serve(async (req: Request) => {
   const callerId = callerUser.user.id;
 
   type ProfileRow = { role: string };
-  const { data: profileRows } = await supabase
+  const { data: profileRows } = (await supabase
     .from("profiles")
     .select("role")
     .eq("id", callerId)
-    .eq("project_id", project_id) as { data: ProfileRow[] | null };
+    .eq("project_id", project_id)) as { data: ProfileRow[] | null };
 
   const isAdminOrCoord = (profileRows ?? []).some(
     (p) => p.role === "admin" || p.role === "coordenacao",
@@ -76,11 +75,11 @@ serve(async (req: Request) => {
   // Busca nome do aluno
   let alunoNome = "seu filho(a)";
   if (aluno_id) {
-    const { data: aluno } = await supabase
+    const { data: aluno } = (await supabase
       .from("alunos")
       .select("nome")
       .eq("id", aluno_id)
-      .maybeSingle() as { data: { nome: string } | null };
+      .maybeSingle()) as { data: { nome: string } | null };
     if (aluno?.nome) alunoNome = aluno.nome;
   }
 
@@ -88,7 +87,7 @@ serve(async (req: Request) => {
   const newToken = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: invite, error: inviteErr } = await supabase
+  const { data: invite, error: inviteErr } = (await supabase
     .from("responsavel_invites")
     .upsert(
       {
@@ -104,7 +103,7 @@ serve(async (req: Request) => {
       { onConflict: "email,project_id", ignoreDuplicates: false },
     )
     .select("token, expires_at")
-    .single() as { data: { token: string; expires_at: string } | null; error: unknown };
+    .single()) as { data: { token: string; expires_at: string } | null; error: unknown };
 
   if (inviteErr || !invite) {
     console.error("[invite-responsavel] upsert error", inviteErr);
@@ -118,7 +117,7 @@ serve(async (req: Request) => {
     const emailRes = await fetch(SEND_EMAIL_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

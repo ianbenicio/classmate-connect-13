@@ -46,18 +46,13 @@ export interface AuditPage {
 
 export const PAGE_SIZE = 50;
 
-export async function fetchAuditPage(
-  page: number,
-  filter: AuditFilter,
-): Promise<AuditPage> {
+export async function fetchAuditPage(page: number, filter: AuditFilter): Promise<AuditPage> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const base = (supabase as any)
-    .from("audit_events")
-    .select(
-      `id, ts, action, entity_type, entity_id, user_id, project_id, ip, user_agent, before_json, after_json,
+  const base = (supabase as any).from("audit_events").select(
+    `id, ts, action, entity_type, entity_id, user_id, project_id, ip, user_agent, before_json, after_json,
        profiles!audit_events_user_id_fkey(display_name, email)`,
-      { count: "exact" },
-    );
+    { count: "exact" },
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let q: any = base;
 
@@ -74,9 +69,7 @@ export async function fetchAuditPage(
     q = q.lte("ts", `${filter.date_to}T23:59:59Z`);
   }
 
-  q = q
-    .order("ts", { ascending: false })
-    .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
+  q = q.order("ts", { ascending: false }).range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
 
   const { data, error, count } = await q;
 
@@ -131,15 +124,7 @@ export async function fetchAuditPage(
 }
 
 export function auditRowsToCsv(rows: AuditEvent[]): string {
-  const headers = [
-    "ts",
-    "action",
-    "entity_type",
-    "entity_id",
-    "user",
-    "ip",
-    "project_id",
-  ];
+  const headers = ["ts", "action", "entity_type", "entity_id", "user", "ip", "project_id"];
   const escape = (v: unknown) => {
     const s = v == null ? "" : String(v);
     if (s.includes(",") || s.includes('"') || s.includes("\n")) {
@@ -150,15 +135,7 @@ export function auditRowsToCsv(rows: AuditEvent[]): string {
   const lines = [
     headers.join(","),
     ...rows.map((r) =>
-      [
-        r.ts,
-        r.action,
-        r.entity_type,
-        r.entity_id,
-        r.user_display,
-        r.ip,
-        r.project_id,
-      ]
+      [r.ts, r.action, r.entity_type, r.entity_id, r.user_display, r.ip, r.project_id]
         .map(escape)
         .join(","),
     ),

@@ -23,14 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Loader2,
-  RefreshCw,
-  ShieldCheck,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Loader2, RefreshCw, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
   fetchAuditPage,
@@ -179,15 +172,12 @@ export function AuditHistoricoDialog({ open, onOpenChange }: Props) {
         <div className="px-6 py-3 border-b bg-muted/30 flex flex-wrap gap-2 items-end">
           <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Ação</span>
-            <Select
-              value={action}
-              onValueChange={(v) => setAction(v as AuditAction | "")}
-            >
+            <Select value={action} onValueChange={(v) => setAction(v as AuditAction | "")}>
               <SelectTrigger className="w-36 h-8 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(Object.keys(ACTION_LABELS) as Array<AuditAction | "">) .map((k) => (
+                {(Object.keys(ACTION_LABELS) as Array<AuditAction | "">).map((k) => (
                   <SelectItem key={k} value={k} className="text-xs">
                     {ACTION_LABELS[k]}
                   </SelectItem>
@@ -304,15 +294,9 @@ export function AuditHistoricoDialog({ open, onOpenChange }: Props) {
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground w-28">
                     Entidade
                   </th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground w-24">
-                    ID
-                  </th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">
-                    Usuário
-                  </th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground w-28">
-                    IP
-                  </th>
+                  <th className="text-left px-4 py-2 font-medium text-muted-foreground w-24">ID</th>
+                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Usuário</th>
+                  <th className="text-left px-4 py-2 font-medium text-muted-foreground w-28">IP</th>
                 </tr>
               </thead>
               <tbody>
@@ -340,15 +324,10 @@ export function AuditHistoricoDialog({ open, onOpenChange }: Props) {
                     <td className="px-4 py-1.5 font-mono text-muted-foreground">
                       {shortUuid(r.entity_id)}
                     </td>
-                    <td
-                      className="px-4 py-1.5 max-w-[140px] truncate"
-                      title={r.user_display ?? ""}
-                    >
+                    <td className="px-4 py-1.5 max-w-[140px] truncate" title={r.user_display ?? ""}>
                       {r.user_display ?? "—"}
                     </td>
-                    <td className="px-4 py-1.5 font-mono text-muted-foreground">
-                      {r.ip ?? "—"}
-                    </td>
+                    <td className="px-4 py-1.5 font-mono text-muted-foreground">{r.ip ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>

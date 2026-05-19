@@ -6,12 +6,7 @@
 // Banner persiste na coordenação até onboarding concluído.
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,7 +63,10 @@ function StepEscola({ onNext }: { onNext: () => void }) {
   const [saving, setSaving] = useState(false);
 
   const handleNext = async () => {
-    if (!nome.trim()) { toast.error("Nome da escola é obrigatório."); return; }
+    if (!nome.trim()) {
+      toast.error("Nome da escola é obrigatório.");
+      return;
+    }
     setSaving(true);
     try {
       await Promise.all([
@@ -86,8 +84,7 @@ function StepEscola({ onNext }: { onNext: () => void }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Configure as informações básicas da escola. Editável depois em{" "}
-        <b>Configurações</b>.
+        Configure as informações básicas da escola. Editável depois em <b>Configurações</b>.
       </p>
       <div className="space-y-3">
         <div className="space-y-1">
@@ -132,7 +129,10 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
   const [done, setDone] = useState(false);
 
   const handleFile = (file: File) => {
-    if (!file.name.endsWith(".csv")) { toast.error("Arquivo deve ser .csv"); return; }
+    if (!file.name.endsWith(".csv")) {
+      toast.error("Arquivo deve ser .csv");
+      return;
+    }
     setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (e) => setResult(parseAlunoCsv(e.target?.result as string));
@@ -157,8 +157,8 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Importe sua lista de alunos via CSV. Baixe o template, preencha e faça o upload.
-        Pode pular e importar depois em <b>Importar CSV</b>.
+        Importe sua lista de alunos via CSV. Baixe o template, preencha e faça o upload. Pode pular
+        e importar depois em <b>Importar CSV</b>.
       </p>
       <div className="flex gap-2 flex-wrap">
         <Button size="sm" variant="outline" onClick={() => downloadTemplate("alunos")}>
@@ -169,7 +169,10 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
           type="file"
           accept=".csv"
           className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+          }}
         />
         <Button size="sm" onClick={() => fileInputRef.current?.click()} disabled={done}>
           <Upload className="h-3.5 w-3.5" /> Selecionar CSV
@@ -180,11 +183,17 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
         <div className="border rounded-md overflow-hidden">
           <div className="px-3 py-2 bg-muted flex items-center gap-2 text-xs">
             <span className="font-medium truncate">{fileName}</span>
-            <Badge variant="outline" className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 ml-auto gap-1">
+            <Badge
+              variant="outline"
+              className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 ml-auto gap-1"
+            >
               <CheckCircle2 className="h-3 w-3" /> {result.valid.length} válidos
             </Badge>
             {result.invalid.length > 0 && (
-              <Badge variant="outline" className="bg-red-500/15 text-red-700 dark:text-red-300 gap-1">
+              <Badge
+                variant="outline"
+                className="bg-red-500/15 text-red-700 dark:text-red-300 gap-1"
+              >
                 <AlertCircle className="h-3 w-3" /> {result.invalid.length} inválidos
               </Badge>
             )}
@@ -194,7 +203,9 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
               <thead className="bg-muted/50">
                 <tr>
                   {ALUNO_TEMPLATE_HEADERS.map((h) => (
-                    <th key={h} className="px-2 py-1 text-left font-medium text-muted-foreground">{h}</th>
+                    <th key={h} className="px-2 py-1 text-left font-medium text-muted-foreground">
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -202,13 +213,18 @@ function StepAlunos({ onNext }: { onNext: () => void }) {
                 {result.all.slice(0, 4).map((r) => (
                   <tr key={r.row} className={r.errors.length ? "text-red-500" : ""}>
                     {ALUNO_TEMPLATE_HEADERS.map((h) => (
-                      <td key={h} className="px-2 py-1 truncate max-w-[80px]">{r.raw[h] || "—"}</td>
+                      <td key={h} className="px-2 py-1 truncate max-w-[80px]">
+                        {r.raw[h] || "—"}
+                      </td>
                     ))}
                   </tr>
                 ))}
                 {result.all.length > 4 && (
                   <tr>
-                    <td colSpan={ALUNO_TEMPLATE_HEADERS.length} className="px-2 py-1 text-muted-foreground italic">
+                    <td
+                      colSpan={ALUNO_TEMPLATE_HEADERS.length}
+                      className="px-2 py-1 text-muted-foreground italic"
+                    >
                       ...e mais {result.all.length - 4} linhas
                     </td>
                   </tr>
@@ -256,9 +272,15 @@ function StepTurma({ onNext }: { onNext: () => void }) {
   const [done, setDone] = useState(false);
 
   const handleCreate = async () => {
-    if (!nome.trim() || !cod.trim()) { toast.error("Nome e código são obrigatórios."); return; }
+    if (!nome.trim() || !cod.trim()) {
+      toast.error("Nome e código são obrigatórios.");
+      return;
+    }
     const projectId = requireProjectIdForWrite();
-    if (!projectId) { toast.error("Nenhum projeto ativo."); return; }
+    if (!projectId) {
+      toast.error("Nenhum projeto ativo.");
+      return;
+    }
     setSaving(true);
     try {
       const { error } = await supabase.from("turmas").insert({
@@ -288,23 +310,39 @@ function StepTurma({ onNext }: { onNext: () => void }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label htmlFor="wiz-turma-nome">Nome da turma *</Label>
-          <Input id="wiz-turma-nome" placeholder="Turma A — 2024" value={nome}
-            onChange={(e) => setNome(e.target.value)} disabled={done} />
+          <Input
+            id="wiz-turma-nome"
+            placeholder="Turma A — 2024"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            disabled={done}
+          />
         </div>
         <div className="space-y-1">
           <Label htmlFor="wiz-turma-cod">Código *</Label>
-          <Input id="wiz-turma-cod" placeholder="T2024A" value={cod}
-            onChange={(e) => setCod(e.target.value.toUpperCase())} disabled={done} />
+          <Input
+            id="wiz-turma-cod"
+            placeholder="T2024A"
+            value={cod}
+            onChange={(e) => setCod(e.target.value.toUpperCase())}
+            disabled={done}
+          />
         </div>
         {cursos.length > 0 && (
           <div className="space-y-1 col-span-2">
             <Label htmlFor="wiz-turma-curso">Curso</Label>
-            <select id="wiz-turma-curso"
+            <select
+              id="wiz-turma-curso"
               className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm"
-              value={cursoId} onChange={(e) => setCursoId(e.target.value)} disabled={done}>
+              value={cursoId}
+              onChange={(e) => setCursoId(e.target.value)}
+              disabled={done}
+            >
               <option value="">Selecione…</option>
               {cursos.map((c) => (
-                <option key={c.id} value={c.id}>{c.nome} ({c.cod})</option>
+                <option key={c.id} value={c.id}>
+                  {c.nome} ({c.cod})
+                </option>
               ))}
             </select>
           </div>
@@ -318,14 +356,18 @@ function StepTurma({ onNext }: { onNext: () => void }) {
       <div className="flex justify-end gap-2">
         {!done ? (
           <>
-            <Button variant="outline" onClick={onNext}>Pular por agora</Button>
+            <Button variant="outline" onClick={onNext}>
+              Pular por agora
+            </Button>
             <Button onClick={() => void handleCreate()} disabled={saving}>
               {saving && <Loader2 className="h-4 w-4 animate-spin" />}
               Criar turma
             </Button>
           </>
         ) : (
-          <Button onClick={onNext}><ArrowRight className="h-4 w-4" /> Próximo</Button>
+          <Button onClick={onNext}>
+            <ArrowRight className="h-4 w-4" /> Próximo
+          </Button>
         )}
       </div>
     </div>
@@ -366,12 +408,22 @@ function StepDone({ onDone }: { onDone: () => void }) {
         <p className="font-medium text-xs text-muted-foreground uppercase tracking-wide mb-2">
           Próximos passos
         </p>
-        <p className="text-sm">👩‍🏫 <b>Convidar professores</b> em Usuários</p>
-        <p className="text-sm">📋 <b>Registrar aulas</b> como professor</p>
-        <p className="text-sm">📊 <b>Acompanhar turmas</b> no dashboard</p>
+        <p className="text-sm">
+          👩‍🏫 <b>Convidar professores</b> em Usuários
+        </p>
+        <p className="text-sm">
+          📋 <b>Registrar aulas</b> como professor
+        </p>
+        <p className="text-sm">
+          📊 <b>Acompanhar turmas</b> no dashboard
+        </p>
       </div>
       <Button className="w-full" onClick={() => void handleDone()} disabled={saving}>
-        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+        {saving ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <CheckCircle2 className="h-4 w-4" />
+        )}
         Começar a usar o Javis
       </Button>
     </div>
@@ -412,9 +464,15 @@ export function OnboardingWizardDialog({ open, onOpenChange, onDone }: Props) {
               const Icon = s.Icon;
               return (
                 <span key={s.id} className="flex items-center">
-                  <span className={`flex items-center gap-1 text-xs font-medium ${
-                    i === step ? "text-primary" : i < step ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
-                  }`}>
+                  <span
+                    className={`flex items-center gap-1 text-xs font-medium ${
+                      i === step
+                        ? "text-primary"
+                        : i < step
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-muted-foreground"
+                    }`}
+                  >
                     <Icon className="h-3.5 w-3.5" />
                     <span className="hidden sm:inline">{s.label}</span>
                   </span>

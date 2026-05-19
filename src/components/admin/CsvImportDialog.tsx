@@ -17,15 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  AlertCircle,
-  CheckCircle2,
-  Download,
-  FileUp,
-  Loader2,
-  Upload,
-  X,
-} from "lucide-react";
+import { AlertCircle, CheckCircle2, Download, FileUp, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   parseAlunoCsv,
@@ -256,18 +248,13 @@ export function CsvImportDialog({ open, onOpenChange }: Props) {
                   >
                     <Upload className="h-8 w-8 opacity-40" />
                     <p className="text-sm">Arraste um .csv ou clique para selecionar</p>
-                    <p className="text-xs opacity-70">
-                      Colunas: {headers.join(", ")}
-                    </p>
+                    <p className="text-xs opacity-70">Colunas: {headers.join(", ")}</p>
                   </div>
                 ) : (
                   <>
                     {/* Resumo */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className="text-sm font-medium truncate max-w-[200px]"
-                        title={fileName}
-                      >
+                      <span className="text-sm font-medium truncate max-w-[200px]" title={fileName}>
                         {fileName}
                       </span>
                       <Badge
@@ -347,9 +334,7 @@ export function CsvImportDialog({ open, onOpenChange }: Props) {
                                   className="px-3 py-1 max-w-[120px] truncate"
                                   title={r.raw[h]}
                                 >
-                                  {r.raw[h] || (
-                                    <span className="text-muted-foreground/40">—</span>
-                                  )}
+                                  {r.raw[h] || <span className="text-muted-foreground/40">—</span>}
                                 </td>
                               ))}
                               <td className="px-3 py-1 text-red-600 dark:text-red-400 max-w-[200px] truncate">
@@ -399,12 +384,7 @@ export function CsvImportDialog({ open, onOpenChange }: Props) {
                         <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
                           ✓ Importação concluída
                         </p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 text-xs"
-                          onClick={reset}
-                        >
+                        <Button size="sm" variant="outline" className="h-8 text-xs" onClick={reset}>
                           Nova importação
                         </Button>
                       </div>

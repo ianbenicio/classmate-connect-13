@@ -64,8 +64,8 @@ export function CursoTemplatesDialog({ open, onOpenChange }: Props) {
             Templates de Curso
           </DialogTitle>
           <DialogDescription>
-            Crie um curso a partir de um template pré-configurado para o seu segmento.
-            Os cursos clonados são independentes — você pode editá-los livremente.
+            Crie um curso a partir de um template pré-configurado para o seu segmento. Os cursos
+            clonados são independentes — você pode editá-los livremente.
           </DialogDescription>
         </DialogHeader>
 
@@ -79,14 +79,9 @@ export function CursoTemplatesDialog({ open, onOpenChange }: Props) {
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-sm">{tpl.nome}</CardTitle>
-                      <CardDescription className="text-xs mt-0.5">
-                        {tpl.descricao}
-                      </CardDescription>
+                      <CardDescription className="text-xs mt-0.5">{tpl.descricao}</CardDescription>
                     </div>
-                    <Badge
-                      variant="outline"
-                      className={`text-xs shrink-0 ${TAG_BADGE[tpl.tag]}`}
-                    >
+                    <Badge variant="outline" className={`text-xs shrink-0 ${TAG_BADGE[tpl.tag]}`}>
                       {TAG_LABEL[tpl.tag]}
                     </Badge>
                   </div>

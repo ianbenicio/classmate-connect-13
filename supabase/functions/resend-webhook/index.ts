@@ -27,7 +27,7 @@ async function verifySignature(payload: string, headers: Headers): Promise<boole
     return true; // dev mode
   }
 
-  const svixId        = headers.get("svix-id");
+  const svixId = headers.get("svix-id");
   const svixTimestamp = headers.get("svix-timestamp");
   const svixSignature = headers.get("svix-signature");
 
@@ -51,11 +51,7 @@ async function verifySignature(payload: string, headers: Headers): Promise<boole
     ["sign"],
   );
 
-  const sigBytes = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(signedContent),
-  );
+  const sigBytes = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedContent));
 
   const computed = "v1," + btoa(String.fromCharCode(...new Uint8Array(sigBytes)));
 
@@ -66,7 +62,7 @@ async function verifySignature(payload: string, headers: Headers): Promise<boole
 // Event → status map
 // ---------------------------------------------------------------------------
 const EVENT_STATUS: Record<string, string> = {
-  "email.bounced":   "bounced",
+  "email.bounced": "bounced",
   "email.complained": "complained",
   "email.delivered": "valid",
 };
@@ -97,7 +93,7 @@ serve(async (req: Request) => {
   }
 
   const newStatus = EVENT_STATUS[event.type];
-  const toEmail   = event.data?.to?.[0];
+  const toEmail = event.data?.to?.[0];
 
   console.log(`[resend-webhook] event=${event.type} to=${toEmail} → status=${newStatus ?? "skip"}`);
 

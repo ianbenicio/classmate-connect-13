@@ -94,8 +94,7 @@ export function generateTurmaTemplate(): string {
 }
 
 export function downloadTemplate(type: "alunos" | "turmas") {
-  const content =
-    type === "alunos" ? generateAlunoTemplate() : generateTurmaTemplate();
+  const content = type === "alunos" ? generateAlunoTemplate() : generateTurmaTemplate();
   const filename = `template-${type}.csv`;
   const blob = new Blob(["﻿" + content], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -129,7 +128,9 @@ function parseCsv<T>(
     return {
       row: i + 2,
       data: null,
-      errors: parsed.error.issues.map((e) => `${String(e.path.join(".") || "campo")}: ${e.message}`),
+      errors: parsed.error.issues.map(
+        (e) => `${String(e.path.join(".") || "campo")}: ${e.message}`,
+      ),
       raw,
     };
   });
@@ -186,9 +187,7 @@ export async function importAlunos(
 
   for (const batch of chunks) {
     const insertRows = batch.map((r) => {
-      const turmaId = r.turma_cod
-        ? (turmasByCod.get(r.turma_cod.toLowerCase()) ?? null)
-        : null;
+      const turmaId = r.turma_cod ? (turmasByCod.get(r.turma_cod.toLowerCase()) ?? null) : null;
       return {
         nome: r.nome,
         email: r.email_aluno || null,
@@ -228,10 +227,7 @@ export async function importTurmas(
     .eq("project_id", projectId);
 
   const cursosByCod = new Map(
-    (cursoRows ?? []).map((c: { id: string; cod: string }) => [
-      c.cod.toLowerCase(),
-      c.id,
-    ]),
+    (cursoRows ?? []).map((c: { id: string; cod: string }) => [c.cod.toLowerCase(), c.id]),
   );
 
   let done = 0;
@@ -309,9 +305,7 @@ export async function exportAlunosCsv(projectId: string): Promise<void> {
   const lines = [
     headers.join(","),
     ...rows.map((r) =>
-      [r.nome, r.email, r.contato_resp, r.idade, r.turmas?.cod ?? r.turma_id]
-        .map(escape)
-        .join(","),
+      [r.nome, r.email, r.contato_resp, r.idade, r.turmas?.cod ?? r.turma_id].map(escape).join(","),
     ),
   ];
 
