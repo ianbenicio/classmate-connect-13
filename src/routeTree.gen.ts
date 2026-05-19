@@ -19,6 +19,7 @@ import { Route as AtividadesRouteImport } from './routes/atividades'
 import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
+import { Route as AceitarConviteTokenRouteImport } from './routes/aceitar-convite.$token'
 import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao.relatorios.extrato-horas-p'
 import { Route as CoordenacaoRelatoriosComparativoTurmasRouteImport } from './routes/coordenacao.relatorios.comparativo-turmas'
 
@@ -72,6 +73,11 @@ const AtividadesCursoIdRoute = AtividadesCursoIdRouteImport.update({
   path: '/$cursoId',
   getParentRoute: () => AtividadesRoute,
 } as any)
+const AceitarConviteTokenRoute = AceitarConviteTokenRouteImport.update({
+  id: '/aceitar-convite/$token',
+  path: '/aceitar-convite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoordenacaoRelatoriosExtratoHorasPRoute =
   CoordenacaoRelatoriosExtratoHorasPRouteImport.update({
     id: '/relatorios/extrato-horas-p',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   FormulariosRoute: typeof FormulariosRoute
   MinhaAreaRoute: typeof MinhaAreaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  AceitarConviteTokenRoute: typeof AceitarConviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtividadesCursoIdRouteImport
       parentRoute: typeof AtividadesRoute
     }
+    '/aceitar-convite/$token': {
+      id: '/aceitar-convite/$token'
+      path: '/aceitar-convite/$token'
+      fullPath: '/aceitar-convite/$token'
+      preLoaderRoute: typeof AceitarConviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coordenacao/relatorios/extrato-horas-p': {
       id: '/coordenacao/relatorios/extrato-horas-p'
       path: '/relatorios/extrato-horas-p'
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   FormulariosRoute: FormulariosRoute,
   MinhaAreaRoute: MinhaAreaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  AceitarConviteTokenRoute: AceitarConviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
