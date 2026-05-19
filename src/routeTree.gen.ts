@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResponsavelRouteImport } from './routes/responsavel'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MinhaAreaRouteImport } from './routes/minha-area'
 import { Route as FormulariosRouteImport } from './routes/formularios'
@@ -23,6 +24,11 @@ import { Route as AceitarConviteTokenRouteImport } from './routes/aceitar-convit
 import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao.relatorios.extrato-horas-p'
 import { Route as CoordenacaoRelatoriosComparativoTurmasRouteImport } from './routes/coordenacao.relatorios.comparativo-turmas'
 
+const ResponsavelRoute = ResponsavelRouteImport.update({
+  id: '/responsavel',
+  path: '/responsavel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/formularios': typeof FormulariosRoute
   '/minha-area': typeof MinhaAreaRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/responsavel': typeof ResponsavelRoute
   '/aceitar-convite/$token': typeof AceitarConviteTokenRoute
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/responsavel'
     | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/responsavel'
     | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/formularios'
     | '/minha-area'
     | '/reset-password'
+    | '/responsavel'
     | '/aceitar-convite/$token'
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
@@ -195,11 +207,19 @@ export interface RootRouteChildren {
   FormulariosRoute: typeof FormulariosRoute
   MinhaAreaRoute: typeof MinhaAreaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ResponsavelRoute: typeof ResponsavelRoute
   AceitarConviteTokenRoute: typeof AceitarConviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/responsavel': {
+      id: '/responsavel'
+      path: '/responsavel'
+      fullPath: '/responsavel'
+      preLoaderRoute: typeof ResponsavelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   FormulariosRoute: FormulariosRoute,
   MinhaAreaRoute: MinhaAreaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ResponsavelRoute: ResponsavelRoute,
   AceitarConviteTokenRoute: AceitarConviteTokenRoute,
 }
 export const routeTree = rootRouteImport

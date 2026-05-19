@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { getCurrentProjectId } from "@/lib/current-project";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAlunos, alunosStore } from "@/lib/alunos-store";
 import { toast } from "sonner";
@@ -71,6 +73,7 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
   const [avaliarAg, setAvaliarAg] = useState<Agendamento | null>(null);
   const [quadroOpen, setQuadroOpen] = useState(false);
   const [convidando, setConvidando] = useState(false);
+  const [convidandoResp, setConvidandoResp] = useState(false);
 
   const handleEnviarConvite = async () => {
     if (!aluno) return;
@@ -102,6 +105,35 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
       toast.success("Conta de aluno vinculada (email já existia).");
     }
   };
+  const handleConvidarResponsavel = async () => {
+    if (!aluno?.contatoResp) {
+      toast.error("Aluno sem email de responsável — edite e salve antes.");
+      return;
+    }
+    const projectId = getCurrentProjectId();
+    if (!projectId) {
+      toast.error("Nenhum projeto ativo.");
+      return;
+    }
+    setConvidandoResp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("invite-responsavel", {
+        body: { aluno_id: aluno.id, email: aluno.contatoResp, project_id: projectId },
+      });
+      if (error) throw error;
+      const result = data as { sent?: boolean; warning?: string };
+      if (result.warning) {
+        toast.warning(result.warning);
+      } else {
+        toast.success("Convite enviado para o responsável.");
+      }
+    } catch (e) {
+      toast.error("Falha ao convidar responsável: " + (e instanceof Error ? e.message : ""));
+    } finally {
+      setConvidandoResp(false);
+    }
+  };
+
   const todasTagsComp = useComportamentoTags();
 
   // Aulas desta semana — agendamentos da turma do aluno entre seg–dom
@@ -421,6 +453,26 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                       {convidando ? "Enviando…" : "Enviar convite"}
                     </Button>
                   )}
+                </div>
+              )}
+
+              {/* Convidar responsável (D3.2) */}
+              {(hasRole("admin") || hasRole("coordenacao")) && aluno.contatoResp && (
+                <div className="mt-3 border-t pt-3 flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Responsável:</span>
+                    <span className="text-xs">{aluno.contatoResp}</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => void handleConvidarResponsavel()}
+                    disabled={convidandoResp}
+                  >
+                    <Mail className="h-3.5 w-3.5 mr-1" />
+                    {convidandoResp ? "Enviando…" : "Convidar responsável"}
+                  </Button>
                 </div>
               )}
 
