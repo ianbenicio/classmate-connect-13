@@ -14,6 +14,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const FROM_ADDRESS = Deno.env.get("EMAIL_FROM") ?? "Javis <notificacoes@notificacoes.javis.app>";
+const APP_URL = (Deno.env.get("APP_URL") ?? "https://javis.app").replace(/\/$/, "");
 
 // ---------------------------------------------------------------------------
 // Templates
@@ -109,6 +110,9 @@ function renderAlertaCritico(v: TemplateVars): RenderedEmail {
   <p>Aluno: <strong>${alunoNome}</strong></p>
   <p>Tipo: ${tipo}</p>
   <p>${descricao}</p>
+  <p style="font-size:12px;color:#aaa;margin-top:32px">
+    <a href="{{unsubscribe_url}}" style="color:#aaa">Cancelar notificações</a>
+  </p>
 </body></html>`,
   };
 }
@@ -150,11 +154,7 @@ function renderTrialExpirando(v: TemplateVars): RenderedEmail {
 // Resend API call with exponential retry
 // ---------------------------------------------------------------------------
 
-async function sendViaResend(
-  to: string,
-  subject: string,
-  html: string,
-): Promise<{ id: string }> {
+async function sendViaResend(to: string, subject: string, html: string): Promise<{ id: string }> {
   if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY não configurado");
 
   const delays = [1000, 2000, 4000];
@@ -165,7 +165,7 @@ async function sendViaResend(
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${RESEND_API_KEY}`,
+          Authorization: `Bearer ${RESEND_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -177,7 +177,7 @@ async function sendViaResend(
       });
 
       if (res.ok) {
-        const data = await res.json() as { id: string };
+        const data = (await res.json()) as { id: string };
         return data;
       }
 
@@ -259,16 +259,35 @@ serve(async (req: Request) => {
   const { template_id, to, vars = {}, project_id } = body;
 
   if (!template_id || !to) {
-    return new Response(
-      JSON.stringify({ error: "template_id e to são obrigatórios" }),
-      { status: 400 },
-    );
+    return new Response(JSON.stringify({ error: "template_id e to são obrigatórios" }), {
+      status: 400,
+    });
   }
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    const { subject, html } = renderTemplate(template_id, vars);
+    let { subject, html } = renderTemplate(template_id, vars);
+
+    // Resolve {{unsubscribe_url}} placeholder — lookup token from responsaveis by email.
+    if (html.includes("{{unsubscribe_url}}")) {
+      let unsubUrl = `${APP_URL}/preferencias`;
+      try {
+        // deno-lint-ignore no-explicit-any
+        const { data: resp } = await (supabase as any)
+          .from("responsaveis")
+          .select("unsubscribe_token")
+          .eq("email", to)
+          .maybeSingle() as { data: { unsubscribe_token: string } | null };
+        if (resp?.unsubscribe_token) {
+          unsubUrl = `${APP_URL}/preferencias?token=${resp.unsubscribe_token}`;
+        }
+      } catch {
+        // non-fatal — fallback to generic URL
+      }
+      html = html.replaceAll("{{unsubscribe_url}}", unsubUrl);
+    }
+
     const { id } = await sendViaResend(to, subject, html);
 
     await logAudit(supabase, {

@@ -8,7 +8,7 @@ import {
   useRouterState,
   useNavigate,
 } from "@tanstack/react-router";
-import { Sparkles, SmilePlus } from "lucide-react";
+import { Sparkles, SmilePlus, GraduationCap } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
@@ -99,7 +99,15 @@ function RootComponent() {
 }
 
 // Rotas públicas — não exigem autenticação.
+// aceitar-convite/* é público: responsável ainda não tem conta.
 const PUBLIC_ROUTES = new Set<string>(["/auth", "/reset-password"]);
+function isPublicPath(path: string): boolean {
+  return (
+    PUBLIC_ROUTES.has(path) ||
+    path.startsWith("/aceitar-convite/") ||
+    path === "/preferencias"
+  );
+}
 
 function AppShell() {
   useAgendamentoScanner();
@@ -115,11 +123,13 @@ function AppShell() {
   const isSuper = isSuperAdminFn();
   const isCoord = hasRole("admin") || hasRole("coordenacao");
   const isAluno = hasRole("aluno") && !isStaff;
+  // viewer puro: tem role viewer e não tem nenhum role de staff
+  const isViewer = hasRole("viewer") && !isStaff && !isCoord;
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [tagsOpen, setTagsOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const isPublic = PUBLIC_ROUTES.has(pathname);
+  const isPublic = isPublicPath(pathname);
 
   // Auth gate: usuário não autenticado em rota privada → /auth.
   useEffect(() => {
@@ -186,6 +196,14 @@ function AppShell() {
                 className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
               >
                 <Sparkles className="h-3.5 w-3.5" /> Minha área
+              </Link>
+            ) : isViewer ? (
+              <Link
+                to="/responsavel"
+                activeProps={{ className: "text-foreground font-medium" }}
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                <GraduationCap className="h-3.5 w-3.5" /> Portal do Responsável
               </Link>
             ) : (
               <>
