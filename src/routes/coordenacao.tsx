@@ -29,6 +29,7 @@ import { RelatoriosCoordenacaoDialog } from "@/components/relatorios/RelatoriosC
 import { AuditHistoricoDialog } from "@/components/admin/AuditHistoricoDialog";
 import { CsvImportDialog } from "@/components/admin/CsvImportDialog";
 import { CursoTemplatesDialog } from "@/components/admin/CursoTemplatesDialog";
+import { OnboardingWizardDialog } from "@/components/admin/OnboardingWizardDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
@@ -43,6 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/lib/auth";
+import { useSetting } from "@/lib/settings-store";
 import {
   downloadRelatorio,
   relatoriosStore,
@@ -93,6 +95,8 @@ function CoordenacaoDashboard() {
   const [auditOpen, setAuditOpen] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const onboardingCompleted = useSetting<boolean>("onboarding.completed", false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao") || isSuperAdmin();
   const isAdmin = hasRole("admin");
@@ -217,6 +221,26 @@ function CoordenacaoDashboard() {
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6">
+      {isAdmin && !onboardingCompleted && (
+        <div className="flex items-center gap-3 rounded-lg border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30 px-4 py-3">
+          <span className="text-amber-600 dark:text-amber-400 text-lg">🎓</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Configure sua escola em minutos
+            </p>
+            <p className="text-xs text-amber-700 dark:text-amber-300">
+              Complete o assistente de configuração inicial para começar a usar o sistema.
+            </p>
+          </div>
+          <Button
+            size="sm"
+            className="shrink-0 bg-amber-600 hover:bg-amber-700 text-white"
+            onClick={() => setWizardOpen(true)}
+          >
+            Configurar agora
+          </Button>
+        </div>
+      )}
       <header className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold tracking-tight inline-flex items-center gap-2">
@@ -301,6 +325,11 @@ function CoordenacaoDashboard() {
           <Button variant="outline" onClick={() => setRelatoriosOpen(true)}>
             <FileText /> Relatórios
           </Button>
+          {isAdmin && (
+            <Button variant="outline" onClick={() => setWizardOpen(true)}>
+              <GraduationCap /> Assistente inicial
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setCsvImportOpen(true)}>
             <FileSpreadsheet /> Importar CSV
           </Button>
@@ -437,6 +466,13 @@ function CoordenacaoDashboard() {
       <AuditHistoricoDialog open={auditOpen} onOpenChange={setAuditOpen} />
       <CsvImportDialog open={csvImportOpen} onOpenChange={setCsvImportOpen} />
       <CursoTemplatesDialog open={templatesOpen} onOpenChange={setTemplatesOpen} />
+      {isAdmin && (
+        <OnboardingWizardDialog
+          open={wizardOpen}
+          onOpenChange={setWizardOpen}
+          onDone={() => setWizardOpen(false)}
+        />
+      )}
     </main>
   );
 }
