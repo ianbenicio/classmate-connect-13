@@ -44,7 +44,9 @@ import {
   Users as UsersIcon,
   UserPlus,
   Info,
+  ShieldX,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { UserPerfilDialog } from "./UserPerfilDialog";
 import { toast } from "sonner";
 import { useUsers, usersStore, type UserRow } from "@/lib/users-store";
@@ -61,11 +63,13 @@ const ROLE_ORDER: AppRole[] = ["admin", "coordenacao", "professor", "aluno", "vi
 
 export function UsersManagerDialog({ open, onOpenChange }: Props) {
   const all = useUsers();
-  const { user: authUser } = useAuth();
+  const { user: authUser, isSuperAdmin } = useAuth();
   const [filtro, setFiltro] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
   const [confirmRemove, setConfirmRemove] = useState<UserRow | null>(null);
+  const [confirmDeleteFull, setConfirmDeleteFull] = useState<UserRow | null>(null);
+  const [deletingFull, setDeletingFull] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [perfilOpen, setPerfilOpen] = useState<UserRow | null>(null);
 
@@ -228,10 +232,21 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
                   className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={() => setConfirmRemove(u)}
                   disabled={isSelf}
-                  title={isSelf ? "Você não pode remover a si mesmo" : "Remover usuário"}
+                  title={isSelf ? "Você não pode remover a si mesmo" : "Remover perfil e papéis"}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
+                {isSuperAdmin() && !isSelf && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-red-700 hover:text-red-700 hover:bg-red-700/10 dark:text-red-400 dark:hover:text-red-400"
+                    onClick={() => setConfirmDeleteFull(u)}
+                    title="Excluir permanentemente (super admin)"
+                  >
+                    <ShieldX className="h-3.5 w-3.5" />
+                  </Button>
+                )}
               </>
             )}
           </div>
@@ -358,14 +373,14 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
             <AlertDialogTitle>Remover usuário?</AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <span className="block">
-                Apaga o perfil e todos os papéis de{" "}
+                Remove o perfil e todos os papéis de{" "}
                 <strong>{confirmRemove?.displayName || confirmRemove?.email || "?"}</strong>. O
                 usuário perderá acesso aos dados do app.
               </span>
               <span className="block text-amber-600 dark:text-amber-400">
                 ⚠️ A conta de login (Supabase Auth) NÃO é apagada por aqui — apenas perfil e papéis.
-                Para remoção total, use o painel do Supabase ou peça ao usuário para excluir a
-                própria conta.
+                Para exclusão completa incluindo a conta auth, use o botão{" "}
+                <ShieldX className="inline h-3.5 w-3.5" /> (super admin).
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -394,6 +409,73 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
         onOpenChange={(o) => !o && setPerfilOpen(null)}
         user={perfilOpen}
       />
+
+      {/* Exclusão permanente — super_admin only */}
+      <AlertDialog
+        open={!!confirmDeleteFull}
+        onOpenChange={(o) => !o && !deletingFull && setConfirmDeleteFull(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
+              <ShieldX className="h-5 w-5" />
+              Excluir usuário permanentemente?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <span className="block">
+                Você está prestes a excluir{" "}
+                <strong>
+                  {confirmDeleteFull?.displayName || confirmDeleteFull?.email || "?"}
+                </strong>{" "}
+                de forma irreversível.
+              </span>
+              <span className="block font-medium text-destructive">
+                ⚠️ Esta ação NÃO pode ser desfeita. Será apagado:
+              </span>
+              <ul className="list-disc pl-5 text-sm space-y-0.5 text-muted-foreground">
+                <li>Conta de login (Supabase Auth)</li>
+                <li>Perfil e todos os papéis</li>
+                <li>Vínculos como aluno, responsável ou professor</li>
+                <li>Presenças e registros associados</li>
+              </ul>
+              <span className="block text-xs text-muted-foreground">
+                Registros de auditoria são preservados com user_id anonimizado.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletingFull}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-700 text-white hover:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700"
+              disabled={deletingFull}
+              onClick={async (e) => {
+                e.preventDefault();
+                if (!confirmDeleteFull) return;
+                const target = confirmDeleteFull;
+                setDeletingFull(true);
+                try {
+                  const { error } = await supabase.functions.invoke("delete-user", {
+                    body: { target_user_id: target.userId },
+                  });
+                  if (error) throw error;
+                  await usersStore.refresh();
+                  toast.success(
+                    `${target.displayName || target.email || "Usuário"} excluído permanentemente.`,
+                  );
+                  setConfirmDeleteFull(null);
+                } catch (err) {
+                  const msg = err instanceof Error ? err.message : String(err);
+                  toast.error("Falha ao excluir: " + msg);
+                } finally {
+                  setDeletingFull(false);
+                }
+              }}
+            >
+              {deletingFull ? "Excluindo…" : "Excluir permanentemente"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
