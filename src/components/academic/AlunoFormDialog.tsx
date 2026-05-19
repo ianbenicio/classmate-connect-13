@@ -81,10 +81,6 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
       toast.error("Email inválido.");
       return null;
     }
-    if (!editing && !emailTrim) {
-      toast.error("Informe o email do aluno.");
-      return null;
-    }
     return { ...form, email: emailTrim || undefined };
   };
 
@@ -186,7 +182,7 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
 
           <div>
             <Label htmlFor="email">
-              Email *{" "}
+              Email{" "}
               {form.userId && (
                 <span className="ml-2 inline-flex items-center rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 text-[10px] font-medium">
                   Conta vinculada
@@ -198,14 +194,12 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
               type="email"
               value={form.email ?? ""}
               onChange={(e) => update("email", e.target.value)}
-              placeholder="aluno@exemplo.com"
+              placeholder="aluno@exemplo.com (opcional)"
               autoComplete="email"
             />
-            {!editing && (
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Ao salvar, será enviado um email de convite para definição de senha.
-              </p>
-            )}
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Opcional. Necessário apenas para "Exportar como usuário" (cria conta de login).
+            </p>
           </div>
 
           <div>
