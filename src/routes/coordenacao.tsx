@@ -18,12 +18,17 @@ import {
   BellOff,
   Settings as SettingsIcon,
   Building2,
+  FileSpreadsheet,
+  BookOpen,
 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
 import { SettingsDialog } from "@/components/admin/SettingsDialog";
 import { ProjetosManagerDialog } from "@/components/admin/ProjetosManagerDialog";
 import { RelatoriosCoordenacaoDialog } from "@/components/relatorios/RelatoriosCoordenacaoDialog";
+import { AuditHistoricoDialog } from "@/components/admin/AuditHistoricoDialog";
+import { CsvImportDialog } from "@/components/admin/CsvImportDialog";
+import { CursoTemplatesDialog } from "@/components/admin/CursoTemplatesDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
@@ -85,6 +90,9 @@ function CoordenacaoDashboard() {
   const [projetosOpen, setProjetosOpen] = useState(false);
   const [relatoriosOpen, setRelatoriosOpen] = useState(false);
   const [limpandoOrfas, setLimpandoOrfas] = useState(false);
+  const [auditOpen, setAuditOpen] = useState(false);
+  const [csvImportOpen, setCsvImportOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao") || isSuperAdmin();
   const isAdmin = hasRole("admin");
@@ -293,6 +301,15 @@ function CoordenacaoDashboard() {
           <Button variant="outline" onClick={() => setRelatoriosOpen(true)}>
             <FileText /> Relatórios
           </Button>
+          <Button variant="outline" onClick={() => setCsvImportOpen(true)}>
+            <FileSpreadsheet /> Importar CSV
+          </Button>
+          <Button variant="outline" onClick={() => setTemplatesOpen(true)}>
+            <BookOpen /> Templates de Curso
+          </Button>
+          <Button variant="outline" onClick={() => setAuditOpen(true)}>
+            <ShieldCheck /> Histórico de Alterações
+          </Button>
           <Button variant="outline" onClick={handleLimparOrfas} disabled={limpandoOrfas}>
             {limpandoOrfas ? <Loader2 className="animate-spin" /> : <BellOff />}
             Limpar notificações órfãs
@@ -417,6 +434,9 @@ function CoordenacaoDashboard() {
         <ProjetosManagerDialog open={projetosOpen} onOpenChange={setProjetosOpen} />
       )}
       <RelatoriosCoordenacaoDialog open={relatoriosOpen} onOpenChange={setRelatoriosOpen} />
+      <AuditHistoricoDialog open={auditOpen} onOpenChange={setAuditOpen} />
+      <CsvImportDialog open={csvImportOpen} onOpenChange={setCsvImportOpen} />
+      <CursoTemplatesDialog open={templatesOpen} onOpenChange={setTemplatesOpen} />
     </main>
   );
 }
