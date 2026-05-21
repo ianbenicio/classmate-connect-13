@@ -88,7 +88,12 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
     e.preventDefault();
     const aluno = validar();
     if (!aluno) return;
-    await onSave(aluno);
+    try {
+      await onSave(aluno);
+    } catch {
+      // onSave já emitiu toast de erro — mantém dialog aberto.
+      return;
+    }
     toast.success(editing ? "Aluno atualizado" : "Aluno cadastrado");
     onOpenChange(false);
   };
@@ -103,7 +108,13 @@ export function AlunoFormDialog({ open, onOpenChange, editing, cursos, turmas, o
     }
     setExportando(true);
     try {
-      await onSave(aluno);
+      try {
+        await onSave(aluno);
+      } catch {
+        // onSave já emitiu toast de erro (ex.: 23505 email duplicado).
+        // Aborta antes de invocar o invite com aluno desatualizado.
+        return;
+      }
       const result = await alunosStore.invite(aluno.id);
       if (!result.ok) {
         const friendly =

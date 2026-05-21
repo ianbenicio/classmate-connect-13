@@ -249,6 +249,8 @@ export const alunosStore = {
       emit();
       console.error("[alunos] add error", error);
       toast.error(`Erro ao salvar aluno: ${error.message}`);
+      // Throw para caller poder abortar fluxos compostos (ex.: exportar como usuário).
+      throw error;
     }
   },
   async update(id: string, patch: Partial<Aluno>) {
@@ -266,6 +268,8 @@ export const alunosStore = {
       emit();
       console.error("[alunos] update error", error);
       toast.error(`Erro ao atualizar aluno: ${error.message}`);
+      // Throw para caller poder abortar fluxos compostos.
+      throw error;
     }
   },
   async remove(id: string) {
