@@ -19,11 +19,24 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
+// Boot-time diagnostic — confirms env injection without leaking the key.
+// Safe to keep: only prints url + key length + key prefix (8 chars).
+console.log(
+  "[invite-aluno-user] boot env",
+  JSON.stringify({
+    has_url: !!SUPABASE_URL,
+    url_host: SUPABASE_URL ? new URL(SUPABASE_URL).host : null,
+    service_key_length: SUPABASE_SERVICE_ROLE_KEY.length,
+    service_key_prefix: SUPABASE_SERVICE_ROLE_KEY.slice(0, 8),
+  }),
+);
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, content-type",
+  "Access-Control-Allow-Headers": "authorization, content-type, x-client-info, apikey",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req: Request) => {
@@ -84,7 +97,12 @@ serve(async (req: Request) => {
     .maybeSingle()) as { data: AlunoRow | null; error: unknown };
 
   if (alunoErr || !aluno) {
-    return new Response(JSON.stringify({ error: "aluno_not_found" }), { status: 404 });
+    const detail =
+      alunoErr && typeof alunoErr === "object" && "message" in alunoErr
+        ? String((alunoErr as { message: unknown }).message)
+        : undefined;
+    console.error("[invite-aluno-user] aluno select failed", { alunoId, detail });
+    return new Response(JSON.stringify({ error: "aluno_not_found", detail }), { status: 404 });
   }
 
   // -----------------------------------------------------------------------
@@ -99,8 +117,7 @@ serve(async (req: Request) => {
 
   const isSuperAdmin = callerAuth.user.app_metadata?.is_super_admin === true;
   const isAdminOrCoord =
-    isSuperAdmin ||
-    (profileRows ?? []).some((p) => p.role === "admin" || p.role === "coordenacao");
+    isSuperAdmin || (profileRows ?? []).some((p) => p.role === "admin" || p.role === "coordenacao");
 
   if (!isAdminOrCoord) {
     return new Response(JSON.stringify({ error: "Permissão negada" }), { status: 403 });
@@ -123,10 +140,7 @@ serve(async (req: Request) => {
   }
 
   if (!aluno.curso_id || !aluno.turma_id) {
-    return new Response(
-      JSON.stringify({ error: "aluno_missing_curso_or_turma" }),
-      { status: 200 },
-    );
+    return new Response(JSON.stringify({ error: "aluno_missing_curso_or_turma" }), { status: 200 });
   }
 
   // -----------------------------------------------------------------------
@@ -156,14 +170,11 @@ serve(async (req: Request) => {
     ) {
       const { data: listData, error: listErr } = await supabase.auth.admin.listUsers();
       if (listErr) {
-        return new Response(
-          JSON.stringify({ error: "invite_failed", detail: listErr.message }),
-          { status: 200 },
-        );
+        return new Response(JSON.stringify({ error: "invite_failed", detail: listErr.message }), {
+          status: 200,
+        });
       }
-      const existing = listData?.users?.find(
-        (u) => u.email?.toLowerCase() === email,
-      );
+      const existing = listData?.users?.find((u) => u.email?.toLowerCase() === email);
       if (!existing) {
         return new Response(
           JSON.stringify({
@@ -177,10 +188,9 @@ serve(async (req: Request) => {
       status = "linked_existing";
     } else {
       console.error("[invite-aluno-user] inviteUserByEmail error", inviteErr);
-      return new Response(
-        JSON.stringify({ error: "invite_failed", detail: inviteErr.message }),
-        { status: 200 },
-      );
+      return new Response(JSON.stringify({ error: "invite_failed", detail: inviteErr.message }), {
+        status: 200,
+      });
     }
   } else {
     userId = inviteData.user.id;
@@ -197,10 +207,9 @@ serve(async (req: Request) => {
 
   if (updateErr) {
     console.error("[invite-aluno-user] update aluno error", updateErr);
-    return new Response(
-      JSON.stringify({ error: "link_failed", detail: updateErr.message }),
-      { status: 200 },
-    );
+    return new Response(JSON.stringify({ error: "link_failed", detail: updateErr.message }), {
+      status: 200,
+    });
   }
 
   // Garante que profile existe com role "aluno" nesse projeto
@@ -229,8 +238,8 @@ serve(async (req: Request) => {
     // audit non-fatal
   }
 
-  return new Response(
-    JSON.stringify({ status, userId }),
-    { status: 200, headers: { "Content-Type": "application/json", ...cors } },
-  );
+  return new Response(JSON.stringify({ status, userId }), {
+    status: 200,
+    headers: { "Content-Type": "application/json", ...cors },
+  });
 });
