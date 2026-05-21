@@ -106,21 +106,35 @@ serve(async (req: Request) => {
   }
 
   // -----------------------------------------------------------------------
-  // 3. Valida caller tem role admin/coordenacao nesse projeto
+  // 3. Valida caller tem role super_admin / admin / coordenacao
+  // Roles vivem em public.user_roles (não em profiles).
   // -----------------------------------------------------------------------
-  type ProfileRow = { role: string };
-  const { data: profileRows } = (await supabase
-    .from("profiles")
+  type UserRoleRow = { role: string };
+  const { data: roleRows, error: roleErr } = (await supabase
+    .from("user_roles")
     .select("role")
-    .eq("id", callerId)
-    .eq("project_id", aluno.project_id)) as { data: ProfileRow[] | null };
+    .eq("user_id", callerId)) as { data: UserRoleRow[] | null; error: { message?: string } | null };
 
-  const isSuperAdmin = callerAuth.user.app_metadata?.is_super_admin === true;
-  const isAdminOrCoord =
-    isSuperAdmin || (profileRows ?? []).some((p) => p.role === "admin" || p.role === "coordenacao");
+  if (roleErr) {
+    console.error("[invite-aluno-user] user_roles select failed", roleErr);
+    return new Response(
+      JSON.stringify({ error: "role_check_failed", detail: roleErr.message }),
+      { status: 200, headers: { "Content-Type": "application/json", ...cors } },
+    );
+  }
 
-  if (!isAdminOrCoord) {
-    return new Response(JSON.stringify({ error: "Permissão negada" }), { status: 403 });
+  const roles = (roleRows ?? []).map((r) => r.role);
+  const isAuthorized =
+    roles.includes("super_admin") ||
+    roles.includes("admin") ||
+    roles.includes("coordenacao");
+
+  if (!isAuthorized) {
+    console.error("[invite-aluno-user] permission denied", { callerId, roles });
+    return new Response(JSON.stringify({ error: "Permissão negada" }), {
+      status: 403,
+      headers: { "Content-Type": "application/json", ...cors },
+    });
   }
 
   // -----------------------------------------------------------------------
@@ -212,16 +226,24 @@ serve(async (req: Request) => {
     });
   }
 
-  // Garante que profile existe com role "aluno" nesse projeto
+  // Upsert profile (profiles não tem coluna role — colunas: id, user_id, project_id, display_name, email, ...).
   await supabase.from("profiles").upsert(
     {
       id: userId,
+      user_id: userId,
       project_id: aluno.project_id,
-      role: "aluno",
-      nome: aluno.nome,
+      display_name: aluno.nome,
+      email,
     },
     { onConflict: "id,project_id", ignoreDuplicates: true },
   );
+
+  // Role do aluno vai em user_roles (não em profiles).
+  try {
+    await supabase.from("user_roles").insert({ user_id: userId, role: "aluno" });
+  } catch {
+    // duplicate-key ou outra falha não bloqueia o invite
+  }
 
   // -----------------------------------------------------------------------
   // 7. Audit
