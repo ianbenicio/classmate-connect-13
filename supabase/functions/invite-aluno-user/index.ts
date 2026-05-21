@@ -117,17 +117,16 @@ serve(async (req: Request) => {
 
   if (roleErr) {
     console.error("[invite-aluno-user] user_roles select failed", roleErr);
-    return new Response(
-      JSON.stringify({ error: "role_check_failed", detail: roleErr.message }),
-      { status: 200, headers: { "Content-Type": "application/json", ...cors } },
-    );
+    return new Response(JSON.stringify({ error: "role_check_failed", detail: roleErr.message }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...cors },
+    });
   }
 
   const roles = (roleRows ?? []).map((r) => r.role);
-  const isAuthorized =
-    roles.includes("super_admin") ||
-    roles.includes("admin") ||
-    roles.includes("coordenacao");
+  // TODO: restringir depois — por agora professor + coordenacao + admin podem invitar.
+  const ALLOWED_ROLES = ["super_admin", "admin", "coordenacao", "professor"];
+  const isAuthorized = roles.some((r) => ALLOWED_ROLES.includes(r));
 
   if (!isAuthorized) {
     console.error("[invite-aluno-user] permission denied", { callerId, roles });
