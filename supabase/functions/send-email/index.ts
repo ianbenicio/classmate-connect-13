@@ -274,11 +274,11 @@ serve(async (req: Request) => {
       let unsubUrl = `${APP_URL}/preferencias`;
       try {
         // deno-lint-ignore no-explicit-any
-        const { data: resp } = await (supabase as any)
+        const { data: resp } = (await (supabase as any)
           .from("responsaveis")
           .select("unsubscribe_token")
           .eq("email", to)
-          .maybeSingle() as { data: { unsubscribe_token: string } | null };
+          .maybeSingle()) as { data: { unsubscribe_token: string } | null };
         if (resp?.unsubscribe_token) {
           unsubUrl = `${APP_URL}/preferencias?token=${resp.unsubscribe_token}`;
         }

@@ -46,13 +46,13 @@ serve(async (req: Request) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   // deno-lint-ignore no-explicit-any
-  const { data: items, error: fetchErr } = await (supabase as any)
+  const { data: items, error: fetchErr } = (await (supabase as any)
     .from("email_queue")
     .select("id, project_id, template_id, to_email, vars_json, tentativas")
     .eq("state", "pending")
     .lt("tentativas", MAX_TENTATIVAS)
     .order("criado_em", { ascending: true })
-    .limit(BATCH_SIZE) as { data: QueueItem[] | null; error: unknown };
+    .limit(BATCH_SIZE)) as { data: QueueItem[] | null; error: unknown };
 
   if (fetchErr) {
     console.error("[process-email-queue] fetch error", fetchErr);
@@ -68,7 +68,7 @@ serve(async (req: Request) => {
       const res = await fetch(SEND_EMAIL_URL, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -122,8 +122,8 @@ serve(async (req: Request) => {
 
   console.log(`[process-email-queue] batch=${queue.length} sent=${sent} failed=${failed}`);
 
-  return new Response(
-    JSON.stringify({ processed: queue.length, sent, failed }),
-    { status: 200, headers: { "Content-Type": "application/json" } },
-  );
+  return new Response(JSON.stringify({ processed: queue.length, sent, failed }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 });

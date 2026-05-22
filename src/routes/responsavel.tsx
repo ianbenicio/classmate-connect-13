@@ -51,10 +51,10 @@ function ResponsavelPortalPage() {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: vdRows } = await (supabase as any)
+        const { data: vdRows } = (await (supabase as any)
           .from("viewer_dependentes")
           .select("aluno_id, alunos(id, nome, turmas(nome, cursos(nome)))")
-          .eq("viewer_user_id", authUser.id) as { data: VdRow[] | null };
+          .eq("viewer_user_id", authUser.id)) as { data: VdRow[] | null };
 
         type PRow = { presente: boolean; atividades: { data: string } | null };
 
@@ -64,12 +64,12 @@ function ResponsavelPortalPage() {
             if (!a) return null;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { data: pRows } = await (supabase as any)
+            const { data: pRows } = (await (supabase as any)
               .from("presencas")
               .select("presente, atividades(data)")
               .eq("aluno_id", a.id)
               .order("created_at", { ascending: false })
-              .limit(10) as { data: PRow[] | null };
+              .limit(10)) as { data: PRow[] | null };
 
             return {
               id: a.id,

@@ -103,9 +103,7 @@ function RootComponent() {
 const PUBLIC_ROUTES = new Set<string>(["/auth", "/reset-password"]);
 function isPublicPath(path: string): boolean {
   return (
-    PUBLIC_ROUTES.has(path) ||
-    path.startsWith("/aceitar-convite/") ||
-    path === "/preferencias"
+    PUBLIC_ROUTES.has(path) || path.startsWith("/aceitar-convite/") || path === "/preferencias"
   );
 }
 

@@ -51,11 +51,11 @@ export function ResponsavelPreferenciasDialog({ open, onOpenChange }: Props) {
       setLoading(true);
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data } = await (supabase as any)
+        const { data } = (await (supabase as any)
           .from("responsaveis")
           .select("id, preferencias_json")
           .eq("user_id", authUser.id)
-          .maybeSingle() as { data: { id: string; preferencias_json: Preferencias } | null };
+          .maybeSingle()) as { data: { id: string; preferencias_json: Preferencias } | null };
 
         if (data) {
           setResponsavelId(data.id);
@@ -90,8 +90,7 @@ export function ResponsavelPreferenciasDialog({ open, onOpenChange }: Props) {
     }
   };
 
-  const toggle = (key: keyof Preferencias) =>
-    setPrefs((p) => ({ ...p, [key]: !p[key] }));
+  const toggle = (key: keyof Preferencias) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

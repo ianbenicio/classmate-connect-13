@@ -32,7 +32,11 @@ function PreferenciasPage() {
   const token = search.token;
   const [pageState, setPageState] = useState<PageState>("loading");
   const [nome, setNome] = useState<string>("");
-  const [prefs, setPrefs] = useState<Preferencias>({ digest: true, alertas: true, mensagens: true });
+  const [prefs, setPrefs] = useState<Preferencias>({
+    digest: true,
+    alertas: true,
+    mensagens: true,
+  });
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -45,9 +49,9 @@ function PreferenciasPage() {
 
     void (async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).rpc("get_responsavel_prefs", {
+      const { data, error } = (await (supabase as any).rpc("get_responsavel_prefs", {
         p_token: token,
-      }) as {
+      })) as {
         data: {
           ok: boolean;
           nome?: string;
@@ -85,9 +89,9 @@ function PreferenciasPage() {
     setSaving(true);
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).rpc("opt_out_responsavel", {
+      const { data, error } = (await (supabase as any).rpc("opt_out_responsavel", {
         p_token: token,
-      }) as { data: { ok: boolean } | null; error: unknown };
+      })) as { data: { ok: boolean } | null; error: unknown };
 
       if (error || !data?.ok) throw new Error("Falha ao cancelar inscrição.");
       setPageState("unsubscribed");

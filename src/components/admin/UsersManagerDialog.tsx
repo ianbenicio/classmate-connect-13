@@ -424,9 +424,7 @@ export function UsersManagerDialog({ open, onOpenChange }: Props) {
             <AlertDialogDescription className="space-y-2">
               <span className="block">
                 Você está prestes a excluir{" "}
-                <strong>
-                  {confirmDeleteFull?.displayName || confirmDeleteFull?.email || "?"}
-                </strong>{" "}
+                <strong>{confirmDeleteFull?.displayName || confirmDeleteFull?.email || "?"}</strong>{" "}
                 de forma irreversível.
               </span>
               <span className="block font-medium text-destructive">

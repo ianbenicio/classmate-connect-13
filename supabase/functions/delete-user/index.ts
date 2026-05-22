@@ -51,7 +51,10 @@ serve(async (req: Request) => {
   }
 
   // Obtém caller user_id para bloquear auto-exclusão.
-  const { data: { user: callerUser }, error: meErr } = await callerClient.auth.getUser(callerJwt);
+  const {
+    data: { user: callerUser },
+    error: meErr,
+  } = await callerClient.auth.getUser(callerJwt);
   if (meErr || !callerUser) {
     return json(401, { error: "Unauthorized: invalid token" });
   }
@@ -79,13 +82,13 @@ serve(async (req: Request) => {
 
   // Busca dados do target antes de deletar (para log).
   // deno-lint-ignore no-explicit-any
-  const { data: targetProfile } = await (adminClient as any)
+  const { data: targetProfile } = (await (adminClient as any)
     .from("profiles")
     .select("display_name, email, project_id")
     .eq("user_id", targetUserId)
-    .maybeSingle() as {
-      data: { display_name: string | null; email: string | null; project_id: string | null } | null;
-    };
+    .maybeSingle()) as {
+    data: { display_name: string | null; email: string | null; project_id: string | null } | null;
+  };
 
   // Deleta via auth.admin — aciona CASCADE no banco.
   const { error: deleteErr } = await adminClient.auth.admin.deleteUser(targetUserId);
