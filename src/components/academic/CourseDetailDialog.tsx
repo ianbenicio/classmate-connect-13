@@ -140,15 +140,18 @@ export function CourseDetailDialog({
           <div className="flex items-center gap-2">
             <Badge variant="outline">{curso?.cod}</Badge>
             <DialogTitle className="flex-1">{curso?.nome}</DialogTitle>
-            {curso && (
-              <Button size="sm" variant="outline" onClick={() => onEditCurso(curso)}>
-                <Settings className="h-4 w-4 mr-1" />
-                Editar curso
-              </Button>
-            )}
           </div>
           <DialogDescription className="sr-only">Detalhes do curso</DialogDescription>
         </DialogHeader>
+
+        {curso && (
+          <div className="pb-1">
+            <Button size="sm" variant="outline" onClick={() => onEditCurso(curso)}>
+              <Settings className="h-4 w-4 mr-1" />
+              Editar curso
+            </Button>
+          </div>
+        )}
 
         {/* Propriedades do curso */}
         {curso && (
