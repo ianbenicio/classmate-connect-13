@@ -203,26 +203,10 @@ function ProfessorPerfilDialogContent({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-start justify-between gap-2">
-            <DialogTitle className="inline-flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              {professor.nome}
-            </DialogTitle>
-            {(onEditClick || onDeleteClick) && (
-              <div className="flex gap-1">
-                {onEditClick && (
-                  <Button size="sm" variant="outline" onClick={onEditClick} title="Editar perfil">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                )}
-                {onDeleteClick && (
-                  <Button size="sm" variant="outline" onClick={onDeleteClick} title="Excluir conta">
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
+          <DialogTitle className="inline-flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            {professor.nome}
+          </DialogTitle>
           <DialogDescription>
             Perfil do professor · {professor.ativo ? "Ativo" : "Inativo"}
           </DialogDescription>
@@ -672,6 +656,24 @@ function ProfessorPerfilDialogContent({
             <p>Criado em: {new Date(professor.criadoEm).toLocaleString("pt-BR")}</p>
             <p>Atualizado em: {new Date(professor.atualizadoEm).toLocaleString("pt-BR")}</p>
           </div>
+
+          {/* ========== Ações (Editar / Deletar) ========== */}
+          {(onEditClick || onDeleteClick) && (
+            <div className="flex justify-end gap-2 pt-2 border-t">
+              {onEditClick && (
+                <Button variant="outline" onClick={onEditClick}>
+                  <Pencil className="h-4 w-4 mr-1.5" />
+                  Editar perfil
+                </Button>
+              )}
+              {onDeleteClick && (
+                <Button variant="outline" onClick={onDeleteClick}>
+                  <Trash2 className="h-4 w-4 mr-1.5 text-destructive" />
+                  <span className="text-destructive">Excluir conta</span>
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
