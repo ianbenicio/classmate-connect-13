@@ -207,17 +207,43 @@ export const atividadesStore = {
     return atividades;
   },
   async upsert(a: Atividade) {
-    const row = atividadeToRow(a);
-    const local: Atividade = {
-      ...a,
-      id: row.id,
-      cursoId: row.curso_id,
-      habilidadeIds: toUuidArray(a.habilidadeIds),
+    // IDs runtime já são UUIDs — construir row direto, sem toUuid.
+    const row = {
+      id: a.id,
+      tipo: tipoToEnum(a.tipo),
+      nome: a.nome,
+      codigo: a.codigo,
+      curso_id: a.cursoId,
+      grupo: a.grupo,
+      descricao: a.descricao || null,
+      objetivo_resultados: a.objetivoResultados || null,
+      prazo: a.prazo || null,
+      criado_por: a.criadoPor || null,
+      professor: a.professor || null,
+      professor_user_id: a.professorUserId ?? null,
+      habilidade_ids: (a.habilidadeIds ?? []) as never,
+      descricao_conteudo: a.descricaoConteudo ?? null,
+      sugestoes_pais: a.sugestoesPais ?? null,
+      resultados_esperados: a.resultadosEsperados ?? null,
+      notas_instrutor: a.notasInstrutor ?? null,
+      pre_requisitos: a.preRequisitos ?? null,
+      niveis_alvo: (a.niveisAlvo ?? []) as never,
+      criterios_sucesso: a.criteriosSucesso ?? null,
+      metodologias: a.metodologias ?? null,
+      roteiro: (a.roteiro ?? []) as never,
+      materiais: (a.materiais ?? []) as never,
+      referencias: a.referencias ?? null,
+      formularios: (a.formularios ?? null) as never,
+      rubricas: (a.rubricas ?? []) as never,
+      instrucoes: a.instrucoes ?? null,
+      carga_horaria_min: a.cargaHorariaMin ?? 0,
+      project_id: requireProjectIdForWrite() ?? undefined,
     };
-    const exists = atividades.some((x) => x.id === local.id);
+    const local: Atividade = { ...a };
+    const exists = atividades.some((x) => x.id === a.id);
     const snap = atividades;
     atividades = exists
-      ? atividades.map((x) => (x.id === local.id ? local : x))
+      ? atividades.map((x) => (x.id === a.id ? local : x))
       : [local, ...atividades];
     emit();
     const { error } = await supabase.from("atividades").upsert(row, { onConflict: "id" });
@@ -229,11 +255,11 @@ export const atividadesStore = {
     }
   },
   async remove(id: string) {
-    const dbId = toUuid(id);
+    // IDs runtime já são UUIDs — usar direto.
     const snap = atividades;
-    atividades = atividades.filter((x) => x.id !== dbId && x.id !== id);
+    atividades = atividades.filter((x) => x.id !== id);
     emit();
-    const { error } = await supabase.from("atividades").delete().eq("id", dbId);
+    const { error } = await supabase.from("atividades").delete().eq("id", id);
     if (error) {
       atividades = snap;
       emit();

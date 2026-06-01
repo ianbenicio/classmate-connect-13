@@ -238,8 +238,23 @@ export const alunosStore = {
     return alunos;
   },
   async add(a: Aluno) {
-    const row = alunoToRow(a);
-    const local: Aluno = { ...a, id: row.id };
+    // IDs runtime já são UUIDs — construir row direto, sem toUuid.
+    const row = {
+      id: a.id,
+      nome: a.nome,
+      idade: a.idade ?? null,
+      contato: a.contato || null,
+      cpf: a.cpf ?? null,
+      email: a.email?.trim().toLowerCase() || null,
+      user_id: a.userId ?? null,
+      curso_id: a.cursoId ?? null,
+      turma_id: a.turmaId ?? null,
+      responsavel: a.responsavel ?? null,
+      contato_resp: a.contatoResp ?? null,
+      observacao: a.observacao ?? null,
+      project_id: requireProjectIdForWrite() ?? undefined,
+    };
+    const local: Aluno = { ...a };
     const snap = alunos;
     alunos = [local, ...alunos];
     emit();
@@ -249,35 +264,47 @@ export const alunosStore = {
       emit();
       console.error("[alunos] add error", error);
       toast.error(`Erro ao salvar aluno: ${error.message}`);
-      // Throw para caller poder abortar fluxos compostos (ex.: exportar como usuário).
       throw error;
     }
   },
   async update(id: string, patch: Partial<Aluno>) {
-    const dbId = toUuid(id);
-    const current = alunos.find((x) => x.id === dbId || x.id === id);
+    // IDs runtime já são UUIDs — usar direto.
+    const current = alunos.find((x) => x.id === id);
     if (!current) return;
-    const merged: Aluno = { ...current, ...patch, id: dbId };
+    const merged: Aluno = { ...current, ...patch, id };
     const snap = alunos;
-    alunos = alunos.map((x) => (x.id === dbId ? merged : x));
+    alunos = alunos.map((x) => (x.id === id ? merged : x));
     emit();
-    const row = alunoToRow(merged);
-    const { error } = await supabase.from("alunos").update(row).eq("id", dbId);
+    const row = {
+      id: merged.id,
+      nome: merged.nome,
+      idade: merged.idade ?? null,
+      contato: merged.contato || null,
+      cpf: merged.cpf ?? null,
+      email: merged.email?.trim().toLowerCase() || null,
+      user_id: merged.userId ?? null,
+      curso_id: merged.cursoId ?? null,
+      turma_id: merged.turmaId ?? null,
+      responsavel: merged.responsavel ?? null,
+      contato_resp: merged.contatoResp ?? null,
+      observacao: merged.observacao ?? null,
+      project_id: requireProjectIdForWrite() ?? undefined,
+    };
+    const { error } = await supabase.from("alunos").update(row).eq("id", id);
     if (error) {
       alunos = snap;
       emit();
       console.error("[alunos] update error", error);
       toast.error(`Erro ao atualizar aluno: ${error.message}`);
-      // Throw para caller poder abortar fluxos compostos.
       throw error;
     }
   },
   async remove(id: string) {
-    const dbId = toUuid(id);
+    // IDs runtime já são UUIDs — usar direto.
     const snap = alunos;
-    alunos = alunos.filter((x) => x.id !== dbId && x.id !== id);
+    alunos = alunos.filter((x) => x.id !== id);
     emit();
-    const { error } = await supabase.from("alunos").delete().eq("id", dbId);
+    const { error } = await supabase.from("alunos").delete().eq("id", id);
     if (error) {
       alunos = snap;
       emit();

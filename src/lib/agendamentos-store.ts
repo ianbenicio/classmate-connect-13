@@ -185,13 +185,34 @@ export const agendamentosStore = {
     return agendamentos;
   },
   async add(a: Agendamento) {
-    const row = agendamentoToRow(a);
-    const local: Agendamento = {
-      ...a,
-      id: row.id,
-      turmaId: row.turma_id,
-      atividadeIds: toUuidArray(a.atividadeIds),
+    // IDs runtime já são UUIDs — não passar por toUuid (double-hash).
+    const meta: AgendamentoMeta = {};
+    if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
+    if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
+    const row = {
+      id: a.id,
+      turma_id: a.turmaId,
+      data: a.data,
+      dia_semana: a.diaSemana,
+      inicio: a.inicio,
+      fim: a.fim,
+      atividade_ids: a.atividadeIds as never,
+      status: a.status,
+      concluido_em: a.concluidoEm ?? null,
+      observacao: a.observacao ?? null,
+      professor: a.professor ?? null,
+      professor_user_id: a.professorUserId ?? null,
+      criado_por_user_id: a.criadoPorUserId ?? null,
+      criado_por_nome: a.criadoPorNome ?? null,
+      bloco_index: a.blocoIndex ?? 0,
+      partes_total: a.partesTotal ?? 1,
+      meta: meta as never,
+      recursos_entregues_em: a.recursosEntreguesEm ?? null,
+      recursos_drive_path: a.recursosDrivePath ?? null,
+      pais_notificados_em: a.paisNotificadosEm ?? null,
+      project_id: requireProjectIdForWrite() ?? undefined,
     };
+    const local: Agendamento = { ...a };
     const snap = agendamentos;
     agendamentos = [local, ...agendamentos];
     emit();
@@ -204,17 +225,39 @@ export const agendamentosStore = {
     }
   },
   async update(id: string, patch: Partial<Agendamento>) {
-    const dbId = toUuid(id);
-    const current = agendamentos.find((x) => x.id === dbId || x.id === id);
+    // IDs runtime já são UUIDs — usar direto.
+    const current = agendamentos.find((x) => x.id === id);
     if (!current) return;
-    const next: Agendamento = { ...current, ...patch, id: dbId };
-    // Bugfix: comparar tanto dbId quanto id original — caso o item em memória
-    // ainda esteja com seedId (não-UUID), o map antes só comparava dbId e
-    // não trocava, deixando estado obsoleto.
+    const next: Agendamento = { ...current, ...patch, id };
     const snap = agendamentos;
-    agendamentos = agendamentos.map((x) => (x.id === dbId || x.id === id ? next : x));
+    agendamentos = agendamentos.map((x) => (x.id === id ? next : x));
     emit();
-    const row = agendamentoToRow(next);
+    const meta: AgendamentoMeta = {};
+    if (next.slotInicio !== undefined) meta.slotInicio = next.slotInicio;
+    if (next.slotFim !== undefined) meta.slotFim = next.slotFim;
+    const row = {
+      id: next.id,
+      turma_id: next.turmaId,
+      data: next.data,
+      dia_semana: next.diaSemana,
+      inicio: next.inicio,
+      fim: next.fim,
+      atividade_ids: next.atividadeIds as never,
+      status: next.status,
+      concluido_em: next.concluidoEm ?? null,
+      observacao: next.observacao ?? null,
+      professor: next.professor ?? null,
+      professor_user_id: next.professorUserId ?? null,
+      criado_por_user_id: next.criadoPorUserId ?? null,
+      criado_por_nome: next.criadoPorNome ?? null,
+      bloco_index: next.blocoIndex ?? 0,
+      partes_total: next.partesTotal ?? 1,
+      meta: meta as never,
+      recursos_entregues_em: next.recursosEntreguesEm ?? null,
+      recursos_drive_path: next.recursosDrivePath ?? null,
+      pais_notificados_em: next.paisNotificadosEm ?? null,
+      project_id: requireProjectIdForWrite() ?? undefined,
+    };
     const { error } = await supabase.from("agendamentos").upsert(row, { onConflict: "id" });
     if (error) {
       agendamentos = snap;
@@ -224,22 +267,20 @@ export const agendamentosStore = {
     }
   },
   async remove(id: string) {
-    const dbId = toUuid(id);
+    // IDs runtime já são UUIDs — usar direto.
     const snap = agendamentos;
-    agendamentos = agendamentos.filter((x) => x.id !== dbId && x.id !== id);
+    agendamentos = agendamentos.filter((x) => x.id !== id);
     emit();
 
     // Remove notificações associadas a este agendamento
     await notificacoesStore.ensureInit();
     const notificacoes = notificacoesStore.getAll();
-    const notifsRelacionadas = notificacoes.filter(
-      (n) => n.agendamentoId === id || n.agendamentoId === dbId,
-    );
+    const notifsRelacionadas = notificacoes.filter((n) => n.agendamentoId === id);
     for (const notif of notifsRelacionadas) {
       await notificacoesStore.remove(notif.id);
     }
 
-    const { error } = await supabase.from("agendamentos").delete().eq("id", dbId);
+    const { error } = await supabase.from("agendamentos").delete().eq("id", id);
     if (error) {
       agendamentos = snap;
       emit();
