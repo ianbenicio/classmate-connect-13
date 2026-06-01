@@ -1,13 +1,10 @@
 // Histórico de relatórios/exportações geradas pelo sistema, persistido em
 // Supabase (tabela `relatorios_exportados`).
-//
-// Importante: NÃO é a tabela `relatorios` (relatórios de aula/agendamento).
-// São conceitos diferentes que coincidem no nome — esta store guarda o
-// histórico de arquivos JSON baixados, com conteúdo serializado para
-// permitir re-download.
+// Usa createStoreBase para eliminar boilerplate.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireProjectIdForWrite } from "./current-project";
+import { createStoreBase } from "./store-base";
 import { toast } from "sonner";
 
 export type RelatorioTipo = "export_completo" | "avaliacoes" | "frequencia" | "outro";
@@ -23,13 +20,13 @@ export interface Relatorio {
   id: string;
   tipo: RelatorioTipo;
   titulo: string;
-  geradoEm: string; // ISO
+  geradoEm: string;
   geradoPorUserId?: string;
   geradoPorNome?: string;
   formato: "json";
   sizeBytes: number;
   filename: string;
-  conteudo: string; // JSON serializado (string) — permite re-download
+  conteudo: string;
 }
 
 type Row = {
@@ -76,70 +73,56 @@ function toRow(r: Relatorio) {
   };
 }
 
-let relatorios: Relatorio[] = [];
-let initialized = false;
-let initPromise: Promise<void> | null = null;
-const listeners = new Set<() => void>();
+// ── Base ─────────────────────────────────────────────────────────────
 
-function emit() {
-  for (const l of listeners) l();
-}
-
-async function loadFromDb() {
+const base = createStoreBase<Relatorio[]>(async (set) => {
   const { data, error } = await supabase
     .from("relatorios_exportados")
     .select("*")
     .order("gerado_em", { ascending: false });
   if (error) {
     console.error("[relatorios] load error", error);
+    set([]);
     return;
   }
-  relatorios = ((data ?? []) as unknown as Row[]).map(rowTo);
-}
+  set(((data ?? []) as unknown as Row[]).map(rowTo));
+}, []);
 
-async function ensureInit(): Promise<void> {
-  if (initialized) return;
-  if (!initPromise) {
-    initPromise = loadFromDb().then(() => {
-      initialized = true;
-      emit();
-    });
-  }
-  return initPromise;
-}
+// ── Public store ─────────────────────────────────────────────────────
 
 export const relatoriosStore = {
   getAll(): Relatorio[] {
-    return relatorios;
+    return base.get();
   },
   async add(r: Relatorio) {
-    const snap = relatorios;
-    relatorios = [r, ...relatorios];
-    emit();
+    const snap = base.get();
+    base.set([r, ...snap]);
+    base.emit();
     const { error } = await supabase.from("relatorios_exportados").insert(toRow(r));
     if (error) {
-      relatorios = snap;
-      emit();
+      base.set(snap);
+      base.emit();
       console.error("[relatorios] add error", error);
       toast.error(`Erro ao registrar relatório: ${error.message}`);
     }
   },
   async remove(id: string) {
-    const snap = relatorios;
-    relatorios = relatorios.filter((r) => r.id !== id);
-    emit();
+    const snap = base.get();
+    base.set(snap.filter((r) => r.id !== id));
+    base.emit();
     const { error } = await supabase.from("relatorios_exportados").delete().eq("id", id);
     if (error) {
-      relatorios = snap;
-      emit();
+      base.set(snap);
+      base.emit();
       console.error("[relatorios] remove error", error);
       toast.error(`Erro ao remover relatório: ${error.message}`);
     }
   },
   async clear() {
-    const ids = relatorios.map((r) => r.id);
-    relatorios = [];
-    emit();
+    const all = base.get();
+    const ids = all.map((r) => r.id);
+    base.set([]);
+    base.emit();
     if (ids.length === 0) return;
     const { error } = await supabase.from("relatorios_exportados").delete().in("id", ids);
     if (error) {
@@ -147,18 +130,15 @@ export const relatoriosStore = {
       toast.error(`Erro ao limpar relatórios: ${error.message}`);
     }
   },
-  subscribe(fn: () => void) {
-    listeners.add(fn);
-    return () => listeners.delete(fn);
-  },
-  ensureInit,
+  subscribe: base.subscribe.bind(base),
+  ensureInit: base.ensureInit.bind(base),
 };
 
 export function useRelatorios(): Relatorio[] {
   const [snap, setSnap] = useState<Relatorio[]>(relatoriosStore.getAll());
   useEffect(() => {
-    void ensureInit();
-    const unsub = relatoriosStore.subscribe(() => setSnap([...relatoriosStore.getAll()]));
+    void base.ensureInit();
+    const unsub = base.subscribe(() => setSnap([...base.get()]));
     return () => {
       unsub();
     };
