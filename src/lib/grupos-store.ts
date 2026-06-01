@@ -1,8 +1,5 @@
 // Singleton store de Grupos (módulos) com persistência no Supabase.
-// Read-only no que diz respeito ao seed: o top-up de grupos é feito por
-// cursos-store.topUpGrupos (depende de cursos já carregados). Aqui só
-// expomos a leitura para a UI, evitando que componentes leiam SEED_GRUPOS
-// diretamente.
+// Usa createStoreBase para eliminar boilerplate de init/pub-sub.
 //
 // Os grupos são entregues no formato `Record<cursoCod, Grupo[]>`, que é
 // a chave esperada por `getGrupoNome(map, curso.cod, grupoCod)` e pelos
@@ -12,6 +9,7 @@ import type { Grupo } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { cursosStore } from "./cursos-store";
 import { requireProjectIdForWrite } from "./current-project";
+import { createStoreBase } from "./store-base";
 import { toast } from "sonner";
 
 type GrupoRow = {
@@ -26,26 +24,16 @@ interface GrupoFull extends Grupo {
   cursoId: string;
 }
 
-let grupos: GrupoFull[] = [];
-let initialized = false;
-let initPromise: Promise<void> | null = null;
-const listeners = new Set<() => void>();
+// ── Base (init + pub/sub) ────────────────────────────────────────────
 
-function emit() {
-  for (const l of listeners) l();
-}
-
-async function loadFromDb() {
-  // Garante que cursos foram carregados (e o top-up de grupos rodou).
+async function loadFromDb(): Promise<GrupoFull[]> {
   await cursosStore.ensureInit();
   const { data, error } = await supabase.from("grupos").select("*").order("cod");
   if (error) {
     console.error("[grupos] load error", error);
-    grupos = [];
-    return;
+    return [];
   }
-  const rows = (data ?? []) as GrupoRow[];
-  grupos = rows.map((r) => ({
+  return ((data ?? []) as GrupoRow[]).map((r) => ({
     id: r.id,
     cursoId: r.curso_id,
     cod: r.cod,
@@ -53,26 +41,25 @@ async function loadFromDb() {
   }));
 }
 
-async function ensureInit(): Promise<void> {
-  if (initialized) return;
-  if (!initPromise) {
-    initPromise = loadFromDb().then(() => {
-      initialized = true;
-      // Reage a mudanças de cursos (novo curso → eventualmente novos grupos).
-      cursosStore.subscribe(() => {
-        void loadFromDb().then(emit);
-      });
-      emit();
+const base = createStoreBase<GrupoFull[]>(async (set) => {
+  const data = await loadFromDb();
+  set(data);
+  // Reage a mudanças de cursos (novo curso → eventualmente novos grupos).
+  cursosStore.subscribe(() => {
+    void loadFromDb().then((d) => {
+      set(d);
+      base.emit();
     });
-  }
-  return initPromise;
-}
+  });
+}, []);
+
+// ── Derived helpers ──────────────────────────────────────────────────
 
 function buildMapByCursoCod(): Record<string, Grupo[]> {
   const cursos = cursosStore.getAll();
   const cursoIdToCod = new Map(cursos.map((c) => [c.id, c.cod]));
   const map: Record<string, Grupo[]> = {};
-  for (const g of grupos) {
+  for (const g of base.get()) {
     const cod = cursoIdToCod.get(g.cursoId);
     if (!cod) continue;
     if (!map[cod]) map[cod] = [];
@@ -87,9 +74,11 @@ function buildMapByCursoCod(): Record<string, Grupo[]> {
   return map;
 }
 
+// ── Public store ─────────────────────────────────────────────────────
+
 export const gruposStore = {
   getAll(): GrupoFull[] {
-    return grupos;
+    return base.get();
   },
   /** Retorna `Record<cursoCod, Grupo[]>` — drop-in para SEED_GRUPOS. */
   getByCursoCod(): Record<string, Grupo[]> {
@@ -104,10 +93,9 @@ export const gruposStore = {
   async add(cursoId: string, cod: string, nome: string): Promise<GrupoFull | null> {
     const id = crypto.randomUUID();
     const local: GrupoFull = { id, cursoId, cod, nome };
-    // Optimistic
-    const snap = grupos;
-    grupos = [...grupos, local];
-    emit();
+    const snap = base.get();
+    base.set([...snap, local]);
+    base.emit();
     const { error } = await supabase.from("grupos").insert({
       id,
       curso_id: cursoId,
@@ -116,8 +104,8 @@ export const gruposStore = {
       project_id: requireProjectIdForWrite() ?? undefined,
     });
     if (error) {
-      grupos = snap;
-      emit();
+      base.set(snap);
+      base.emit();
       console.error("[grupos] add error", error);
       if (error.code === "23505") {
         toast.error(`Código "${cod}" já existe neste curso.`);
@@ -129,19 +117,18 @@ export const gruposStore = {
     toast.success(`Grupo "${nome}" criado com sucesso.`);
     return local;
   },
-  subscribe(fn: () => void) {
-    listeners.add(fn);
-    return () => listeners.delete(fn);
-  },
-  ensureInit,
+  subscribe: base.subscribe.bind(base),
+  ensureInit: base.ensureInit.bind(base),
 };
+
+// ── Hooks ────────────────────────────────────────────────────────────
 
 /** Hook que expõe `Record<cursoCod, Grupo[]>` reagindo a mudanças. */
 export function useGruposByCursoCod(): Record<string, Grupo[]> {
   const [snap, setSnap] = useState<Record<string, Grupo[]>>(() => buildMapByCursoCod());
   useEffect(() => {
-    void ensureInit();
-    const unsubGrupos = gruposStore.subscribe(() => setSnap(buildMapByCursoCod()));
+    void base.ensureInit();
+    const unsubGrupos = base.subscribe(() => setSnap(buildMapByCursoCod()));
     const unsubCursos = cursosStore.subscribe(() => setSnap(buildMapByCursoCod()));
     return () => {
       unsubGrupos();

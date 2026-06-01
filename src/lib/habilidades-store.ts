@@ -1,23 +1,16 @@
 // Singleton store de Habilidades — entidades independentes.
 // Habilidades são associadas a cursos via `cursos.habilidade_ids` e a
 // atividades via `atividades.habilidade_ids` (relação N-N).
+// Usa createStoreBase para eliminar boilerplate.
 import { useEffect, useState } from "react";
 import type { Habilidade } from "./academic-types";
 import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
 import { requireProjectIdForWrite } from "./current-project";
+import { createStoreBase } from "./store-base";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
-
-let habilidades: Habilidade[] = [];
-let initialized = false;
-let initPromise: Promise<void> | null = null;
-const listeners = new Set<() => void>();
-
-function emit() {
-  for (const l of listeners) l();
-}
 
 type HabilidadeRow = {
   id: string;
@@ -37,29 +30,23 @@ function rowToHabilidade(r: HabilidadeRow): Habilidade {
   };
 }
 
-function habilidadeToRow(h: Habilidade) {
+/** Converte Habilidade → row DB. Usado APENAS por seed/topUp (toUuid correto pra seed strings). */
+function habilidadeToSeedRow(h: Habilidade) {
   return {
     id: toUuid(h.id),
     sigla: h.sigla,
     nome: h.nome?.trim() ? h.nome.trim() : null,
     descricao: h.descricao,
     grupo: h.grupo ?? null,
-    // coluna `tipo` ainda existe no DB (NOT NULL com default) — mandamos
-    // valor neutro pra satisfazer o schema sem expor isso na UI.
     tipo: "curso" as string,
-    // project_id: nullable — quando super_admin (null) insert vai pro
-    // catálogo global compartilhado. Quando projeto, fica exclusivo dele.
     project_id: requireProjectIdForWrite() ?? undefined,
   };
 }
 
-// Top-up: insere as habilidades do seed que ainda não existem no banco.
-// O store antes só lia do DB, então se a tabela estivesse vazia ficaria
-// vazia pra sempre — agora converge para SEED_HABILIDADES em cada load.
 async function topUpHabilidades(existingIds: Set<string>) {
   const missing = SEED_HABILIDADES.filter((h) => !existingIds.has(toUuid(h.id)));
   if (missing.length === 0) return false;
-  const rows = missing.map(habilidadeToRow);
+  const rows = missing.map(habilidadeToSeedRow);
   const { error } = await supabase
     .from("habilidades")
     .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
@@ -71,12 +58,11 @@ async function topUpHabilidades(existingIds: Set<string>) {
   return true;
 }
 
-async function loadFromDb() {
+async function loadFromDb(): Promise<Habilidade[]> {
   const { data, error } = await supabase.from("habilidades").select("*").order("sigla");
   if (error) {
     console.error("[habilidades] load error", error);
-    habilidades = [];
-    return;
+    return [];
   }
   const rows = (data ?? []) as unknown as HabilidadeRow[];
   const existingIds = new Set(rows.map((r) => r.id));
@@ -84,69 +70,70 @@ async function loadFromDb() {
   if (inserted) {
     const { data: data2, error: err2 } = await supabase.from("habilidades").select("*").order("sigla");
     if (err2) console.error("[habilidades] reload error", err2);
-    habilidades = ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
-  } else {
-    habilidades = rows.map(rowToHabilidade);
+    return ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
   }
+  return rows.map(rowToHabilidade);
 }
 
-async function ensureInit(): Promise<void> {
-  if (initialized) return;
-  if (!initPromise) {
-    initPromise = loadFromDb().then(() => {
-      initialized = true;
-      emit();
-    });
-  }
-  return initPromise;
-}
+// ── Base ─────────────────────────────────────────────────────────────
+
+const base = createStoreBase<Habilidade[]>(async (set) => {
+  set(await loadFromDb());
+}, []);
+
+// ── Public store ─────────────────────────────────────────────────────
 
 export const habilidadesStore = {
   getAll(): Habilidade[] {
-    return habilidades;
+    return base.get();
   },
   async upsert(h: Habilidade) {
-    const row = habilidadeToRow(h);
-    const local: Habilidade = { ...h, id: row.id };
-    const exists = habilidades.some((x) => x.id === local.id);
-    const snap = habilidades;
-    habilidades = exists
-      ? habilidades.map((x) => (x.id === local.id ? local : x))
-      : [...habilidades, local];
-    emit();
+    // IDs runtime já são UUIDs — construir row direto, sem toUuid.
+    const row = {
+      id: h.id,
+      sigla: h.sigla,
+      nome: h.nome?.trim() ? h.nome.trim() : null,
+      descricao: h.descricao,
+      grupo: h.grupo ?? null,
+      tipo: "curso" as string,
+      project_id: requireProjectIdForWrite() ?? undefined,
+    };
+    const local: Habilidade = { ...h };
+    const all = base.get();
+    const exists = all.some((x) => x.id === h.id);
+    const snap = all;
+    base.set(exists ? all.map((x) => (x.id === h.id ? local : x)) : [...all, local]);
+    base.emit();
     const { error } = await supabase.from("habilidades").upsert(row, { onConflict: "id" });
     if (error) {
-      habilidades = snap;
-      emit();
+      base.set(snap);
+      base.emit();
       console.error("[habilidades] upsert error", error);
       toast.error(`Erro ao salvar habilidade: ${error.message}`);
     }
   },
   async remove(id: string) {
-    const dbId = toUuid(id);
-    const snap = habilidades;
-    habilidades = habilidades.filter((x) => x.id !== dbId && x.id !== id);
-    emit();
-    const { error } = await supabase.from("habilidades").delete().eq("id", dbId);
+    // IDs runtime já são UUIDs — usar direto.
+    const snap = base.get();
+    base.set(snap.filter((x) => x.id !== id));
+    base.emit();
+    const { error } = await supabase.from("habilidades").delete().eq("id", id);
     if (error) {
-      habilidades = snap;
-      emit();
+      base.set(snap);
+      base.emit();
       console.error("[habilidades] remove error", error);
       toast.error(`Erro ao remover habilidade: ${error.message}`);
     }
   },
-  subscribe(fn: () => void) {
-    listeners.add(fn);
-    return () => listeners.delete(fn);
-  },
-  ensureInit,
+  subscribe: base.subscribe.bind(base),
+  ensureInit: base.ensureInit.bind(base),
 };
 
 export function useHabilidades(): Habilidade[] {
   const [snap, setSnap] = useState<Habilidade[]>(habilidadesStore.getAll());
   useEffect(() => {
-    void ensureInit();
-    const unsub = habilidadesStore.subscribe(() => setSnap([...habilidadesStore.getAll()]));
+    void base.ensureInit();
+    const unsub = base.subscribe(() => setSnap([...base.get()]));
     return () => {
       unsub();
     };
