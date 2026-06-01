@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { usersStore, useUsers, updateUserProfessorFields, type UserRow } from "./users-store";
+import { requireProjectIdForWrite } from "./current-project";
 
 // ---------------------------------------------------------------------
 // Tipos públicos (mantidos por compatibilidade)
@@ -261,6 +262,7 @@ export const professoresStore = {
       notas: entry.notas,
       comentario: entry.comentario,
       tags: entry.tags ?? [],
+      project_id: requireProjectIdForWrite() ?? undefined,
     };
     const { error } = await supabase
       .from("professor_avaliacoes")

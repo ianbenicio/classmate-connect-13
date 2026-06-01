@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import type { Grupo } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { cursosStore } from "./cursos-store";
+import { requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 
 type GrupoRow = {
@@ -112,6 +113,7 @@ export const gruposStore = {
       curso_id: cursoId,
       cod,
       nome,
+      project_id: requireProjectIdForWrite() ?? undefined,
     });
     if (error) {
       grupos = snap;

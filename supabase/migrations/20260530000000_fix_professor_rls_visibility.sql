@@ -23,18 +23,13 @@ CREATE POLICY "professor_select_turmas"
   FOR SELECT TO authenticated
   USING (public.has_role(auth.uid(), 'professor'));
 
--- Alunos: professor pode ver alunos das turmas onde tem agendamento
+-- Alunos: professor pode ver todos os alunos.
+-- (Versão anterior usava subquery em agendamentos → infinite recursion com RLS de alunos.)
 DROP POLICY IF EXISTS "professor_select_alunos" ON public.alunos;
 CREATE POLICY "professor_select_alunos"
   ON public.alunos
   FOR SELECT TO authenticated
-  USING (
-    public.has_role(auth.uid(), 'professor')
-    AND turma_id IN (
-      SELECT DISTINCT turma_id FROM public.agendamentos
-      WHERE professor_user_id = auth.uid()
-    )
-  );
+  USING (public.has_role(auth.uid(), 'professor'));
 
 -- Atividades: professor pode ver todas as atividades (necessário pra agendar)
 DROP POLICY IF EXISTS "professor_select_atividades" ON public.atividades;
