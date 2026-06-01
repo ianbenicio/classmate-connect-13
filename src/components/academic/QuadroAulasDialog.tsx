@@ -9,8 +9,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
 import type { Aluno, Atividade, Curso } from "@/lib/academic-types";
+import { useAgendamentos } from "@/lib/agendamentos-store";
 
-type CelulaStatus = "dada" | "presente" | "ausente" | "pendente";
+type CelulaStatus = "dada" | "agendada" | "presente" | "ausente" | "pendente";
 
 interface Props {
   open: boolean;
@@ -21,17 +22,21 @@ interface Props {
   aluno?: Aluno | null;
   /** Conjunto de IDs de atividades de aula consideradas "dadas" pela turma do aluno (ou pelo curso, no modo curso). */
   aulasDadasIds: Set<string>;
+  /** ID da turma para filtrar agendamentos (modo turma). */
+  turmaId?: string;
 }
 
 const STATUS_CLASSES: Record<CelulaStatus, string> = {
   dada: "bg-emerald-500/20 border-emerald-500/60 text-emerald-700 dark:text-emerald-300",
+  agendada: "bg-amber-500/20 border-amber-500/60 text-amber-700 dark:text-amber-300",
   presente: "bg-emerald-500/20 border-emerald-500/60 text-emerald-700 dark:text-emerald-300",
   ausente: "bg-red-500/20 border-red-500/60 text-red-700 dark:text-red-300",
   pendente: "bg-muted border-border text-muted-foreground",
 };
 
 const STATUS_LABEL: Record<CelulaStatus, string> = {
-  dada: "Dada",
+  dada: "Concluída",
+  agendada: "Agendada",
   presente: "Presente",
   ausente: "Ausente",
   pendente: "Pendente",
@@ -44,7 +49,10 @@ export function QuadroAulasDialog({
   atividades,
   aluno,
   aulasDadasIds,
+  turmaId,
 }: Props) {
+  const todosAgendamentos = useAgendamentos();
+
   const aulasCurso = useMemo(
     () =>
       curso
@@ -54,6 +62,29 @@ export function QuadroAulasDialog({
         : [],
     [atividades, curso],
   );
+
+  // Mapas de atividade → status do agendamento para a turma.
+  // aulasConcluidasIds: aulas com agendamento "concluido" (professor finalizou relatório).
+  // aulasAgendadasIds: aulas com agendamento pendente (agendadas mas não concluídas).
+  const { aulasConcluidasIds, aulasAgendadasIds } = useMemo(() => {
+    const concluidas = new Set<string>();
+    const agendadas = new Set<string>();
+    if (!turmaId) return { aulasConcluidasIds: concluidas, aulasAgendadasIds: agendadas };
+    for (const ag of todosAgendamentos) {
+      if (ag.turmaId !== turmaId) continue;
+      for (const ativId of ag.atividadeIds) {
+        if (ag.status === "concluido") {
+          concluidas.add(ativId);
+        } else {
+          // pendente = agendado mas não concluído
+          if (!concluidas.has(ativId)) agendadas.add(ativId);
+        }
+      }
+    }
+    // Se uma aula tem agendamento concluido E pendente, concluido ganha.
+    for (const id of concluidas) agendadas.delete(id);
+    return { aulasConcluidasIds: concluidas, aulasAgendadasIds: agendadas };
+  }, [todosAgendamentos, turmaId]);
 
   // Mapa atividadeId → presença do aluno (quando há aluno).
   const presencaAluno = useMemo(() => {
@@ -75,19 +106,27 @@ export function QuadroAulasDialog({
           status = aulasDadasIds.has(a.id) ? "ausente" : "pendente";
         }
       } else {
-        status = aulasDadasIds.has(a.id) ? "dada" : "pendente";
+        // Modo turma/curso: prioriza status do agendamento.
+        if (aulasConcluidasIds.has(a.id) || aulasDadasIds.has(a.id)) {
+          status = "dada"; // verde — concluída
+        } else if (aulasAgendadasIds.has(a.id)) {
+          status = "agendada"; // amarelo — agendada
+        } else {
+          status = "pendente"; // cinza
+        }
       }
       return { atividade: a, status };
     });
-  }, [aulasCurso, aluno, presencaAluno, aulasDadasIds]);
+  }, [aulasCurso, aluno, presencaAluno, aulasDadasIds, aulasConcluidasIds, aulasAgendadasIds]);
 
   const stats = useMemo(() => {
-    const counts = { dada: 0, presente: 0, ausente: 0, pendente: 0 };
+    const counts = { dada: 0, agendada: 0, presente: 0, ausente: 0, pendente: 0 };
     for (const c of celulas) counts[c.status]++;
     return counts;
   }, [celulas]);
 
   const total = aulasCurso.length;
+  // Só concluídas (verdes) contam para progressão.
   const progresso = aluno ? stats.presente : stats.dada;
   const pct = total > 0 ? Math.round((progresso / total) * 100) : 0;
 
@@ -123,7 +162,7 @@ export function QuadroAulasDialog({
         <div className="border rounded-md p-3 bg-muted/20">
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="font-medium text-muted-foreground uppercase tracking-wide">
-              {aluno ? "Presença" : "Aulas dadas"}
+              {aluno ? "Presença" : "Aulas concluídas"}
             </span>
             <span className="font-mono text-muted-foreground">
               {progresso}/{total} ({pct}%)
@@ -141,7 +180,10 @@ export function QuadroAulasDialog({
               </>
             ) : (
               <>
-                <LegendDot color="bg-emerald-500" label={`Dada (${stats.dada})`} />
+                <LegendDot color="bg-emerald-500" label={`Concluída (${stats.dada})`} />
+                {stats.agendada > 0 && (
+                  <LegendDot color="bg-amber-500" label={`Agendada (${stats.agendada})`} />
+                )}
                 <LegendDot color="bg-muted-foreground/40" label={`Pendente (${stats.pendente})`} />
               </>
             )}

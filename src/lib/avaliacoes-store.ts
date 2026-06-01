@@ -139,21 +139,24 @@ export const avaliacoesStore = {
     agendamentoId: string,
     alunoId?: string,
   ): AvaliacaoRecord<T> | undefined {
-    const agId = toUuid(agendamentoId);
-    const alId = alunoId ? toUuid(alunoId) : undefined;
+    // IDs já são UUIDs — comparação direta, sem toUuid.
+    // Mantém fallback com toUuid pra compat com dados legados (double-hashed).
+    const agIdLegacy = toUuid(agendamentoId);
+    const alIdLegacy = alunoId ? toUuid(alunoId) : undefined;
     return registros.find(
       (r) =>
         r.tipo === tipo &&
-        (r.agendamentoId === agId || r.agendamentoId === agendamentoId) &&
-        (alId ? r.alunoId === alId || r.alunoId === alunoId : r.alunoId === null),
+        (r.agendamentoId === agendamentoId || r.agendamentoId === agIdLegacy) &&
+        (alunoId ? r.alunoId === alunoId || r.alunoId === alIdLegacy : r.alunoId === null),
     ) as AvaliacaoRecord<T> | undefined;
   },
 
   /** Lista todos do tipo para um agendamento (ex.: todos checklists). */
   listByAgendamento(tipo: FormularioTipo, agendamentoId: string): AvaliacaoRecord[] {
-    const agId = toUuid(agendamentoId);
+    const agIdLegacy = toUuid(agendamentoId);
     return registros.filter(
-      (r) => r.tipo === tipo && (r.agendamentoId === agId || r.agendamentoId === agendamentoId),
+      (r) =>
+        r.tipo === tipo && (r.agendamentoId === agendamentoId || r.agendamentoId === agIdLegacy),
     );
   },
 
@@ -165,7 +168,7 @@ export const avaliacoesStore = {
       const { error } = await supabase
         .from("agendamentos")
         .update({ pais_notificados_em: new Date().toISOString() })
-        .eq("id", toUuid(agendamentoId));
+        .eq("id", agendamentoId);
       if (error) {
         // H3: surface failure to user — main report saved, marker did not.
         console.error("[avaliacoes] failed to mark pais_notificados_em", error);
@@ -206,11 +209,13 @@ export const avaliacoesStore = {
     const snapshot = buildAvaliacaoSnapshot(agendamentoId, habilidadeIds);
     const dadosComSnapshot = { ...dadosObj, _snapshot: snapshot };
 
+    // IDs já são UUIDs vindos do banco — NÃO passar por toUuid()
+    // (toUuid é hash determinístico, não passthrough — double-hash gera IDs fantasma).
     const row = {
       id,
-      agendamento_id: agendamentoId ? toUuid(agendamentoId) : null,
-      aluno_id: alunoId ? toUuid(alunoId) : null,
-      atividade_id: atividadeId ? toUuid(atividadeId) : null,
+      agendamento_id: agendamentoId ?? null,
+      aluno_id: alunoId ?? null,
+      atividade_id: atividadeId ?? null,
       tipo,
       dados: dadosComSnapshot as never,
       criado_por_user_id: authUser?.id ?? null,
@@ -331,13 +336,13 @@ async function syncPresencas(
     );
     return;
   }
-  const agUuid = toUuid(agendamentoId);
-
+  // IDs já são UUIDs vindos do banco — NÃO passar por toUuid() novamente
+  // (toUuid é hash determinístico, não passthrough — double-hash gera IDs errados).
   const rows = Object.entries(presencas).flatMap(([alunoId, presente]) =>
     ag.atividadeIds.map((atividadeId) => ({
-      agendamento_id: agUuid,
-      aluno_id: toUuid(alunoId),
-      atividade_id: toUuid(atividadeId),
+      agendamento_id: agendamentoId,
+      aluno_id: alunoId,
+      atividade_id: atividadeId,
       presente,
       registrado_por_user_id: registradoPorUserId,
     })),

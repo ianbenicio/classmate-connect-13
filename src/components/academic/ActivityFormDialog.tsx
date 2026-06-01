@@ -43,6 +43,12 @@ import {
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
 import { useUsersByRole } from "@/lib/users-store";
+import { gruposStore } from "@/lib/grupos-store";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface Props {
   open: boolean;
@@ -1042,29 +1048,37 @@ function IdentificacaoFields({
 
         <div className="space-y-2">
           <Label>Grupo / Módulo{isEdit ? "" : " *"}</Label>
-          <Select value={grupo || ""} onValueChange={(v) => setGrupo(v || "")} disabled={isEdit}>
-            <SelectTrigger>
-              <SelectValue
-                placeholder={
-                  gruposDisponiveis.length === 0 ? "Nenhum grupo disponível" : "Selecione"
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {gruposDisponiveis.length === 0 ? (
-                <SelectItem value="_empty" disabled>
-                  Nenhum grupo disponível para este curso
-                </SelectItem>
-              ) : (
-                gruposDisponiveis.map((g) => (
-                  <SelectItem key={g.cod} value={g.cod}>
-                    <span className="font-mono text-xs mr-2">{g.cod}</span>
-                    {g.nome}
+          <div className="flex gap-1.5">
+            <Select value={grupo || ""} onValueChange={(v) => setGrupo(v || "")} disabled={isEdit}>
+              <SelectTrigger className="flex-1">
+                <SelectValue
+                  placeholder={
+                    gruposDisponiveis.length === 0 ? "Nenhum grupo disponível" : "Selecione"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {gruposDisponiveis.length === 0 ? (
+                  <SelectItem value="_empty" disabled>
+                    Nenhum grupo disponível para este curso
                   </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
+                ) : (
+                  gruposDisponiveis.map((g) => (
+                    <SelectItem key={g.cod} value={g.cod}>
+                      <span className="font-mono text-xs mr-2">{g.cod}</span>
+                      {g.nome}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+            {!isEdit && cursoId && (
+              <AddGrupoPopover
+                cursoId={cursoId}
+                onCreated={(cod) => setGrupo(cod)}
+              />
+            )}
+          </div>
         </div>
 
         {isEdit && (
@@ -1203,5 +1217,76 @@ function FormularioCheckbox({
         <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
     </label>
+  );
+}
+
+/** Popover inline para criar novo grupo/módulo sem sair do form. */
+function AddGrupoPopover({
+  cursoId,
+  onCreated,
+}: {
+  cursoId: string;
+  onCreated: (cod: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [cod, setCod] = useState("");
+  const [nome, setNome] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    const trimCod = cod.trim().toUpperCase();
+    const trimNome = nome.trim();
+    if (!trimCod || !trimNome) {
+      toast.error("Código e nome são obrigatórios.");
+      return;
+    }
+    setSaving(true);
+    const result = await gruposStore.add(cursoId, trimCod, trimNome);
+    setSaving(false);
+    if (result) {
+      onCreated(result.cod);
+      setCod("");
+      setNome("");
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button type="button" variant="outline" size="icon" className="shrink-0" title="Novo grupo/módulo">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72 space-y-3" align="end">
+        <p className="text-sm font-medium">Novo Grupo / Módulo</p>
+        <div className="space-y-1.5">
+          <Label className="text-xs">Código *</Label>
+          <Input
+            value={cod}
+            onChange={(e) => setCod(e.target.value)}
+            placeholder="Ex.: IN, PR, CH"
+            className="font-mono uppercase"
+            maxLength={10}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs">Nome *</Label>
+          <Input
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            placeholder="Ex.: Introdução, Prática"
+          />
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
+          <Button type="button" size="sm" onClick={handleSave} disabled={saving}>
+            {saving ? "Salvando..." : "Criar"}
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

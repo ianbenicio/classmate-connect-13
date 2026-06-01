@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import type { Grupo } from "./academic-types";
 import { supabase } from "@/integrations/supabase/client";
 import { cursosStore } from "./cursos-store";
+import { toast } from "sonner";
 
 type GrupoRow = {
   id: string;
@@ -97,6 +98,34 @@ export const gruposStore = {
     if (!curso) return [];
     const map = buildMapByCursoCod();
     return map[curso.cod] ?? map[curso.id] ?? [];
+  },
+  /** Cria novo grupo/módulo vinculado a um curso. Retorna o grupo criado ou null em erro. */
+  async add(cursoId: string, cod: string, nome: string): Promise<GrupoFull | null> {
+    const id = crypto.randomUUID();
+    const local: GrupoFull = { id, cursoId, cod, nome };
+    // Optimistic
+    const snap = grupos;
+    grupos = [...grupos, local];
+    emit();
+    const { error } = await supabase.from("grupos").insert({
+      id,
+      curso_id: cursoId,
+      cod,
+      nome,
+    });
+    if (error) {
+      grupos = snap;
+      emit();
+      console.error("[grupos] add error", error);
+      if (error.code === "23505") {
+        toast.error(`Código "${cod}" já existe neste curso.`);
+      } else {
+        toast.error(`Erro ao criar grupo: ${error.message}`);
+      }
+      return null;
+    }
+    toast.success(`Grupo "${nome}" criado com sucesso.`);
+    return local;
   },
   subscribe(fn: () => void) {
     listeners.add(fn);

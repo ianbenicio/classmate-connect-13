@@ -447,6 +447,7 @@ export function TurmaDetailDialog({
         curso={curso ?? null}
         atividades={atividades}
         aulasDadasIds={aulasDadasIds}
+        turmaId={turma?.id}
       />
     </Dialog>
   );

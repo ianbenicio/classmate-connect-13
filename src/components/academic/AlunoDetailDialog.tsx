@@ -1058,6 +1058,7 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
         atividades={atividades}
         aluno={aluno}
         aulasDadasIds={aulasDadasTurmaIds}
+        turmaId={aluno?.turmaId}
       />
     </Dialog>
   );

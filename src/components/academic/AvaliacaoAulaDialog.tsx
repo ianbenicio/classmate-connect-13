@@ -78,20 +78,20 @@ export function AvaliacaoAulaDialog({
   useEffect(() => {
     if (!open) return;
     const d = existing?.dados;
-    setEntendeu((d?.entendeuConteudo as Nota | null) ?? null);
+    setEntendeu((d?.entendeuConteudo as Nota | null) ?? (3 as Nota));
     setAula({
-      interessante: (d?.aula?.interessante as Nota | null) ?? null,
-      ritmoBom: (d?.aula?.ritmoBom as Nota | null) ?? null,
-      materiaisOk: (d?.aula?.materiaisOk as Nota | null) ?? null,
+      interessante: (d?.aula?.interessante as Nota | null) ?? (3 as Nota),
+      ritmoBom: (d?.aula?.ritmoBom as Nota | null) ?? (3 as Nota),
+      materiaisOk: (d?.aula?.materiaisOk as Nota | null) ?? (3 as Nota),
     });
     setProf({
-      explicaBem: (d?.professor?.explicaBem as Nota | null) ?? null,
-      ajudaQuandoTrava: (d?.professor?.ajudaQuandoTrava as Nota | null) ?? null,
-      respeito: (d?.professor?.respeito as Nota | null) ?? null,
+      explicaBem: (d?.professor?.explicaBem as Nota | null) ?? (3 as Nota),
+      ajudaQuandoTrava: (d?.professor?.ajudaQuandoTrava as Nota | null) ?? (3 as Nota),
+      respeito: (d?.professor?.respeito as Nota | null) ?? (3 as Nota),
     });
     setEu({
-      participei: (d?.euNaAula?.participei as Nota | null) ?? null,
-      aprendiAlgoNovo: (d?.euNaAula?.aprendiAlgoNovo as Nota | null) ?? null,
+      participei: (d?.euNaAula?.participei as Nota | null) ?? (3 as Nota),
+      aprendiAlgoNovo: (d?.euNaAula?.aprendiAlgoNovo as Nota | null) ?? (3 as Nota),
     });
     setDestaque(d?.destaqueDoDia ?? "");
     setMudaria(d?.oQueMudaria ?? "");

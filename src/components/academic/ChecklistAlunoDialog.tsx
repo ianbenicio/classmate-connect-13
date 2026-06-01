@@ -76,9 +76,12 @@ export function ChecklistAlunoDialog({
   useEffect(() => {
     if (!open) return;
     const d = existing?.dados;
-    setNotas(d?.habilidadesNotas ?? {});
+    // Pre-fill all habilidades with 3 (🙂 Ok) as default
+    const allHabIds = [...habilidadesGerais, ...habilidadesEspecificas].map((h) => h.id);
+    const defaultNotas = Object.fromEntries(allHabIds.map((id) => [id, 3 as Nota1a5]));
+    setNotas(d?.habilidadesNotas ? { ...defaultNotas, ...d.habilidadesNotas } : defaultNotas);
     setComp(d?.comportamento ?? []);
-    setEngajamento((d?.engajamento as Nota | null) ?? null);
+    setEngajamento((d?.engajamento as Nota | null) ?? (3 as Nota));
     setObservacao(d?.observacao ?? "");
     // Intencional: reset apenas ao abrir/mudar alvo. `existing` é derivado
     // e re-cria a cada render — incluí-lo clobbar entrada do usuário.

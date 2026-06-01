@@ -73,13 +73,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const gen = ++loadGenRef.current;
     lastUidRef.current = uid;
     try {
-      const [
-        { data: profile, error: profileErr },
-        { data: roleRows, error: rolesErr },
-      ] = await Promise.all([
-        supabase.from("profiles").select("display_name, project_id").eq("user_id", uid).maybeSingle(),
-        supabase.from("user_roles").select("role").eq("user_id", uid),
-      ]);
+      const [{ data: profile, error: profileErr }, { data: roleRows, error: rolesErr }] =
+        await Promise.all([
+          supabase
+            .from("profiles")
+            .select("display_name, project_id")
+            .eq("user_id", uid)
+            .maybeSingle(),
+          supabase.from("user_roles").select("role").eq("user_id", uid),
+        ]);
       if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
       if (profileErr) {
         console.error("[auth] profile load error", profileErr);
@@ -93,6 +95,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const parsedRoles = (roleRows ?? []).map((r) => r.role as AppRole);
       setRoles(parsedRoles);
       setIsSuperAdmin(parsedRoles.includes("super_admin"));
+
+      // Alerta quando usuário autenticado não tem nenhum papel atribuído.
+      // Indica cadastro incompleto — admin precisa atribuir role.
+      if (parsedRoles.length === 0 && !rolesErr) {
+        console.warn("[auth] user sem roles:", uid);
+        toast.warning(
+          "Sua conta ainda não tem um papel atribuído. Peça ao administrador para configurar seu acesso.",
+          { duration: 10_000 },
+        );
+      }
 
       const projectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
       if (projectId) {

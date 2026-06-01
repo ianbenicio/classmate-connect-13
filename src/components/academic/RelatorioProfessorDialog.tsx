@@ -194,8 +194,8 @@ function RelatorioProfessorDialogContent({
     if (!open) return;
     const d = existing?.dados;
     setResumo(d?.resumo ?? "");
-    setEngajamento((d?.engajamentoTurma as Nota | null) ?? null);
-    setCumprimento((d?.cumprimentoPlano as Nota | null) ?? null);
+    setEngajamento((d?.engajamentoTurma as Nota | null) ?? (3 as Nota));
+    setCumprimento((d?.cumprimentoPlano as Nota | null) ?? (3 as Nota));
     setDestaques(d?.destaques ?? "");
     setDificuldades(d?.dificuldades ?? "");
     setSugestoes(d?.sugestoes ?? "");

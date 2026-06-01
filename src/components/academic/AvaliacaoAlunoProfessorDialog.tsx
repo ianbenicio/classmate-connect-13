@@ -92,13 +92,7 @@ interface Props {
 }
 
 // ── Componente StarInput ─────────────────────────────────────────────────────
-function StarInput({
-  value,
-  onChange,
-}: {
-  value: number | null;
-  onChange: (v: number) => void;
-}) {
+function StarInput({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {
   const [hover, setHover] = useState<number | null>(null);
 
   return (
@@ -154,7 +148,7 @@ export function AvaliacaoAlunoProfessorDialog({
 
   useEffect(() => {
     if (!open) return;
-    setNotas(Object.fromEntries(CRITERIOS.map((c) => [c.id, null])));
+    setNotas(Object.fromEntries(CRITERIOS.map((c) => [c.id, 3])));
     setRespostas(Object.fromEntries(PERGUNTAS_ABERTAS.map((p) => [p.id, ""])));
   }, [open]);
 
@@ -268,9 +262,7 @@ export function AvaliacaoAlunoProfessorDialog({
                 <Textarea
                   id={`resp-${p.id}`}
                   value={respostas[p.id]}
-                  onChange={(e) =>
-                    setRespostas((prev) => ({ ...prev, [p.id]: e.target.value }))
-                  }
+                  onChange={(e) => setRespostas((prev) => ({ ...prev, [p.id]: e.target.value }))}
                   placeholder={p.placeholder}
                   rows={2}
                   className="text-sm resize-none"
