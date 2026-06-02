@@ -117,6 +117,43 @@ export const gruposStore = {
     toast.success(`Grupo "${nome}" criado com sucesso.`);
     return local;
   },
+  /** Atualiza cod/nome de um grupo. Optimistic + rollback. */
+  async update(id: string, cod: string, nome: string): Promise<boolean> {
+    const snap = base.get();
+    base.set(snap.map((g) => (g.id === id ? { ...g, cod, nome } : g)));
+    base.emit();
+    const { error } = await supabase.from("grupos").update({ cod, nome }).eq("id", id);
+    if (error) {
+      base.set(snap);
+      base.emit();
+      console.error("[grupos] update error", error);
+      if (error.code === "23505") {
+        toast.error(`Código "${cod}" já existe neste curso.`);
+      } else {
+        toast.error(`Erro ao atualizar grupo: ${error.message}`);
+      }
+      return false;
+    }
+    toast.success("Grupo atualizado.");
+    return true;
+  },
+  /** Remove um grupo. Optimistic + rollback. */
+  async remove(id: string): Promise<boolean> {
+    const snap = base.get();
+    const alvo = snap.find((g) => g.id === id);
+    base.set(snap.filter((g) => g.id !== id));
+    base.emit();
+    const { error } = await supabase.from("grupos").delete().eq("id", id);
+    if (error) {
+      base.set(snap);
+      base.emit();
+      console.error("[grupos] remove error", error);
+      toast.error(`Erro ao remover grupo: ${error.message}`);
+      return false;
+    }
+    toast.success(`Grupo "${alvo?.nome ?? ""}" removido.`);
+    return true;
+  },
   subscribe: base.subscribe.bind(base),
   ensureInit: base.ensureInit.bind(base),
 };

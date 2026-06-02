@@ -11,11 +11,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Plus, Pencil, Trash2, Check, X, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 import { gruposStore } from "@/lib/grupos-store";
 import { useCursos } from "@/lib/cursos-store";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;
@@ -26,10 +32,16 @@ export function GruposManagerDialog({ open, onOpenChange }: Props) {
   const cursos = useCursos();
   const allGrupos = gruposStore.getAll();
 
-  // Inline add
+  // Inline add (por curso)
   const [addingForCurso, setAddingForCurso] = useState<string | null>(null);
   const [newCod, setNewCod] = useState("");
   const [newNome, setNewNome] = useState("");
+
+  // Criar novo (topo) — com seletor de curso
+  const [createCursoId, setCreateCursoId] = useState("");
+  const [createCod, setCreateCod] = useState("");
+  const [createNome, setCreateNome] = useState("");
+  const [creating, setCreating] = useState(false);
 
   // Inline edit
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -48,8 +60,34 @@ export function GruposManagerDialog({ open, onOpenChange }: Props) {
     if (!open) {
       setAddingForCurso(null);
       setEditingId(null);
+      setCreateCursoId("");
+      setCreateCod("");
+      setCreateNome("");
     }
   }, [open]);
+
+  const handleCreate = async () => {
+    if (!createCursoId) {
+      toast.error("Selecione o curso.");
+      return;
+    }
+    if (!createCod.trim() || !createNome.trim()) {
+      toast.error("Código e nome são obrigatórios.");
+      return;
+    }
+    setCreating(true);
+    const result = await gruposStore.add(
+      createCursoId,
+      createCod.trim().toUpperCase(),
+      createNome.trim(),
+    );
+    setCreating(false);
+    if (result) {
+      setCreateCursoId("");
+      setCreateCod("");
+      setCreateNome("");
+    }
+  };
 
   const handleAdd = async (cursoId: string) => {
     if (!newCod.trim() || !newNome.trim()) {
@@ -69,35 +107,13 @@ export function GruposManagerDialog({ open, onOpenChange }: Props) {
       toast.error("Código e nome são obrigatórios.");
       return;
     }
-    const { error } = await supabase
-      .from("grupos")
-      .update({ cod: editCod.trim().toUpperCase(), nome: editNome.trim() })
-      .eq("id", grupoId);
-    if (error) {
-      console.error("[grupos] update error", error);
-      if (error.code === "23505") {
-        toast.error("Código já existe neste curso.");
-      } else {
-        toast.error(`Erro ao atualizar: ${error.message}`);
-      }
-      return;
-    }
-    toast.success("Grupo atualizado.");
-    setEditingId(null);
-    // Force reload
-    void gruposStore.ensureInit();
+    const ok = await gruposStore.update(grupoId, editCod.trim().toUpperCase(), editNome.trim());
+    if (ok) setEditingId(null);
   };
 
   const handleRemove = async (grupoId: string, nome: string) => {
     if (!confirm(`Remover grupo "${nome}"? Atividades perderão o vínculo com este grupo.`)) return;
-    const { error } = await supabase.from("grupos").delete().eq("id", grupoId);
-    if (error) {
-      console.error("[grupos] remove error", error);
-      toast.error(`Erro ao remover: ${error.message}`);
-      return;
-    }
-    toast.success(`Grupo "${nome}" removido.`);
-    void gruposStore.ensureInit();
+    await gruposStore.remove(grupoId);
   };
 
   return (
@@ -115,6 +131,55 @@ export function GruposManagerDialog({ open, onOpenChange }: Props) {
             Nenhum curso cadastrado.
           </p>
         ) : (
+          <>
+            {/* Criar novo grupo — com seletor de curso */}
+            <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+              <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <Plus className="inline h-3.5 w-3.5 mr-1" />
+                Novo Grupo / Módulo
+              </Label>
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="space-y-1 min-w-[160px] flex-1">
+                  <Label className="text-[10px]">Curso</Label>
+                  <Select value={createCursoId} onValueChange={setCreateCursoId}>
+                    <SelectTrigger className="h-8 text-xs">
+                      <SelectValue placeholder="Selecione o curso" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cursos.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          <span className="font-mono text-xs mr-2">{c.cod}</span>
+                          {c.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px]">Código</Label>
+                  <Input
+                    value={createCod}
+                    onChange={(e) => setCreateCod(e.target.value)}
+                    className="w-20 font-mono uppercase h-8 text-xs"
+                    placeholder="EX"
+                    maxLength={10}
+                  />
+                </div>
+                <div className="space-y-1 flex-1 min-w-[140px]">
+                  <Label className="text-[10px]">Nome</Label>
+                  <Input
+                    value={createNome}
+                    onChange={(e) => setCreateNome(e.target.value)}
+                    className="h-8 text-xs"
+                    placeholder="Nome do grupo"
+                  />
+                </div>
+                <Button size="sm" className="h-8" onClick={handleCreate} disabled={creating}>
+                  {creating ? "Criando..." : "Criar"}
+                </Button>
+              </div>
+            </div>
+
           <div className="space-y-6">
             {cursos.map((curso) => {
               const gruposDoCurso = allGrupos.filter((g) => g.cursoId === curso.id);
@@ -254,6 +319,7 @@ export function GruposManagerDialog({ open, onOpenChange }: Props) {
               );
             })}
           </div>
+          </>
         )}
       </DialogContent>
     </Dialog>
