@@ -148,9 +148,8 @@ async function topUpAlunos(existingIds: Set<string>) {
   return true;
 }
 
-async function loadFromDb() {
-  // Paginar presenças para contornar o limite padrão de 1000 linhas do PostgREST.
-  async function fetchAllPresencas() {
+// Paginar presenças — extraído para reuso em reloadPresencas.
+async function fetchAllPresencas() {
     const pageSize = 1000;
     // Cap absoluto (~500k linhas) — proteção contra loop infinito caso o
     // backend retorne `pageSize` linhas indefinidamente. Em produção real
@@ -177,7 +176,37 @@ async function loadFromDb() {
       `[alunos] presencas: atingiu cap de ${MAX_PAGES} páginas (${MAX_PAGES * pageSize} linhas) — possível dataset truncado.`,
     );
     return { data: all, error: null as null };
+}
+
+/** Constrói mapa alunoId → RegistroAula[] a partir dos dados de presencas. */
+function buildPresencaMap(presData: Array<{
+  aluno_id: string;
+  atividade_id: string;
+  presente: boolean;
+  observacao: string | null;
+}> | null) {
+  const presByAluno = new Map<
+    string,
+    { atividadeId: string; presente: boolean; observacao?: string }[]
+  >();
+  for (const p of (presData ?? []) as Array<{
+    aluno_id: string;
+    atividade_id: string;
+    presente: boolean;
+    observacao: string | null;
+  }>) {
+    const arr = presByAluno.get(p.aluno_id) ?? [];
+    arr.push({
+      atividadeId: p.atividade_id,
+      presente: !!p.presente,
+      observacao: p.observacao ?? undefined,
+    });
+    presByAluno.set(p.aluno_id, arr);
   }
+  return presByAluno;
+}
+
+async function loadFromDb() {
   const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([
     supabase.from("alunos").select("*").order("nome"),
     fetchAllPresencas(),
@@ -197,24 +226,7 @@ async function loadFromDb() {
     if (err2) console.error("[alunos] reload error", err2);
     alunosRows = (data2 ?? []) as AlunoRow[];
   }
-  const presByAluno = new Map<
-    string,
-    { atividadeId: string; presente: boolean; observacao?: string }[]
-  >();
-  for (const p of (presData ?? []) as Array<{
-    aluno_id: string;
-    atividade_id: string;
-    presente: boolean;
-    observacao: string | null;
-  }>) {
-    const arr = presByAluno.get(p.aluno_id) ?? [];
-    arr.push({
-      atividadeId: p.atividade_id,
-      presente: !!p.presente,
-      observacao: p.observacao ?? undefined,
-    });
-    presByAluno.set(p.aluno_id, arr);
-  }
+  const presByAluno = buildPresencaMap(presData);
   alunos = alunosRows.map((r) => {
     const a = rowToAluno(r);
     a.aulas = presByAluno.get(r.id) ?? [];
@@ -311,6 +323,23 @@ export const alunosStore = {
       console.error("[alunos] remove error", error);
       toast.error(`Erro ao remover aluno: ${error.message}`);
     }
+  },
+  /**
+   * Recarrega presenças do banco e atualiza `aluno.aulas` em memória.
+   * Chamar após syncPresencas para que QuadroAulas reflita mudanças sem F5.
+   */
+  async reloadPresencas() {
+    const { data: presData, error } = await fetchAllPresencas();
+    if (error) {
+      console.error("[presencas] reload error", error);
+      return;
+    }
+    const presByAluno = buildPresencaMap(presData);
+    alunos = alunos.map((a) => ({
+      ...a,
+      aulas: presByAluno.get(a.id) ?? a.aulas,
+    }));
+    emit();
   },
   subscribe(fn: () => void) {
     listeners.add(fn);

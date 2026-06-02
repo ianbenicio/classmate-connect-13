@@ -23,6 +23,7 @@ import type {
 } from "./formularios-types";
 import { buildAvaliacaoSnapshot } from "./avaliacao-snapshot";
 import { agendamentosStore } from "./agendamentos-store";
+import { alunosStore } from "./alunos-store";
 import { SEED_AVALIACOES } from "./academic-seed";
 import { devInfo } from "./dev-log";
 
@@ -357,7 +358,11 @@ async function syncPresencas(
   if (error) {
     console.error("[presencas] upsert error", error);
     toast.error(`Erro ao salvar presenças: ${error.message}`);
+    return;
   }
+  // Recarrega presenças no alunos-store para o QuadroAulas do aluno
+  // refletir a chamada sem precisar de F5.
+  await alunosStore.reloadPresencas();
 }
 
 // Re-export AvaliacaoRecord for backwards compatibility
