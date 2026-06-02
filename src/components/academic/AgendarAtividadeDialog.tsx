@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Check, Clock, Pencil, Trash2 } from "lucide-react";
+import { BookOpen, CalendarIcon, Check, Clock, Pencil, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +45,7 @@ import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
 import { useUsersByRole } from "@/lib/users-store";
 import { useAuth } from "@/lib/auth";
+import { QuadroAulasPicker } from "./QuadroAulasPicker";
 import { toast } from "sonner";
 
 interface Props {
@@ -96,6 +97,8 @@ export function AgendarAtividadeDialog({
   const [assignments, setAssignments] = useState<Record<number, BlocoAssignment>>({});
   /** blocoIndex sendo editado (-1 = nenhum). */
   const [editingBloco, setEditingBloco] = useState<number | null>(null);
+  /** Picker em grade (quadro de aulas) aberto para o bloco em edição. */
+  const [pickerOpen, setPickerOpen] = useState(false);
   /** Estado do formulário inline. */
   const [draftGrupo, setDraftGrupo] = useState<string>("");
   const [draftAulaId, setDraftAulaId] = useState<string>("");
@@ -754,76 +757,66 @@ export function AgendarAtividadeDialog({
 
                       {isEditing && (
                         <div className="border-t p-3 space-y-3 bg-background">
+                          {/* Seleção da aula via quadro (grade) */}
                           <div className="space-y-2">
-                            <Label className="text-xs">Grupo *</Label>
-                            {grupos.length === 0 ? (
-                              <p className="text-xs text-muted-foreground">
-                                Nenhum grupo disponível.
-                              </p>
+                            <Label className="text-xs">Aula</Label>
+                            {draftAulaSelecionada ? (
+                              <div className="flex items-center justify-between gap-2 rounded-md border bg-emerald-500/10 border-emerald-500/40 px-3 py-2">
+                                <span className="text-sm truncate">
+                                  <span className="font-mono text-xs mr-1">
+                                    {draftAulaSelecionada.codigo}
+                                  </span>
+                                  {draftAulaSelecionada.nome}
+                                  {draftAulaSelecionada.cargaHorariaMin
+                                    ? ` (${formatMinutos(draftAulaSelecionada.cargaHorariaMin)})`
+                                    : ""}
+                                </span>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setPickerOpen(true)}
+                                >
+                                  <Pencil className="h-3.5 w-3.5 mr-1" />
+                                  Trocar
+                                </Button>
+                              </div>
                             ) : (
-                              <Select value={draftGrupo} onValueChange={setDraftGrupo}>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full justify-start"
+                                onClick={() => setPickerOpen(true)}
+                              >
+                                <BookOpen className="h-4 w-4 mr-2" />
+                                Selecionar aula no quadro…
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Tarefa opcional do mesmo grupo */}
+                          {draftGrupo && (
+                            <div className="space-y-2">
+                              <Label className="text-xs">Tarefa (opcional)</Label>
+                              <Select
+                                value={draftTarefaId || "__none__"}
+                                onValueChange={(v) => setDraftTarefaId(v === "__none__" ? "" : v)}
+                              >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Selecione o grupo" />
+                                  <SelectValue placeholder="Sem tarefa" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {grupos.map((g) => (
-                                    <SelectItem key={g} value={g}>
-                                      <span className="font-mono text-xs mr-2">{g}</span>
-                                      {getGrupoNome(gruposByCursoCod, curso.cod, g)}
+                                  <SelectItem value="__none__">— Nenhuma —</SelectItem>
+                                  {tarefasDoGrupoDraft.map((a) => (
+                                    <SelectItem key={a.id} value={a.id}>
+                                      {a.codigo} · {a.nome}
+                                      {a.cargaHorariaMin
+                                        ? ` (${formatMinutos(a.cargaHorariaMin)})`
+                                        : ""}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
-                            )}
-                          </div>
-
-                          {draftGrupo && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              <div className="space-y-2">
-                                <Label className="text-xs">Aula</Label>
-                                <Select
-                                  value={draftAulaId || "__none__"}
-                                  onValueChange={(v) => setDraftAulaId(v === "__none__" ? "" : v)}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Sem aula" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
-                                    {aulasDoGrupoDraft.map((a) => (
-                                      <SelectItem key={a.id} value={a.id}>
-                                        {a.codigo} · {a.nome}
-                                        {a.cargaHorariaMin
-                                          ? ` (${formatMinutos(a.cargaHorariaMin)})`
-                                          : ""}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-xs">Tarefa</Label>
-                                <Select
-                                  value={draftTarefaId || "__none__"}
-                                  onValueChange={(v) => setDraftTarefaId(v === "__none__" ? "" : v)}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Sem tarefa" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="__none__">— Nenhuma —</SelectItem>
-                                    {tarefasDoGrupoDraft.map((a) => (
-                                      <SelectItem key={a.id} value={a.id}>
-                                        {a.codigo} · {a.nome}
-                                        {a.cargaHorariaMin
-                                          ? ` (${formatMinutos(a.cargaHorariaMin)})`
-                                          : ""}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
                             </div>
                           )}
 
@@ -897,6 +890,23 @@ export function AgendarAtividadeDialog({
           </DialogFooter>
         </form>
       </DialogContent>
+
+      <QuadroAulasPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        curso={curso}
+        atividades={atividades}
+        turmaId={turmaSelecionada?.id}
+        onSelect={(aulaId) => {
+          const aula = ativById(aulaId);
+          if (!aula) return;
+          // Define grupo a partir da aula escolhida (mantém tarefa filtrada
+          // pelo mesmo grupo). Limpa tarefa se mudou de grupo.
+          if (aula.grupo !== draftGrupo) setDraftTarefaId("");
+          setDraftGrupo(aula.grupo);
+          setDraftAulaId(aulaId);
+        }}
+      />
     </Dialog>
   );
 }
