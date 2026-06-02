@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { formatMinutos, MAX_HABILIDADES_POR_CURSO, type Curso } from "@/lib/academic-types";
+import { formatMinutos, type Curso } from "@/lib/academic-types";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { SkillSelector } from "./SkillSelector";
 
@@ -114,10 +114,6 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
     }
     if (!slotsIguais) {
       toast.error("Todos os slots devem ter a mesma duração.");
-      return;
-    }
-    if (habilidadeIds.length > MAX_HABILIDADES_POR_CURSO) {
-      toast.error(`Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`);
       return;
     }
     onSave({
@@ -267,9 +263,8 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               Habilidades gerais do curso
             </Label>
             <p className="text-[11px] text-muted-foreground">
-              Escolha até <strong>{MAX_HABILIDADES_POR_CURSO}</strong> habilidades trabalhadas ao
-              longo do curso. Aparecem como característica do curso e ficam disponíveis para
-              vincular às atividades.
+              Selecione as habilidades trabalhadas ao longo do curso. Aparecem como
+              característica do curso e ficam disponíveis para vincular às atividades.
             </p>
             {todasHabilidades.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">
@@ -279,17 +274,11 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               <SkillSelector
                 habilidades={todasHabilidades}
                 selectedIds={habilidadeIds}
-                onChange={(ids) => {
-                  if (ids.length > MAX_HABILIDADES_POR_CURSO) {
-                    toast.error(`Máximo de ${MAX_HABILIDADES_POR_CURSO} habilidades por curso.`);
-                    return;
-                  }
-                  setHabilidadeIds(ids);
-                }}
+                onChange={setHabilidadeIds}
               />
             )}
             <p className="text-[11px] text-muted-foreground">
-              {habilidadeIds.length}/{MAX_HABILIDADES_POR_CURSO} selecionadas
+              {habilidadeIds.length} selecionada{habilidadeIds.length !== 1 ? "s" : ""}
             </p>
           </div>
 

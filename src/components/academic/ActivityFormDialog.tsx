@@ -29,7 +29,6 @@ import {
   getDuracaoAulaMin,
   DEFAULT_FORMULARIOS,
   FIELD_VISIBILITY,
-  MAX_HABILIDADES_POR_ATIVIDADE,
   type Atividade,
   type AtividadeTipo,
   type Curso,
@@ -44,11 +43,7 @@ import {
 import { useAuth } from "@/lib/auth";
 import { useUsersByRole } from "@/lib/users-store";
 import { gruposStore } from "@/lib/grupos-store";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface Props {
   open: boolean;
@@ -266,12 +261,6 @@ export function ActivityFormDialog({
       setTab("identificacao");
       return;
     }
-    if (habilidadeIds.length > MAX_HABILIDADES_POR_ATIVIDADE) {
-      toast.error(`Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades por atividade.`);
-      setTab("pedagogico");
-      return;
-    }
-
     const tipoFinal: AtividadeTipo = isEdit ? editing!.tipo : tipo;
     const isAula = tipoFinal === 0;
 
@@ -552,21 +541,15 @@ export function ActivityFormDialog({
                 <div className="space-y-2">
                   <FieldLabel field="habilidadeIds">Habilidades Trabalhadas</FieldLabel>
                   <p className="text-xs text-muted-foreground">
-                    Escolha até <strong>{MAX_HABILIDADES_POR_ATIVIDADE}</strong> habilidades.
+                    Selecione as habilidades trabalhadas nesta atividade.
                   </p>
                   <SkillSelector
                     habilidades={habilidades}
                     selectedIds={habilidadeIds}
-                    onChange={(ids) => {
-                      if (ids.length > MAX_HABILIDADES_POR_ATIVIDADE) {
-                        toast.error(`Máximo de ${MAX_HABILIDADES_POR_ATIVIDADE} habilidades.`);
-                        return;
-                      }
-                      setHabilidadeIds(ids);
-                    }}
+                    onChange={setHabilidadeIds}
                   />
                   <p className="text-[11px] text-muted-foreground">
-                    {habilidadeIds.length}/{MAX_HABILIDADES_POR_ATIVIDADE} selecionadas
+                    {habilidadeIds.length} selecionada{habilidadeIds.length !== 1 ? "s" : ""}
                   </p>
                 </div>
 
@@ -1073,10 +1056,7 @@ function IdentificacaoFields({
               </SelectContent>
             </Select>
             {!isEdit && cursoId && (
-              <AddGrupoPopover
-                cursoId={cursoId}
-                onCreated={(cod) => setGrupo(cod)}
-              />
+              <AddGrupoPopover cursoId={cursoId} onCreated={(cod) => setGrupo(cod)} />
             )}
           </div>
         </div>
@@ -1254,7 +1234,13 @@ function AddGrupoPopover({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="icon" className="shrink-0" title="Novo grupo/módulo">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="shrink-0"
+          title="Novo grupo/módulo"
+        >
           <Plus className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

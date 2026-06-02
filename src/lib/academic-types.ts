@@ -30,11 +30,6 @@ export interface Curso {
   habilidadeIds?: string[];
 }
 
-/** Limite rígido de habilidades por atividade. */
-export const MAX_HABILIDADES_POR_ATIVIDADE = 5;
-/** Limite rígido de habilidades por curso. */
-export const MAX_HABILIDADES_POR_CURSO = 8;
-
 /** Duração padrão de uma aula quando o curso não define `duracaoAulaMin`. */
 export const DEFAULT_AULA_MINUTES = 60;
 

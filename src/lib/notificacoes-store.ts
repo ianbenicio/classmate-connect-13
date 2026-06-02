@@ -174,7 +174,10 @@ export const notificacoesStore = {
     base.set(all.filter((n) => !orfasIds.has(n.id)));
     base.emit();
 
-    const { error } = await supabase.from("notificacoes").delete().in("id", [...orfasIds]);
+    const { error } = await supabase
+      .from("notificacoes")
+      .delete()
+      .in("id", [...orfasIds]);
     if (error) {
       console.error("[notificacoes] cleanupOrphans error", error);
       toast.error(`Erro ao limpar notificações órfãs: ${error.message}`);
