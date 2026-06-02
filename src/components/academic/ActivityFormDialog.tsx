@@ -100,6 +100,7 @@ export function ActivityFormDialog({
   const [descricao, setDescricao] = useState("");
   const [professor, setProfessor] = useState("");
   const [professorUserId, setProfessorUserId] = useState<string | undefined>();
+  const [codigo, setCodigo] = useState("");
   const [cargaHoras, setCargaHoras] = useState("0");
   const [cargaMin, setCargaMin] = useState("0");
 
@@ -136,6 +137,7 @@ export function ActivityFormDialog({
       setNome(editing.nome);
       setCursoId(editing.cursoId);
       setGrupo(editing.grupo);
+      setCodigo(editing.codigo);
       setPrazo(editing.prazo);
       setDescricao(editing.descricao);
       setProfessor(editing.professor ?? "");
@@ -275,6 +277,7 @@ export function ActivityFormDialog({
       ? {
           ...editing!,
           nome,
+          codigo: codigo.trim() || editing!.codigo,
           prazo,
           descricao,
           objetivoResultados,
@@ -456,6 +459,8 @@ export function ActivityFormDialog({
                   setNome={setNome}
                   cursoId={cursoId}
                   setCursoId={setCursoId}
+                  codigo={codigo}
+                  setCodigo={setCodigo}
                   grupo={grupo}
                   setGrupo={setGrupo}
                   cursos={cursos}
@@ -848,6 +853,8 @@ export function ActivityFormDialog({
                 setNome={setNome}
                 cursoId={cursoId}
                 setCursoId={setCursoId}
+                codigo={codigo}
+                setCodigo={setCodigo}
                 grupo={grupo}
                 setGrupo={setGrupo}
                 cursos={cursos}
@@ -928,6 +935,8 @@ interface IdentificacaoFieldsProps {
   setNome: (s: string) => void;
   cursoId: string;
   setCursoId: (s: string) => void;
+  codigo: string;
+  setCodigo: (s: string) => void;
   grupo: string;
   setGrupo: (s: string) => void;
   cursos: Curso[];
@@ -955,6 +964,8 @@ function IdentificacaoFields({
   setNome,
   cursoId,
   setCursoId,
+  codigo,
+  setCodigo,
   grupo,
   setGrupo,
   cursos,
@@ -1065,7 +1076,12 @@ function IdentificacaoFields({
           <>
             <div className="space-y-2">
               <FieldLabel field="codigo">Código</FieldLabel>
-              <Input value={editing!.codigo} readOnly />
+              <Input
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value.toUpperCase())}
+                placeholder={editing!.codigo}
+                className="font-mono"
+              />
             </div>
             <div className="space-y-2">
               <Label>Criado por</Label>

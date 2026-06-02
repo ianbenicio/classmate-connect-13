@@ -20,6 +20,7 @@ import {
   Plus,
   ChevronRight,
   ClipboardCheck,
+  FolderOpen,
 } from "lucide-react";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { useCursos } from "@/lib/cursos-store";
@@ -29,6 +30,7 @@ import { useHabilidades } from "@/lib/habilidades-store";
 import { ActivityFormDialog } from "@/components/academic/ActivityFormDialog";
 import { CourseActivitiesDialog } from "@/components/academic/CourseActivitiesDialog";
 import { PendingReportsDialog } from "@/components/academic/PendingReportsDialog";
+import { GruposManagerDialog } from "@/components/academic/GruposManagerDialog";
 import type { Atividade, AtividadeTipo, Curso } from "@/lib/academic-types";
 import { toast } from "sonner";
 
@@ -72,6 +74,7 @@ function AtividadesPage() {
   };
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
   const [pendentesOpen, setPendentesOpen] = useState(false);
+  const [gruposOpen, setGruposOpen] = useState(false);
 
   // Hidrata seleção persistida assim que cursos carregam
   useEffect(() => {
@@ -136,6 +139,9 @@ function AtividadesPage() {
             <p className="text-muted-foreground mt-1">Aulas e tarefas organizadas por curso.</p>
           </div>
           <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" onClick={() => setGruposOpen(true)}>
+              <FolderOpen /> Grupos / Módulos
+            </Button>
             <Button variant="outline" onClick={() => setPendentesOpen(true)}>
               <ClipboardCheck /> Registrar Relatório
             </Button>
@@ -246,6 +252,8 @@ function AtividadesPage() {
         onEdit={handleEdit}
         onDelete={(a) => setConfirmDelete(a)}
       />
+
+      <GruposManagerDialog open={gruposOpen} onOpenChange={setGruposOpen} />
 
       <PendingReportsDialog
         open={pendentesOpen}

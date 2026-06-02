@@ -263,8 +263,8 @@ export function CourseFormDialog({ open, onOpenChange, onSave, editing }: Props)
               Habilidades gerais do curso
             </Label>
             <p className="text-[11px] text-muted-foreground">
-              Selecione as habilidades trabalhadas ao longo do curso. Aparecem como
-              característica do curso e ficam disponíveis para vincular às atividades.
+              Selecione as habilidades trabalhadas ao longo do curso. Aparecem como característica
+              do curso e ficam disponíveis para vincular às atividades.
             </p>
             {todasHabilidades.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">

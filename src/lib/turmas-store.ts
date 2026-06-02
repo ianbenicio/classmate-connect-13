@@ -134,11 +134,21 @@ export const turmasStore = {
     return turmas;
   },
   async upsert(t: Turma) {
-    const row = turmaToRow(t);
-    const local: Turma = { ...t, id: row.id, cursoId: row.curso_id };
-    const exists = turmas.some((x) => x.id === local.id);
+    // IDs runtime já são UUIDs — construir row direto, sem toUuid.
+    const row = {
+      id: t.id,
+      curso_id: t.cursoId,
+      nome: t.nome,
+      cod: t.cod,
+      data: t.data,
+      horarios: t.horarios as never,
+      descricao: t.descricao ?? null,
+      project_id: requireProjectIdForWrite() ?? undefined,
+    };
+    const local: Turma = { ...t };
+    const exists = turmas.some((x) => x.id === t.id);
     const snap = turmas;
-    turmas = exists ? turmas.map((x) => (x.id === local.id ? local : x)) : [...turmas, local];
+    turmas = exists ? turmas.map((x) => (x.id === t.id ? local : x)) : [...turmas, local];
     emit();
     const { error } = await supabase.from("turmas").upsert(row, { onConflict: "id" });
     if (error) {
@@ -149,10 +159,10 @@ export const turmasStore = {
     }
   },
   update(id: string, patch: Partial<Turma>) {
-    const dbId = toUuid(id);
-    const current = turmas.find((x) => x.id === dbId || x.id === id);
+    // IDs runtime já são UUIDs — usar direto.
+    const current = turmas.find((x) => x.id === id);
     if (!current) return;
-    void this.upsert({ ...current, ...patch, id: dbId });
+    void this.upsert({ ...current, ...patch, id });
   },
   setMany(next: Turma[]) {
     // Apenas em memória — operação em massa não persiste.
@@ -160,11 +170,11 @@ export const turmasStore = {
     emit();
   },
   async remove(id: string) {
-    const dbId = toUuid(id);
+    // IDs runtime já são UUIDs — usar direto.
     const snap = turmas;
-    turmas = turmas.filter((x) => x.id !== dbId && x.id !== id);
+    turmas = turmas.filter((x) => x.id !== id);
     emit();
-    const { error } = await supabase.from("turmas").delete().eq("id", dbId);
+    const { error } = await supabase.from("turmas").delete().eq("id", id);
     if (error) {
       turmas = snap;
       emit();
