@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -103,6 +104,8 @@ export function AgendarAtividadeDialog({
   const [draftGrupo, setDraftGrupo] = useState<string>("");
   const [draftAulaId, setDraftAulaId] = useState<string>("");
   const [draftTarefaId, setDraftTarefaId] = useState<string>("");
+  /** Texto do campo "código da aula" (digitação manual). */
+  const [draftCodigoText, setDraftCodigoText] = useState<string>("");
 
   const todosAgendamentos = useAgendamentos();
   const gruposByCursoCod = useGruposByCursoCod();
@@ -314,10 +317,12 @@ export function AgendarAtividadeDialog({
       setDraftGrupo(existing.grupo);
       setDraftAulaId(existing.aulaId);
       setDraftTarefaId(existing.tarefaId);
+      setDraftCodigoText(atividades.find((a) => a.id === existing.aulaId)?.codigo ?? "");
     } else {
       setDraftGrupo("");
       setDraftAulaId("");
       setDraftTarefaId("");
+      setDraftCodigoText("");
     }
     setEditingBloco(blocoIdx);
   };
@@ -327,6 +332,30 @@ export function AgendarAtividadeDialog({
     setDraftGrupo("");
     setDraftAulaId("");
     setDraftTarefaId("");
+    setDraftCodigoText("");
+  };
+
+  // Resolve o código digitado → aula disponível do curso.
+  // Aula concluída/agendada na turma não pode (mesma regra do quadro).
+  const applyCodigoText = (raw: string) => {
+    const text = raw.toUpperCase();
+    setDraftCodigoText(text);
+    const match = atividades.find(
+      (a) => a.cursoId === curso.id && a.tipo === 0 && a.codigo.toUpperCase() === text.trim(),
+    );
+    if (!match) {
+      // Sem correspondência exata — limpa seleção (mantém o texto digitado).
+      setDraftAulaId("");
+      return;
+    }
+    if (aulasIndisponiveisParaTurma.has(match.id)) {
+      toast.error(`Aula ${match.codigo} já está agendada/concluída nesta turma.`);
+      setDraftAulaId("");
+      return;
+    }
+    if (match.grupo !== draftGrupo) setDraftTarefaId("");
+    setDraftGrupo(match.grupo);
+    setDraftAulaId(match.id);
   };
 
   const confirmEditor = () => {
@@ -556,6 +585,7 @@ export function AgendarAtividadeDialog({
   const totalAssigned = Object.keys(assignments).length;
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -757,40 +787,41 @@ export function AgendarAtividadeDialog({
 
                       {isEditing && (
                         <div className="border-t p-3 space-y-3 bg-background">
-                          {/* Seleção da aula via quadro (grade) */}
+                          {/* Seleção da aula: digitar código OU escolher no quadro */}
                           <div className="space-y-2">
-                            <Label className="text-xs">Aula</Label>
-                            {draftAulaSelecionada ? (
-                              <div className="flex items-center justify-between gap-2 rounded-md border bg-emerald-500/10 border-emerald-500/40 px-3 py-2">
-                                <span className="text-sm truncate">
-                                  <span className="font-mono text-xs mr-1">
-                                    {draftAulaSelecionada.codigo}
-                                  </span>
-                                  {draftAulaSelecionada.nome}
-                                  {draftAulaSelecionada.cargaHorariaMin
-                                    ? ` (${formatMinutos(draftAulaSelecionada.cargaHorariaMin)})`
-                                    : ""}
-                                </span>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => setPickerOpen(true)}
-                                >
-                                  <Pencil className="h-3.5 w-3.5 mr-1" />
-                                  Trocar
-                                </Button>
-                              </div>
-                            ) : (
+                            <Label className="text-xs">Código da aula</Label>
+                            <div className="flex gap-2">
+                              <Input
+                                value={draftCodigoText}
+                                onChange={(e) => applyCodigoText(e.target.value)}
+                                placeholder="Ex.: GDGD35"
+                                className="font-mono uppercase"
+                              />
                               <Button
                                 type="button"
                                 variant="outline"
-                                className="w-full justify-start"
+                                className="shrink-0"
                                 onClick={() => setPickerOpen(true)}
                               >
-                                <BookOpen className="h-4 w-4 mr-2" />
-                                Selecionar aula no quadro…
+                                <BookOpen className="h-4 w-4 mr-1" />
+                                Quadro
                               </Button>
+                            </div>
+                            {draftAulaSelecionada ? (
+                              <p className="text-xs text-emerald-600 dark:text-emerald-400 truncate">
+                                ✓ {draftAulaSelecionada.nome}
+                                {draftAulaSelecionada.cargaHorariaMin
+                                  ? ` (${formatMinutos(draftAulaSelecionada.cargaHorariaMin)})`
+                                  : ""}
+                              </p>
+                            ) : draftCodigoText.trim() ? (
+                              <p className="text-xs text-amber-600 dark:text-amber-400">
+                                Nenhuma aula disponível com este código.
+                              </p>
+                            ) : (
+                              <p className="text-xs text-muted-foreground">
+                                Digite o código ou clique em “Quadro” para escolher.
+                              </p>
                             )}
                           </div>
 
@@ -890,7 +921,10 @@ export function AgendarAtividadeDialog({
           </DialogFooter>
         </form>
       </DialogContent>
+      </Dialog>
 
+      {/* Picker renderizado FORA do Dialog de agendamento — Dialogs Radix
+          aninhados (modal) podem engolir cliques/foco do interno. */}
       <QuadroAulasPicker
         open={pickerOpen}
         onOpenChange={setPickerOpen}
@@ -905,8 +939,9 @@ export function AgendarAtividadeDialog({
           if (aula.grupo !== draftGrupo) setDraftTarefaId("");
           setDraftGrupo(aula.grupo);
           setDraftAulaId(aulaId);
+          setDraftCodigoText(aula.codigo);
         }}
       />
-    </Dialog>
+    </>
   );
 }
