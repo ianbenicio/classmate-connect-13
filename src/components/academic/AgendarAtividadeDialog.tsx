@@ -45,8 +45,10 @@ import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
 import { useUsersByRole } from "@/lib/users-store";
+import { useHabilidades } from "@/lib/habilidades-store";
 import { useAuth } from "@/lib/auth";
 import { QuadroAulasPicker } from "./QuadroAulasPicker";
+import { SkillSelector } from "./SkillSelector";
 import { toast } from "sonner";
 
 interface Props {
@@ -93,6 +95,8 @@ export function AgendarAtividadeDialog({
   const [slotIdx, setSlotIdx] = useState<string>("");
   const [observacao, setObservacao] = useState("");
   const [selectedProfessorUserId, setSelectedProfessorUserId] = useState<string>("");
+  /** Habilidades trabalhadas na aula agendada (aplica a todos os blocos). */
+  const [habilidadeIds, setHabilidadeIds] = useState<string[]>([]);
 
   /** Map blocoIndex → assignment confirmado (local). */
   const [assignments, setAssignments] = useState<Record<number, BlocoAssignment>>({});
@@ -115,6 +119,13 @@ export function AgendarAtividadeDialog({
   const duracaoAulaMin = getDuracaoAulaMin(curso);
   // Professores são usuários com role "professor" (Fase 8 — fonte única).
   const professores = useUsersByRole("professor");
+  // Habilidades do curso (fallback: todas) para o seletor de habilidades.
+  const todasHabilidades = useHabilidades();
+  const habilidadesDoCurso = useMemo(() => {
+    const ids = new Set(curso.habilidadeIds ?? []);
+    const doCurso = todasHabilidades.filter((h) => ids.has(h.id));
+    return doCurso.length > 0 ? doCurso : todasHabilidades;
+  }, [todasHabilidades, curso.habilidadeIds]);
 
   // ---------- Reset ao abrir ----------
   // ⚠️ Não dependa de `turmas` (prop array) aqui — chamadores frequentemente
@@ -131,6 +142,7 @@ export function AgendarAtividadeDialog({
     setSlotIdx("");
     setObservacao("");
     setSelectedProfessorUserId(defaultProfessorUserId ?? defaultProfessorId ?? "");
+    setHabilidadeIds([]);
     setAssignments({});
     setEditingBloco(null);
     setDraftGrupo("");
@@ -448,6 +460,7 @@ export function AgendarAtividadeDialog({
         blocoIndex,
         blocosTotal: 1,
         atividadeIds: ativIds,
+        habilidadeIds: habilidadeIds.length ? habilidadeIds : undefined,
         status: "pendente",
         criadoEm,
         observacao: observacao.trim() || undefined,
@@ -900,6 +913,19 @@ export function AgendarAtividadeDialog({
               </div>
             </div>
           )}
+
+          <div className="space-y-2">
+            <Label>Habilidades trabalhadas</Label>
+            <p className="text-xs text-muted-foreground">
+              Uma ou mais habilidades trabalhadas nesta aula. Aparecem no relatório, no
+              histórico e na janela da turma.
+            </p>
+            <SkillSelector
+              habilidades={habilidadesDoCurso}
+              selectedIds={habilidadeIds}
+              onChange={setHabilidadeIds}
+            />
+          </div>
 
           <div className="space-y-2">
             <Label>Observação</Label>

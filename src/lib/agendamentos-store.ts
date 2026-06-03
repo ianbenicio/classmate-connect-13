@@ -51,6 +51,8 @@ type AgendamentoRow = {
 type AgendamentoMeta = {
   slotInicio?: string;
   slotFim?: string;
+  /** Habilidades trabalhadas — guardadas em meta (jsonb) p/ evitar migration. */
+  habilidadeIds?: string[];
 };
 
 function readMeta(raw: unknown): AgendamentoMeta {
@@ -68,6 +70,7 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
     inicio: r.inicio,
     fim: r.fim,
     atividadeIds: (Array.isArray(r.atividade_ids) ? r.atividade_ids : []) as string[],
+    habilidadeIds: Array.isArray(meta.habilidadeIds) ? meta.habilidadeIds : undefined,
     status: r.status,
     criadoEm: r.created_at,
     concluidoEm: r.concluido_em ?? undefined,
@@ -93,6 +96,7 @@ function agendamentoToRow(a: Agendamento) {
   const meta: AgendamentoMeta = {};
   if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
   if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
+  if (a.habilidadeIds && a.habilidadeIds.length) meta.habilidadeIds = a.habilidadeIds;
   return {
     id: toUuid(a.id),
     turma_id: toUuid(a.turmaId),
@@ -189,6 +193,7 @@ export const agendamentosStore = {
     const meta: AgendamentoMeta = {};
     if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
     if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
+    if (a.habilidadeIds && a.habilidadeIds.length) meta.habilidadeIds = a.habilidadeIds;
     const row = {
       id: a.id,
       turma_id: a.turmaId,
@@ -235,6 +240,7 @@ export const agendamentosStore = {
     const meta: AgendamentoMeta = {};
     if (next.slotInicio !== undefined) meta.slotInicio = next.slotInicio;
     if (next.slotFim !== undefined) meta.slotFim = next.slotFim;
+    if (next.habilidadeIds && next.habilidadeIds.length) meta.habilidadeIds = next.habilidadeIds;
     const row = {
       id: next.id,
       turma_id: next.turmaId,

@@ -380,6 +380,8 @@ export interface Agendamento {
   inicio: string; // "HH:MM" — início efetivo do agendamento (já considerando o bloco)
   fim: string; // "HH:MM" — fim efetivo (início + N blocos)
   atividadeIds: string[];
+  /** Habilidades trabalhadas nesta aula agendada (IDs). Sai no relatório/histórico. */
+  habilidadeIds?: string[];
   status: StatusAgendamento;
   criadoEm: string;
   concluidoEm?: string;

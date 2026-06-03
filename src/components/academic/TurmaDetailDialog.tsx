@@ -130,6 +130,28 @@ export function TurmaDetailDialog({
     .filter((x): x is { ag: Agendamento; aulas: Atividade[] } => !!x)
     .sort((a, b) => (b.ag.data + b.ag.inicio).localeCompare(a.ag.data + a.ag.inicio));
 
+  // Habilidades trabalhadas na turma: uma linha por (habilidade × agendamento).
+  // Lista habilidade, data, aula (código) e professor que deu a aula.
+  const habById = new Map(todasHabilidades.map((h) => [h.id, h]));
+  const habilidadesTrabalhadas = agendaDaTurma
+    .filter((ag) => (ag.habilidadeIds?.length ?? 0) > 0)
+    .flatMap((ag) => {
+      const aulaCodigo = ag.atividadeIds
+        .map((id) => ativPorId.get(id))
+        .find((a) => a?.tipo === 0)?.codigo;
+      return (ag.habilidadeIds ?? []).map((hid) => ({
+        key: `${ag.id}-${hid}`,
+        habilidade: habById.get(hid),
+        habId: hid,
+        data: ag.data,
+        inicio: ag.inicio,
+        aulaCodigo,
+        professor: ag.professor,
+        concluido: ag.status === "concluido",
+      }));
+    })
+    .sort((a, b) => (b.data + b.inicio).localeCompare(a.data + a.inicio));
+
   return (
     <Dialog open={!!turma} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -352,6 +374,20 @@ export function TurmaDetailDialog({
                           </Badge>
                         ))}
                       </div>
+                      {(ag.habilidadeIds?.length ?? 0) > 0 && (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {(ag.habilidadeIds ?? []).map((hid) => (
+                            <Badge
+                              key={hid}
+                              variant="secondary"
+                              className="text-[10px] inline-flex items-center gap-1"
+                            >
+                              <Star className="h-2.5 w-2.5" />
+                              {habById.get(hid)?.sigla ?? "?"}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                       {ag.professor && (
                         <div className="mt-1.5 text-xs text-muted-foreground inline-flex items-center gap-1">
                           <UserIcon className="h-3 w-3" />
@@ -364,6 +400,59 @@ export function TurmaDetailDialog({
                       Concluída
                     </Badge>
                   </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="mt-4">
+          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
+            <Star className="h-3.5 w-3.5" />
+            Habilidades Trabalhadas ({habilidadesTrabalhadas.length})
+          </h3>
+          {habilidadesTrabalhadas.length === 0 ? (
+            <p className="text-sm text-muted-foreground border rounded-md p-6 text-center">
+              Nenhuma habilidade registrada ainda. Selecione habilidades ao agendar uma aula.
+            </p>
+          ) : (
+            <ul className="border rounded-lg divide-y">
+              {habilidadesTrabalhadas.map((h) => (
+                <li key={h.key} className="p-3 flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {h.habilidade?.sigla ?? "?"}
+                      </Badge>
+                      <span className="text-sm truncate">
+                        {h.habilidade?.nome ?? h.habilidade?.descricao ?? "Habilidade removida"}
+                      </span>
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {h.data}
+                      </span>
+                      {h.aulaCodigo && (
+                        <span className="inline-flex items-center gap-1 font-mono">
+                          <GraduationCap className="h-3 w-3" />
+                          {h.aulaCodigo}
+                        </span>
+                      )}
+                      {h.professor && (
+                        <span className="inline-flex items-center gap-1">
+                          <UserIcon className="h-3 w-3" />
+                          {h.professor}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {h.concluido && (
+                    <Badge variant="secondary" className="text-[10px]">
+                      <CalendarCheck className="h-3 w-3 mr-1" />
+                      Concluída
+                    </Badge>
+                  )}
                 </li>
               ))}
             </ul>
