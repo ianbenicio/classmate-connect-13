@@ -361,19 +361,22 @@ export function AgendarAtividadeDialog({
 
   const confirmEditor = () => {
     if (editingBloco === null) return;
-    if (!draftGrupo) {
+    // Usa a aula resolvida (id OU código) — não depende só de draftAulaId.
+    const aulaResolvidaId = draftAulaSelecionada?.id ?? "";
+    const grupoFinal = draftGrupo || draftAulaSelecionada?.grupo || "";
+    if (!grupoFinal) {
       toast.error("Selecione um grupo.");
       return;
     }
-    if (!draftAulaId && !draftTarefaId) {
+    if (!aulaResolvidaId && !draftTarefaId) {
       toast.error("Selecione ao menos uma aula ou tarefa.");
       return;
     }
     setAssignments((prev) => ({
       ...prev,
       [editingBloco]: {
-        grupo: draftGrupo,
-        aulaId: draftAulaId,
+        grupo: grupoFinal,
+        aulaId: aulaResolvidaId,
         tarefaId: draftTarefaId,
       },
     }));
@@ -576,7 +579,18 @@ export function AgendarAtividadeDialog({
   // ---------- Helper: render do nome de uma atividade ----------
   const ativById = (id: string) => atividades.find((a) => a.id === id);
 
-  const draftAulaSelecionada = ativById(draftAulaId);
+  // Resolve a aula do draft por ID e, como fallback, pelo código digitado.
+  // Fallback torna o display/confirm imunes a qualquer race que zere
+  // draftAulaId enquanto draftCodigoText ainda aponta uma aula válida.
+  const draftAulaSelecionada =
+    ativById(draftAulaId) ??
+    atividades.find(
+      (a) =>
+        a.cursoId === curso.id &&
+        a.tipo === 0 &&
+        a.codigo.toUpperCase() === draftCodigoText.trim().toUpperCase() &&
+        !aulasIndisponiveisParaTurma.has(a.id),
+    );
   const draftCarga = draftAulaSelecionada?.cargaHorariaMin ?? 0;
   const draftCargaWarning =
     draftCarga > duracaoAulaMin
