@@ -237,11 +237,12 @@ export function AgendarAtividadeDialog({
     [ativsDoGrupoDraft],
   );
 
-  // Quando muda o grupo do draft, limpa aula/tarefa
-  useEffect(() => {
-    setDraftAulaId("");
-    setDraftTarefaId("");
-  }, [draftGrupo]);
+  // NOTA: removido o effect `[draftGrupo] → limpa aula/tarefa`.
+  // Ele apagava draftAulaId um tick depois do picker/código definirem
+  // grupo+aula juntos (grupo mudava → effect disparava → aula sumia).
+  // applyCodigoText e o onSelect do picker já limpam a tarefa inline
+  // quando o grupo muda, então o effect era redundante e nocivo
+  // (causava o bug "primeira seleção falha, segunda funciona").
 
   // ---------- Ocupação de blocos por agendamentos pré-existentes ----------
   const blocosOcupadosExistentes = useMemo((): Set<number> => {
