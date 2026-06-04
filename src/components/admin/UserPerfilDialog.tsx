@@ -5,7 +5,7 @@
 // e link para o registro de professor se vinculado.
 // Para professores, exibe também suas horas de aula baseado em avaliações.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlunoDetailDialog } from "@/components/academic/AlunoDetailDialog";
 import {
   Dialog,
@@ -25,9 +25,19 @@ import type { UserRow } from "@/lib/users-store";
 import { APP_ROLE_LABELS } from "@/lib/auth";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
-import { useAlunos } from "@/lib/alunos-store";
+import { useAlunos, alunosStore } from "@/lib/alunos-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
+import { useAuth } from "@/lib/auth";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import type { Aluno } from "@/lib/academic-types";
 import { useAtividades } from "@/lib/atividades-store";
 import { useNotificacoes } from "@/lib/notificacoes-store";
 import { useComportamentoTags } from "@/lib/comportamento-tags-store";
@@ -70,6 +80,63 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
     () => (linkedAluno ? turmas.find((t) => t.id === linkedAluno.turmaId) : null),
     [linkedAluno, turmas],
   );
+
+  // Vínculo curso/turma editável por staff (admin/coordenacao/professor).
+  const { hasRole } = useAuth();
+  const podeEditarVinculo = hasRole("admin") || hasRole("coordenacao") || hasRole("professor");
+  const [vincCursoId, setVincCursoId] = useState<string>("");
+  const [vincTurmaId, setVincTurmaId] = useState<string>("");
+  const [vincSaving, setVincSaving] = useState(false);
+
+  // Hidrata os selects com o vínculo atual quando o user/aluno muda.
+  useEffect(() => {
+    setVincCursoId(linkedAluno?.cursoId ?? "");
+    setVincTurmaId(linkedAluno?.turmaId ?? "");
+  }, [linkedAluno, user?.userId]);
+
+  const turmasDoVincCurso = useMemo(
+    () => turmas.filter((t) => t.cursoId === vincCursoId),
+    [turmas, vincCursoId],
+  );
+
+  const handleVincular = async () => {
+    if (!user) return;
+    if (!vincCursoId || !vincTurmaId) {
+      toast.error("Selecione curso e turma.");
+      return;
+    }
+    setVincSaving(true);
+    try {
+      if (linkedAluno) {
+        // Já existe registro — só atualiza curso/turma.
+        await alunosStore.update(linkedAluno.id, {
+          cursoId: vincCursoId,
+          turmaId: vincTurmaId,
+        });
+        toast.success("Vínculo atualizado.");
+      } else {
+        // Cria registro de aluno vinculado por user_id (sem depender de email).
+        const novo: Aluno = {
+          id: crypto.randomUUID(),
+          nome: user.displayName || user.email || "Aluno",
+          contato: "",
+          email: user.email || undefined,
+          userId: user.userId,
+          cursoId: vincCursoId,
+          turmaId: vincTurmaId,
+          habilidadeIds: [],
+          aulas: [],
+          trabalhos: [],
+        };
+        await alunosStore.add(novo);
+        toast.success("Aluno vinculado ao curso/turma.");
+      }
+    } catch {
+      // alunosStore já emite toast de erro.
+    } finally {
+      setVincSaving(false);
+    }
+  };
 
   // Agendamentos da turma do aluno (todas aulas que ele recebe).
   const alunoAgendamentos = useMemo(
@@ -303,9 +370,86 @@ export function UserPerfilDialog({ open, onOpenChange, user, onOpenProfessorProf
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Vínculo curso/turma — sem depender de email (cria/edita por user_id). */}
+                {podeEditarVinculo && (
+                  <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      {linkedAluno ? "Alterar curso / turma" : "Vincular a curso / turma"}
+                    </div>
+                    {!linkedAluno && (
+                      <p className="text-xs text-muted-foreground">
+                        Cria o registro de aluno vinculado a esta conta (não precisa de e-mail).
+                        Depois ele recebe chamada, notificações, notas e responde aos relatórios.
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-end gap-2">
+                      <div className="space-y-1 min-w-[140px] flex-1">
+                        <span className="text-[10px] text-muted-foreground">Curso</span>
+                        <Select
+                          value={vincCursoId}
+                          onValueChange={(v) => {
+                            setVincCursoId(v);
+                            setVincTurmaId("");
+                          }}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cursos.map((c) => (
+                              <SelectItem key={c.id} value={c.id}>
+                                <span className="font-mono text-xs mr-2">{c.cod}</span>
+                                {c.nome}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1 min-w-[140px] flex-1">
+                        <span className="text-[10px] text-muted-foreground">Turma</span>
+                        <Select
+                          value={vincTurmaId}
+                          onValueChange={setVincTurmaId}
+                          disabled={!vincCursoId}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue
+                              placeholder={vincCursoId ? "Selecione" : "Escolha o curso"}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {turmasDoVincCurso.length === 0 ? (
+                              <SelectItem value="_none" disabled>
+                                Nenhuma turma neste curso
+                              </SelectItem>
+                            ) : (
+                              turmasDoVincCurso.map((t) => (
+                                <SelectItem key={t.id} value={t.id}>
+                                  <span className="font-mono text-xs mr-2">{t.cod}</span>
+                                  {t.nome}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="h-8"
+                        onClick={handleVincular}
+                        disabled={vincSaving || !vincCursoId || !vincTurmaId}
+                      >
+                        {vincSaving ? "Salvando..." : linkedAluno ? "Salvar" : "Vincular"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {!linkedAluno ? (
                   <p className="text-sm text-muted-foreground italic">
-                    Este usuário tem papel "Aluno" mas ainda não há registro vinculado em Alunos.
+                    {podeEditarVinculo
+                      ? 'Sem registro em Alunos ainda. Use "Vincular a curso / turma" acima.'
+                      : 'Este usuário tem papel "Aluno" mas ainda não há registro vinculado em Alunos.'}
                   </p>
                 ) : (
                   <>
