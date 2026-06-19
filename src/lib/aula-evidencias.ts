@@ -1,4 +1,4 @@
-import type { Agendamento, Atividade, Curso, Turma } from "./academic-types";
+import type { Agendamento, Atividade, Curso, Habilidade, Turma } from "./academic-types";
 import { pathSafe } from "./drive-pattern";
 
 export type AulaEvidenciaTipo = "plano_aula" | "chamada_arquivo";
@@ -16,6 +16,7 @@ export interface PlanoAulaDados {
   preparacaoProfessor: string;
   roteiro: string;
   materiais: string;
+  habilidadesIds: string[];
   habilidades: string;
   formaAvaliacao: string;
   observacoesProfessor: string;
@@ -294,6 +295,52 @@ export function montarDadosDocumentoEstudo(
   };
 }
 
+function normalizarTextoBusca(value: string | undefined | null): string {
+  return (value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function textoContemTermo(texto: string, termo: string | undefined | null): boolean {
+  const normalized = normalizarTextoBusca(termo).trim();
+  if (normalized.length < 2) return false;
+  return texto.includes(normalized);
+}
+
+export function inferirHabilidadesIdsDoPlano(
+  ctx: AulaEvidenciaContext,
+  habilidades: Pick<Habilidade, "id" | "sigla" | "nome" | "descricao">[],
+  plano?: Pick<PlanoAulaDados, "conteudoEmenta" | "habilidades">,
+): string[] {
+  const idsDaAula = new Set(
+    ctx.agendamento.atividadeIds
+      .map((id) => ctx.atividades.find((a) => a.id === id))
+      .filter((a): a is NonNullable<typeof a> => !!a)
+      .flatMap((a) => a.habilidadeIds ?? []),
+  );
+
+  const textoPlano = normalizarTextoBusca(
+    [
+      plano?.conteudoEmenta,
+      plano?.habilidades,
+      ...ctx.atividades.map((a) => a.descricaoConteudo || a.descricao),
+    ].join("\n"),
+  );
+
+  for (const habilidade of habilidades) {
+    if (
+      textoContemTermo(textoPlano, habilidade.sigla) ||
+      textoContemTermo(textoPlano, habilidade.nome) ||
+      textoContemTermo(textoPlano, habilidade.descricao)
+    ) {
+      idsDaAula.add(habilidade.id);
+    }
+  }
+
+  return Array.from(idsDaAula);
+}
+
 export function montarPlanoAulaInicial(ctx: AulaEvidenciaContext): PlanoAulaDados {
   const atividades = ctx.agendamento.atividadeIds
     .map((id) => ctx.atividades.find((a) => a.id === id))
@@ -314,6 +361,7 @@ export function montarPlanoAulaInicial(ctx: AulaEvidenciaContext): PlanoAulaDado
     ),
   );
   const rubricas = atividades.flatMap((a) => (a.rubricas ?? []).map((r) => r.descricao));
+  const habilidadesIds = Array.from(new Set(atividades.flatMap((a) => a.habilidadeIds ?? [])));
 
   return {
     objetivos: join(atividades.map((a) => a.objetivoResultados)) || "",
@@ -321,7 +369,8 @@ export function montarPlanoAulaInicial(ctx: AulaEvidenciaContext): PlanoAulaDado
     preparacaoProfessor: "",
     roteiro: roteiro.join("\n") || join(atividades.map((a) => a.criteriosSucesso)) || "",
     materiais: materiais.join("\n"),
-    habilidades: Array.from(new Set(atividades.flatMap((a) => a.habilidadeIds ?? []))).join(", "),
+    habilidadesIds,
+    habilidades: join(atividades.map((a) => a.metodologias || a.criteriosSucesso)) || "",
     formaAvaliacao: rubricas.join("\n") || join(atividades.map((a) => a.criteriosSucesso)) || "",
     observacoesProfessor: "",
     sugestaoPais: join(atividades.map((a) => a.sugestoesPais || a.descricao)) || "",

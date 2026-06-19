@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { Agendamento, Atividade, Curso, Turma } from "@/lib/academic-types";
+import type { Agendamento, Atividade, Curso, Habilidade, Turma } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
 import {
   evidenciaEstaValida,
@@ -24,6 +25,7 @@ import {
   getNomeArquivoChamadaUpload,
   getNomesEsperadosEvidencia,
   getPrazoPlanoAula,
+  inferirHabilidadesIdsDoPlano,
   isPlanoAulaAtrasado,
   montarDadosDocumentoEstudo,
   montarPlanoAulaInicial,
@@ -33,6 +35,7 @@ import {
 } from "@/lib/aula-evidencias";
 import { aulaEvidenciasStore, useAulaEvidencias } from "@/lib/aula-evidencias-store";
 import { createChamadaSignedUrl, uploadChamadaArquivo } from "@/lib/aula-evidencias-storage";
+import { useHabilidades } from "@/lib/habilidades-store";
 
 interface Props {
   open: boolean;
@@ -80,6 +83,7 @@ function AulaEvidenciasDialogContent({
 }: ContentProps) {
   const { user, displayName, hasRole } = useAuth();
   const evidencias = useAulaEvidencias();
+  const habilidades = useHabilidades();
   const ctx = useMemo<AulaEvidenciaContext>(
     () => ({
       curso,
@@ -106,11 +110,42 @@ function AulaEvidenciasDialogContent({
   const [chamadaBusy, setChamadaBusy] = useState(false);
   const [openingChamada, setOpeningChamada] = useState(false);
 
+  const habilidadesDoPlano = useMemo(() => {
+    const idsCurso = new Set(curso.habilidadeIds ?? []);
+    const idsAula = new Set(
+      agendamento.atividadeIds
+        .map((atividadeId) => atividades.find((atividade) => atividade.id === atividadeId))
+        .filter((atividade): atividade is Atividade => !!atividade)
+        .flatMap((atividade) => atividade.habilidadeIds ?? []),
+    );
+    const filtradas = habilidades.filter(
+      (habilidade) => idsCurso.has(habilidade.id) || idsAula.has(habilidade.id),
+    );
+    return filtradas.length > 0 ? filtradas : habilidades;
+  }, [agendamento.atividadeIds, atividades, curso.habilidadeIds, habilidades]);
+
+  const habilidadesSugeridas = useMemo(() => {
+    const ids = new Set(inferirHabilidadesIdsDoPlano(ctx, habilidadesDoPlano, planoDados));
+    const sugeridas = habilidadesDoPlano.filter((habilidade) => ids.has(habilidade.id));
+    return sugeridas.length > 0 ? sugeridas : habilidadesDoPlano;
+  }, [ctx, habilidadesDoPlano, planoDados]);
+
   useEffect(() => {
     if (!open) return;
-    setPlanoDados({ ...planoInicial, ...(plano?.dados ?? {}) });
+    const salvo = (plano?.dados ?? {}) as Partial<PlanoAulaDados>;
+    const merged: PlanoAulaDados = {
+      ...planoInicial,
+      ...salvo,
+      habilidadesIds: Array.isArray(salvo.habilidadesIds)
+        ? salvo.habilidadesIds
+        : planoInicial.habilidadesIds,
+    };
+    if (merged.habilidadesIds.length === 0) {
+      merged.habilidadesIds = inferirHabilidadesIdsDoPlano(ctx, habilidadesDoPlano, merged);
+    }
+    setPlanoDados(merged);
     setChamadaFile(null);
-  }, [open, plano?.dados, planoInicial]);
+  }, [open, plano?.dados, planoInicial, ctx, habilidadesDoPlano]);
 
   const codigoAula = getCodigoAula(ctx);
   const planoNome = getNomeBaseEvidencia(ctx, "plano_aula");
@@ -123,7 +158,7 @@ function AulaEvidenciasDialogContent({
   const prazoPlano = getPrazoPlanoAula(ctx);
   const planoAtrasado = isPlanoAulaAtrasado(ctx);
 
-  const updatePlano = (key: keyof PlanoAulaDados, value: string) => {
+  const updatePlano = <K extends keyof PlanoAulaDados>(key: K, value: PlanoAulaDados[K]) => {
     setPlanoDados((current) => ({ ...current, [key]: value }));
   };
 
@@ -133,13 +168,18 @@ function AulaEvidenciasDialogContent({
     "preparacaoProfessor",
     "roteiro",
     "materiais",
+    "habilidadesIds",
     "habilidades",
     "formaAvaliacao",
     "sugestaoPais",
   ];
 
   const handleSalvarPlano = async () => {
-    const faltando = camposObrigatorios.filter((key) => !planoDados[key]?.trim());
+    const faltando = camposObrigatorios.filter((key) => {
+      const value = planoDados[key];
+      if (Array.isArray(value)) return value.length === 0;
+      return value.trim().length === 0;
+    });
     if (faltando.length > 0) {
       toast.error("Preencha os campos obrigatorios do documento de estudo.");
       return;
@@ -304,9 +344,14 @@ function AulaEvidenciasDialogContent({
               onChange={(v) => updatePlano("materiais", v)}
             />
             <PlanoField
-              label="Habilidades trabalhadas *"
+              label="Dinamica de Habilidades *"
               value={planoDados.habilidades}
               onChange={(v) => updatePlano("habilidades", v)}
+            />
+            <PlanoHabilidadesCheckboxes
+              habilidades={habilidadesSugeridas}
+              selectedIds={planoDados.habilidadesIds}
+              onChange={(ids) => updatePlano("habilidadesIds", ids)}
             />
             <PlanoField
               label="Forma de avaliacao *"
@@ -395,6 +440,62 @@ function AulaEvidenciasDialogContent({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function PlanoHabilidadesCheckboxes({
+  habilidades,
+  selectedIds,
+  onChange,
+}: {
+  habilidades: Pick<Habilidade, "id" | "sigla" | "nome" | "descricao">[];
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const selected = new Set(selectedIds);
+
+  const toggle = (id: string, checked: boolean) => {
+    if (checked) {
+      onChange(Array.from(new Set([...selectedIds, id])));
+      return;
+    }
+    onChange(selectedIds.filter((selectedId) => selectedId !== id));
+  };
+
+  return (
+    <div className="space-y-2 rounded-md border p-3">
+      <Label>Habilidades *</Label>
+      {habilidades.length === 0 ? (
+        <p className="text-xs text-muted-foreground">
+          Nenhuma habilidade foi encontrada na ementa desta aula.
+        </p>
+      ) : (
+        <div className="grid gap-2">
+          {habilidades.map((habilidade) => (
+            <label
+              key={habilidade.id}
+              className="flex items-start gap-2 rounded-sm border bg-background/60 p-2 text-xs"
+            >
+              <Checkbox
+                checked={selected.has(habilidade.id)}
+                onCheckedChange={(value) => toggle(habilidade.id, value === true)}
+                aria-label={`Selecionar habilidade ${habilidade.sigla}`}
+              />
+              <span className="min-w-0">
+                <span className="font-medium">
+                  {habilidade.sigla}
+                  {habilidade.nome ? ` - ${habilidade.nome}` : ""}
+                </span>
+                <span className="mt-0.5 block text-muted-foreground">{habilidade.descricao}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+      <p className="text-[11px] text-muted-foreground">
+        Pre-selecionado a partir das habilidades vinculadas ou mencionadas na ementa da aula.
+      </p>
+    </div>
   );
 }
 

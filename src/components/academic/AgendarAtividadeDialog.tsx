@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
@@ -45,6 +46,7 @@ import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { aulaEvidenciasStore } from "@/lib/aula-evidencias-store";
 import {
   getNomeBaseEvidencia,
+  inferirHabilidadesIdsDoPlano,
   montarDadosDocumentoEstudo,
   montarPlanoAulaInicial,
   type AulaEvidenciaContext,
@@ -91,6 +93,7 @@ const EMPTY_PLANO_DADOS: PlanoAulaDados = {
   preparacaoProfessor: "",
   roteiro: "",
   materiais: "",
+  habilidadesIds: [],
   habilidades: "",
   formaAvaliacao: "",
   observacoesProfessor: "",
@@ -103,19 +106,31 @@ const CAMPOS_PLANO_OBRIGATORIOS: Array<keyof PlanoAulaDados> = [
   "preparacaoProfessor",
   "roteiro",
   "materiais",
+  "habilidadesIds",
   "habilidades",
   "formaAvaliacao",
   "sugestaoPais",
 ];
 
+function planoCampoPreenchido(plano: PlanoAulaDados, key: keyof PlanoAulaDados) {
+  const value = plano[key];
+  if (Array.isArray(value)) return value.length > 0;
+  return value.trim().length > 0;
+}
+
 function camposPlanoFaltando(plano: PlanoAulaDados) {
-  return CAMPOS_PLANO_OBRIGATORIOS.filter((key) => !plano[key]?.trim());
+  return CAMPOS_PLANO_OBRIGATORIOS.filter((key) => !planoCampoPreenchido(plano, key));
 }
 
 function mergePlanoPreservandoEdicoes(sugerido: PlanoAulaDados, atual: PlanoAulaDados) {
   const out: PlanoAulaDados = { ...sugerido };
   for (const key of Object.keys(atual) as Array<keyof PlanoAulaDados>) {
-    if (atual[key]?.trim()) out[key] = atual[key];
+    const value = atual[key];
+    if (Array.isArray(value)) {
+      if (value.length > 0) out[key] = value as never;
+      continue;
+    }
+    if (value.trim()) out[key] = value as never;
   }
   return out;
 }
@@ -537,7 +552,17 @@ export function AgendarAtividadeDialog({
       return;
     }
     const sugerido = montarPlanoAulaInicial(planoDraftContext);
-    setPlanoDados((current) => mergePlanoPreservandoEdicoes(sugerido, current));
+    setPlanoDados((current) => {
+      const merged = mergePlanoPreservandoEdicoes(sugerido, current);
+      if (merged.habilidadesIds.length === 0) {
+        merged.habilidadesIds = inferirHabilidadesIdsDoPlano(
+          planoDraftContext,
+          habilidadesDoCurso,
+          merged,
+        );
+      }
+      return merged;
+    });
     setPlanoOpen(true);
   };
 
@@ -1178,6 +1203,7 @@ export function AgendarAtividadeDialog({
         plano={planoDados}
         onPlanoChange={setPlanoDados}
         contexto={planoDraftContext}
+        habilidades={habilidadesDoCurso}
         onSubmit={() => {
           const faltando = camposPlanoFaltando(planoDados);
           if (faltando.length > 0) {
@@ -1217,6 +1243,7 @@ interface AgendamentoPlanoDialogProps {
   plano: PlanoAulaDados;
   onPlanoChange: (plano: PlanoAulaDados) => void;
   contexto: AulaEvidenciaContext | null;
+  habilidades: ReturnType<typeof useHabilidades>;
   onSubmit: () => void;
 }
 
@@ -1226,6 +1253,7 @@ function AgendamentoPlanoDialog({
   plano,
   onPlanoChange,
   contexto,
+  habilidades,
   onSubmit,
 }: AgendamentoPlanoDialogProps) {
   const atividadesResumo =
@@ -1235,7 +1263,14 @@ function AgendamentoPlanoDialog({
       .map((atividade) => `${atividade.codigo} - ${atividade.nome}`)
       .join(" | ") || "Aula nao definida";
 
-  const updatePlano = (key: keyof PlanoAulaDados, value: string) => {
+  const habilidadesSugeridas = useMemo(() => {
+    if (!contexto) return habilidades;
+    const ids = new Set(inferirHabilidadesIdsDoPlano(contexto, habilidades, plano));
+    const sugeridas = habilidades.filter((habilidade) => ids.has(habilidade.id));
+    return sugeridas.length > 0 ? sugeridas : habilidades;
+  }, [contexto, habilidades, plano]);
+
+  const updatePlano = <K extends keyof PlanoAulaDados>(key: K, value: PlanoAulaDados[K]) => {
     onPlanoChange({ ...plano, [key]: value });
   };
 
@@ -1293,9 +1328,14 @@ function AgendamentoPlanoDialog({
           />
           <PlanoAgendamentoField
             id="plano-habilidades"
-            label="Habilidades trabalhadas *"
+            label="Dinamica de Habilidades *"
             value={plano.habilidades}
             onChange={(value) => updatePlano("habilidades", value)}
+          />
+          <PlanoHabilidadesCheckboxes
+            habilidades={habilidadesSugeridas}
+            selectedIds={plano.habilidadesIds}
+            onChange={(ids) => updatePlano("habilidadesIds", ids)}
           />
           <PlanoAgendamentoField
             id="plano-avaliacao"
@@ -1331,6 +1371,64 @@ function AgendamentoPlanoDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+interface PlanoHabilidadesCheckboxesProps {
+  habilidades: ReturnType<typeof useHabilidades>;
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+}
+
+function PlanoHabilidadesCheckboxes({
+  habilidades,
+  selectedIds,
+  onChange,
+}: PlanoHabilidadesCheckboxesProps) {
+  const selected = new Set(selectedIds);
+
+  const toggle = (id: string, checked: boolean) => {
+    if (checked) {
+      onChange(Array.from(new Set([...selectedIds, id])));
+      return;
+    }
+    onChange(selectedIds.filter((selectedId) => selectedId !== id));
+  };
+
+  return (
+    <div className="space-y-2 rounded-md border p-3">
+      <Label>Habilidades *</Label>
+      {habilidades.length === 0 ? (
+        <p className="text-xs text-muted-foreground">
+          Nenhuma habilidade foi encontrada na ementa desta aula.
+        </p>
+      ) : (
+        <div className="grid gap-2">
+          {habilidades.map((habilidade) => (
+            <label
+              key={habilidade.id}
+              className="flex items-start gap-2 rounded-sm border bg-background/60 p-2 text-xs"
+            >
+              <Checkbox
+                checked={selected.has(habilidade.id)}
+                onCheckedChange={(value) => toggle(habilidade.id, value === true)}
+                aria-label={`Selecionar habilidade ${habilidade.sigla}`}
+              />
+              <span className="min-w-0">
+                <span className="font-medium">
+                  {habilidade.sigla}
+                  {habilidade.nome ? ` - ${habilidade.nome}` : ""}
+                </span>
+                <span className="mt-0.5 block text-muted-foreground">{habilidade.descricao}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+      <p className="text-[11px] text-muted-foreground">
+        Pre-selecionado a partir das habilidades vinculadas ou mencionadas na ementa da aula.
+      </p>
+    </div>
   );
 }
 

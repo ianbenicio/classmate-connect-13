@@ -5,6 +5,7 @@ import {
   getNomeArquivoChamadaUpload,
   getPastaAulaDrivePath,
   getPrazoPlanoAula,
+  inferirHabilidadesIdsDoPlano,
   isPlanoAulaAtrasado,
   montarDadosDocumentoEstudo,
   montarPlanoAulaInicial,
@@ -148,15 +149,43 @@ describe("aula-evidencias", () => {
     expect(resumo.pendencias).toEqual([]);
   });
 
-  it("monta plano inicial herdando ementa e sugestao aos pais", () => {
+  it("monta plano inicial herdando ementa, habilidades e sugestao aos pais", () => {
     const plano = montarPlanoAulaInicial(ctx);
     expect(plano.objetivos).toContain("Entender controladores");
     expect(plano.conteudoEmenta).toContain("Conteudo estruturado");
     expect(plano.preparacaoProfessor).toBe("");
     expect(plano.roteiro).toContain("Abertura");
     expect(plano.materiais).toContain("Slide");
+    expect(plano.habilidadesIds).toEqual(["hab-1", "hab-2"]);
+    expect(plano.habilidades).toContain("Aluno explica o circuito");
     expect(plano.formaAvaliacao).toContain("Clareza");
     expect(plano.sugestaoPais).toContain("Perguntar ao aluno");
+  });
+
+  it("infere habilidades vinculadas ou mencionadas na ementa do plano", () => {
+    const ids = inferirHabilidadesIdsDoPlano(
+      ctx,
+      [
+        {
+          id: "hab-1",
+          sigla: "H1",
+          nome: "Controle motor",
+          descricao: "Controladores basicos",
+        },
+        {
+          id: "hab-extra",
+          sigla: "FOCO",
+          nome: "Foco sustentado",
+          descricao: "Atencao durante desafios longos",
+        },
+      ],
+      {
+        conteudoEmenta: "A aula trabalha FOCO sustentado durante a montagem.",
+        habilidades: "Professor organiza a dinamica em pequenos desafios.",
+      },
+    );
+
+    expect(ids).toEqual(expect.arrayContaining(["hab-1", "hab-2", "hab-extra"]));
   });
 
   it("monta metadados do documento interno com codigo, data e professor", () => {
