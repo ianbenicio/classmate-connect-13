@@ -298,6 +298,35 @@ export function AgendarAtividadeDialog({
       ),
     [assignmentEntries],
   );
+  const aulaIdsDoPlanoKey = aulaIdsDoPlano.join("|");
+
+  const habilidadesDraftContext = useMemo<AulaEvidenciaContext | null>(() => {
+    if (!turmaSelecionada || aulaIdsDoPlano.length === 0) return null;
+    return {
+      curso,
+      turma: turmaSelecionada,
+      agendamento: {
+        id: "pre-agendamento",
+        data: "",
+        inicio: "",
+        fim: "",
+        atividadeIds: aulaIdsDoPlano,
+      },
+      atividades,
+    };
+  }, [atividades, aulaIdsDoPlano, curso, turmaSelecionada]);
+
+  const habilidadesSugeridasIds = useMemo(
+    () =>
+      habilidadesDraftContext
+        ? inferirHabilidadesIdsDoPlano(habilidadesDraftContext, habilidadesDoCurso)
+        : [],
+    [habilidadesDoCurso, habilidadesDraftContext],
+  );
+
+  useEffect(() => {
+    setHabilidadeIds(habilidadesSugeridasIds);
+  }, [aulaIdsDoPlanoKey, habilidadesSugeridasIds]);
 
   const assignmentKey = useMemo(
     () =>
@@ -349,7 +378,9 @@ export function AgendarAtividadeDialog({
 
   useEffect(() => {
     setPlanoSubmetido(false);
-  }, [assignmentKey, turmaId, slotIdx, dateIsoSelecionada, selectedProfessorUserId]);
+  }, [assignmentKey, turmaId, slotIdx, dateIsoSelecionada, selectedProfessorUserId, habilidadeIds]);
+
+  const planoPodeAbrir = aulaIdsDoPlano.length > 0 && habilidadeIds.length > 0;
 
   // ---------- Atividades / grupos do curso ----------
   const ativsDoCurso = useMemo(
@@ -551,16 +582,14 @@ export function AgendarAtividadeDialog({
       toast.error("Atribua uma aula, data, horario e professor antes de preencher o plano.");
       return;
     }
+    if (habilidadeIds.length === 0) {
+      toast.error("Selecione ao menos uma habilidade antes de preencher o plano.");
+      return;
+    }
     const sugerido = montarPlanoAulaInicial(planoDraftContext);
     setPlanoDados((current) => {
       const merged = mergePlanoPreservandoEdicoes(sugerido, current);
-      if (merged.habilidadesIds.length === 0) {
-        merged.habilidadesIds = inferirHabilidadesIdsDoPlano(
-          planoDraftContext,
-          habilidadesDoCurso,
-          merged,
-        );
-      }
+      merged.habilidadesIds = habilidadeIds;
       return merged;
     });
     setPlanoOpen(true);
@@ -629,6 +658,10 @@ export function AgendarAtividadeDialog({
       return;
     }
     const possuiAula = entries.some(({ assign }) => !!assign.aulaId);
+    if (possuiAula && habilidadeIds.length === 0) {
+      toast.error("Selecione ao menos uma habilidade antes de preencher o plano.");
+      return;
+    }
     if (possuiAula && (!planoSubmetido || camposPlanoFaltando(planoDados).length > 0)) {
       toast.error("Preencha e salve o plano de aula antes de agendar.");
       openPlanoDialog();
@@ -1117,38 +1150,10 @@ export function AgendarAtividadeDialog({
               </div>
             )}
 
-            <div className="space-y-3 rounded-md border p-3">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="space-y-1">
-                  <Label>Plano de aula</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Preencha o plano antes de concluir o agendamento. A ementa e a sugestao aos pais
-                    sao herdadas da aula escolhida.
-                  </p>
-                </div>
-                <Badge variant={planoSubmetido ? "secondary" : "outline"}>
-                  {planoSubmetido
-                    ? "Preenchido"
-                    : aulaIdsDoPlano.length > 0
-                      ? "Obrigatorio"
-                      : "Atribua uma aula"}
-                </Badge>
-              </div>
-              <Button
-                type="button"
-                variant={planoSubmetido ? "outline" : "default"}
-                onClick={openPlanoDialog}
-                disabled={aulaIdsDoPlano.length === 0}
-              >
-                <FileCheck2 className="h-4 w-4 mr-1" />
-                {planoSubmetido ? "Editar plano" : "Preencher plano de aula"}
-              </Button>
-            </div>
-
             <div className="space-y-2">
               <Label>Habilidades trabalhadas</Label>
               <p className="text-xs text-muted-foreground">
-                Uma ou mais habilidades trabalhadas nesta aula. Aparecem no relatório, no histórico
+                Uma ou mais habilidades trabalhadas nesta aula. Aparecem no relatorio, no historico
                 e na janela da turma.
               </p>
               <SkillSelector
@@ -1156,6 +1161,36 @@ export function AgendarAtividadeDialog({
                 selectedIds={habilidadeIds}
                 onChange={setHabilidadeIds}
               />
+            </div>
+
+            <div className="space-y-3 rounded-md border p-3">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="space-y-1">
+                  <Label>Plano de aula</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Preencha o plano depois de selecionar as habilidades. A ementa e a sugestao aos
+                    pais sao herdadas da aula escolhida.
+                  </p>
+                </div>
+                <Badge variant={planoSubmetido ? "secondary" : "outline"}>
+                  {planoSubmetido
+                    ? "Preenchido"
+                    : aulaIdsDoPlano.length === 0
+                      ? "Atribua uma aula"
+                      : habilidadeIds.length === 0
+                        ? "Selecione habilidades"
+                        : "Obrigatorio"}
+                </Badge>
+              </div>
+              <Button
+                type="button"
+                variant={planoSubmetido ? "outline" : "default"}
+                onClick={openPlanoDialog}
+                disabled={!planoPodeAbrir}
+              >
+                <FileCheck2 className="h-4 w-4 mr-1" />
+                {planoSubmetido ? "Editar plano" : "Preencher plano de aula"}
+              </Button>
             </div>
 
             <div className="space-y-2">
@@ -1204,6 +1239,7 @@ export function AgendarAtividadeDialog({
         onPlanoChange={setPlanoDados}
         contexto={planoDraftContext}
         habilidades={habilidadesDoCurso}
+        onHabilidadesChange={setHabilidadeIds}
         onSubmit={() => {
           const faltando = camposPlanoFaltando(planoDados);
           if (faltando.length > 0) {
@@ -1244,6 +1280,7 @@ interface AgendamentoPlanoDialogProps {
   onPlanoChange: (plano: PlanoAulaDados) => void;
   contexto: AulaEvidenciaContext | null;
   habilidades: ReturnType<typeof useHabilidades>;
+  onHabilidadesChange: (ids: string[]) => void;
   onSubmit: () => void;
 }
 
@@ -1254,6 +1291,7 @@ function AgendamentoPlanoDialog({
   onPlanoChange,
   contexto,
   habilidades,
+  onHabilidadesChange,
   onSubmit,
 }: AgendamentoPlanoDialogProps) {
   const atividadesResumo =
@@ -1266,6 +1304,7 @@ function AgendamentoPlanoDialog({
   const habilidadesSugeridas = useMemo(() => {
     if (!contexto) return habilidades;
     const ids = new Set(inferirHabilidadesIdsDoPlano(contexto, habilidades, plano));
+    for (const id of plano.habilidadesIds) ids.add(id);
     const sugeridas = habilidades.filter((habilidade) => ids.has(habilidade.id));
     return sugeridas.length > 0 ? sugeridas : habilidades;
   }, [contexto, habilidades, plano]);
@@ -1335,7 +1374,10 @@ function AgendamentoPlanoDialog({
           <PlanoHabilidadesCheckboxes
             habilidades={habilidadesSugeridas}
             selectedIds={plano.habilidadesIds}
-            onChange={(ids) => updatePlano("habilidadesIds", ids)}
+            onChange={(ids) => {
+              updatePlano("habilidadesIds", ids);
+              onHabilidadesChange(ids);
+            }}
           />
           <PlanoAgendamentoField
             id="plano-avaliacao"

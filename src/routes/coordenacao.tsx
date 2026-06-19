@@ -314,6 +314,11 @@ function CoordenacaoDashboard() {
               <BarChart3 /> Progressao Curso/Turma
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link to="/coordenacao/relatorios/semanal">
+              <FileText /> Relatorio consolidado
+            </Link>
+          </Button>
           <Button variant="outline" onClick={() => setCronogramaOpen(true)}>
             <CalendarClock /> Cronograma de aulas
           </Button>
