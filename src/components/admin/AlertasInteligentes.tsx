@@ -8,14 +8,24 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, ClipboardX, MessageSquareWarning } from "lucide-react";
+import { AlertTriangle, ClipboardX, FileWarning, MessageSquareWarning } from "lucide-react";
 import { format, parseISO, differenceInHours } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAlunos } from "@/lib/alunos-store";
+import { useCursos } from "@/lib/cursos-store";
+import { useAtividades } from "@/lib/atividades-store";
+import { useAulaEvidencias } from "@/lib/aula-evidencias-store";
 import { endSlotDate } from "@/lib/academic-types";
+import {
+  evidenciaEstaValida,
+  getEvidenciaPorTipo,
+  isPlanoAulaAtrasado,
+  type AulaEvidencia,
+  type AulaEvidenciaContext,
+} from "@/lib/aula-evidencias";
 
 const MIN_HORAS_ATRASO_RELATORIO = 24;
 const MAX_ITENS_POR_CATEGORIA = 5;
@@ -26,6 +36,9 @@ export function AlertasInteligentes() {
   const avaliacoes = useAvaliacoes();
   const turmas = useTurmas();
   const alunos = useAlunos();
+  const cursos = useCursos();
+  const atividades = useAtividades();
+  const evidencias = useAulaEvidencias();
 
   const data = useMemo(() => {
     const now = new Date();
@@ -41,6 +54,15 @@ export function AlertasInteligentes() {
     const turmaAlunoCount = new Map<string, number>();
     for (const aluno of alunos) {
       turmaAlunoCount.set(aluno.turmaId, (turmaAlunoCount.get(aluno.turmaId) ?? 0) + 1);
+    }
+
+    const turmaById = new Map(turmas.map((t) => [t.id, t]));
+    const cursoById = new Map(cursos.map((c) => [c.id, c]));
+    const evidenciasByAgendamento = new Map<string, AulaEvidencia[]>();
+    for (const evidencia of evidencias) {
+      const list = evidenciasByAgendamento.get(evidencia.agendamentoId) ?? [];
+      list.push(evidencia);
+      evidenciasByAgendamento.set(evidencia.agendamentoId, list);
     }
 
     // Map agendamento -> count alunos avaliaram (relatorio_aluno)
@@ -83,8 +105,25 @@ export function AlertasInteligentes() {
       .sort((a, b) => a.pct - b.pct)
       .slice(0, MAX_ITENS_POR_CATEGORIA);
 
-    return { relAtrasados, cobertura };
-  }, [agendamentos, avaliacoes, alunos]);
+    // Categoria 3 — plano de aula nao submetido ate 2h antes
+    const planosAtrasados = agendamentos
+      .map((ag) => {
+        const turma = turmaById.get(ag.turmaId);
+        const curso = turma ? cursoById.get(turma.cursoId) : undefined;
+        if (!turma || !curso) return null;
+        const evs = evidenciasByAgendamento.get(ag.id) ?? [];
+        const plano = getEvidenciaPorTipo(evs, "plano_aula");
+        if (evidenciaEstaValida(plano)) return null;
+        const ctx: AulaEvidenciaContext = { curso, turma, agendamento: ag, atividades };
+        if (!isPlanoAulaAtrasado(ctx, now)) return null;
+        return { ag, turma, curso };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null)
+      .sort((a, b) => `${a.ag.data} ${a.ag.inicio}`.localeCompare(`${b.ag.data} ${b.ag.inicio}`))
+      .slice(0, MAX_ITENS_POR_CATEGORIA);
+
+    return { relAtrasados, cobertura, planosAtrasados };
+  }, [agendamentos, avaliacoes, alunos, atividades, cursos, evidencias, turmas]);
 
   const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
   const turmaNome = (id: string) => turmaMap.get(id)?.nome ?? id.slice(0, 8);
@@ -96,7 +135,8 @@ export function AlertasInteligentes() {
     }
   };
 
-  const totalAlertas = data.relAtrasados.length + data.cobertura.length;
+  const totalAlertas =
+    data.relAtrasados.length + data.cobertura.length + data.planosAtrasados.length;
 
   if (totalAlertas === 0) {
     return (
@@ -157,6 +197,41 @@ export function AlertasInteligentes() {
                   </div>
                   <Badge variant="outline" className="text-[10px] shrink-0">
                     {horas < 48 ? `${horas}h` : `${Math.round(horas / 24)}d`} atraso
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Categoria 3 */}
+        {data.planosAtrasados.length > 0 && (
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-medium mb-2">
+              <FileWarning className="h-3.5 w-3.5 text-amber-500" />
+              Planos de aula pendentes ({data.planosAtrasados.length})
+            </div>
+            <ul className="divide-y rounded-md border">
+              {data.planosAtrasados.map(({ ag, turma }) => (
+                <li
+                  key={ag.id}
+                  className="px-3 py-2 flex items-center justify-between text-xs gap-2"
+                >
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium">{turma.nome}</span>
+                    <span className="text-muted-foreground">
+                      {" · "}
+                      {fmtData(ag.data)} {ag.inicio}-{ag.fim}
+                    </span>
+                    {ag.professor && (
+                      <span className="text-muted-foreground">
+                        {" · "}
+                        {ag.professor}
+                      </span>
+                    )}
+                  </div>
+                  <Badge variant="outline" className="text-[10px] shrink-0">
+                    sem plano
                   </Badge>
                 </li>
               ))}

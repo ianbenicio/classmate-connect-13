@@ -20,6 +20,8 @@ import { computeSlotEstado, type Agendamento, type Notificacao } from "./academi
 import { alunosStore } from "./alunos-store";
 import { cursosStore } from "./cursos-store";
 import { turmasStore } from "./turmas-store";
+import { aulaEvidenciasStore } from "./aula-evidencias-store";
+import { evidenciaEstaValida, getEvidenciaPorTipo } from "./aula-evidencias";
 
 interface BuildOpts {
   kind: NonNullable<Notificacao["kind"]>;
@@ -85,12 +87,58 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
   return out;
 }
 
+function planoDeadline(a: Agendamento) {
+  const start = new Date(`${a.data}T${a.inicio}:00`);
+  return new Date(start.getTime() - 2 * 60 * 60 * 1000);
+}
+
+function buildPlanoPendenteNotif(a: Agendamento): Notificacao[] {
+  const turma = turmasStore.getAll().find((t) => t.id === a.turmaId);
+  if (!turma) return [];
+  const curso = cursosStore.getAll().find((c) => c.id === turma.cursoId);
+  const dataFmt = format(new Date(`${a.data}T00:00:00`), "PPP", { locale: ptBR });
+  const ctx = `${curso?.nome ?? ""} · ${turma.nome} · ${dataFmt} ${a.inicio}-${a.fim}${
+    a.professor ? ` · ${a.professor}` : ""
+  }`;
+
+  if (!a.professor && !a.professorUserId) return [];
+
+  return [
+    {
+      id: crypto.randomUUID(),
+      destinatarioTipo: "professor",
+      destinatarioId: a.professorUserId ?? a.professor ?? "",
+      destinatarioUserId: a.professorUserId,
+      titulo: "Plano de aula pendente",
+      mensagem: `${ctx} — submeta o plano de aula. O prazo de 2h antes da aula ja passou.`,
+      cursoId: turma.cursoId,
+      turmaId: turma.id,
+      data: a.data,
+      inicio: a.inicio,
+      fim: a.fim,
+      professor: a.professor,
+      atividadeIds: a.atividadeIds,
+      criadoEm: new Date().toISOString(),
+      lida: false,
+      kind: "plano_pendente",
+      agendamentoId: a.id,
+    },
+  ];
+}
+
 export function runScanner(now: Date = new Date()) {
   const ags = agendamentosStore.getAll();
+  const evidencias = aulaEvidenciasStore.getAll();
   const novas: Notificacao[] = [];
 
   for (const a of ags) {
     if (a.status === "concluido") continue;
+    const evs = evidencias.filter((e) => e.agendamentoId === a.id);
+    const plano = getEvidenciaPorTipo(evs, "plano_aula");
+    if (!evidenciaEstaValida(plano) && now > planoDeadline(a)) {
+      novas.push(...buildPlanoPendenteNotif(a));
+    }
+
     const estado = computeSlotEstado(a.data, a.fim, a, now);
 
     if (estado === "atrasado") {
@@ -134,8 +182,11 @@ export function runScanner(now: Date = new Date()) {
 
 export function useAgendamentoScanner(intervalMs = 60_000) {
   useEffect(() => {
-    runScanner();
-    const id = window.setInterval(() => runScanner(), intervalMs);
+    const tick = () => {
+      void aulaEvidenciasStore.ensureInit().then(() => runScanner());
+    };
+    tick();
+    const id = window.setInterval(tick, intervalMs);
     return () => window.clearInterval(id);
   }, [intervalMs]);
 }

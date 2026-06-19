@@ -1,5 +1,5 @@
-// Vitest config standalone — vite.config.ts uses @lovable.dev preset which
-// doesn't accept a `test` block, so vitest gets its own config file.
+// Vitest config standalone. Keep tests isolated from Vite/TanStack Start
+// build plugins so unit tests stay fast and deterministic.
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 

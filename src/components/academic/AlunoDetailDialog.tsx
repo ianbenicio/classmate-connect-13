@@ -1031,7 +1031,7 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
                     observações dos professores e retorno dos pais.
                   </p>
                   <p className="text-xs italic">
-                    Geração por IA disponível após ativação do Lovable Cloud.
+                    Geração por IA disponível após ativação do módulo Javis AI.
                   </p>
                 </div>
               </section>

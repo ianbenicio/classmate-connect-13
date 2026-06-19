@@ -5,7 +5,7 @@
 // Notificações continuam no sino global (NotificationsBell) — já filtra
 // por role "aluno" e userId.
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -25,7 +25,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
-import { useState } from "react";
 import { FileText } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useAlunos } from "@/lib/alunos-store";
@@ -108,6 +107,7 @@ function MinhaAreaPage() {
   );
 
   const ativsById = useMemo(() => new Map(atividades.map((a) => [a.id, a])), [atividades]);
+  const [relatoriosOpen, setRelatoriosOpen] = useState(false);
 
   // ---------- Guards de render ----------
   if (!loading && !hasRole("aluno")) {
@@ -144,8 +144,6 @@ function MinhaAreaPage() {
   const turma = turmas.find((t) => t.id === aluno.turmaId);
 
   const fmtData = (iso: string) => format(parseISO(iso), "dd 'de' MMM", { locale: ptBR });
-
-  const [relatoriosOpen, setRelatoriosOpen] = useState(false);
 
   return (
     <div className="container mx-auto max-w-4xl p-4 sm:p-6 space-y-4">

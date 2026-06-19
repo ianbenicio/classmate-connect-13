@@ -306,6 +306,11 @@ function CoordenacaoDashboard() {
               <BarChart3 /> Comparativo de Turmas
             </Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link to="/coordenacao/relatorios/progresso-cursos-turmas">
+              <BarChart3 /> Progressao Curso/Turma
+            </Link>
+          </Button>
           {isAdmin && (
             <Button variant="outline" onClick={() => setUsersOpen(true)}>
               <Users /> Usuários
@@ -350,7 +355,7 @@ function CoordenacaoDashboard() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Sobre as exportações</CardTitle>
           <CardDescription className="text-xs leading-relaxed">
-            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Lovable Cloud — todas as
+            <strong>Banco (JSON / CSV):</strong> snapshot ao vivo do Supabase/Postgres — todas as
             tabelas (cursos, turmas, alunos, atividades, agendamentos, avaliações, relatórios,
             notificações, habilidades). Use o JSON para reimportar em outro sistema; o ZIP de CSVs
             para abrir no Excel/Sheets/DuckDB. <strong>Snapshot do app:</strong> dados em memória do

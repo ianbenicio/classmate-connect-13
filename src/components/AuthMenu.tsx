@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, GraduationCap, FileText, Building2, Check } from "lucide-react";
+import { LogOut, User, FileText, Building2, Check } from "lucide-react";
 import { MeuPerfilProfessorDialog } from "@/components/MeuPerfilProfessorDialog";
 import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
 import { useProjetos } from "@/lib/projetos-store";
@@ -85,12 +85,12 @@ export function AuthMenu() {
               <DropdownMenuSeparator />
             </>
           )}
+          <DropdownMenuItem onClick={() => setPerfilOpen(true)}>
+            <User className="h-4 w-4 mr-2" />
+            Meu perfil
+          </DropdownMenuItem>
           {isProfessor && (
             <>
-              <DropdownMenuItem onClick={() => setPerfilOpen(true)}>
-                <GraduationCap className="h-4 w-4 mr-2" />
-                Meu perfil
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRelatoriosOpen(true)}>
                 <FileText className="h-4 w-4 mr-2" />
                 Meus relatórios
@@ -110,9 +110,9 @@ export function AuthMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />
       {isProfessor && (
         <>
-          <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />
           <MeusRelatoriosDialog
             open={relatoriosOpen}
             onOpenChange={setRelatoriosOpen}

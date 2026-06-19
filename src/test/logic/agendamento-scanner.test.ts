@@ -1,15 +1,31 @@
 // Tests for src/lib/agendamento-scanner.ts — runScanner()
 // Mocks all 5 stores to isolate scanner logic.
 import { describe, expect, it, vi, beforeEach } from "vitest";
+import type { Agendamento, Aluno, Curso, Notificacao, Turma } from "@/lib/academic-types";
+import type { AulaEvidencia } from "@/lib/aula-evidencias";
+
+type AlunoMock = Pick<Aluno, "id" | "turmaId" | "nome"> & {
+  userId: string | null | undefined;
+};
 
 // ── Mock stores before import ──────────────────────────────────────────
 
-const { mockAgendamentos, mockTurmas, mockCursos, mockAlunos, addManySpy } = vi.hoisted(() => ({
-  mockAgendamentos: [] as any[],
-  mockTurmas: [] as any[],
-  mockCursos: [] as any[],
-  mockAlunos: [] as any[],
-  addManySpy: vi.fn(),
+const {
+  mockAgendamentos,
+  mockTurmas,
+  mockCursos,
+  mockAlunos,
+  mockEvidencias,
+  addManySpy,
+  ensureEvidenciasInitSpy,
+} = vi.hoisted(() => ({
+  mockAgendamentos: [] as Agendamento[],
+  mockTurmas: [] as Turma[],
+  mockCursos: [] as Curso[],
+  mockAlunos: [] as AlunoMock[],
+  mockEvidencias: [] as AulaEvidencia[],
+  addManySpy: vi.fn<(notificacoes: Notificacao[]) => void>(),
+  ensureEvidenciasInitSpy: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock("@/lib/agendamentos-store", () => ({
@@ -27,6 +43,12 @@ vi.mock("@/lib/alunos-store", () => ({
 vi.mock("@/lib/notificacoes-store", () => ({
   notificacoesStore: { addMany: addManySpy },
 }));
+vi.mock("@/lib/aula-evidencias-store", () => ({
+  aulaEvidenciasStore: {
+    getAll: () => mockEvidencias,
+    ensureInit: ensureEvidenciasInitSpy,
+  },
+}));
 
 // Must import AFTER vi.mock declarations
 import { runScanner } from "@/lib/agendamento-scanner";
@@ -34,21 +56,35 @@ import { CURSO_MUSICA, TURMA_A, makeAgendamento, makeConcluido } from "../helper
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
-function seedStores(agendamentos: typeof mockAgendamentos) {
+function seedStores(agendamentos: Agendamento[], evidencias?: AulaEvidencia[]) {
   mockAgendamentos.length = 0;
   mockAgendamentos.push(...agendamentos);
 
   mockTurmas.length = 0;
-  mockTurmas.push(TURMA_A as any);
+  mockTurmas.push(TURMA_A);
 
   mockCursos.length = 0;
-  mockCursos.push(CURSO_MUSICA as any);
+  mockCursos.push(CURSO_MUSICA);
 
   mockAlunos.length = 0;
   mockAlunos.push(
-    { id: "a001", turmaId: TURMA_A.id, nome: "Ana", userId: "u-ana" } as any,
-    { id: "a002", turmaId: TURMA_A.id, nome: "Bob", userId: null } as any,
+    { id: "a001", turmaId: TURMA_A.id, nome: "Ana", userId: "u-ana" },
+    { id: "a002", turmaId: TURMA_A.id, nome: "Bob", userId: null },
   );
+
+  mockEvidencias.length = 0;
+  if (evidencias) {
+    mockEvidencias.push(...evidencias);
+  } else {
+    mockEvidencias.push(
+      ...agendamentos.map((ag) => ({
+        id: `ev-plano-${ag.id}`,
+        agendamentoId: ag.id,
+        tipo: "plano_aula",
+        status: "valido",
+      })),
+    );
+  }
 }
 
 // ── Tests ───────────────────────────────────────────────────────────────
@@ -59,6 +95,8 @@ beforeEach(() => {
   mockTurmas.length = 0;
   mockCursos.length = 0;
   mockAlunos.length = 0;
+  mockEvidencias.length = 0;
+  ensureEvidenciasInitSpy.mockClear();
 });
 
 describe("runScanner", () => {
@@ -83,6 +121,19 @@ describe("runScanner", () => {
     expect(addManySpy).not.toHaveBeenCalled();
   });
 
+  it("generates plano_pendente notif after plan deadline when evidence is missing", () => {
+    const ag = makeAgendamento({ data: "2026-05-26", inicio: "08:00", fim: "08:50" });
+    seedStores([ag], []);
+    // 07:00 is before class end, but after the 06:00 plan deadline.
+    runScanner(new Date("2026-05-26T07:00:00"));
+    expect(addManySpy).toHaveBeenCalledOnce();
+    const notifs = addManySpy.mock.calls[0][0];
+    expect(notifs).toHaveLength(1);
+    expect(notifs[0].kind).toBe("plano_pendente");
+    expect(notifs[0].destinatarioTipo).toBe("professor");
+    expect(notifs[0].agendamentoId).toBe(ag.id);
+  });
+
   it("generates atrasado notifs after slot end, within 24h", () => {
     const ag = makeAgendamento({ data: "2026-05-26", fim: "10:30" });
     seedStores([ag]);
@@ -92,7 +143,7 @@ describe("runScanner", () => {
     const notifs = addManySpy.mock.calls[0][0];
     // 2 alunos + 1 professor = 3 notifs
     expect(notifs).toHaveLength(3);
-    expect(notifs.every((n: any) => n.kind === "atrasado")).toBe(true);
+    expect(notifs.every((n) => n.kind === "atrasado")).toBe(true);
   });
 
   it("generates expirado notifs after 24h past slot end", () => {
@@ -103,7 +154,7 @@ describe("runScanner", () => {
     expect(addManySpy).toHaveBeenCalledOnce();
     const notifs = addManySpy.mock.calls[0][0];
     expect(notifs).toHaveLength(3);
-    expect(notifs.every((n: any) => n.kind === "expirado")).toBe(true);
+    expect(notifs.every((n) => n.kind === "expirado")).toBe(true);
   });
 
   it("professor notif has correct titulo for atrasado", () => {
@@ -111,7 +162,7 @@ describe("runScanner", () => {
     seedStores([ag]);
     runScanner(new Date("2026-05-26T12:00:00"));
     const notifs = addManySpy.mock.calls[0][0];
-    const profNotif = notifs.find((n: any) => n.destinatarioTipo === "professor");
+    const profNotif = notifs.find((n) => n.destinatarioTipo === "professor");
     expect(profNotif.titulo).toBe("Relatório pendente");
   });
 
@@ -120,7 +171,7 @@ describe("runScanner", () => {
     seedStores([ag]);
     runScanner(new Date("2026-05-26T12:00:00"));
     const notifs = addManySpy.mock.calls[0][0];
-    const alunoNotifs = notifs.filter((n: any) => n.destinatarioTipo === "aluno");
+    const alunoNotifs = notifs.filter((n) => n.destinatarioTipo === "aluno");
     expect(alunoNotifs).toHaveLength(2);
     expect(alunoNotifs[0].titulo).toBe("Avalie a aula");
   });
@@ -130,7 +181,7 @@ describe("runScanner", () => {
     seedStores([ag]);
     runScanner(new Date("2026-05-26T12:00:00"));
     const notifs = addManySpy.mock.calls[0][0];
-    expect(notifs.every((n: any) => n.agendamentoId === ag.id)).toBe(true);
+    expect(notifs.every((n) => n.agendamentoId === ag.id)).toBe(true);
   });
 
   it("skips notifs when turma not found", () => {
@@ -171,7 +222,7 @@ describe("runScanner", () => {
     seedStores([ag]);
     runScanner(new Date("2026-05-26T12:00:00"));
     const notifs = addManySpy.mock.calls[0][0];
-    const bobNotif = notifs.find((n: any) => n.destinatarioId === "a002");
+    const bobNotif = notifs.find((n) => n.destinatarioId === "a002");
     expect(bobNotif).toBeDefined();
     expect(bobNotif.destinatarioUserId).toBeNull();
   });

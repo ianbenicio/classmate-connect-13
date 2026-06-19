@@ -29,7 +29,7 @@ interface Props {
 }
 
 export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
-  const { user, displayName } = useAuth();
+  const { user, displayName, hasRole } = useAuth();
   const professores = useProfessores();
   const agendamentos = useAgendamentos();
   const users = useUsers();
@@ -51,9 +51,10 @@ export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
   // Avaliações específicas deste professor (filtradas pelo store).
   const avaliacoes = useProfessorAvaliacoes(professor?.id);
 
-  // Caso o usuário tenha role "professor" mas o registro ainda não exista
-  // (ex.: trigger de sync atrasou), exibe um placeholder amigável em vez
-  // de não renderizar nada — assim o usuário entende o estado.
+  const isProfessor = hasRole("professor");
+
+  // Caso o usuário não tenha perfil acadêmico de professor, exibe a conta
+  // genérica com atalhos de edição/segurança.
   if (!professor) {
     return (
       <>
@@ -85,15 +86,21 @@ export function MeuPerfilProfessorDialog({ open, onOpenChange }: Props) {
                 </div>
               </div>
               <DialogDescription>
-                Ainda não há registro de professor vinculado à sua conta.
+                {isProfessor
+                  ? "Ainda não há registro de professor vinculado à sua conta."
+                  : "Gerencie os dados básicos e a segurança da sua conta."}
               </DialogDescription>
             </DialogHeader>
             <div className="text-sm text-muted-foreground space-y-2">
-              <p>
-                Sua conta tem o papel <strong>Professor</strong>, mas o registro detalhado ainda não
-                foi criado. Peça à coordenação para abrir a janela de Professores — o sync
-                automático vai criar o registro.
-              </p>
+              {isProfessor ? (
+                <p>
+                  Sua conta tem o papel <strong>Professor</strong>, mas o registro detalhado ainda
+                  não foi criado. Peça à coordenação para abrir a janela de Professores — o sync
+                  automático vai criar o registro.
+                </p>
+              ) : (
+                <p>Use a edição de perfil para atualizar seus dados e trocar sua senha.</p>
+              )}
               <p className="text-xs">
                 Conta: <strong>{displayName || user?.email || "—"}</strong>
               </p>

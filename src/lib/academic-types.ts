@@ -440,7 +440,7 @@ export interface Notificacao {
   criadoEm: string;
   lida: boolean;
   /** marcador para evitar duplicatas geradas pelo varredor */
-  kind?: "agendado" | "atrasado" | "expirado" | "concluido";
+  kind?: "agendado" | "atrasado" | "expirado" | "concluido" | "plano_pendente";
   /** id do agendamento de origem — usado para dedup no banco. */
   agendamentoId?: string;
 }

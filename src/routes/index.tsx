@@ -58,11 +58,6 @@ function DashboardPage() {
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
 
-  // Aluno acessou /? Redireciona pra área dele.
-  if (hasRole("aluno") && !isStaff()) {
-    return <Navigate to="/minha-area" />;
-  }
-
   const [agendarCtx, setAgendarCtx] = useState<{
     curso: Curso;
     turma: Turma;
@@ -115,6 +110,11 @@ function DashboardPage() {
       .sort((a, b) => a.prazo.localeCompare(b.prazo))
       .slice(0, 8);
   }, [atividades, isProfessor, currentUserId, displayName]);
+
+  // Aluno acessou /? Redireciona pra área dele.
+  if (hasRole("aluno") && !isStaff()) {
+    return <Navigate to="/minha-area" />;
+  }
 
   const stats = [
     {

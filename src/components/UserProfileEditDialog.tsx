@@ -11,7 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, X } from "lucide-react";
+import { KeyRound, Save, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { validatePasswordChangeInput } from "@/lib/password-change";
 import type { UserRow } from "@/lib/users-store";
 import { updateUserProfessorFields, usersStore } from "@/lib/users-store";
 import { toast } from "sonner";
@@ -23,13 +26,20 @@ interface Props {
 }
 
 export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
-  const [loading, setLoading] = useState(false);
+  const { user: authUser } = useAuth();
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [formData, setFormData] = useState({
     displayName: user?.displayName ?? "",
     telefone: user?.telefone ?? "",
     cpf: user?.cpf ?? "",
     formacao: user?.formacao ?? "",
     bio: user?.bio ?? "",
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   // Sincroniza com prop user quando dialog abre ou user muda.
@@ -43,14 +53,21 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
         formacao: user.formacao ?? "",
         bio: user.bio ?? "",
       });
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     }
   }, [user, open]);
 
   if (!user) return null;
 
+  const canChangeOwnPassword = authUser?.id === user.userId;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
+    setProfileLoading(true);
 
     try {
       // Atualizar displayName se mudou
@@ -72,13 +89,61 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
       console.error("Erro ao atualizar perfil:", err);
       toast.error("Erro ao atualizar perfil");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
+    }
+  }
+
+  async function handlePasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canChangeOwnPassword) {
+      toast.error("Voce so pode alterar a senha da propria conta.");
+      return;
+    }
+    if (!authUser?.email) {
+      toast.error("Conta sem e-mail de login.");
+      return;
+    }
+
+    const validationError = validatePasswordChangeInput(passwordData);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: authUser.email,
+        password: passwordData.currentPassword,
+      });
+      if (signInError) {
+        toast.error("Senha atual incorreta.");
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password: passwordData.newPassword });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      toast.success("Senha atualizada com sucesso.");
+    } catch (err) {
+      console.error("Erro ao atualizar senha:", err);
+      toast.error("Erro ao atualizar senha.");
+    } finally {
+      setPasswordLoading(false);
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
           <DialogDescription>Atualize suas informações pessoais</DialogDescription>
@@ -161,20 +226,81 @@ export function UserProfileEditDialog({ open, onOpenChange, user }: Props) {
 
           {/* Buttons */}
           <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={loading} className="flex-1 gap-2">
+            <Button type="submit" disabled={profileLoading} className="flex-1 gap-2">
               <Save className="h-4 w-4" />
-              {loading ? "Salvando..." : "Salvar"}
+              {profileLoading ? "Salvando..." : "Salvar"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              disabled={loading}
+              disabled={profileLoading}
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
         </form>
+
+        {canChangeOwnPassword && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="inline-flex items-center gap-2 text-sm">
+                <KeyRound className="h-4 w-4" />
+                Trocar senha
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handlePasswordSubmit} className="space-y-3">
+                <div className="space-y-2">
+                  <Label htmlFor="currentPassword">Senha atual</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) =>
+                      setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                    }
+                    autoComplete="current-password"
+                    required
+                  />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">Nova senha</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={passwordData.newPassword}
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, newPassword: e.target.value })
+                      }
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) =>
+                        setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                      }
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                    />
+                  </div>
+                </div>
+                <Button type="submit" variant="secondary" disabled={passwordLoading}>
+                  {passwordLoading ? "Atualizando..." : "Atualizar senha"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
       </DialogContent>
     </Dialog>
   );

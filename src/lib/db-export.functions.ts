@@ -27,7 +27,7 @@ export interface DbExportPayload {
     geradoEm: string;
     versao: 1;
     app: "academia-flow";
-    fonte: "lovable-cloud";
+    fonte: "supabase-postgres";
     geradoPorUserId: string;
   };
   tabelas: { [k in ExportTabela]: { [key: string]: JsonValue }[] };
@@ -78,7 +78,7 @@ export async function exportDbSnapshot(): Promise<DbExportPayload> {
       geradoEm: new Date().toISOString(),
       versao: 1,
       app: "academia-flow",
-      fonte: "lovable-cloud",
+      fonte: "supabase-postgres",
       geradoPorUserId: user.id,
     },
     tabelas,

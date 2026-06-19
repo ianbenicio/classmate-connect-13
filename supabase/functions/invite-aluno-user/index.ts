@@ -20,14 +20,13 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 // Boot-time diagnostic — confirms env injection without leaking the key.
-// Safe to keep: only prints url + key length + key prefix (8 chars).
+// Safe to keep: only prints url metadata and whether the key is configured.
 console.log(
   "[invite-aluno-user] boot env",
   JSON.stringify({
     has_url: !!SUPABASE_URL,
     url_host: SUPABASE_URL ? new URL(SUPABASE_URL).host : null,
-    service_key_length: SUPABASE_SERVICE_ROLE_KEY.length,
-    service_key_prefix: SUPABASE_SERVICE_ROLE_KEY.slice(0, 8),
+    has_service_role_key: !!SUPABASE_SERVICE_ROLE_KEY,
   }),
 );
 

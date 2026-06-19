@@ -22,6 +22,7 @@ import { Route as AlunosRouteImport } from './routes/alunos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtividadesCursoIdRouteImport } from './routes/atividades.$cursoId'
 import { Route as AceitarConviteTokenRouteImport } from './routes/aceitar-convite.$token'
+import { Route as CoordenacaoRelatoriosProgressoCursosTurmasRouteImport } from './routes/coordenacao.relatorios.progresso-cursos-turmas'
 import { Route as CoordenacaoRelatoriosExtratoHorasPRouteImport } from './routes/coordenacao.relatorios.extrato-horas-p'
 import { Route as CoordenacaoRelatoriosComparativoTurmasRouteImport } from './routes/coordenacao.relatorios.comparativo-turmas'
 
@@ -90,6 +91,12 @@ const AceitarConviteTokenRoute = AceitarConviteTokenRouteImport.update({
   path: '/aceitar-convite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoordenacaoRelatoriosProgressoCursosTurmasRoute =
+  CoordenacaoRelatoriosProgressoCursosTurmasRouteImport.update({
+    id: '/relatorios/progresso-cursos-turmas',
+    path: '/relatorios/progresso-cursos-turmas',
+    getParentRoute: () => CoordenacaoRoute,
+  } as any)
 const CoordenacaoRelatoriosExtratoHorasPRoute =
   CoordenacaoRelatoriosExtratoHorasPRouteImport.update({
     id: '/relatorios/extrato-horas-p',
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
+  '/coordenacao/relatorios/progresso-cursos-turmas': typeof CoordenacaoRelatoriosProgressoCursosTurmasRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -136,6 +144,7 @@ export interface FileRoutesByTo {
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
+  '/coordenacao/relatorios/progresso-cursos-turmas': typeof CoordenacaoRelatoriosProgressoCursosTurmasRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -154,6 +163,7 @@ export interface FileRoutesById {
   '/atividades/$cursoId': typeof AtividadesCursoIdRoute
   '/coordenacao/relatorios/comparativo-turmas': typeof CoordenacaoRelatoriosComparativoTurmasRoute
   '/coordenacao/relatorios/extrato-horas-p': typeof CoordenacaoRelatoriosExtratoHorasPRoute
+  '/coordenacao/relatorios/progresso-cursos-turmas': typeof CoordenacaoRelatoriosProgressoCursosTurmasRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
+    | '/coordenacao/relatorios/progresso-cursos-turmas'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
+    | '/coordenacao/relatorios/progresso-cursos-turmas'
   id:
     | '__root__'
     | '/'
@@ -207,6 +219,7 @@ export interface FileRouteTypes {
     | '/atividades/$cursoId'
     | '/coordenacao/relatorios/comparativo-turmas'
     | '/coordenacao/relatorios/extrato-horas-p'
+    | '/coordenacao/relatorios/progresso-cursos-turmas'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AceitarConviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coordenacao/relatorios/progresso-cursos-turmas': {
+      id: '/coordenacao/relatorios/progresso-cursos-turmas'
+      path: '/relatorios/progresso-cursos-turmas'
+      fullPath: '/coordenacao/relatorios/progresso-cursos-turmas'
+      preLoaderRoute: typeof CoordenacaoRelatoriosProgressoCursosTurmasRouteImport
+      parentRoute: typeof CoordenacaoRoute
+    }
     '/coordenacao/relatorios/extrato-horas-p': {
       id: '/coordenacao/relatorios/extrato-horas-p'
       path: '/relatorios/extrato-horas-p'
@@ -349,6 +369,7 @@ const AtividadesRouteWithChildren = AtividadesRoute._addFileChildren(
 interface CoordenacaoRouteChildren {
   CoordenacaoRelatoriosComparativoTurmasRoute: typeof CoordenacaoRelatoriosComparativoTurmasRoute
   CoordenacaoRelatoriosExtratoHorasPRoute: typeof CoordenacaoRelatoriosExtratoHorasPRoute
+  CoordenacaoRelatoriosProgressoCursosTurmasRoute: typeof CoordenacaoRelatoriosProgressoCursosTurmasRoute
 }
 
 const CoordenacaoRouteChildren: CoordenacaoRouteChildren = {
@@ -356,6 +377,8 @@ const CoordenacaoRouteChildren: CoordenacaoRouteChildren = {
     CoordenacaoRelatoriosComparativoTurmasRoute,
   CoordenacaoRelatoriosExtratoHorasPRoute:
     CoordenacaoRelatoriosExtratoHorasPRoute,
+  CoordenacaoRelatoriosProgressoCursosTurmasRoute:
+    CoordenacaoRelatoriosProgressoCursosTurmasRoute,
 }
 
 const CoordenacaoRouteWithChildren = CoordenacaoRoute._addFileChildren(

@@ -26,6 +26,7 @@ import {
   Download,
   RefreshCw,
   Loader2,
+  FileCheck2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -53,9 +54,18 @@ import { useCursos } from "@/lib/cursos-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useTarefasAlunos, tarefasAlunosStore } from "@/lib/tarefas-alunos-store";
+import { useAulaEvidencias } from "@/lib/aula-evidencias-store";
+import {
+  evidenciaEstaValida,
+  getEvidenciaPorTipo,
+  isPlanoAulaAtrasado,
+  type AulaEvidencia,
+  type AulaEvidenciaContext,
+} from "@/lib/aula-evidencias";
 import { useAuth } from "@/lib/auth";
 import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
+import { AulaEvidenciasDialog } from "@/components/academic/AulaEvidenciasDialog";
 
 interface Props {
   /** Professor cujas aulas listar. Default: usuário logado. */
@@ -72,8 +82,14 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   const atividades = useAtividades();
   const avaliacoes = useAvaliacoes();
   const tarefasAlunos = useTarefasAlunos();
+  const evidencias = useAulaEvidencias();
 
   const targetUserId = professorUserId ?? user?.id ?? null;
+  const [evidenciaCtx, setEvidenciaCtx] = useState<{
+    agendamento: Agendamento;
+    turma: Turma;
+    curso: Curso;
+  } | null>(null);
 
   // Filtros
   const hoje = new Date();
@@ -85,6 +101,15 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
   const ativMap = useMemo(() => new Map(atividades.map((a) => [a.id, a])), [atividades]);
+  const evidenciasPorAgendamento = useMemo(() => {
+    const map = new Map<string, AulaEvidencia[]>();
+    for (const evidencia of evidencias) {
+      const list = map.get(evidencia.agendamentoId) ?? [];
+      list.push(evidencia);
+      map.set(evidencia.agendamentoId, list);
+    }
+    return map;
+  }, [evidencias]);
 
   // Agendamentos do professor no mês selecionado
   const linhas = useMemo(() => {
@@ -139,6 +164,29 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   const podeEditar = (ag: Agendamento) => {
     if (hasRole("admin") || hasRole("coordenacao")) return true;
     return ag.professorUserId === user?.id;
+  };
+
+  const statusEvidencias = (ag: Agendamento) => {
+    const turma = turmaMap.get(ag.turmaId);
+    const curso = turma ? cursoMap.get(turma.cursoId) : undefined;
+    const evs = evidenciasPorAgendamento.get(ag.id) ?? [];
+    const plano = getEvidenciaPorTipo(evs, "plano_aula");
+    const chamada = getEvidenciaPorTipo(evs, "chamada_arquivo");
+    const planoOk = evidenciaEstaValida(plano);
+    const chamadaOk = evidenciaEstaValida(chamada);
+    let planoAtrasado = false;
+    if (turma && curso) {
+      const ctx: AulaEvidenciaContext = { curso, turma, agendamento: ag, atividades };
+      planoAtrasado = !planoOk && isPlanoAulaAtrasado(ctx);
+    }
+    return {
+      planoOk,
+      chamadaOk,
+      planoAtrasado,
+      totalOk: Number(planoOk) + Number(chamadaOk),
+      turma,
+      curso,
+    };
   };
 
   const handleToggleRecursos = (ag: Agendamento, novo: boolean) => {
@@ -349,6 +397,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
                 <TableHead className="w-[120px] text-xs">Turma</TableHead>
                 <TableHead className="w-[110px] text-xs">Código</TableHead>
                 <TableHead className="text-xs">Nome</TableHead>
+                <TableHead className="w-[95px] text-center text-xs">Evid.</TableHead>
                 <TableHead className="w-[55px] text-center text-xs">DE</TableHead>
                 <TableHead className="w-[80px] text-center text-xs">Recursos</TableHead>
                 <TableHead className="w-[60px] text-center text-xs">Freq</TableHead>
@@ -366,6 +415,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
                 const dataObj = parseISO(`${ag.data}T00:00:00`);
                 const dia = format(dataObj, "EEE", { locale: ptBR }).slice(0, 3);
                 const status = statusFor(ag);
+                const evidStatus = statusEvidencias(ag);
                 const editavel = podeEditar(ag);
                 const tudoOk =
                   status.de &&
@@ -391,6 +441,29 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
                       <div className="text-[10px] text-muted-foreground inline-flex items-center gap-0.5 ml-1">
                         <Clock className="h-2.5 w-2.5" /> {ag.inicio}
                       </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button
+                        size="sm"
+                        variant={evidStatus.totalOk === 2 ? "ghost" : "outline"}
+                        className={cn(
+                          "h-6 text-[10px] px-2",
+                          evidStatus.planoAtrasado && "border-amber-500 text-amber-700",
+                        )}
+                        disabled={!evidStatus.turma || !evidStatus.curso}
+                        onClick={() => {
+                          if (!evidStatus.turma || !evidStatus.curso) return;
+                          setEvidenciaCtx({
+                            agendamento: ag,
+                            turma: evidStatus.turma,
+                            curso: evidStatus.curso,
+                          });
+                        }}
+                        title="Abrir evidencias da aula"
+                      >
+                        <FileCheck2 className="h-3 w-3 mr-1" />
+                        {evidStatus.totalOk}/2
+                      </Button>
                     </TableCell>
                     <StatusCell ok={status.de} />
                     <TableCell className="text-center">
@@ -441,6 +514,15 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
           </Table>
         </div>
       )}
+
+      <AulaEvidenciasDialog
+        open={!!evidenciaCtx}
+        onOpenChange={(open) => !open && setEvidenciaCtx(null)}
+        agendamento={evidenciaCtx?.agendamento ?? null}
+        turma={evidenciaCtx?.turma}
+        curso={evidenciaCtx?.curso}
+        atividades={atividades}
+      />
     </div>
   );
 }
