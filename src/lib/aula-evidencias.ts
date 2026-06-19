@@ -1,4 +1,5 @@
 import type { Agendamento, Atividade, Curso, Habilidade, Turma } from "./academic-types";
+import { toUuid } from "./db-mapping";
 import { pathSafe } from "./drive-pattern";
 
 export type AulaEvidenciaTipo = "plano_aula" | "chamada_arquivo";
@@ -78,12 +79,18 @@ export interface AulaEvidenciaContext {
     | "descricao"
     | "descricaoConteudo"
     | "objetivoResultados"
+    | "resultadosEsperados"
+    | "notasInstrutor"
+    | "preRequisitos"
+    | "niveisAlvo"
     | "roteiro"
     | "materiais"
     | "habilidadeIds"
     | "rubricas"
     | "sugestoesPais"
     | "criteriosSucesso"
+    | "metodologias"
+    | "referencias"
   >[];
 }
 
@@ -303,9 +310,136 @@ function normalizarTextoBusca(value: string | undefined | null): string {
 }
 
 function textoContemTermo(texto: string, termo: string | undefined | null): boolean {
-  const normalized = normalizarTextoBusca(termo).trim();
+  const normalized = normalizarTextoBusca(termo)
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
   if (normalized.length < 2) return false;
-  return texto.includes(normalized);
+  const searchable = ` ${texto.replace(/[^a-z0-9]+/g, " ")} `;
+  if (normalized.length <= 3) return searchable.includes(` ${normalized} `);
+  return searchable.includes(` ${normalized} `) || texto.includes(normalized);
+}
+
+const HABILIDADE_ALIASES_BY_SIGLA: Record<string, string[]> = {
+  "COM-01": [
+    "comunicacao",
+    "comunicar",
+    "expressar",
+    "apresentacao",
+    "apresentar",
+    "roteiro",
+    "storytelling",
+    "callout",
+    "callouts",
+    "linguagem",
+    "narrativa",
+    "feedback",
+    "dialogo",
+    "argumentacao",
+  ],
+  "CRI-02": [
+    "criatividade",
+    "criativo",
+    "criacao",
+    "criar",
+    "ideia",
+    "ideias",
+    "solucoes",
+    "design",
+    "cartaz",
+    "poster",
+    "marca",
+    "identidade visual",
+    "storytelling",
+    "conteudo",
+    "clipe",
+  ],
+  "COL-03": [
+    "colaboracao",
+    "colaborativo",
+    "equipe",
+    "time",
+    "grupo",
+    "coletivo",
+    "cooperacao",
+    "scrim",
+    "torneio",
+    "dupla",
+    "lideranca",
+    "capitao",
+  ],
+  "TEC-04": [
+    "tecnico",
+    "tecnica",
+    "ferramenta",
+    "ferramentas",
+    "digital",
+    "canva",
+    "adobe",
+    "software",
+    "overlay",
+    "script",
+    "scripts",
+    "inteligencia artificial",
+    "video",
+    "edicao",
+    "setup",
+    "configuracao",
+    "dominio tecnico",
+  ],
+};
+
+function getTermosHabilidade(habilidade: Pick<Habilidade, "sigla" | "nome" | "descricao">) {
+  const sigla = habilidade.sigla.trim();
+  const aliases = HABILIDADE_ALIASES_BY_SIGLA[sigla.toUpperCase()] ?? [];
+  return Array.from(
+    new Set(
+      [
+        sigla,
+        sigla.replace(/[-_\s]/g, ""),
+        habilidade.nome,
+        habilidade.descricao,
+        ...aliases,
+      ].filter((termo): termo is string => !!termo?.trim()),
+    ),
+  );
+}
+
+function getTextoBuscaAtividades(
+  atividades: AulaEvidenciaContext["atividades"],
+  plano?: Pick<PlanoAulaDados, "conteudoEmenta" | "habilidades">,
+) {
+  const valores: string[] = [plano?.conteudoEmenta, plano?.habilidades].filter(
+    (valor): valor is string => !!valor,
+  );
+
+  for (const atividade of atividades) {
+    valores.push(
+      atividade.codigo,
+      atividade.nome,
+      atividade.descricao,
+      atividade.descricaoConteudo ?? "",
+      atividade.objetivoResultados,
+      atividade.resultadosEsperados ?? "",
+      atividade.notasInstrutor ?? "",
+      atividade.preRequisitos ?? "",
+      atividade.criteriosSucesso ?? "",
+      atividade.metodologias ?? "",
+      atividade.referencias ?? "",
+      atividade.sugestoesPais ?? "",
+    );
+
+    for (const roteiro of atividade.roteiro ?? []) {
+      valores.push(roteiro.titulo, roteiro.descricao ?? "");
+    }
+    for (const material of atividade.materiais ?? []) {
+      valores.push(material.tipo, material.titulo, material.observacao ?? "", material.url ?? "");
+    }
+    for (const rubrica of atividade.rubricas ?? []) {
+      valores.push(rubrica.descricao);
+    }
+  }
+
+  return normalizarTextoBusca(valores.join("\n"));
 }
 
 export function inferirHabilidadesIdsDoPlano(
@@ -313,27 +447,32 @@ export function inferirHabilidadesIdsDoPlano(
   habilidades: Pick<Habilidade, "id" | "sigla" | "nome" | "descricao">[],
   plano?: Pick<PlanoAulaDados, "conteudoEmenta" | "habilidades">,
 ): string[] {
-  const idsDaAula = new Set(
-    ctx.agendamento.atividadeIds
-      .map((id) => ctx.atividades.find((a) => a.id === id))
-      .filter((a): a is NonNullable<typeof a> => !!a)
-      .flatMap((a) => a.habilidadeIds ?? []),
-  );
+  const habilidadesPorId = new Map<string, string>();
+  for (const habilidade of habilidades) {
+    habilidadesPorId.set(habilidade.id, habilidade.id);
+    habilidadesPorId.set(toUuid(habilidade.id), habilidade.id);
+  }
 
-  const textoPlano = normalizarTextoBusca(
-    [
-      plano?.conteudoEmenta,
-      plano?.habilidades,
-      ...ctx.atividades.map((a) => a.descricaoConteudo || a.descricao),
-    ].join("\n"),
-  );
+  const idsDaAula = new Set<string>();
+  const addHabilidadeId = (id: string | undefined | null) => {
+    if (!id) return;
+    const idSelecionavel = habilidadesPorId.get(id) ?? habilidadesPorId.get(toUuid(id));
+    idsDaAula.add(idSelecionavel ?? id);
+  };
+
+  const atividadesSelecionadas = ctx.agendamento.atividadeIds
+    .map((id) => ctx.atividades.find((a) => a.id === id))
+    .filter((a): a is NonNullable<typeof a> => !!a);
+
+  for (const atividade of atividadesSelecionadas) {
+    for (const id of atividade.habilidadeIds ?? []) addHabilidadeId(id);
+    for (const nivel of atividade.niveisAlvo ?? []) addHabilidadeId(nivel.habilidadeId);
+  }
+
+  const textoPlano = getTextoBuscaAtividades(atividadesSelecionadas, plano);
 
   for (const habilidade of habilidades) {
-    if (
-      textoContemTermo(textoPlano, habilidade.sigla) ||
-      textoContemTermo(textoPlano, habilidade.nome) ||
-      textoContemTermo(textoPlano, habilidade.descricao)
-    ) {
+    if (getTermosHabilidade(habilidade).some((termo) => textoContemTermo(textoPlano, termo))) {
       idsDaAula.add(habilidade.id);
     }
   }

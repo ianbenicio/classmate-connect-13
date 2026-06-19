@@ -188,6 +188,73 @@ describe("aula-evidencias", () => {
     expect(ids).toEqual(expect.arrayContaining(["hab-1", "hab-2", "hab-extra"]));
   });
 
+  it("infere habilidades por termos pedagogicos da ementa quando a aula nao tem vinculo direto", () => {
+    const atividadeDesign: Atividade = {
+      ...atividade,
+      id: "atividade-design-1",
+      codigo: "ADDS04",
+      nome: "Cartaz de Scrim/Torneio + Roteiro Minimo",
+      descricao: "Cartaz de scrim/torneio + roteiro minimo.",
+      descricaoConteudo: undefined,
+      habilidadeIds: [],
+      niveisAlvo: [],
+    };
+    const ctxDesign: AulaEvidenciaContext = {
+      ...ctx,
+      agendamento: { ...agendamento, atividadeIds: ["atividade-design-1"] },
+      atividades: [atividadeDesign],
+    };
+
+    const ids = inferirHabilidadesIdsDoPlano(ctxDesign, [
+      {
+        id: "h-com",
+        sigla: "COM-01",
+        descricao: "Comunicacao clara: capacidade de expressar ideias de forma objetiva.",
+      },
+      {
+        id: "h-cri",
+        sigla: "CRI-02",
+        descricao: "Criatividade aplicada: gerar solucoes originais.",
+      },
+      {
+        id: "h-col",
+        sigla: "COL-03",
+        descricao: "Colaboracao em equipe: trabalhar coletivamente.",
+      },
+      {
+        id: "h-tec",
+        sigla: "TEC-04",
+        descricao: "Dominio tecnico de ferramentas digitais.",
+      },
+    ]);
+
+    expect(ids).toEqual(expect.arrayContaining(["h-com", "h-cri", "h-col"]));
+  });
+
+  it("considera niveis-alvo como vinculo estruturado de habilidade", () => {
+    const atividadeComNivel: Atividade = {
+      ...atividade,
+      id: "atividade-nivel-1",
+      habilidadeIds: [],
+      niveisAlvo: [{ habilidadeId: "hab-nivel", nivelAlvo: 3 }],
+    };
+    const ctxComNivel: AulaEvidenciaContext = {
+      ...ctx,
+      agendamento: { ...agendamento, atividadeIds: ["atividade-nivel-1"] },
+      atividades: [atividadeComNivel],
+    };
+
+    const ids = inferirHabilidadesIdsDoPlano(ctxComNivel, [
+      {
+        id: "hab-nivel",
+        sigla: "NIV-01",
+        descricao: "Habilidade definida no nivel alvo.",
+      },
+    ]);
+
+    expect(ids).toEqual(["hab-nivel"]);
+  });
+
   it("monta metadados do documento interno com codigo, data e professor", () => {
     const plano = montarPlanoAulaInicial(ctx);
     const dados = montarDadosDocumentoEstudo(
