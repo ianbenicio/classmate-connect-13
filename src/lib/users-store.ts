@@ -19,6 +19,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { toast } from "sonner";
 import type { AppRole } from "./auth";
 import { useProfessores } from "./professores-store";
+import { getCurrentProjectId } from "./current-project";
 
 /**
  * Cliente Supabase efêmero para signUp pelo admin: não persiste sessão nem
@@ -200,10 +201,11 @@ export const usersStore = {
     }
 
     const ephemeral = makeIsolatedClient();
+    const projectId = getCurrentProjectId();
     const { data, error } = await ephemeral.auth.signUp({
       email,
       password: input.password,
-      options: { data: { display_name: displayName } },
+      options: { data: { display_name: displayName, project_id: projectId } },
     });
     if (error) {
       console.error("[users] createUser signUp error", error);
