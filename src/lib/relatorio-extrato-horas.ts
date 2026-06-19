@@ -7,6 +7,7 @@
 // Dados de entrada: agendamentos, avaliacoes, professores
 // Saída: estrutura para renderização em tabela e PDF
 
+import { agendamentoDispensaRequisitos } from "./academic-types";
 import type { Agendamento } from "./academic-types";
 import type { UserRow } from "./users-store";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
@@ -100,6 +101,7 @@ export function gerarExtratoHoras(
   // Filtra agendamentos: concluídos + opcionalmente por data range
   const agendamentosFiltrados = agendamentos.filter((ag) => {
     if (ag.status !== "concluido") return false;
+    if (agendamentoDispensaRequisitos(ag)) return false;
     if (dataInicio && ag.data < dataInicio) return false;
     if (dataFim && ag.data > dataFim) return false;
     return true;

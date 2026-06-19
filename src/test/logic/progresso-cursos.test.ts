@@ -139,4 +139,32 @@ describe("gerarProgressoCursos", () => {
     expect(progressoTurma.relatoriosProfPct).toBe(0);
     expect(progressoTurma.pendencias).toContain("1 relatorio(s) de professor pendente(s)");
   });
+
+  it("nao exige relatorios quando aula foi finalizada pela coordenacao", () => {
+    const payload = gerarProgressoCursos({
+      cursos: [curso],
+      turmas: [turma],
+      alunos: [alunoUsuario],
+      atividades: [atividade],
+      agendamentos: [
+        {
+          ...agendamento,
+          origem: "coordenacao",
+          requisitosDispensados: true,
+          professor: "Coordenacao",
+          professorUserId: undefined,
+        },
+      ],
+      avaliacoes: [],
+    });
+
+    const progressoTurma = payload.cursos[0].turmas[0];
+    expect(progressoTurma.aulasConcluidas).toBe(1);
+    expect(progressoTurma.atividadesExecutadas).toBe(1);
+    expect(progressoTurma.relatoriosProfPendentes).toBe(0);
+    expect(progressoTurma.relatoriosProfPct).toBe(100);
+    expect(progressoTurma.avaliacoesAlunoPct).toBe(100);
+    expect(progressoTurma.checklistsAlunoPct).toBe(100);
+    expect(progressoTurma.pendencias).toEqual([]);
+  });
 });

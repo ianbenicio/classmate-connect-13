@@ -3,6 +3,7 @@
 import { describe, expect, it } from "vitest";
 import {
   addMinutesToHHMM,
+  agendamentoDispensaRequisitos,
   atividadeBlocos,
   blocoFim,
   blocoInicio,
@@ -392,5 +393,30 @@ describe("computeSlotEstado", () => {
     const deadline = endSlotPlus24h({ data, fim });
     const after = new Date(deadline.getTime() + 1);
     expect(computeSlotEstado(data, fim, ag, after)).toBe("expirado");
+  });
+});
+
+describe("agendamentoDispensaRequisitos", () => {
+  it("true only for manual coordination exception", () => {
+    expect(
+      agendamentoDispensaRequisitos({
+        origem: "coordenacao",
+        requisitosDispensados: true,
+      }),
+    ).toBe(true);
+
+    expect(
+      agendamentoDispensaRequisitos({
+        origem: "coordenacao",
+        requisitosDispensados: false,
+      }),
+    ).toBe(false);
+
+    expect(
+      agendamentoDispensaRequisitos({
+        origem: "professor",
+        requisitosDispensados: true,
+      }),
+    ).toBe(false);
   });
 });

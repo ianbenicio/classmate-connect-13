@@ -29,6 +29,7 @@ import {
 } from "date-fns";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
+import { agendamentoDispensaRequisitos } from "@/lib/academic-types";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAlunos } from "@/lib/alunos-store";
@@ -62,17 +63,21 @@ export function DashboardKPIs() {
       }
     };
 
+    const agendamentosOperacionais = agendamentos.filter(
+      (agendamento) => !agendamentoDispensaRequisitos(agendamento),
+    );
+
     // Aulas hoje
-    const hoje = agendamentos.filter((a) => inInterval(a.data, todayStart, todayEnd));
+    const hoje = agendamentosOperacionais.filter((a) => inInterval(a.data, todayStart, todayEnd));
     const hojeConcluidas = hoje.filter((a) => a.status === "concluido").length;
     const hojeAgendadas = hoje.filter((a) => a.status === "pendente").length;
     const hojeCanceladas = 0;
 
     // Aulas semana / mês
-    const semana = agendamentos.filter((a) => inInterval(a.data, weekStart, weekEnd));
+    const semana = agendamentosOperacionais.filter((a) => inInterval(a.data, weekStart, weekEnd));
     const semanaConcluidas = semana.filter((a) => a.status === "concluido").length;
     const semanaTotal = semana.length;
-    const mes = agendamentos.filter((a) => inInterval(a.data, monthStart, monthEnd));
+    const mes = agendamentosOperacionais.filter((a) => inInterval(a.data, monthStart, monthEnd));
     const mesConcluidas = mes.filter((a) => a.status === "concluido").length;
 
     // Relatórios do professor pendentes:
@@ -83,10 +88,17 @@ export function DashboardKPIs() {
         .map((av) => av.agendamentoId as string),
     );
     const concluidasMes = mes.filter((a) => a.status === "concluido");
-    const relPendentes = concluidasMes.filter((a) => !relProfFeitas.has(a.id)).length;
+    const concluidasMesComRequisitos = concluidasMes.filter(
+      (a) => !agendamentoDispensaRequisitos(a),
+    );
+    const relPendentes = concluidasMesComRequisitos.filter((a) => !relProfFeitas.has(a.id)).length;
     const relCobertura =
-      concluidasMes.length > 0
-        ? Math.round(((concluidasMes.length - relPendentes) / concluidasMes.length) * 100)
+      concluidasMesComRequisitos.length > 0
+        ? Math.round(
+            ((concluidasMesComRequisitos.length - relPendentes) /
+              concluidasMesComRequisitos.length) *
+              100,
+          )
         : 100;
 
     // Avaliações dos alunos no mês — quantos agendamentos do mês têm pelo
@@ -101,14 +113,14 @@ export function DashboardKPIs() {
         )
         .map((av) => av.agendamentoId as string),
     );
-    const concluidasMesIds = new Set(concluidasMes.map((a) => a.id));
+    const concluidasMesIds = new Set(concluidasMesComRequisitos.map((a) => a.id));
     const aulasComAvalAlunoCount = Array.from(aulasComAvalAluno).filter((id) =>
       concluidasMesIds.has(id),
     ).length;
     const avalAlunoCobertura =
-      concluidasMes.length > 0
-        ? Math.round((aulasComAvalAlunoCount / concluidasMes.length) * 100)
-        : 0;
+      concluidasMesComRequisitos.length > 0
+        ? Math.round((aulasComAvalAlunoCount / concluidasMesComRequisitos.length) * 100)
+        : 100;
 
     // Counts
     const cursosAtivos = cursos.length; // Curso não tem campo `ativo` no modelo atual

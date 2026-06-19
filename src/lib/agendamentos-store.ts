@@ -53,11 +53,31 @@ type AgendamentoMeta = {
   slotFim?: string;
   /** Habilidades trabalhadas — guardadas em meta (jsonb) p/ evitar migration. */
   habilidadeIds?: string[];
+  origem?: "professor" | "coordenacao";
+  requisitosDispensados?: boolean;
+  statusDefinidoPorUserId?: string;
+  statusDefinidoPorNome?: string;
+  statusDefinidoEm?: string;
 };
 
 function readMeta(raw: unknown): AgendamentoMeta {
   if (!raw || typeof raw !== "object") return {};
   return raw as AgendamentoMeta;
+}
+
+function agendamentoToMeta(a: Agendamento): AgendamentoMeta {
+  const meta: AgendamentoMeta = {};
+  if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
+  if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
+  if (a.habilidadeIds && a.habilidadeIds.length) meta.habilidadeIds = a.habilidadeIds;
+  if (a.origem) meta.origem = a.origem;
+  if (a.requisitosDispensados !== undefined) {
+    meta.requisitosDispensados = a.requisitosDispensados;
+  }
+  if (a.statusDefinidoPorUserId) meta.statusDefinidoPorUserId = a.statusDefinidoPorUserId;
+  if (a.statusDefinidoPorNome) meta.statusDefinidoPorNome = a.statusDefinidoPorNome;
+  if (a.statusDefinidoEm) meta.statusDefinidoEm = a.statusDefinidoEm;
+  return meta;
 }
 
 function rowToAgendamento(r: AgendamentoRow): Agendamento {
@@ -79,6 +99,11 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
     professorUserId: r.professor_user_id ?? undefined,
     criadoPorUserId: r.criado_por_user_id ?? undefined,
     criadoPorNome: r.criado_por_nome ?? undefined,
+    origem: meta.origem,
+    requisitosDispensados: meta.requisitosDispensados,
+    statusDefinidoPorUserId: meta.statusDefinidoPorUserId,
+    statusDefinidoPorNome: meta.statusDefinidoPorNome,
+    statusDefinidoEm: meta.statusDefinidoEm,
     blocoIndex: r.bloco_index,
     blocosTotal: r.blocos_total,
     slotInicio: meta.slotInicio,
@@ -93,10 +118,7 @@ function rowToAgendamento(r: AgendamentoRow): Agendamento {
 }
 
 function agendamentoToRow(a: Agendamento) {
-  const meta: AgendamentoMeta = {};
-  if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
-  if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
-  if (a.habilidadeIds && a.habilidadeIds.length) meta.habilidadeIds = a.habilidadeIds;
+  const meta = agendamentoToMeta(a);
   return {
     id: toUuid(a.id),
     turma_id: toUuid(a.turmaId),
@@ -190,10 +212,7 @@ export const agendamentosStore = {
   },
   async add(a: Agendamento) {
     // IDs runtime já são UUIDs — não passar por toUuid (double-hash).
-    const meta: AgendamentoMeta = {};
-    if (a.slotInicio !== undefined) meta.slotInicio = a.slotInicio;
-    if (a.slotFim !== undefined) meta.slotFim = a.slotFim;
-    if (a.habilidadeIds && a.habilidadeIds.length) meta.habilidadeIds = a.habilidadeIds;
+    const meta = agendamentoToMeta(a);
     const row = {
       id: a.id,
       turma_id: a.turmaId,
@@ -237,10 +256,7 @@ export const agendamentosStore = {
     const snap = agendamentos;
     agendamentos = agendamentos.map((x) => (x.id === id ? next : x));
     emit();
-    const meta: AgendamentoMeta = {};
-    if (next.slotInicio !== undefined) meta.slotInicio = next.slotInicio;
-    if (next.slotFim !== undefined) meta.slotFim = next.slotFim;
-    if (next.habilidadeIds && next.habilidadeIds.length) meta.habilidadeIds = next.habilidadeIds;
+    const meta = agendamentoToMeta(next);
     const row = {
       id: next.id,
       turma_id: next.turmaId,

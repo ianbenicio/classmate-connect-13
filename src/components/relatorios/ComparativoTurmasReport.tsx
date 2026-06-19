@@ -35,6 +35,7 @@ import { ArrowUpDown, BarChart3 } from "lucide-react";
 import { startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
+import { agendamentoDispensaRequisitos } from "@/lib/academic-types";
 import { useCursos } from "@/lib/cursos-store";
 import { useTurmas } from "@/lib/turmas-store";
 import { useAlunos } from "@/lib/alunos-store";
@@ -89,26 +90,37 @@ export function ComparativoTurmasReport() {
       if (cursoFiltro !== "__all__" && t.cursoId !== cursoFiltro) continue;
 
       const alunosTurma = alunos.filter((a) => a.turmaId === t.id);
-      const agsTurmaMes = agendamentos.filter((ag) => ag.turmaId === t.id && inMonth(ag.data));
+      const agsTurmaMes = agendamentos.filter(
+        (ag) => ag.turmaId === t.id && inMonth(ag.data) && !agendamentoDispensaRequisitos(ag),
+      );
       const concluidas = agsTurmaMes.filter((ag) => ag.status === "concluido");
-      const concluidasIds = new Set(concluidas.map((ag) => ag.id));
+      const concluidasComRequisitos = concluidas.filter((ag) => !agendamentoDispensaRequisitos(ag));
+      const concluidasComRequisitosIds = new Set(concluidasComRequisitos.map((ag) => ag.id));
 
       // Relatórios prof
       const comRelatorio = avaliacoes.filter(
         (av) =>
-          av.tipo === "relatorio_prof" && av.agendamentoId && concluidasIds.has(av.agendamentoId),
+          av.tipo === "relatorio_prof" &&
+          av.agendamentoId &&
+          concluidasComRequisitosIds.has(av.agendamentoId),
       ).length;
-      const relProfPct = concluidas.length > 0 ? (comRelatorio / concluidas.length) * 100 : 0;
+      const relProfPct =
+        concluidasComRequisitos.length > 0
+          ? (comRelatorio / concluidasComRequisitos.length) * 100
+          : 100;
 
       // Avaliação alunos: count de aulas concluídas com pelo menos um relatorio_aluno
       const agsComAval = new Set<string>();
       for (const av of avaliacoes) {
         if (av.tipo !== "relatorio_aluno") continue;
         if (!av.agendamentoId) continue;
-        if (!concluidasIds.has(av.agendamentoId)) continue;
+        if (!concluidasComRequisitosIds.has(av.agendamentoId)) continue;
         agsComAval.add(av.agendamentoId);
       }
-      const avalAlunoPct = concluidas.length > 0 ? (agsComAval.size / concluidas.length) * 100 : 0;
+      const avalAlunoPct =
+        concluidasComRequisitos.length > 0
+          ? (agsComAval.size / concluidasComRequisitos.length) * 100
+          : 100;
 
       // Média de habilidades + comportamento, agregando checklists desta turma
       const checklistsTurma = avaliacoes.filter((av) => {

@@ -16,7 +16,12 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { agendamentosStore } from "./agendamentos-store";
 import { notificacoesStore } from "./notificacoes-store";
-import { computeSlotEstado, type Agendamento, type Notificacao } from "./academic-types";
+import {
+  agendamentoDispensaRequisitos,
+  computeSlotEstado,
+  type Agendamento,
+  type Notificacao,
+} from "./academic-types";
 import { alunosStore } from "./alunos-store";
 import { cursosStore } from "./cursos-store";
 import { turmasStore } from "./turmas-store";
@@ -132,6 +137,7 @@ export function runScanner(now: Date = new Date()) {
   const novas: Notificacao[] = [];
 
   for (const a of ags) {
+    if (agendamentoDispensaRequisitos(a)) continue;
     if (a.status === "concluido") continue;
     const evs = evidencias.filter((e) => e.agendamentoId === a.id);
     const plano = getEvidenciaPorTipo(evs, "plano_aula");

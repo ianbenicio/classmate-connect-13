@@ -20,6 +20,7 @@ import {
   Building2,
   FileSpreadsheet,
   BookOpen,
+  CalendarClock,
 } from "lucide-react";
 import { UsersManagerDialog } from "@/components/admin/UsersManagerDialog";
 import { ProfessoresManagerDialog } from "@/components/admin/ProfessoresManagerDialog";
@@ -30,6 +31,7 @@ import { AuditHistoricoDialog } from "@/components/admin/AuditHistoricoDialog";
 import { CsvImportDialog } from "@/components/admin/CsvImportDialog";
 import { CursoTemplatesDialog } from "@/components/admin/CursoTemplatesDialog";
 import { OnboardingWizardDialog } from "@/components/admin/OnboardingWizardDialog";
+import { CronogramaAulasDialog } from "@/components/academic/CronogramaAulasDialog";
 import { DashboardKPIs } from "@/components/admin/DashboardKPIs";
 import { AlertasInteligentes } from "@/components/admin/AlertasInteligentes";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
@@ -96,6 +98,7 @@ function CoordenacaoDashboard() {
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [cronogramaOpen, setCronogramaOpen] = useState(false);
   const onboardingCompleted = useSetting<boolean>("onboarding.completed", false);
 
   const canAccess = hasRole("admin") || hasRole("coordenacao") || isSuperAdmin();
@@ -311,6 +314,9 @@ function CoordenacaoDashboard() {
               <BarChart3 /> Progressao Curso/Turma
             </Link>
           </Button>
+          <Button variant="outline" onClick={() => setCronogramaOpen(true)}>
+            <CalendarClock /> Cronograma de aulas
+          </Button>
           {isAdmin && (
             <Button variant="outline" onClick={() => setUsersOpen(true)}>
               <Users /> Usuários
@@ -471,6 +477,7 @@ function CoordenacaoDashboard() {
       <AuditHistoricoDialog open={auditOpen} onOpenChange={setAuditOpen} />
       <CsvImportDialog open={csvImportOpen} onOpenChange={setCsvImportOpen} />
       <CursoTemplatesDialog open={templatesOpen} onOpenChange={setTemplatesOpen} />
+      <CronogramaAulasDialog open={cronogramaOpen} onOpenChange={setCronogramaOpen} />
       {isAdmin && (
         <OnboardingWizardDialog
           open={wizardOpen}

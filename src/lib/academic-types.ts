@@ -392,6 +392,13 @@ export interface Agendamento {
   professorUserId?: string;
   criadoPorUserId?: string;
   criadoPorNome?: string;
+  /** Origem operacional do registro. Quando "coordenacao", pode representar status manual. */
+  origem?: "professor" | "coordenacao";
+  /** Excecao: status definido pela coordenacao sem exigir plano, chamada ou relatorios. */
+  requisitosDispensados?: boolean;
+  statusDefinidoPorUserId?: string;
+  statusDefinidoPorNome?: string;
+  statusDefinidoEm?: string;
 
   // ----- Blocos -----
   /** Índice do primeiro bloco ocupado dentro do slot da turma (0 = início). */
@@ -418,6 +425,12 @@ export interface Agendamento {
   recursosDrivePath?: string;
   /** ISO timestamp — auto-set quando RelatorioProfessorDialog salva com sugestoesPais. */
   paisNotificadosEm?: string;
+}
+
+export function agendamentoDispensaRequisitos(
+  agendamento: Pick<Agendamento, "origem" | "requisitosDispensados">,
+): boolean {
+  return agendamento.origem === "coordenacao" && agendamento.requisitosDispensados === true;
 }
 
 // ---------- Notificação ----------

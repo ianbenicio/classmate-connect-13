@@ -18,7 +18,7 @@ import { useAlunos } from "@/lib/alunos-store";
 import { useCursos } from "@/lib/cursos-store";
 import { useAtividades } from "@/lib/atividades-store";
 import { useAulaEvidencias } from "@/lib/aula-evidencias-store";
-import { endSlotDate } from "@/lib/academic-types";
+import { agendamentoDispensaRequisitos, endSlotDate } from "@/lib/academic-types";
 import {
   evidenciaEstaValida,
   getEvidenciaPorTipo,
@@ -79,6 +79,7 @@ export function AlertasInteligentes() {
     // Categoria 1 — relatórios atrasados
     const relAtrasados = agendamentos
       .filter((ag) => ag.status === "concluido")
+      .filter((ag) => !agendamentoDispensaRequisitos(ag))
       .filter((ag) => !comRelatorio.has(ag.id))
       .map((ag) => {
         const fim = endSlotDate(ag);
@@ -94,6 +95,7 @@ export function AlertasInteligentes() {
     // Categoria 2 — aulas com baixa cobertura de avaliação dos alunos
     const cobertura = agendamentos
       .filter((ag) => ag.status === "concluido")
+      .filter((ag) => !agendamentoDispensaRequisitos(ag))
       .map((ag) => {
         const alunosTurma = turmaAlunoCount.get(ag.turmaId) ?? 0;
         if (alunosTurma === 0) return null;
@@ -107,6 +109,7 @@ export function AlertasInteligentes() {
 
     // Categoria 3 — plano de aula nao submetido ate 2h antes
     const planosAtrasados = agendamentos
+      .filter((ag) => !agendamentoDispensaRequisitos(ag))
       .map((ag) => {
         const turma = turmaById.get(ag.turmaId);
         const curso = turma ? cursoById.get(turma.cursoId) : undefined;

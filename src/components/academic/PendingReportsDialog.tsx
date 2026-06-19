@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  agendamentoDispensaRequisitos,
   computeSlotEstado,
   type Agendamento,
   type Atividade,
@@ -55,6 +56,7 @@ export function PendingReportsDialog({ open, onOpenChange, cursos, turmas, ativi
     const now = new Date();
     return agendamentos
       .filter((a) => a.status !== "concluido")
+      .filter((a) => !agendamentoDispensaRequisitos(a))
       .filter((a) => canManageAgendamento({ userId: currentUserId, isStaff: isAdmin }, a))
       .map((a) => ({
         a,

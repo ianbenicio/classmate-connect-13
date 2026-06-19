@@ -1,3 +1,4 @@
+import { agendamentoDispensaRequisitos } from "./academic-types";
 import type { Agendamento, Aluno, Atividade, Curso, Turma } from "./academic-types";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
 
@@ -76,6 +77,11 @@ function pct(done: number, total: number): number {
   return Math.round((done / total) * 100);
 }
 
+function pctRequisito(done: number, total: number): number {
+  if (total <= 0) return 100;
+  return pct(done, total);
+}
+
 function sum<T>(items: T[], pick: (item: T) => number): number {
   return items.reduce((acc, item) => acc + pick(item), 0);
 }
@@ -125,6 +131,9 @@ export function gerarProgressoCursos({
         const concluidos = agendamentosTurma.filter(
           (agendamento) => agendamento.status === "concluido",
         );
+        const concluidosComRequisitos = concluidos.filter(
+          (agendamento) => !agendamentoDispensaRequisitos(agendamento),
+        );
         const atividadeExecutadaIds = new Set<string>();
 
         for (const agendamento of concluidos) {
@@ -135,29 +144,29 @@ export function gerarProgressoCursos({
           }
         }
 
-        const relatoriosProf = concluidos.filter((agendamento) =>
+        const relatoriosProf = concluidosComRequisitos.filter((agendamento) =>
           relatoriosProfIds.has(agendamento.id),
         ).length;
 
         let avaliacoesAluno = 0;
         let checklistsAluno = 0;
-        for (const agendamento of concluidos) {
+        for (const agendamento of concluidosComRequisitos) {
           for (const alunoId of alunosUsuariosIds) {
             if (relatoriosAlunoPairs.has(`${agendamento.id}:${alunoId}`)) avaliacoesAluno++;
             if (checklistPairs.has(`${agendamento.id}:${alunoId}`)) checklistsAluno++;
           }
         }
 
-        const avaliacoesPossiveis = concluidos.length * alunosUsuarios.length;
+        const avaliacoesPossiveis = concluidosComRequisitos.length * alunosUsuarios.length;
         const pendencias: string[] = [];
         const alunosSemUsuario = alunosTurma.length - alunosUsuarios.length;
-        const relatoriosProfPendentes = concluidos.length - relatoriosProf;
+        const relatoriosProfPendentes = concluidosComRequisitos.length - relatoriosProf;
 
         if (alunosSemUsuario > 0) pendencias.push(`${alunosSemUsuario} aluno(s) sem usuario`);
         if (relatoriosProfPendentes > 0) {
           pendencias.push(`${relatoriosProfPendentes} relatorio(s) de professor pendente(s)`);
         }
-        if (concluidos.length > 0 && pct(avaliacoesAluno, avaliacoesPossiveis) < 50) {
+        if (concluidosComRequisitos.length > 0 && pct(avaliacoesAluno, avaliacoesPossiveis) < 50) {
           pendencias.push("baixa resposta dos alunos");
         }
 
@@ -177,13 +186,13 @@ export function gerarProgressoCursos({
           aulasPendentes: agendamentosTurma.length - concluidos.length,
           relatoriosProf,
           relatoriosProfPendentes,
-          relatoriosProfPct: pct(relatoriosProf, concluidos.length),
+          relatoriosProfPct: pctRequisito(relatoriosProf, concluidosComRequisitos.length),
           avaliacoesAluno,
           avaliacoesAlunoPossiveis: avaliacoesPossiveis,
-          avaliacoesAlunoPct: pct(avaliacoesAluno, avaliacoesPossiveis),
+          avaliacoesAlunoPct: pctRequisito(avaliacoesAluno, avaliacoesPossiveis),
           checklistsAluno,
           checklistsAlunoPossiveis: avaliacoesPossiveis,
-          checklistsAlunoPct: pct(checklistsAluno, avaliacoesPossiveis),
+          checklistsAlunoPct: pctRequisito(checklistsAluno, avaliacoesPossiveis),
           pendencias,
         };
       });
@@ -192,6 +201,7 @@ export function gerarProgressoCursos({
       const atividadesExecutadas = sum(turmasOut, (turma) => turma.atividadesExecutadas);
       const aulasConcluidas = sum(turmasOut, (turma) => turma.aulasConcluidas);
       const relatoriosProf = sum(turmasOut, (turma) => turma.relatoriosProf);
+      const relatoriosProfPendentes = sum(turmasOut, (turma) => turma.relatoriosProfPendentes);
       const avaliacoesAluno = sum(turmasOut, (turma) => turma.avaliacoesAluno);
       const avaliacoesAlunoPossiveis = sum(turmasOut, (turma) => turma.avaliacoesAlunoPossiveis);
       const checklistsAluno = sum(turmasOut, (turma) => turma.checklistsAluno);
@@ -215,14 +225,14 @@ export function gerarProgressoCursos({
         aulasConcluidas,
         aulasPendentes: sum(turmasOut, (turma) => turma.aulasPendentes),
         relatoriosProf,
-        relatoriosProfPendentes: aulasConcluidas - relatoriosProf,
-        relatoriosProfPct: pct(relatoriosProf, aulasConcluidas),
+        relatoriosProfPendentes,
+        relatoriosProfPct: pctRequisito(relatoriosProf, relatoriosProf + relatoriosProfPendentes),
         avaliacoesAluno,
         avaliacoesAlunoPossiveis,
-        avaliacoesAlunoPct: pct(avaliacoesAluno, avaliacoesAlunoPossiveis),
+        avaliacoesAlunoPct: pctRequisito(avaliacoesAluno, avaliacoesAlunoPossiveis),
         checklistsAluno,
         checklistsAlunoPossiveis,
-        checklistsAlunoPct: pct(checklistsAluno, checklistsAlunoPossiveis),
+        checklistsAlunoPct: pctRequisito(checklistsAluno, checklistsAlunoPossiveis),
         pendencias,
       };
     })

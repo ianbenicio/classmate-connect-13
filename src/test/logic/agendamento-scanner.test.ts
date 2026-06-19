@@ -113,6 +113,23 @@ describe("runScanner", () => {
     expect(addManySpy).not.toHaveBeenCalled();
   });
 
+  it("skips coordination manual agendamentos with dispensed requirements", () => {
+    const ag = makeAgendamento({
+      data: "2026-05-26",
+      inicio: "08:00",
+      fim: "08:50",
+      origem: "coordenacao",
+      requisitosDispensados: true,
+      professor: "Coordenacao",
+      professorUserId: undefined,
+    });
+    seedStores([ag], []);
+
+    runScanner(new Date("2026-05-28T00:00:00"));
+
+    expect(addManySpy).not.toHaveBeenCalled();
+  });
+
   it("skips agendado state (before slot end)", () => {
     const ag = makeAgendamento({ data: "2026-05-26", fim: "10:30" });
     seedStores([ag]);
