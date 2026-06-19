@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
 import type { Atividade, Curso } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import { getStatusAulasDaTurma } from "@/lib/cronograma-aulas";
 
 type CelulaStatus = "concluida" | "agendada" | "disponivel";
 
@@ -71,20 +72,10 @@ export function QuadroAulasPicker({
   );
 
   // Aulas já concluídas/agendadas para a turma (cancelados liberam).
-  const { aulasConcluidasIds, aulasAgendadasIds } = useMemo(() => {
-    const concluidas = new Set<string>();
-    const agendadas = new Set<string>();
-    if (!turmaId) return { aulasConcluidasIds: concluidas, aulasAgendadasIds: agendadas };
-    for (const ag of todosAgendamentos) {
-      if (ag.turmaId !== turmaId) continue;
-      for (const ativId of ag.atividadeIds) {
-        if (ag.status === "concluido") concluidas.add(ativId);
-        else if (!concluidas.has(ativId)) agendadas.add(ativId);
-      }
-    }
-    for (const id of concluidas) agendadas.delete(id);
-    return { aulasConcluidasIds: concluidas, aulasAgendadasIds: agendadas };
-  }, [todosAgendamentos, turmaId]);
+  const { aulasConcluidasIds, aulasAgendadasIds } = useMemo(
+    () => getStatusAulasDaTurma(todosAgendamentos, turmaId, aulasCurso),
+    [aulasCurso, todosAgendamentos, turmaId],
+  );
 
   const celulas = useMemo(
     () =>

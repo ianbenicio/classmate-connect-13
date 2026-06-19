@@ -5,8 +5,10 @@ import {
   buildPatchStatusCoordenacao,
   getAgendamentoReferenciaCronograma,
   getAgendamentosDaAula,
+  getStatusAulasDaTurma,
   getStatusCronogramaAula,
 } from "@/lib/cronograma-aulas";
+import { toUuid } from "@/lib/db-mapping";
 import { TURMA_A, makeAgendamento, makeConcluido } from "../helpers/fixtures";
 
 const aula: Atividade = {
@@ -40,6 +42,28 @@ describe("cronograma-aulas", () => {
     });
 
     expect(getAgendamentosDaAula([alvo, outro], TURMA_A.id, aula.id)).toEqual([alvo]);
+  });
+
+  it("marca aulas agendadas e finalizadas mesmo com ids seed e uuid misturados", () => {
+    const aulaLivre = { ...aula, id: "at002", codigo: "MPCA02" };
+    const agendada = makeAgendamento({
+      id: "ag-agendada",
+      turmaId: toUuid(TURMA_A.id),
+      atividadeIds: [toUuid(aula.id)],
+      status: "pendente",
+    });
+    const finalizada = makeConcluido({
+      id: "ag-finalizada",
+      turmaId: TURMA_A.id,
+      atividadeIds: [toUuid(aulaLivre.id)],
+    });
+
+    const status = getStatusAulasDaTurma([agendada, finalizada], TURMA_A.id, [aula, aulaLivre]);
+
+    expect(status.aulasAgendadasIds.has(aula.id)).toBe(true);
+    expect(status.aulasConcluidasIds.has(aulaLivre.id)).toBe(true);
+    expect(status.aulasIndisponiveisIds.has(aula.id)).toBe(true);
+    expect(status.aulasIndisponiveisIds.has(aulaLivre.id)).toBe(true);
   });
 
   it("prioriza agendamento concluido como referencia visual", () => {

@@ -44,6 +44,7 @@ import {
 } from "@/lib/academic-types";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { aulaEvidenciasStore } from "@/lib/aula-evidencias-store";
+import { agendamentoPertenceATurma, getStatusAulasDaTurma } from "@/lib/cronograma-aulas";
 import {
   getNomeBaseEvidencia,
   inferirHabilidadesIdsDoPlano,
@@ -403,15 +404,9 @@ export function AgendarAtividadeDialog({
   // devem aparecer no dropdown (uma aula só é dada uma vez por turma).
   // Cancelados não bloqueiam: a aula volta a ficar disponível.
   const aulasIndisponiveisParaTurma = useMemo((): Set<string> => {
-    const indisponiveis = new Set<string>();
-    if (!turmaSelecionada) return indisponiveis;
-    for (const ag of todosAgendamentos) {
-      if (ag.turmaId !== turmaSelecionada.id) continue;
-      if (ag.status === "cancelado") continue;
-      for (const ativId of ag.atividadeIds) indisponiveis.add(ativId);
-    }
-    return indisponiveis;
-  }, [todosAgendamentos, turmaSelecionada]);
+    return getStatusAulasDaTurma(todosAgendamentos, turmaSelecionada?.id, atividades)
+      .aulasIndisponiveisIds;
+  }, [atividades, todosAgendamentos, turmaSelecionada?.id]);
 
   const aulasDoGrupoDraft = useMemo(
     () => ativsDoGrupoDraft.filter((a) => a.tipo === 0 && !aulasIndisponiveisParaTurma.has(a.id)),
@@ -435,7 +430,7 @@ export function AgendarAtividadeDialog({
     if (!turmaSelecionada || !slotAtual || !date) return ocupados;
     const dataIso = format(date, "yyyy-MM-dd");
     for (const ag of todosAgendamentos) {
-      if (ag.turmaId !== turmaSelecionada.id) continue;
+      if (!agendamentoPertenceATurma(ag, turmaSelecionada.id)) continue;
       if (ag.data !== dataIso) continue;
       const matchesSlot =
         (ag.slotInicio === slotAtual.inicio && ag.slotFim === slotAtual.fim) ||
