@@ -52,4 +52,4 @@ jobs:
             20260521133724
 
       - name: Push migrations
-        run: supabase db push --password "$SUPABASE_DB_PASSWORD"
+        run: supabase db push --include-all --password "$SUPABASE_DB_PASSWORD"
