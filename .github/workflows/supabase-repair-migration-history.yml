@@ -51,5 +51,8 @@ jobs:
             20260521112138 \
             20260521133724
 
+      - name: Mark superseded local dump migration as applied
+        run: supabase migration repair --linked --password "$SUPABASE_DB_PASSWORD" --status applied 20260503125106
+
       - name: Push migrations
         run: supabase db push --include-all --password "$SUPABASE_DB_PASSWORD"
