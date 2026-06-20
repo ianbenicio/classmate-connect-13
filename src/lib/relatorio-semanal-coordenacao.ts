@@ -7,7 +7,7 @@ import type {
   Notificacao,
   Turma,
 } from "./academic-types";
-import { agendamentoDispensaRequisitos } from "./academic-types";
+import { agendamentoDispensaRequisitos, isAtividadeAvulsa } from "./academic-types";
 import type { AulaEvidencia } from "./aula-evidencias";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
 import type {
@@ -529,7 +529,8 @@ function consolidarTurma({
     )
     .sort((a, b) => a.alunoNome.localeCompare(b.alunoNome));
   const atividadesPlanejadas = atividades.filter(
-    (atividade) => atividade.cursoId === curso.id && atividade.tipo === 0,
+    (atividade) =>
+      atividade.cursoId === curso.id && atividade.tipo === 0 && !isAtividadeAvulsa(atividade),
   );
   const atividadeIdsFinalizadas = new Set(
     aulas.flatMap((aula) =>

@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
-import type { Atividade, Curso } from "@/lib/academic-types";
+import { isAtividadeAvulsa, type Atividade, type Curso } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { getStatusAulasDaTurma } from "@/lib/cronograma-aulas";
 
@@ -66,7 +66,7 @@ export function QuadroAulasPicker({
   const aulasCurso = useMemo(
     () =>
       atividades
-        .filter((a) => a.cursoId === curso.id && a.tipo === 0)
+        .filter((a) => a.cursoId === curso.id && a.tipo === 0 && !isAtividadeAvulsa(a))
         .sort((a, b) => a.codigo.localeCompare(b.codigo)),
     [atividades, curso.id],
   );

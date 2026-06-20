@@ -27,7 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Agendamento, Atividade } from "@/lib/academic-types";
-import { agendamentoDispensaRequisitos } from "@/lib/academic-types";
+import { agendamentoDispensaRequisitos, isAtividadeAvulsa } from "@/lib/academic-types";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import {
   buildAgendamentoCoordenacao,
@@ -111,7 +111,10 @@ export function CronogramaAulasDialog({ open, onOpenChange }: Props) {
       cursoSelecionado
         ? atividades
             .filter(
-              (atividade) => atividade.cursoId === cursoSelecionado.id && atividade.tipo === 0,
+              (atividade) =>
+                atividade.cursoId === cursoSelecionado.id &&
+                atividade.tipo === 0 &&
+                !isAtividadeAvulsa(atividade),
             )
             .sort((a, b) => a.codigo.localeCompare(b.codigo))
         : [],

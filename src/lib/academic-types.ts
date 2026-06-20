@@ -328,6 +328,15 @@ export interface Atividade {
 }
 
 /** Default seguro para FormulariosConfig (relatório do professor sempre ligado). */
+export const ATIVIDADE_AVULSA_GRUPO = "AVULSA";
+
+export function isAtividadeAvulsa(
+  atividade: Pick<Atividade, "grupo" | "codigo"> | null | undefined,
+): boolean {
+  if (!atividade) return false;
+  return atividade.grupo === ATIVIDADE_AVULSA_GRUPO || atividade.codigo.startsWith("AV-");
+}
+
 export const DEFAULT_FORMULARIOS: FormulariosConfig = {
   relatorioProfessor: true,
   autoavaliacaoAluno: false,

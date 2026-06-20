@@ -10,6 +10,7 @@ import {
   Users,
   CalendarClock,
   CalendarDays,
+  Plus,
 } from "lucide-react";
 import { useAlunos } from "@/lib/alunos-store";
 import { useCursos } from "@/lib/cursos-store";
@@ -20,13 +21,21 @@ import { MinhasAtividadesTable } from "@/components/professor/MinhasAtividadesTa
 import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
 import { CheckInRapidoCard } from "@/components/admin/CheckInRapidoCard";
 import { AgendarAtividadeDialog } from "@/components/academic/AgendarAtividadeDialog";
+import { AtividadeAvulsaDialog } from "@/components/academic/AtividadeAvulsaDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
 import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog";
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
 import { useAuth } from "@/lib/auth";
 import { canDeleteAgendamento, canManageAgendamento } from "@/lib/agendamento-permissions";
-import type { Agendamento, Atividade, Curso, HorarioSlot, Turma } from "@/lib/academic-types";
+import {
+  isAtividadeAvulsa,
+  type Agendamento,
+  type Atividade,
+  type Curso,
+  type HorarioSlot,
+  type Turma,
+} from "@/lib/academic-types";
 import { toast } from "sonner";
 import { AvaliacaoTipoPicker } from "@/components/academic/AvaliacaoTipoPicker";
 
@@ -85,14 +94,16 @@ function DashboardPage() {
     slot: HorarioSlot;
   } | null>(null);
   const [meusRelatoriosOpen, setMeusRelatoriosOpen] = useState(false);
+  const [atividadeAvulsaOpen, setAtividadeAvulsaOpen] = useState(false);
 
-  const aulasCount = atividades.filter((a) => a.tipo === 0).length;
+  const aulasCount = atividades.filter((a) => a.tipo === 0 && !isAtividadeAvulsa(a)).length;
   const tarefasCount = atividades.filter((a) => a.tipo === 1).length;
 
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
 
   // Calcula se o usuário é professor (fora do useMemo para evitar issue de dependência)
   const isProfessor = hasRole("professor");
+  const canCreateAtividadeAvulsa = hasRole("admin") || hasRole("coordenacao") || isProfessor;
 
   const proximas = useMemo(() => {
     const hoje = new Date().toISOString().slice(0, 10);
@@ -197,14 +208,28 @@ function DashboardPage() {
 
         {/* Calendário */}
         <section className="mb-10">
-          <div className="flex items-baseline justify-between mb-4">
+          <div className="flex items-baseline justify-between gap-3 mb-4">
             <h2 className="text-xl font-semibold tracking-tight inline-flex items-center gap-2">
               <CalendarDays className="h-5 w-5" />
               Calendário
             </h2>
-            {(hasRole("aluno") || hasRole("professor")) && (
-              <AvaliacaoTipoPicker variant="outline" size="sm" label="Avaliação" />
-            )}
+            <div className="flex items-center gap-2">
+              {canCreateAtividadeAvulsa && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setAtividadeAvulsaOpen(true)}
+                  aria-label="Adicionar atividade avulsa"
+                  title="Adicionar atividade avulsa"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              )}
+              {(hasRole("aluno") || hasRole("professor")) && (
+                <AvaliacaoTipoPicker variant="outline" size="sm" label="Avaliação" />
+              )}
+            </div>
           </div>
           <ScheduleCalendar
             turmas={turmas}
@@ -432,6 +457,14 @@ function DashboardPage() {
           lockTurmaEHorario
         />
       )}
+
+      <AtividadeAvulsaDialog
+        open={atividadeAvulsaOpen}
+        onOpenChange={setAtividadeAvulsaOpen}
+        cursos={cursos}
+        turmas={turmas}
+        agendamentos={agendamentos}
+      />
 
       <RelatorioProfessorDialog
         open={!!relatorioCtx}

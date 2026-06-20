@@ -28,6 +28,7 @@ import {
   formatMinutos,
   getDuracaoAulaMin,
   getTurnoDiarioMin,
+  isAtividadeAvulsa,
   type Agendamento,
   type Aluno,
   type Atividade,
@@ -83,7 +84,9 @@ export function TurmaDetailDialog({
       return { aulasDadasIds: new Set<string>(), totalAulas: 0, dadas: 0, pct: 0 };
     }
     const aulasCursoIds = new Set(
-      atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0).map((a) => a.id),
+      atividades
+        .filter((a) => a.cursoId === curso.id && a.tipo === 0 && !isAtividadeAvulsa(a))
+        .map((a) => a.id),
     );
     const dadasSet = new Set<string>();
     for (const al of alunosDaTurma) {

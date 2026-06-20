@@ -1,4 +1,4 @@
-import { agendamentoDispensaRequisitos } from "./academic-types";
+import { agendamentoDispensaRequisitos, isAtividadeAvulsa } from "./academic-types";
 import type { Agendamento, Aluno, Atividade, Curso, Turma } from "./academic-types";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
 
@@ -117,7 +117,9 @@ export function gerarProgressoCursos({
       const turmasCurso = turmas
         .filter((turma) => turma.cursoId === curso.id)
         .sort((a, b) => a.cod.localeCompare(b.cod));
-      const atividadesCurso = atividades.filter((atividade) => atividade.cursoId === curso.id);
+      const atividadesCurso = atividades.filter(
+        (atividade) => atividade.cursoId === curso.id && !isAtividadeAvulsa(atividade),
+      );
       const atividadesPlanejadasPorTurma = atividadesCurso.length;
       const atividadesCursoIds = new Set(atividadesCurso.map((atividade) => atividade.id));
 

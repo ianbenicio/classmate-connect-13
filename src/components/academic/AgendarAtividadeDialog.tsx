@@ -34,6 +34,7 @@ import {
   formatMinutos,
   getDuracaoAulaMin,
   getGrupoNome,
+  isAtividadeAvulsa,
   slotBlocosCount,
   type Agendamento,
   type Atividade,
@@ -409,7 +410,10 @@ export function AgendarAtividadeDialog({
   }, [atividades, todosAgendamentos, turmaSelecionada?.id]);
 
   const aulasDoGrupoDraft = useMemo(
-    () => ativsDoGrupoDraft.filter((a) => a.tipo === 0 && !aulasIndisponiveisParaTurma.has(a.id)),
+    () =>
+      ativsDoGrupoDraft.filter(
+        (a) => a.tipo === 0 && !isAtividadeAvulsa(a) && !aulasIndisponiveisParaTurma.has(a.id),
+      ),
     [ativsDoGrupoDraft, aulasIndisponiveisParaTurma],
   );
   const tarefasDoGrupoDraft = useMemo(
@@ -522,7 +526,11 @@ export function AgendarAtividadeDialog({
     const text = raw.toUpperCase();
     setDraftCodigoText(text);
     const match = atividades.find(
-      (a) => a.cursoId === curso.id && a.tipo === 0 && a.codigo.toUpperCase() === text.trim(),
+      (a) =>
+        a.cursoId === curso.id &&
+        a.tipo === 0 &&
+        !isAtividadeAvulsa(a) &&
+        a.codigo.toUpperCase() === text.trim(),
     );
     if (!match) {
       // Sem correspondência exata — limpa seleção (mantém o texto digitado).
@@ -827,6 +835,7 @@ export function AgendarAtividadeDialog({
       (a) =>
         a.cursoId === curso.id &&
         a.tipo === 0 &&
+        !isAtividadeAvulsa(a) &&
         a.codigo.toUpperCase() === draftCodigoText.trim().toUpperCase() &&
         !aulasIndisponiveisParaTurma.has(a.id),
     );

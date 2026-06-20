@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
-import type { Aluno, Atividade, Curso } from "@/lib/academic-types";
+import { isAtividadeAvulsa, type Aluno, type Atividade, type Curso } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 
 type CelulaStatus = "dada" | "agendada" | "presente" | "ausente" | "pendente";
@@ -58,6 +58,7 @@ export function QuadroAulasDialog({
       curso
         ? atividades
             .filter((a) => a.cursoId === curso.id && a.tipo === 0)
+            .filter((a) => !isAtividadeAvulsa(a))
             .sort((a, b) => a.codigo.localeCompare(b.codigo))
         : [],
     [atividades, curso],

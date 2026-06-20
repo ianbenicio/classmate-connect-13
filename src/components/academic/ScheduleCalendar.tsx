@@ -66,15 +66,30 @@ interface Props {
   onRemoverAgendamento?: (agendamento: Agendamento, turma: Turma) => void;
 }
 
-function turmasNoDia(turmas: Turma[], date: Date) {
+function turmasNoDia(turmas: Turma[], date: Date, agendamentos: Agendamento[] = []) {
   const ds = diaSemanaFromDate(date);
+  const dataKey = format(date, "yyyy-MM-dd");
+  const turmaMap = new Map(turmas.map((turma) => [turma.id, turma]));
   const items: { turma: Turma; inicio: string; fim: string }[] = [];
+  const seen = new Set<string>();
   for (const t of turmas) {
     for (const h of t.horarios) {
       if (h.diaSemana === ds) {
+        seen.add(`${t.id}|${h.inicio}|${h.fim}`);
         items.push({ turma: t, inicio: h.inicio, fim: h.fim });
       }
     }
+  }
+  for (const agendamento of agendamentos) {
+    if (agendamento.data !== dataKey) continue;
+    const turma = turmaMap.get(agendamento.turmaId);
+    if (!turma) continue;
+    const inicio = agendamento.slotInicio ?? agendamento.inicio;
+    const fim = agendamento.slotFim ?? agendamento.fim;
+    const key = `${turma.id}|${inicio}|${fim}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    items.push({ turma, inicio, fim });
   }
   return items.sort((a, b) => a.inicio.localeCompare(b.inicio));
 }
@@ -622,7 +637,7 @@ function MonthView({
       </div>
       <div className="grid grid-cols-7">
         {days.map((d) => {
-          const items = turmasNoDia(turmas, d);
+          const items = turmasNoDia(turmas, d, agendamentos);
           const isCurMonth = isSameMonth(d, refDate);
           const isToday = isSameDay(d, new Date());
           const dayKey = format(d, "yyyy-MM-dd");
@@ -713,6 +728,7 @@ function WeekView({
   const { startHour, endHour } = useMemo(() => {
     let min = 24,
       max = 0;
+    const weekDateKeys = new Set(weekDates.map((date) => format(date, "yyyy-MM-dd")));
     for (const t of turmas) {
       for (const h of t.horarios) {
         const sh = parseInt(h.inicio.split(":")[0], 10);
@@ -723,24 +739,23 @@ function WeekView({
         if (endRound > max) max = endRound;
       }
     }
+    for (const agendamento of agendamentos) {
+      if (!weekDateKeys.has(agendamento.data)) continue;
+      const sh = parseInt((agendamento.slotInicio ?? agendamento.inicio).split(":")[0], 10);
+      const [ehRaw, emRaw] = (agendamento.slotFim ?? agendamento.fim)
+        .split(":")
+        .map((part) => parseInt(part, 10));
+      if (sh < min) min = sh;
+      const endRound = emRaw > 0 ? ehRaw + 1 : ehRaw;
+      if (endRound > max) max = endRound;
+    }
     if (min === 24) min = 8;
     if (max === 0) max = 18;
     return { startHour: Math.max(0, min), endHour: Math.min(24, max) };
-  }, [turmas]);
+  }, [agendamentos, turmas, weekDates]);
 
   const hours: number[] = [];
   for (let h = startHour; h <= endHour; h++) hours.push(h);
-
-  const byDay = useMemo(() => {
-    const map = new Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>();
-    for (const d of WEEK_DAYS) map.set(d.value, []);
-    for (const t of turmas) {
-      for (const h of t.horarios) {
-        map.get(h.diaSemana)!.push({ turma: t, inicio: h.inicio, fim: h.fim });
-      }
-    }
-    return map;
-  }, [turmas]);
 
   return (
     <div className="bg-card border rounded-lg overflow-hidden">
@@ -776,7 +791,7 @@ function WeekView({
               key={h}
               hour={h}
               weekDates={weekDates}
-              byDay={byDay}
+              turmas={turmas}
               cursoMap={cursoMap}
               agendamentos={agendamentos}
               onSlotClick={onSlotClick}
@@ -794,7 +809,7 @@ function WeekView({
 function FragmentRow({
   hour,
   weekDates,
-  byDay,
+  turmas,
   cursoMap,
   agendamentos,
   onSlotClick,
@@ -804,7 +819,7 @@ function FragmentRow({
 }: {
   hour: number;
   weekDates: Date[];
-  byDay: Map<DiaSemana, { turma: Turma; inicio: string; fim: string }[]>;
+  turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
   onSlotClick?: (p: SlotClickPayload) => void;
@@ -821,7 +836,7 @@ function FragmentRow({
       {WEEK_DAYS.map((d, i) => {
         const date = weekDates[i];
         const dayKey = format(date, "yyyy-MM-dd");
-        const items = (byDay.get(d.value) ?? []).filter((it) => {
+        const items = turmasNoDia(turmas, date, agendamentos).filter((it) => {
           const ih = parseInt(it.inicio.split(":")[0], 10);
           return ih === hour;
         });

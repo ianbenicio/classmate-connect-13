@@ -48,6 +48,7 @@ import {
   endSlotDate,
   endSlotPlus24h,
   formatHorarios,
+  isAtividadeAvulsa,
   type Agendamento,
   type Aluno,
   type Atividade,
@@ -258,7 +259,10 @@ export function AlunoDetailDialog({ aluno, curso, turma, atividades, onOpenChang
 
   // Templates do curso
   const aulasCurso = useMemo(
-    () => (curso ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0) : []),
+    () =>
+      curso
+        ? atividades.filter((a) => a.cursoId === curso.id && a.tipo === 0 && !isAtividadeAvulsa(a))
+        : [],
     [atividades, curso],
   );
   const tarefasCurso = useMemo(
