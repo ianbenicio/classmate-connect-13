@@ -319,6 +319,8 @@ function RelatorioProfessorDialogContent({
       criadoEm: new Date().toISOString(),
       lida: false,
     };
+    const alunosPresentes = alunosTurma.filter((al) => presencas[al.id] !== false);
+    const alunosPresentesComUsuario = alunosPresentes.filter((al) => !!al.userId);
     const notifConcluido = {
       ...baseSlot,
       titulo: `Relatório registrado — ${turma.cod}`,
@@ -332,6 +334,7 @@ function RelatorioProfessorDialogContent({
             id: crypto.randomUUID(),
             destinatarioTipo: "professor" as const,
             destinatarioId: agendamento.professor,
+            destinatarioUserId: agendamento.professorUserId,
             titulo: `📋 Relatório registrado — ${turma.cod}`,
             mensagem: `Aula de ${dataFmt} marcada como concluída.`,
             kind: "concluido" as const,
@@ -339,31 +342,34 @@ function RelatorioProfessorDialogContent({
         ]
       : [];
     const tarefasChecklist = agendamento.professor
-      ? alunosTurma.map((al) => ({
+      ? alunosPresentesComUsuario.map((al) => ({
           ...baseSlot,
           id: crypto.randomUUID(),
           destinatarioTipo: "professor" as const,
           destinatarioId: agendamento.professor!,
+          destinatarioUserId: agendamento.professorUserId,
           titulo: `✅ Checklist pendente — ${al.nome}`,
           mensagem: `Avalie ${al.nome} na aula de ${dataFmt}.`,
           kind: "agendado" as const,
         }))
       : [];
-    const tarefasAluno = alunosTurma.map((al) => ({
+    const tarefasAluno = alunosPresentesComUsuario.map((al) => ({
       ...baseSlot,
       id: crypto.randomUUID(),
       destinatarioTipo: "aluno" as const,
       destinatarioId: al.id,
+      destinatarioUserId: al.userId,
       titulo: `✨ Como foi sua aula?`,
-      mensagem: `Conte como foi a aula de ${dataFmt} (até 24h).`,
+      mensagem: `Conte como foi a aula de ${dataFmt} e avalie a aula/professor (até 24h).`,
       kind: "agendado" as const,
     }));
     await notificacoesStore.addMany([
-      ...alunosTurma.map((al) => ({
+      ...alunosPresentesComUsuario.map((al) => ({
         ...notifConcluido,
         id: crypto.randomUUID(),
         destinatarioTipo: "aluno" as const,
         destinatarioId: al.id,
+        destinatarioUserId: al.userId,
       })),
       ...tarefaProf,
       ...tarefasChecklist,
@@ -380,9 +386,7 @@ function RelatorioProfessorDialogContent({
 
     // Encadeia o checklist individual para cada aluno presente.
     if (onSaved) {
-      const presentes = alunosTurma
-        .filter((a) => presencas[a.id] !== false)
-        .map((a) => ({ id: a.id, nome: a.nome }));
+      const presentes = alunosPresentesComUsuario.map((a) => ({ id: a.id, nome: a.nome }));
       onSaved({ agendamento, turma, curso, alunosPresentes: presentes });
     }
   };

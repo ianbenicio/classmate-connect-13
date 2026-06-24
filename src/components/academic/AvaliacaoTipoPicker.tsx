@@ -48,6 +48,7 @@ export function AvaliacaoTipoPicker({
   label = "Avaliação",
 }: Props) {
   const { user, displayName, hasRole } = useAuth();
+  const canResponderComoAluno = hasRole("aluno") && !hasRole("professor");
   const agendamentos = useAgendamentos();
   const turmas = useTurmas();
   const cursos = useCursos();
@@ -70,9 +71,10 @@ export function AvaliacaoTipoPicker({
   const curso = cursos.find((c) => c.id === turma?.cursoId);
 
   // Dados do aluno respondente
-  const alunoCorrente = hasRole("aluno")
+  const alunoCorrente = canResponderComoAluno
     ? alunos.find(
         (a) =>
+          a.userId === user?.id ||
           a.id === user?.id ||
           a.nome.trim().toLowerCase() === (displayName ?? "").trim().toLowerCase(),
       )
@@ -87,6 +89,8 @@ export function AvaliacaoTipoPicker({
     if (!contextoDisponivel) return;
     setTipoAberto(tipo);
   };
+
+  if (!canResponderComoAluno) return null;
 
   return (
     <>
@@ -157,9 +161,7 @@ export function AvaliacaoTipoPicker({
                 <p className="text-[11px] text-muted-foreground">
                   📅 {agendamento.data} · {agendamento.inicio}–{agendamento.fim}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  🎓 Prof. {professorNome}
-                </p>
+                <p className="text-[11px] text-muted-foreground">🎓 Prof. {professorNome}</p>
               </div>
             </>
           )}

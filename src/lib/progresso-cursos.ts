@@ -1,6 +1,7 @@
 import { agendamentoDispensaRequisitos, isAtividadeAvulsa } from "./academic-types";
 import type { Agendamento, Aluno, Atividade, Curso, Turma } from "./academic-types";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
+import type { RelatorioProfessorDados } from "./formularios-types";
 
 export interface ProgressoTurma {
   cursoId: string;
@@ -109,6 +110,15 @@ export function gerarProgressoCursos({
       .filter((av) => av.tipo === "relatorio_prof" && av.agendamentoId)
       .map((av) => av.agendamentoId as string),
   );
+  const relatoriosProfPorAgendamento = new Map<string, RelatorioProfessorDados>();
+  for (const avaliacao of avaliacoes) {
+    if (avaliacao.tipo === "relatorio_prof" && avaliacao.agendamentoId) {
+      relatoriosProfPorAgendamento.set(
+        avaliacao.agendamentoId,
+        avaliacao.dados as RelatorioProfessorDados,
+      );
+    }
+  }
   const relatoriosAlunoPairs = avaliacaoPairSet(avaliacoes, "relatorio_aluno");
   const checklistPairs = avaliacaoPairSet(avaliacoes, "checklist_aluno");
 
@@ -126,7 +136,6 @@ export function gerarProgressoCursos({
       const turmasOut: ProgressoTurma[] = turmasCurso.map((turma) => {
         const alunosTurma = alunos.filter((aluno) => aluno.turmaId === turma.id);
         const alunosUsuarios = alunosTurma.filter((aluno) => !!aluno.userId);
-        const alunosUsuariosIds = new Set(alunosUsuarios.map((aluno) => aluno.id));
         const agendamentosTurma = agendamentos.filter(
           (agendamento) => agendamento.turmaId === turma.id,
         );
@@ -152,14 +161,19 @@ export function gerarProgressoCursos({
 
         let avaliacoesAluno = 0;
         let checklistsAluno = 0;
+        let avaliacoesPossiveis = 0;
         for (const agendamento of concluidosComRequisitos) {
-          for (const alunoId of alunosUsuariosIds) {
+          const presencas = relatoriosProfPorAgendamento.get(agendamento.id)?.presencas ?? {};
+          const alunosPresentesIds = alunosUsuarios
+            .filter((aluno) => presencas[aluno.id] === true)
+            .map((aluno) => aluno.id);
+          avaliacoesPossiveis += alunosPresentesIds.length;
+          for (const alunoId of alunosPresentesIds) {
             if (relatoriosAlunoPairs.has(`${agendamento.id}:${alunoId}`)) avaliacoesAluno++;
             if (checklistPairs.has(`${agendamento.id}:${alunoId}`)) checklistsAluno++;
           }
         }
 
-        const avaliacoesPossiveis = concluidosComRequisitos.length * alunosUsuarios.length;
         const pendencias: string[] = [];
         const alunosSemUsuario = alunosTurma.length - alunosUsuarios.length;
         const relatoriosProfPendentes = concluidosComRequisitos.length - relatoriosProf;
@@ -168,7 +182,7 @@ export function gerarProgressoCursos({
         if (relatoriosProfPendentes > 0) {
           pendencias.push(`${relatoriosProfPendentes} relatorio(s) de professor pendente(s)`);
         }
-        if (concluidosComRequisitos.length > 0 && pct(avaliacoesAluno, avaliacoesPossiveis) < 50) {
+        if (avaliacoesPossiveis > 0 && pct(avaliacoesAluno, avaliacoesPossiveis) < 50) {
           pendencias.push("baixa resposta dos alunos");
         }
 

@@ -37,7 +37,6 @@ import {
   type Turma,
 } from "@/lib/academic-types";
 import { toast } from "sonner";
-import { AvaliacaoTipoPicker } from "@/components/academic/AvaliacaoTipoPicker";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -225,9 +224,6 @@ function DashboardPage() {
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-              )}
-              {(hasRole("aluno") || hasRole("professor")) && (
-                <AvaliacaoTipoPicker variant="outline" size="sm" label="Avaliação" />
               )}
             </div>
           </div>

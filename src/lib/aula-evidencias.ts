@@ -263,13 +263,7 @@ export function resumirConformidadeAula(input: AulaConformidadeInput): AulaConfo
   }
 
   return {
-    completa:
-      planoOk &&
-      chamadaArquivoOk &&
-      chamadaDigitalOk &&
-      relatorioProfessorOk &&
-      relatorioAlunoOk &&
-      checklistOk,
+    completa: planoOk && chamadaArquivoOk && chamadaDigitalOk && relatorioProfessorOk,
     planoOk,
     chamadaArquivoOk,
     chamadaDigitalOk,

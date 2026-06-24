@@ -362,6 +362,9 @@ function consolidarAula({
   const checklists = avaliacoes.filter((avaliacao) => avaliacao.tipo === "checklist_aluno");
   const presencas = ((relProf?.dados as RelatorioProfessorDados | undefined)?.presencas ??
     {}) as Record<string, boolean>;
+  const alunosPresentesUsuariosIds = new Set(
+    alunosUsuarios.filter((aluno) => presencas[aluno.id] === true).map((aluno) => aluno.id),
+  );
   const plano = evidencias.find((evidencia) => evidencia.tipo === "plano_aula");
   const chamada = evidencias.find((evidencia) => evidencia.tipo === "chamada_arquivo");
   const requisitosDispensados = agendamentoDispensaRequisitos(agendamento);
@@ -390,10 +393,15 @@ function consolidarAula({
     chamadaRegistrada: requisitosDispensados || !!chamada,
     chamadaValida: requisitosDispensados || evidenciaValida(chamada),
     relatorioProfessorRegistrado: requisitosDispensados || !!relProf,
-    relatoriosAlunoRespondidos: relAlunos.length,
-    relatoriosAlunoEsperados: requisitosDispensados ? 0 : alunosUsuarios.length,
-    checklistsRespondidos: checklists.length,
-    checklistsEsperados: requisitosDispensados ? 0 : alunosUsuarios.length,
+    relatoriosAlunoRespondidos: relAlunos.filter(
+      (avaliacao) => avaliacao.alunoId && alunosPresentesUsuariosIds.has(avaliacao.alunoId),
+    ).length,
+    relatoriosAlunoEsperados:
+      requisitosDispensados || !relProf ? 0 : alunosPresentesUsuariosIds.size,
+    checklistsRespondidos: checklists.filter(
+      (avaliacao) => avaliacao.alunoId && alunosPresentesUsuariosIds.has(avaliacao.alunoId),
+    ).length,
+    checklistsEsperados: requisitosDispensados || !relProf ? 0 : alunosPresentesUsuariosIds.size,
     presencas: Object.values(presencas).filter(Boolean).length,
     faltas: Object.values(presencas).filter((presente) => presente === false).length,
   };
