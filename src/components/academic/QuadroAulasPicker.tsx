@@ -16,11 +16,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
-import { isAtividadeAvulsa, type Atividade, type Curso } from "@/lib/academic-types";
+import { getGrupoNome, isAtividadeAvulsa, type Atividade, type Curso } from "@/lib/academic-types";
 import { useAgendamentos } from "@/lib/agendamentos-store";
 import { getStatusAulasDaTurma } from "@/lib/cronograma-aulas";
+import { useGruposByCursoCod } from "@/lib/grupos-store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type CelulaStatus = "concluida" | "agendada" | "disponivel";
+
+type CelulaAula = {
+  atividade: Atividade;
+  status: CelulaStatus;
+};
 
 interface Props {
   open: boolean;
@@ -57,18 +70,38 @@ export function QuadroAulasPicker({
   onSelect,
 }: Props) {
   const todosAgendamentos = useAgendamentos();
+  const gruposByCursoCod = useGruposByCursoCod();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [grupoFiltro, setGrupoFiltro] = useState<string>("__all__");
 
   useEffect(() => {
-    if (!open) setSelectedId(null);
+    if (!open) {
+      setSelectedId(null);
+      setGrupoFiltro("__all__");
+    }
   }, [open]);
+
+  const gruposDoCurso = useMemo(
+    () => gruposByCursoCod[curso.cod] ?? [],
+    [curso.cod, gruposByCursoCod],
+  );
+  const grupoOrder = useMemo(
+    () => new Map(gruposDoCurso.map((grupo, index) => [grupo.cod, index])),
+    [gruposDoCurso],
+  );
 
   const aulasCurso = useMemo(
     () =>
       atividades
         .filter((a) => a.cursoId === curso.id && a.tipo === 0 && !isAtividadeAvulsa(a))
-        .sort((a, b) => a.codigo.localeCompare(b.codigo)),
-    [atividades, curso.id],
+        .sort((a, b) => {
+          const orderA = grupoOrder.get(a.grupo) ?? Number.MAX_SAFE_INTEGER;
+          const orderB = grupoOrder.get(b.grupo) ?? Number.MAX_SAFE_INTEGER;
+          if (orderA !== orderB) return orderA - orderB;
+          if (a.grupo !== b.grupo) return a.grupo.localeCompare(b.grupo);
+          return a.codigo.localeCompare(b.codigo);
+        }),
+    [atividades, curso.id, grupoOrder],
   );
 
   // Aulas já concluídas/agendadas para a turma (cancelados liberam).
@@ -77,7 +110,7 @@ export function QuadroAulasPicker({
     [aulasCurso, todosAgendamentos, turmaId],
   );
 
-  const celulas = useMemo(
+  const celulas = useMemo<CelulaAula[]>(
     () =>
       aulasCurso.map((a) => {
         let status: CelulaStatus = "disponivel";
@@ -86,6 +119,39 @@ export function QuadroAulasPicker({
         return { atividade: a, status };
       }),
     [aulasCurso, aulasConcluidasIds, aulasAgendadasIds],
+  );
+
+  const gruposVisiveis = useMemo(() => {
+    const map = new Map<string, CelulaAula[]>();
+    for (const celula of celulas) {
+      if (grupoFiltro !== "__all__" && celula.atividade.grupo !== grupoFiltro) continue;
+      const grupo = celula.atividade.grupo || "__sem_grupo__";
+      const list = map.get(grupo) ?? [];
+      list.push(celula);
+      map.set(grupo, list);
+    }
+    return Array.from(map.entries()).map(([grupo, items]) => ({
+      grupo,
+      label:
+        grupo === "__sem_grupo__" ? "Sem modulo" : getGrupoNome(gruposByCursoCod, curso.cod, grupo),
+      items,
+      stats: items.reduce(
+        (acc, item) => {
+          acc[item.status]++;
+          return acc;
+        },
+        { concluida: 0, agendada: 0, disponivel: 0 } as Record<CelulaStatus, number>,
+      ),
+    }));
+  }, [celulas, curso.cod, grupoFiltro, gruposByCursoCod]);
+
+  const gruposFiltroOpcoes = useMemo(
+    () =>
+      Array.from(new Set(aulasCurso.map((aula) => aula.grupo).filter(Boolean))).map((grupo) => ({
+        value: grupo,
+        label: getGrupoNome(gruposByCursoCod, curso.cod, grupo),
+      })),
+    [aulasCurso, curso.cod, gruposByCursoCod],
   );
 
   const stats = useMemo(() => {
@@ -125,30 +191,67 @@ export function QuadroAulasPicker({
           <LegendDot color="bg-emerald-500" label={`Concluída (${stats.concluida})`} />
         </div>
 
+        {gruposFiltroOpcoes.length > 1 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={grupoFiltro} onValueChange={setGrupoFiltro}>
+              <SelectTrigger className="h-9 w-full text-xs sm:w-[240px]">
+                <SelectValue placeholder="Modulo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos os modulos</SelectItem>
+                {gruposFiltroOpcoes.map((grupo) => (
+                  <SelectItem key={grupo.value} value={grupo.value}>
+                    {grupo.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         {aulasCurso.length === 0 ? (
           <p className="text-center py-8 text-sm text-muted-foreground">
             Este curso ainda não tem aulas cadastradas.
           </p>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-2 mt-2">
-            {celulas.map(({ atividade, status }) => {
-              const selectable = status === "disponivel";
-              const isSelected = selectedId === atividade.id;
-              return (
-                <button
-                  key={atividade.id}
-                  type="button"
-                  disabled={!selectable}
-                  title={`${atividade.codigo} — ${atividade.nome} · ${STATUS_LABEL[status]}`}
-                  onClick={() => selectable && setSelectedId(atividade.id)}
-                  className={`relative aspect-square border-2 rounded-md flex items-center justify-center font-mono text-[11px] font-semibold transition-all ${STATUS_CLASSES[status]} ${
-                    isSelected ? "ring-2 ring-primary ring-offset-1 border-primary" : ""
-                  }`}
-                >
-                  {atividade.codigo}
-                </button>
-              );
-            })}
+          <div className="space-y-4">
+            {gruposVisiveis.map(({ grupo, label, items, stats: grupoStats }) => (
+              <section key={grupo} className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-1">
+                  <div>
+                    <div className="text-sm font-medium">{label}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {items.length} aula{items.length !== 1 ? "s" : ""} no modulo
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 text-[10px] text-muted-foreground">
+                    <Badge variant="outline">{grupoStats.disponivel} livres</Badge>
+                    <Badge variant="outline">{grupoStats.agendada} agendadas</Badge>
+                    <Badge variant="outline">{grupoStats.concluida} concluidas</Badge>
+                  </div>
+                </div>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(86px,1fr))] gap-2">
+                  {items.map(({ atividade, status }) => {
+                    const selectable = status === "disponivel";
+                    const isSelected = selectedId === atividade.id;
+                    return (
+                      <button
+                        key={atividade.id}
+                        type="button"
+                        disabled={!selectable}
+                        title={`${atividade.codigo} — ${atividade.nome} · ${STATUS_LABEL[status]}`}
+                        onClick={() => selectable && setSelectedId(atividade.id)}
+                        className={`relative aspect-square border-2 rounded-md flex items-center justify-center px-1 text-center font-mono text-[11px] font-semibold transition-all ${STATUS_CLASSES[status]} ${
+                          isSelected ? "ring-2 ring-primary ring-offset-1 border-primary" : ""
+                        }`}
+                      >
+                        <span className="break-all">{atividade.codigo}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
           </div>
         )}
 

@@ -14,7 +14,7 @@
 // Filtros: mês/ano + turma. 1 linha por agendamento (resposta A).
 
 import { useMemo, useState } from "react";
-import { format, parseISO } from "date-fns";
+import { endOfWeek, format, parseISO, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Check,
@@ -74,6 +74,31 @@ interface Props {
   onAbrirRelatorio?: (info: { agendamento: Agendamento; turma: Turma; curso: Curso }) => void;
 }
 
+type AtividadesFiltro = "hoje" | "semana" | "proxima" | "dadas" | "mes";
+
+const FILTROS_ATIVIDADES: Array<{ value: AtividadesFiltro; label: string }> = [
+  { value: "hoje", label: "Hoje" },
+  { value: "semana", label: "Semana" },
+  { value: "proxima", label: "Proxima aula" },
+  { value: "dadas", label: "Dadas" },
+  { value: "mes", label: "Todas do mes" },
+];
+
+const FILTRO_EMPTY_TEXT: Record<AtividadesFiltro, string> = {
+  hoje: "Nenhuma aula hoje.",
+  semana: "Nenhuma aula nesta semana.",
+  proxima: "Nenhuma proxima aula encontrada.",
+  dadas: "Nenhuma aula dada no mes selecionado.",
+  mes: "Nenhuma aula no periodo selecionado.",
+};
+
+const sortAgendamentosAsc = (a: Agendamento, b: Agendamento) =>
+  `${a.data} ${a.inicio}`.localeCompare(`${b.data} ${b.inicio}`);
+
+const sortAgendamentosDesc = (a: Agendamento, b: Agendamento) => sortAgendamentosAsc(b, a);
+
+const isAgendamentoConcluido = (ag: Agendamento) => ag.status === "concluido";
+
 export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Props) {
   const { user, hasRole } = useAuth();
   const agendamentos = useAgendamentos();
@@ -97,6 +122,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
     `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`,
   );
   const [turmaFiltro, setTurmaFiltro] = useState<string>("__all__");
+  const [atividadesFiltro, setAtividadesFiltro] = useState<AtividadesFiltro>("semana");
 
   const turmaMap = useMemo(() => new Map(turmas.map((t) => [t.id, t])), [turmas]);
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
@@ -112,18 +138,80 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   }, [evidencias]);
 
   // Agendamentos do professor no mês selecionado
-  const linhas = useMemo(() => {
+  const hojeIso = format(hoje, "yyyy-MM-dd");
+  const semanaInicioIso = format(startOfWeek(hoje, { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const semanaFimIso = format(endOfWeek(hoje, { weekStartsOn: 1 }), "yyyy-MM-dd");
+  const agoraKey = `${hojeIso} ${format(hoje, "HH:mm")}`;
+
+  const linhasDoProfessor = useMemo(() => {
     if (!targetUserId) return [];
+    return agendamentos
+      .filter((ag) => ag.professorUserId === targetUserId)
+      .filter((ag) => turmaFiltro === "__all__" || ag.turmaId === turmaFiltro)
+      .sort(sortAgendamentosAsc);
+  }, [agendamentos, targetUserId, turmaFiltro]);
+
+  const linhasMes = useMemo(() => {
     const [ano, mes] = mesAno.split("-").map(Number);
     const inicioMes = `${ano}-${String(mes).padStart(2, "0")}-01`;
     const proxMes =
       mes === 12 ? `${ano + 1}-01-01` : `${ano}-${String(mes + 1).padStart(2, "0")}-01`;
-    return agendamentos
-      .filter((ag) => ag.professorUserId === targetUserId)
-      .filter((ag) => ag.data >= inicioMes && ag.data < proxMes)
-      .filter((ag) => turmaFiltro === "__all__" || ag.turmaId === turmaFiltro)
-      .sort((a, b) => `${a.data} ${a.inicio}`.localeCompare(`${b.data} ${b.inicio}`));
-  }, [agendamentos, targetUserId, mesAno, turmaFiltro]);
+    return linhasDoProfessor.filter((ag) => ag.data >= inicioMes && ag.data < proxMes);
+  }, [linhasDoProfessor, mesAno]);
+
+  const linhasSemana = useMemo(
+    () => linhasDoProfessor.filter((ag) => ag.data >= semanaInicioIso && ag.data <= semanaFimIso),
+    [linhasDoProfessor, semanaFimIso, semanaInicioIso],
+  );
+
+  const linhasHoje = useMemo(
+    () => linhasDoProfessor.filter((ag) => ag.data === hojeIso),
+    [hojeIso, linhasDoProfessor],
+  );
+
+  const linhasProxima = useMemo(() => {
+    const proxima = linhasDoProfessor.find(
+      (ag) => !isAgendamentoConcluido(ag) && `${ag.data} ${ag.inicio}` >= agoraKey,
+    );
+    return proxima ? [proxima] : [];
+  }, [agoraKey, linhasDoProfessor]);
+
+  const linhasDadas = useMemo(
+    () => linhasMes.filter((ag) => isAgendamentoConcluido(ag)).sort(sortAgendamentosDesc),
+    [linhasMes],
+  );
+
+  const linhas = useMemo(() => {
+    switch (atividadesFiltro) {
+      case "hoje":
+        return linhasHoje;
+      case "semana":
+        return linhasSemana;
+      case "proxima":
+        return linhasProxima;
+      case "dadas":
+        return linhasDadas;
+      case "mes":
+        return linhasMes;
+    }
+  }, [atividadesFiltro, linhasDadas, linhasHoje, linhasMes, linhasProxima, linhasSemana]);
+
+  const filtroCounts = useMemo(
+    () => ({
+      hoje: linhasHoje.length,
+      semana: linhasSemana.length,
+      proxima: linhasProxima.length,
+      dadas: linhasDadas.length,
+      mes: linhasMes.length,
+    }),
+    [
+      linhasDadas.length,
+      linhasHoje.length,
+      linhasMes.length,
+      linhasProxima.length,
+      linhasSemana.length,
+    ],
+  );
 
   // Turmas distintas do professor
   const turmasDoProfessor = useMemo(() => {
@@ -315,6 +403,8 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
     URL.revokeObjectURL(url);
   };
 
+  const filtroUsaMesSelecionado = atividadesFiltro === "dadas" || atividadesFiltro === "mes";
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -322,7 +412,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
           <CalendarDays className="h-4 w-4 text-primary" /> Minhas Atividades
         </div>
         <div className="flex-1" />
-        <Select value={mesAno} onValueChange={setMesAno}>
+        <Select value={mesAno} onValueChange={setMesAno} disabled={!filtroUsaMesSelecionado}>
           <SelectTrigger className="w-[160px] h-8 text-xs">
             <SelectValue placeholder="Mês" />
           </SelectTrigger>
@@ -383,12 +473,33 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
         </Button>
       </div>
 
+      <div className="flex flex-wrap gap-1.5">
+        {FILTROS_ATIVIDADES.map((filtro) => (
+          <Button
+            key={filtro.value}
+            type="button"
+            size="sm"
+            variant={atividadesFiltro === filtro.value ? "default" : "outline"}
+            className="h-8 px-2.5 text-xs"
+            onClick={() => setAtividadesFiltro(filtro.value)}
+          >
+            {filtro.label}
+            <Badge
+              variant={atividadesFiltro === filtro.value ? "secondary" : "outline"}
+              className="ml-1.5 h-5 px-1.5 text-[10px]"
+            >
+              {filtroCounts[filtro.value]}
+            </Badge>
+          </Button>
+        ))}
+      </div>
+
       {linhas.length === 0 ? (
         <div className="border rounded-md p-6 text-center text-sm text-muted-foreground">
-          Nenhuma aula no período selecionado.
+          {FILTRO_EMPTY_TEXT[atividadesFiltro]}
         </div>
       ) : (
-        <div className="border rounded-md overflow-x-auto">
+        <div className="border rounded-md overflow-auto max-h-[360px]">
           <Table>
             <TableHeader>
               <TableRow>
