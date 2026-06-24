@@ -4,13 +4,10 @@
 // Usa createStoreBase para eliminar boilerplate.
 import { useEffect, useState } from "react";
 import type { Habilidade } from "./academic-types";
-import { SEED_HABILIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
-import { toUuid } from "./db-mapping";
 import { requireProjectIdForWrite } from "./current-project";
 import { createStoreBase } from "./store-base";
 import { toast } from "sonner";
-import { devInfo } from "./dev-log";
 
 type HabilidadeRow = {
   id: string;
@@ -30,34 +27,6 @@ function rowToHabilidade(r: HabilidadeRow): Habilidade {
   };
 }
 
-/** Converte Habilidade → row DB. Usado APENAS por seed/topUp (toUuid correto pra seed strings). */
-function habilidadeToSeedRow(h: Habilidade) {
-  return {
-    id: toUuid(h.id),
-    sigla: h.sigla,
-    nome: h.nome?.trim() ? h.nome.trim() : null,
-    descricao: h.descricao,
-    grupo: h.grupo ?? null,
-    tipo: "curso" as string,
-    project_id: requireProjectIdForWrite() ?? undefined,
-  };
-}
-
-async function topUpHabilidades(existingIds: Set<string>) {
-  const missing = SEED_HABILIDADES.filter((h) => !existingIds.has(toUuid(h.id)));
-  if (missing.length === 0) return false;
-  const rows = missing.map(habilidadeToSeedRow);
-  const { error } = await supabase
-    .from("habilidades")
-    .upsert(rows, { onConflict: "id", ignoreDuplicates: true });
-  if (error) {
-    console.error("[habilidades] top-up error", error);
-    return false;
-  }
-  devInfo(`[habilidades] top-up: +${missing.length} linhas do seed`);
-  return true;
-}
-
 async function loadFromDb(): Promise<Habilidade[]> {
   const { data, error } = await supabase.from("habilidades").select("*").order("sigla");
   if (error) {
@@ -65,13 +34,6 @@ async function loadFromDb(): Promise<Habilidade[]> {
     return [];
   }
   const rows = (data ?? []) as unknown as HabilidadeRow[];
-  const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpHabilidades(existingIds);
-  if (inserted) {
-    const { data: data2, error: err2 } = await supabase.from("habilidades").select("*").order("sigla");
-    if (err2) console.error("[habilidades] reload error", err2);
-    return ((data2 ?? []) as unknown as HabilidadeRow[]).map(rowToHabilidade);
-  }
   return rows.map(rowToHabilidade);
 }
 
