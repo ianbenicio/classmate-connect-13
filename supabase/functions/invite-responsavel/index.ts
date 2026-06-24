@@ -58,17 +58,25 @@ serve(async (req: Request) => {
 
   const callerId = callerUser.user.id;
 
-  type ProfileRow = { role: string };
-  const { data: profileRows } = (await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", callerId)
-    .eq("project_id", project_id)) as { data: ProfileRow[] | null };
+  // Papel vive em user_roles (não em profiles); vínculo de projeto em
+  // profiles.user_id/project_id. A versão antiga consultava profiles.role
+  // (coluna inexistente) e .eq("id", callerId) (id != user_id) → 403 sempre.
+  const [roleRes, profileRes] = await Promise.all([
+    supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", callerId)
+      .in("role", ["admin", "coordenacao"]),
+    supabase
+      .from("profiles")
+      .select("user_id")
+      .eq("user_id", callerId)
+      .eq("project_id", project_id),
+  ]);
 
-  const isAdminOrCoord = (profileRows ?? []).some(
-    (p) => p.role === "admin" || p.role === "coordenacao",
-  );
-  if (!isAdminOrCoord) {
+  const isAdminOrCoord = ((roleRes.data as unknown[] | null) ?? []).length > 0;
+  const belongsToProject = ((profileRes.data as unknown[] | null) ?? []).length > 0;
+  if (!isAdminOrCoord || !belongsToProject) {
     return new Response(JSON.stringify({ error: "Permissão negada" }), { status: 403 });
   }
 

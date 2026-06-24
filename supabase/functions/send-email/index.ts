@@ -29,6 +29,26 @@ interface RenderedEmail {
   html: string;
 }
 
+// Escapa texto interpolado em HTML (nomes de aluno/responsável, descrições, etc.)
+function escHtml(s: string): string {
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+// Garante que links sejam http(s) — bloqueia javascript:/data: em href
+function safeUrl(s: string): string {
+  try {
+    const u = new URL(s);
+    return u.protocol === "https:" || u.protocol === "http:" ? s : "#";
+  } catch {
+    return "#";
+  }
+}
+
 function renderTemplate(templateId: string, vars: TemplateVars): RenderedEmail {
   switch (templateId) {
     case "invite-responsavel":
@@ -45,10 +65,10 @@ function renderTemplate(templateId: string, vars: TemplateVars): RenderedEmail {
 }
 
 function renderInviteResponsavel(v: TemplateVars): RenderedEmail {
-  const nome = String(v.nome ?? "Responsável");
-  const alunoNome = String(v.aluno_nome ?? "seu filho(a)");
-  const link = String(v.link ?? "");
-  const expira = String(v.expira ?? "7 dias");
+  const nome = escHtml(String(v.nome ?? "Responsável"));
+  const alunoNome = escHtml(String(v.aluno_nome ?? "seu filho(a)"));
+  const link = escHtml(safeUrl(String(v.link ?? "")));
+  const expira = escHtml(String(v.expira ?? "7 dias"));
 
   return {
     subject: `Você foi convidado a acompanhar ${alunoNome} no Javis`,
@@ -97,9 +117,9 @@ function renderInviteResponsavel(v: TemplateVars): RenderedEmail {
 }
 
 function renderAlertaCritico(v: TemplateVars): RenderedEmail {
-  const alunoNome = String(v.aluno_nome ?? "Aluno");
-  const tipo = String(v.tipo ?? "alerta");
-  const descricao = String(v.descricao ?? "");
+  const alunoNome = escHtml(String(v.aluno_nome ?? "Aluno"));
+  const tipo = escHtml(String(v.tipo ?? "alerta"));
+  const descricao = escHtml(String(v.descricao ?? ""));
 
   return {
     subject: `⚠️ Alerta: ${tipo} — ${alunoNome}`,
@@ -118,7 +138,8 @@ function renderAlertaCritico(v: TemplateVars): RenderedEmail {
 }
 
 function renderDigestSemanal(v: TemplateVars): RenderedEmail {
-  const nome = String(v.nome ?? "Responsável");
+  const nome = escHtml(String(v.nome ?? "Responsável"));
+  // resumo_html é montado server-side (digest_semanal_job) e é HTML por contrato.
   const resumo = String(v.resumo_html ?? "<p>Sem atividades esta semana.</p>");
 
   return {
@@ -136,7 +157,7 @@ function renderDigestSemanal(v: TemplateVars): RenderedEmail {
 
 function renderTrialExpirando(v: TemplateVars): RenderedEmail {
   const dias = Number(v.dias ?? 7);
-  const escola = String(v.escola ?? "sua escola");
+  const escola = escHtml(String(v.escola ?? "sua escola"));
 
   return {
     subject: `Seu trial do Javis expira em ${dias} ${dias === 1 ? "dia" : "dias"}`,
@@ -244,8 +265,11 @@ serve(async (req: Request) => {
     return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 });
   }
 
+  // Internal-only: os únicos callers (process-email-queue, invite-responsavel)
+  // chamam com Bearer service_role. Rejeita qualquer outro caller para impedir
+  // envio de e-mail arbitrário em nome do domínio por usuário autenticado comum.
   const authHeader = req.headers.get("Authorization") ?? "";
-  if (!authHeader.startsWith("Bearer ")) {
+  if (!SUPABASE_SERVICE_ROLE_KEY || authHeader !== `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 

@@ -23,8 +23,10 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "
 // ---------------------------------------------------------------------------
 async function verifySignature(payload: string, headers: Headers): Promise<boolean> {
   if (!RESEND_WEBHOOK_SECRET) {
-    console.warn("[resend-webhook] RESEND_WEBHOOK_SECRET não configurado — skip verify");
-    return true; // dev mode
+    // Fail-closed: sem secret, NUNCA aceitar o webhook (senão qualquer um
+    // marca e-mails de responsáveis como bounced e suprime notificações).
+    console.error("[resend-webhook] RESEND_WEBHOOK_SECRET não configurado — rejeitando");
+    return false;
   }
 
   const svixId = headers.get("svix-id");
