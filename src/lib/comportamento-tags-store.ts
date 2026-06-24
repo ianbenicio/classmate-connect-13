@@ -149,7 +149,10 @@ async function loadFromDb() {
   const existingValues = new Set(rows.map((r) => r.value));
   const inserted = await topUpSeed(existingValues);
   if (inserted) {
-    const { data: data2, error: err2 } = await supabase.from("comportamento_tags").select("*").order("ordem");
+    const { data: data2, error: err2 } = await supabase
+      .from("comportamento_tags")
+      .select("*")
+      .order("ordem");
     if (err2) console.error("[comportamento-tags] reload error", err2);
     tags = ((data2 ?? []) as unknown as TagRow[]).map(rowToEntry);
   } else {

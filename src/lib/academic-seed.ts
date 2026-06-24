@@ -3293,7 +3293,8 @@ export const SEED_FORMULARIOS: SeedFormulario[] = [
   {
     slug: "relatorio_professor",
     nome: "Relatório do Professor",
-    descricao: "Registro pós-aula do professor: chamada, engajamento, cumprimento do plano e observações.",
+    descricao:
+      "Registro pós-aula do professor: chamada, engajamento, cumprimento do plano e observações.",
     destinatario: "professor",
     estrutura: {
       blocos: [

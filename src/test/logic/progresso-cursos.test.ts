@@ -79,7 +79,7 @@ describe("gerarProgressoCursos", () => {
         alunoId: null,
         atividadeId: null,
         tipo: "relatorio_prof",
-        dados: {},
+        dados: { presencas: { "aluno-1": true } },
         criadoEm: "2026-01-10T12:00:00.000Z",
       },
       {

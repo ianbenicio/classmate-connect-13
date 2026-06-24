@@ -183,7 +183,10 @@ async function loadFromDb() {
   const existingCodigos = new Set(rows.map((r) => r.codigo));
   const inserted = await topUpSeed(existingIds, existingCodigos);
   if (inserted) {
-    const { data: data2, error: err2 } = await supabase.from("atividades").select("*").order("codigo");
+    const { data: data2, error: err2 } = await supabase
+      .from("atividades")
+      .select("*")
+      .order("codigo");
     if (err2) console.error("[atividades] reload error", err2);
     atividades = (data2 ?? []).map((r) => rowToAtividade(r as AtividadeRow));
   } else {
