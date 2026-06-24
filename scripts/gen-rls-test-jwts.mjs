@@ -21,8 +21,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.VITE_SUPABASE_URL ?? process.env.SUPABASE_URL ?? "";
-const anonKey =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
+const anonKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
 
 if (!url || !anonKey) {
   console.error("[gen-rls-test-jwts] missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY");
@@ -31,7 +30,11 @@ if (!url || !anonKey) {
 
 const roles = [
   { key: "ALUNO", emailEnv: "RLS_TEST_ALUNO_EMAIL", passEnv: "RLS_TEST_ALUNO_PASSWORD" },
-  { key: "PROFESSOR", emailEnv: "RLS_TEST_PROFESSOR_EMAIL", passEnv: "RLS_TEST_PROFESSOR_PASSWORD" },
+  {
+    key: "PROFESSOR",
+    emailEnv: "RLS_TEST_PROFESSOR_EMAIL",
+    passEnv: "RLS_TEST_PROFESSOR_PASSWORD",
+  },
   { key: "ADMIN", emailEnv: "RLS_TEST_ADMIN_EMAIL", passEnv: "RLS_TEST_ADMIN_PASSWORD" },
   { key: "SUPER", emailEnv: "RLS_TEST_SUPER_EMAIL", passEnv: "RLS_TEST_SUPER_PASSWORD" },
 ];

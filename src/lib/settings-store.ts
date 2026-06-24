@@ -83,9 +83,9 @@ export const settingsStore = {
   },
   async set(key: string, value: unknown): Promise<void> {
     const snap = base.get();
-    base.set(snap.map((s) =>
-      s.key === key ? { ...s, value, updatedAt: new Date().toISOString() } : s,
-    ));
+    base.set(
+      snap.map((s) => (s.key === key ? { ...s, value, updatedAt: new Date().toISOString() } : s)),
+    );
     base.emit();
 
     const { data: authData } = await supabase.auth.getUser();

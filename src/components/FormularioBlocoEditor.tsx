@@ -18,7 +18,15 @@ import { v4 as uuidv4 } from "uuid";
 
 export interface Pergunta {
   id: string;
-  tipo: "texto_curto" | "texto_longo" | "escala_1_5" | "escala_1_10" | "sim_nao" | "multipla_escolha" | "numero" | "data";
+  tipo:
+    | "texto_curto"
+    | "texto_longo"
+    | "escala_1_5"
+    | "escala_1_10"
+    | "sim_nao"
+    | "multipla_escolha"
+    | "numero"
+    | "data";
   label: string;
   descricao?: string;
   obrigatorio?: boolean;
@@ -102,12 +110,16 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
   const removePergunta = (blocoIndex: number, perguntaIndex: number) => {
     const novoBlocos = [...blocos];
     novoBlocos[blocoIndex].perguntas = novoBlocos[blocoIndex].perguntas.filter(
-      (_, i) => i !== perguntaIndex
+      (_, i) => i !== perguntaIndex,
     );
     onChange(novoBlocos);
   };
 
-  const updatePergunta = (blocoIndex: number, perguntaIndex: number, updates: Partial<Pergunta>) => {
+  const updatePergunta = (
+    blocoIndex: number,
+    perguntaIndex: number,
+    updates: Partial<Pergunta>,
+  ) => {
     const novoBlocos = [...blocos];
     novoBlocos[blocoIndex].perguntas[perguntaIndex] = {
       ...novoBlocos[blocoIndex].perguntas[perguntaIndex],
@@ -133,7 +145,12 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
     onChange(novoBlocos);
   };
 
-  const updateOpcao = (blocoIndex: number, perguntaIndex: number, opcaoIndex: number, valor: string) => {
+  const updateOpcao = (
+    blocoIndex: number,
+    perguntaIndex: number,
+    opcaoIndex: number,
+    valor: string,
+  ) => {
     const novoBlocos = [...blocos];
     const pergunta = novoBlocos[blocoIndex].perguntas[perguntaIndex];
     if (pergunta.opcoes) {
@@ -214,11 +231,7 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs font-semibold">Perguntas</Label>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => addPergunta(blocoIndex)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => addPergunta(blocoIndex)}>
                       <Plus className="h-4 w-4" /> Adicionar pergunta
                     </Button>
                   </div>
@@ -249,7 +262,10 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor={`pergunta-label-${blocoIndex}-${perguntaIndex}`} className="text-xs">
+                            <Label
+                              htmlFor={`pergunta-label-${blocoIndex}-${perguntaIndex}`}
+                              className="text-xs"
+                            >
                               Pergunta / Enunciado
                             </Label>
                             <Input
@@ -263,14 +279,19 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor={`pergunta-desc-${blocoIndex}-${perguntaIndex}`} className="text-xs">
+                            <Label
+                              htmlFor={`pergunta-desc-${blocoIndex}-${perguntaIndex}`}
+                              className="text-xs"
+                            >
                               Descrição (opcional)
                             </Label>
                             <Textarea
                               id={`pergunta-desc-${blocoIndex}-${perguntaIndex}`}
                               value={pergunta.descricao ?? ""}
                               onChange={(e) =>
-                                updatePergunta(blocoIndex, perguntaIndex, { descricao: e.target.value })
+                                updatePergunta(blocoIndex, perguntaIndex, {
+                                  descricao: e.target.value,
+                                })
                               }
                               placeholder="Descrição ou instrução adicional"
                               rows={2}
@@ -278,7 +299,10 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                           </div>
 
                           <div className="space-y-2">
-                            <Label htmlFor={`pergunta-tipo-${blocoIndex}-${perguntaIndex}`} className="text-xs">
+                            <Label
+                              htmlFor={`pergunta-tipo-${blocoIndex}-${perguntaIndex}`}
+                              className="text-xs"
+                            >
                               Tipo de resposta
                             </Label>
                             <Select
@@ -286,7 +310,9 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                               onValueChange={(valor) =>
                                 updatePergunta(blocoIndex, perguntaIndex, {
                                   tipo: valor as Pergunta["tipo"],
-                                  opcoes: TIPOS_COM_OPCOES.includes(valor) ? pergunta.opcoes ?? [] : undefined,
+                                  opcoes: TIPOS_COM_OPCOES.includes(valor)
+                                    ? (pergunta.opcoes ?? [])
+                                    : undefined,
                                 })
                               }
                             >
@@ -308,7 +334,9 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                               id={`pergunta-obrigatorio-${blocoIndex}-${perguntaIndex}`}
                               checked={pergunta.obrigatorio ?? false}
                               onCheckedChange={(checked) =>
-                                updatePergunta(blocoIndex, perguntaIndex, { obrigatorio: !!checked })
+                                updatePergunta(blocoIndex, perguntaIndex, {
+                                  obrigatorio: !!checked,
+                                })
                               }
                             />
                             <Label
@@ -338,7 +366,12 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                                       <Input
                                         value={opcao}
                                         onChange={(e) =>
-                                          updateOpcao(blocoIndex, perguntaIndex, opcaoIndex, e.target.value)
+                                          updateOpcao(
+                                            blocoIndex,
+                                            perguntaIndex,
+                                            opcaoIndex,
+                                            e.target.value,
+                                          )
                                         }
                                         placeholder={`Opção ${opcaoIndex + 1}`}
                                         className="text-xs"
@@ -346,7 +379,9 @@ export function FormularioBlocoEditor({ blocos, onChange }: FormularioBlocoEdito
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => removeOpcao(blocoIndex, perguntaIndex, opcaoIndex)}
+                                        onClick={() =>
+                                          removeOpcao(blocoIndex, perguntaIndex, opcaoIndex)
+                                        }
                                         className="text-destructive hover:text-destructive h-8 w-8 p-0"
                                       >
                                         <Trash2 className="h-3 w-3" />

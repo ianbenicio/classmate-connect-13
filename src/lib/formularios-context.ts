@@ -76,7 +76,7 @@ export class ContextoFormularioBuilder {
     respondeuNome: string,
     respondeuTipo: "aluno" | "professor" | "outro",
     aplicadoPorId: string,
-    aplicadoPorNome: string
+    aplicadoPorNome: string,
   ) {
     this.contexto = {
       id: `ctx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -134,7 +134,7 @@ export async function extrairContextoDeAgendamento(
   agendamentoId: string,
   agendamentos: any[],
   turmas: any[],
-  cursos: any[]
+  cursos: any[],
 ): Promise<Partial<ContextoFormulario>> {
   const ag = agendamentos.find((a) => a.id === agendamentoId);
   if (!ag) return {};
