@@ -1,0 +1,12714 @@
+import type { Atividade, Grupo } from "./academic-types";
+
+export const SEED_ATLETA_DIGITAL_GRUPOS: Grupo[] = [
+  {
+    cod: "GP",
+    nome: "Game Play",
+  },
+  {
+    cod: "DS",
+    nome: "Design",
+  },
+  {
+    cod: "IA",
+    nome: "Inteligência Artificial",
+  },
+  {
+    cod: "ET",
+    nome: "Ética e Telas",
+  },
+  {
+    cod: "EN",
+    nome: "Inglês",
+  },
+  {
+    cod: "PD",
+    nome: "Posicionamento Digital",
+  },
+  {
+    cod: "EC",
+    nome: "Estratégia de Conteúdo",
+  },
+  {
+    cod: "BF",
+    nome: "Briefing Final / Fechamento",
+  },
+  {
+    cod: "TO",
+    nome: "Ferramentas Adobe e Vídeo",
+  },
+];
+
+export const SEED_ATLETA_DIGITAL_ATIVIDADES: Atividade[] = [
+  {
+    id: "at-ad-gp-aula-01",
+    tipo: 0,
+    nome: "O que é ser Atleta Digital + Diagnóstico Inicial",
+    codigo: "ADGP01",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Introdução ao conceito de Atleta Digital, diagnóstico inicial de comportamento e alinhamento de expectativas.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender a diferença entre 'jogar por diversão' e 'treinar com intenção', reconhecendo-se como um Atleta Digital em desenvolvimento, e deve ter estabelecido uma linha de base observável de seus comportamentos durante o jogo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução ao conceito de Atleta Digital, diagnóstico inicial de comportamento e alinhamento de expectativas.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu hoje sobre ser um Atleta Digital?'\n- Pergunte: 'Qual foi a maior diferença que você notou entre jogar por diversão e treinar com intenção?'\n- Pergunte: 'Que expectativa você tem para o curso?'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão clara do que significa ser um 'Atleta Digital' versus 'jogador casual'.\n- Autopercepção mais realista sobre suas habilidades e potencial de desenvolvimento.\n- Primeiros passos na construção de uma identidade positiva relacionada aos games.\n\nPais/responsáveis:\n- Redução de ansiedade sobre o propósito do curso.\n- Entendimento inicial da metodologia estruturada por trás da proposta.\n- Visibilidade do compromisso do aluno com o desenvolvimento pessoal.\n\nInstituição:\n- Estabelecimento claro do posicionamento pedagógico do curso.\n- Criação de uma base conceitual compartilhada entre alunos e instrutores.\n- Documentação inicial do processo de formação (primeiro registro no dossiê do aluno).",
+    notasInstrutor:
+      "Linguagem:\nUtilizar termos acessíveis, evitar jargão técnico de e-sports que os pais não entenderiam. Usar analogias com esportes tradicionais (futebol, natação) para explicar conceitos.\n\nMediação:\nEsta aula é crucial para estabelecer o tom do curso – equilibrar seriedade com leveza, sem romantizar nem demonizar os games.\n\nSensibilidade:\nObservar sinais de desconforto ou resistência dos alunos e adaptar a abordagem conforme necessário.\n\nConexão com a família:\nColetar informações iniciais que serão utilizadas na próxima aula com os responsáveis (Módulo 0 – Encontro com Pais).\n\nRegistro:\nGarantir que todos os alunos completem o registro inicial no Diário do Atleta Digital, que servirá como baseline para acompanhar evolução.",
+    preRequisitos: "",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno consegue explicar com suas palavras a diferença entre jogador casual e Atleta Digital.\n- O aluno participa ativamente do diagnóstico inicial, demonstrando comportamento autêntico.\n- O aluno registra no Diário do Atleta Digital uma reflexão inicial sobre suas expectativas.",
+    metodologias:
+      "- Aula expositiva dialogada\n- Aprendizagem baseada em problemas\n- Prática supervisionada\n- Gamificação\n- Roda de conversa",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Introdução ao Conceito",
+        duracaoMin: 10,
+        descricao:
+          "Apresentação do conceito de Atleta Digital vs. jogador casual. Uso de analogias com esportes tradicionais e exemplos de atletas profissionais. Pergunta disparadora: 'O que faz um jogador de futebol ser considerado atleta?'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Mapa Conceitual Coletivo",
+        duracaoMin: 15,
+        descricao:
+          "Alunos criam em grupo um mapa visual comparando 'jogador casual' e 'atleta digital' (quadro branco ou papel pardo). Instrutor guia com perguntas e registra contribuições.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Diagnóstico Inicial (Partida Guiada)",
+        duracaoMin: 25,
+        descricao:
+          "Partida curta (10-12 min) com observação estruturada do instrutor sobre: respeito às regras, colaboração, reação à frustração. Alunos jogam em times equilibrados.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Roda de Conversa – 'O que é ser bom?'",
+        duracaoMin: 15,
+        descricao:
+          "Discussão mediada sobre excelência em games. Perguntas: 'O que define um jogador bom?', 'Como sabemos quando estamos melhorando?'. Instrutor registra insights e destaca diferença entre processo e resultado.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Registro no Diário do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno completa uma ficha inicial: 'Hoje aprendi que...', 'Minha maior expectativa é...', 'Meu maior desafio será...'. Instrutor recolhe e arquiva no dossiê.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Quadro branco ou papel pardo e canetas coloridas (para mapa conceitual)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado para a partida diagnóstica",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Ficha de observação do instrutor (impressa)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Diário do Atleta Digital (ficha inicial para registro)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Slides com exemplos de atletas de diferentes modalidades",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Engajamento: Participação ativa nas discussões e atividades",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Compreensão conceitual: Capacidade de diferenciar jogador casual de Atleta Digital",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Registro reflexivo: Qualidade da primeira entrada no Diário do Atleta Digital",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Comportamento observado: Respeito às regras, colaboração, reação à frustração (diagnóstico inicial)",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-02",
+    tipo: 0,
+    nome: "Fundamentos do Jogo + Controles Básicos",
+    codigo: "ADGP02",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Familiarização com interface, objetivos, regras e controles básicos do jogo, com exercícios práticos de movimentação e execução.",
+    objetivoResultados:
+      "Ao final, o aluno deve conhecer a interface do jogo, seus objetivos e regras, além de executar movimentos básicos com intencionalidade e economia de esforço.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Familiarização com interface, objetivos, regras e controles básicos do jogo, com exercícios práticos de movimentação e execução.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi o comando mais difícil de aprender hoje? Como você fez para melhorar?'\n- Pergunte: 'O que você descobriu sobre o jogo que não sabia antes?'\n- Pergunte: 'Qual é seu compromisso de prática para esta semana?'",
+    resultadosEsperados:
+      "Alunos:\n- Confiança inicial no manuseio dos controles através de prática estruturada.\n- Compreensão clara de como as regras do jogo servem à experiência coletiva.\n- Capacidade de explicar a um colega iniciante os fundamentos básicos do jogo.\n\nPais/responsáveis:\n- Observação concreta de que o curso ensina técnica com estrutura, não apenas permite jogar livremente.\n- Compreensão visual do progresso através dos registros no Diário do Atleta Digital.\n- Redução de preocupações sobre 'aprender errado' através da abordagem metódica.\n\nInstituição:\n- Documentação do processo de construção de fundamentos desde o início.\n- Consolidação da proposta diferenciada que integra técnica e valores.\n- Base sólida para personalização do ensino conforme o progresso técnico individual.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar termos acessíveis, evitando jargões técnicos. Usar analogias corporais (ex: 'seu dedo índice é o capitão do W').\n\nMediação:\nIntervir imediatamente em más posturas ou movimentos incorretos, mas sempre conectando com benefícios (ex: 'assim você não cansa seu braço').\n\nSensibilidade:\nObservar sinais de frustração com controles e ter sempre uma configuração alternativa mais simples disponível.\n\nConexão com a família:\nEnviar um resumo visual da 'Anatomia dos Controles' para os pais, explicando como podem apoiar a prática em casa.\n\nRegistro:\nGarantir que todos os alunos registrem no Diário do Atleta Digital as dificuldades e descobertas com os controles.",
+    preRequisitos: "",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno navega pelos menus principais do jogo sem ajuda.\n- O aluno executa movimentos básicos (andar, correr, pular, mirar) com intencionalidade.\n- O aluno identifica o objetivo principal da partida e pelo menos 2 regras fundamentais.",
+    metodologias:
+      "- Aprendizagem por descoberta guiada\n- Prática supervisionada\n- Gamificação\n- Metáfora corporal",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Introdução aos Fundamentos",
+        duracaoMin: 10,
+        descricao:
+          "Apresentação da interface do jogo (mapa, HUD, objetivos). Explicação das regras básicas e dos controles. Conexão com o conceito de Atleta Digital da aula anterior. Pergunta disparadora: 'O que você precisa saber antes de começar uma partida?'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação de Controles – Mapeando os Comandos",
+        duracaoMin: 20,
+        descricao:
+          "Em duplas, os alunos exploram os controles básicos: movimento (WASD ou setas), mira (mouse/controle), interação (E/Enter), ataque (clique/espaço). Atividade: 'Encontre 5 comandos diferentes e teste cada um'. Instrutor circula corrigindo postura e pegada.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Desafio de Familiarização – Partida Guiada",
+        duracaoMin: 25,
+        descricao:
+          "Partida curta (10-12 min) com objetivos específicos: 1) Movimentar-se sem bater em paredes; 2) Coletar 3 itens/recursos; 3) Executar uma ação de ataque/defesa. Instrutor observa e faz pausas para correções pontuais.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Review – O que Funcionou e o que Foi Difícil",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa: 'Qual foi o comando mais fácil? Qual foi o mais difícil? O que você descobriu sobre o jogo que não sabia antes?'. Instrutor registra padrões de dificuldade da turma.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta – Compromisso de Prática",
+        duracaoMin: 5,
+        descricao:
+          "Cada aluno define um micro-objetivo para a semana: 'Vou praticar o movimento de correr e parar exatamente no alvo' ou 'Vou aprender onde fica o botão de recarregar sem olhar'. Registro no Diário do Atleta Digital.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado e configurado para iniciantes",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Folha de dicas rápidas com os comandos básicos (impressa)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Ficha de observação do instrutor para registro de dificuldades",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital (ficha de registro)",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Navegação na interface: Consegue acessar menus e iniciar uma partida sem ajuda",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Execução de movimentos básicos: Move-se com intencionalidade (não fica 'batendo nas paredes')",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão de regras: Identifica objetivo principal e pelo menos 2 regras do jogo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro reflexivo: Descreve no Diário uma dificuldade e uma descoberta sobre os controles",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-03",
+    tipo: 0,
+    nome: "Rotina de Atleta: Tempo, Estudo e Descanso",
+    codigo: "ADGP03",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Conexão entre equilíbrio de atividades (jogo, estudo, sono, lazer) e performance em games, com construção do Mapa do Equilíbrio pessoal.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender como sono, estudo, descanso e tempo de jogo se conectam para formar um Atleta Digital equilibrado, e deve ter elaborado um Mapa do Equilíbrio pessoal com regras realistas.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Conexão entre equilíbrio de atividades (jogo, estudo, sono, lazer) e performance em games, com construção do Mapa do Equilíbrio pessoal.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi seu Mapa do Equilíbrio? O que você descobriu sobre sua rotina?'\n- Pergunte: 'Por que o descanso é importante para um Atleta Digital?'\n- Pergunte: 'Qual foi a regra mais difícil de definir? Como podemos apoiar você nisso?'\n- Desafio em família: 'Vamos criar um Mapa do Equilíbrio da família juntos?'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão prática de como o sono e o descanso afetam diretamente seu desempenho nos games.\n- Capacidade de identificar padrões em sua rotina que prejudicam sua performance.\n- Ferramentas concretas para negociar tempo de jogo com os pais baseadas em evidências.\n\nPais/responsáveis:\n- Evidência tangível do valor educativo do curso através do 'Mapa do Equilíbrio'.\n- Compreensão de que o curso ensina gestão de tempo como competência transferível.\n- Pontos de referência objetivos para conversas sobre equilíbrio (não apenas 'desligue o jogo').\n\nInstituição:\n- Materialização do conceito de Atleta Digital através de práticas observáveis.\n- Documentação inicial de hábitos saudáveis que podem ser revisitadas no final do curso.\n- Base para acompanhamento contínuo do desenvolvimento socioemocional dos alunos.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar termos lúdicos como 'recarga de energia' em vez de 'sono', 'alimentar o cérebro' em vez de 'estudar'. Usar analogias de super-heróis e seus rituais de preparação.\n\nMediação:\nEvitar julgamento sobre rotinas atuais; focar em progresso, não perfeição. Validar que cada família tem realidades diferentes.\n\nSensibilidade:\nEstar atento a alunos que podem ter realidades familiares complexas onde controlar horários é difícil; oferecer alternativas realistas.\n\nConexão com a família:\nEnviar foto digital do Mapa do Equilíbrio para os responsáveis após a aula, com uma frase explicativa do propósito pedagógico.\n\nRegistro:\nColetar os Mapas do Equilíbrio para arquivo no dossiê do aluno e possível revisão nas próximas aulas.",
+    preRequisitos: "",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 2 áreas de sua rotina que precisam de ajuste.\n- O aluno cria um Mapa do Equilíbrio com regras específicas e realistas (ex: horário de dormir, tempo de estudo antes do jogo).\n- O aluno consegue explicar por que o descanso é uma 'variável de performance'.",
+    metodologias:
+      "- Gamificação educativa\n- Aprendizagem visual\n- Experiência concreta (simulação)\n- Pedagogia do compromisso público",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Heróis e seus Rituais de Preparação",
+        duracaoMin: 10,
+        descricao:
+          "Analogia lúdica entre super-heróis e atletas digitais. Apresentação de personagens conhecidos (atletas olímpicos ou super-heróis) e pergunta: 'O que este herói faz antes de usar seu poder especial?'. Alunos identificam padrões como 'descanso', 'alimentação adequada' e 'treino regular'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Meu Dia de Super-Herói (Construção Visual)",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno recebe uma cartolina com contorno de um 'herói digital' e adesivos representando atividades (dormir, estudar, jogar, brincar, comer). Constroem visualmente as 24 horas do dia, com regras: 9-10h de sono, tempo de estudo, tempo de jogo estruturado, lazer sem tela.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – O Relógio do Atleta",
+        duracaoMin: 20,
+        descricao:
+          "Jogo interativo onde os alunos fazem escolhas que afetam seu nível de energia. Um relógio gigante e cartas de situação (ex: 'Escolheu jogar até 2h da manhã' vs. 'Foi dormir às 21h'). Cada escolha recebe fichas de energia (verde/amarela/vermelha). Ao final, jogam uma partida rápida e observam como as 'escolhas de energia' afetaram seu desempenho.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Mapa do Equilíbrio",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Mapa do Equilíbrio com 4 quadrantes (Dormir, Estudar, Jogar, Descansar sem tela). Regras específicas: desligar tudo às 21h30, terminar deveres antes de jogar, pausas de 15 min a cada hora de jogo. Compartilham em duplas para feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define 1 regra do Mapa do Equilíbrio que vai cumprir na semana seguinte. Registra no Diário do Atleta Digital: 'Minha maior dificuldade para manter o equilíbrio é...' e 'Vou começar ajustando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartolinas com contorno de personagem (modelo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo:
+          "Adesivos coloridos representando atividades (dormir, estudar, jogar, brincar, comer)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Relógio gigante de cartolina com marcador móvel",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartas de situação com consequências",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Fichas de 'energia' coloridas (verde, amarela, vermelha)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Moldes do Mapa do Equilíbrio (4 quadrantes)",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de desequilíbrios: Consegue apontar pelo menos 2 áreas da rotina que precisam de ajuste",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Mapa do Equilíbrio: Cria regras específicas, observáveis e realistas para sua rotina",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão da conexão descanso-performance: Explica por que o sono e o descanso afetam seu desempenho nos games",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro reflexivo: Descreve no Diário uma dificuldade real e um compromisso concreto",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-04",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Fundamentos",
+    codigo: "ADGP04",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados das aulas 1, 2 e 3, focando na aplicação prática dos conceitos de Atleta Digital, controles e equilíbrio sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre e prazerosa onde os alunos possam aplicar, de forma orgânica, os conceitos de Atleta Digital (intencionalidade), os controles básicos (movimentação e execução) e a noção de equilíbrio/energia (pausas e autopercepção), consolidando o aprendizado sem a pressão de avaliação formal.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados das aulas 1, 2 e 3, focando na aplicação prática dos conceitos de Atleta Digital, controles e equilíbrio sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi jogar sem a pressão de ser avaliado? Foi mais divertido?'\n- Pergunte: 'Você percebeu algo diferente no seu corpo quando fez as pausas?'\n- Pergunte: 'Você conseguiu se lembrar de ser um 'Atleta Digital' mesmo na hora da diversão?'\n- Reforce: 'É importante saber jogar com intenção, mas também saber jogar por prazer. O curso ensina os dois.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação dos controles básicos com maior fluidez e menor esforço consciente.\n- Identificação de sinais de cansaço ou necessidade de pausa durante o jogo.\n- Experiência de prazer no jogo sem foco exclusivo em vencer, valorizando o processo.\n\nPais/responsáveis:\n- Observação de que o curso valoriza o jogo consciente, não apenas a competição.\n- Percepção de que o filho está aplicando pausas e limites mesmo em momentos de diversão.\n- Confiança de que o curso equilibra técnica, saúde e prazer no jogo.\n\nInstituição:\n- Consolidação da cultura de 'jogo com intenção' em momentos livres.\n- Observação natural do progresso dos alunos em ambiente sem pressão.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência prazerosa.",
+    notasInstrutor:
+      "Linguagem:\nUsar tom leve e encorajador. Reforçar que este é um momento de descoberta e prazer, não de desempenho. Usar frases como 'O que seu corpo está sentindo agora?' em vez de 'Você está jogando bem?'.\n\nMediação:\nObservar sem intervir constantemente. Deixar os alunos jogarem livremente, mas fazer perguntas pontuais durante pausas para estimular a reflexão (ex: 'Você lembrou de respirar?').\n\nSensibilidade:\nEstar atento a alunos que possam estar muito competitivos ou frustrados. Redirecionar suavemente para o prazer do jogo e da descoberta.\n\nConexão com a família:\nCompartilhar brevemente com os pais que a aula foi um momento de prática livre para consolidar o que foi aprendido, reforçando que o curso equilibra técnica e bem-estar.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na fluidez dos controles e na capacidade de autorregulação (pausas).",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno joga respeitando as pausas sugeridas (a cada 20 minutos, levanta-se).\n- O aluno demonstra controle básico dos comandos sem frustração excessiva.\n- O aluno identifica, ao final, se estava no 'modo atleta' (intencional) ou 'modo casual' (automático).",
+    metodologias:
+      "- Aprendizagem experiencial\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo Livre",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão experimentar jogar com a intenção de ser um Atleta Digital, mesmo sem ninguém avaliando. Lembrem-se das pausas e de observar como seu corpo se sente.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere a menos que haja necessidade. Pode fazer perguntas rápidas e discretas: 'Como você está se sentindo?', 'Lembrou de se alongar?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Recarga de Energia",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida: 'O que você percebeu no seu corpo neste primeiro bloco?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa se os alunos aplicam as pausas voluntariamente e se há mais fluidez nos controles.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O Que Aconteceu?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Foi diferente jogar sem a pressão de ser avaliado?', 'Quando você percebeu que estava no 'modo automático' e quando conseguiu estar no 'modo atleta'?', 'Alguém lembrou de fazer uma pausa sem o instrutor avisar?'. Instrutor celebra as descobertas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje joguei com mais liberdade e percebi que...' ou 'Meu corpo me avisou que... quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Engajamento e Prazer: Participa da atividade com interesse e demonstra prazer no jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Aplicação dos Fundamentos: Demonstra fluidez nos controles básicos e aplica (mesmo que parcialmente) a noção de intencionalidade no jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Autorregulação e Pausas: Respeita as pausas sugeridas e/ou demonstra consciência sobre os sinais do corpo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa o que percebeu sobre si mesmo durante o jogo livre",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-05",
+    tipo: 0,
+    nome: "Emoções em Jogo: Entendendo o Tilt",
+    codigo: "ADGP05",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Nomear e reconhecer o fenômeno do tilt (quebra na tomada de decisão por emoção intensa), identificando sinais físicos, verbais e comportamentais precoces, e praticando técnicas de autorregulação emocional adaptadas para crianças.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de reconhecer os sinais físicos e comportamentais do tilt em si mesmo e nos colegas, nomear esse fenômeno, e aplicar pelo menos uma técnica prática de autorregulação (respiração, pausa, frase de reset) para manter a qualidade da tomada de decisão sob pressão durante o jogo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Nomear e reconhecer o fenômeno do tilt (quebra na tomada de decisão por emoção intensa), identificando sinais físicos, verbais e comportamentais precoces, e praticando técnicas de autorregulação emocional adaptadas para crianças.",
+    sugestoesPais:
+      "- Pergunte: 'O que é tilt? Você conseguiu identificar algum sinal hoje?'\n- Pergunte: 'Você trouxe seu Kit de Emergência para casa? Pode me mostrar e me ensinar a técnica?'\n- Pergunte: 'Como você se sentiu depois de usar a respiração ou a pausa?'\n- Dica para os pais: 'Quando perceber que seu filho está frustrado, pergunte: 'Você quer usar sua respiração ou prefere uma pausa?' em vez de 'Para de reclamar!''",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar sinais prévios de frustração antes que se tornem explosão.\n- Redução da vergonha associada a perder o controle emocional durante o jogo.\n- Linguagem específica para comunicar seu estado emocional ('estou sentindo meu termômetro subir').\n\nPais/responsáveis:\n- Diminuição de episódios de gritos, xingamentos ou comportamentos destrutivos associados ao jogo.\n- Compreensão prática de que o curso aborda questões emocionais reais, não apenas técnicas de jogo.\n- Ferramentas para ajudar em casa quando perceberem sinais de tilt.\n\nInstituição:\n- Documentação clara do desenvolvimento socioemocional dos alunos.\n- Redução de incidentes comportamentais durante as aulas.\n- Criação de cultura emocional saudável dentro das turmas de e-sports.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar metáforas do termômetro ou balão de ar para explicar o acúmulo de emoções. Usar termos como 'superpoder de calma' em vez de 'controle de emoções' e 'reset mental' em vez de 'parar de reclamar'.\n\nMediação:\nValidar sentimentos (ex: 'é normal ficar frustrado quando erramos') enquanto estabelece limites comportamentais (ex: 'mas não podemos quebrar objetos ou gritar com os colegas').\n\nSensibilidade:\nEstar atento a alunos que podem ter traumas ou situações familiares onde o tilt é normalizado; adaptar abordagem e oferecer espaço seguro.\n\nConexão com a família:\nPlanejar um resumo visual com as técnicas aprendidas para enviar aos pais, com sugestões de como usar em casa (ex: respiração 4-7-8).\n\nRegistro:\nFotografar (com consentimento) os Kits de Emergência Anti-Tilt para incluir no dossiê do aluno e usar como referência futura.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 2 sinais corporais de tilt em si mesmo (ex: respiração acelerada, mãos trêmulas, calor no rosto).\n- O aluno nomeia o que é tilt e explica por que ele atrapalha o desempenho.\n- O aluno pratica uma técnica de regulação (respiração, pausa ou frase de reset) e registra como se sentiu após aplicá-la.",
+    metodologias:
+      "- Metáfora educativa (termômetro emocional)\n- Aprendizagem experiencial (simulações)\n- Normalização emocional\n- Progressão por estágios (reconhecimento → intervenção)\n- Metacognição guiada",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Termômetro Emocional",
+        duracaoMin: 10,
+        descricao:
+          "Apresentação da metáfora do termômetro: emoções são mensuráveis (calmo → frustrado → tilt). Usar exemplos do próprio cotidiano dos alunos. Pergunta disparadora: 'Quando você sente que está 'esquentando' dentro de uma partida?'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Cartas do Tilt: Reconhecendo Sinais",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, alunos recebem cartas com situações de jogo e cartas com sinais físicos (mãos trêmulas, respiração acelerada), verbais (gritos, xingamentos) e comportamentais (jogar controle, sair da partida). Devem combinar situação com sinal correspondente. Discussão: 'Qual é o sinal mais comum que você ignora?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Estação de Reset Emocional",
+        duracaoMin: 25,
+        descricao:
+          "Rodízio por 3 estações: 1) Respiração cadenciada (técnica 4-7-8: inspirar 4s, segurar 7s, expirar 8s), 2) Pausa estratégica (timer visual de 60s com atividade distração), 3) Frase de reset (cartões com frases positivas para personalizar). Alunos jogam uma mini-partida desafiadora e, quando sentirem sinais de tilt, devem se deslocar para uma estação, aplicar a técnica e voltar.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Kit de Emergência Anti-Tilt",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria um 'Kit de Emergência Anti-Tilt' (caixa/envelope decorado) contendo: 1) Sua 'frase de reset' pessoal (ex: 'Respira e recomeça'), 2) Sua técnica física preferida (respiração 4-7-8 ou apertar e soltar as mãos), 3) Seu sinal de alerta pessoal (ex: 'minhas orelhas ficam quentes'), 4) Uma regra de pausa ('se eu xingar, pauso 30s').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um compromisso: 'Na próxima partida, vou observar meu termômetro e usar [técnica escolhida] antes de chegar ao tilt.' Registro no Diário do Atleta Digital: 'Hoje aprendi que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartazes com termômetros coloridos (azul → calmo, vermelho → tilt)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartas ilustradas com situações de jogo e sinais de tilt",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Espelhos pequenos para autoobservação facial",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Estações de Reset (respiração, pausa, frases) com instruções visuais",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Moldes de 'Kit de Emergência Anti-Tilt' (caixas/envelopes para decorar)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartões com frases de reset para personalização",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reconhecimento de Sinais: Identifica corretamente sinais físicos, verbais e comportamentais do tilt",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Aplicação de Técnica de Regulação: Pratica pelo menos uma técnica (respiração, pausa ou frase) durante a simulação",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Kit de Emergência: Cria um kit personalizado com elementos realistas e específicos",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário como se sentiu ao aplicar a técnica e qual compromisso assumiu",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-06",
+    tipo: 0,
+    nome: "Execução Técnica + Movimentação",
+    codigo: "ADGP06",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Treino focado em execução técnica, precisão de movimentos, economia de esforço e timing, utilizando estações práticas com feedback imediato e metáforas corporais para desenvolver fundamentos motores essenciais para o jogo.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de executar movimentos técnicos básicos (movimentação, mira, troca de armas/ferramentas) com maior precisão, economia de esforço e consciência corporal, identificando a relação entre postura, timing e performance no jogo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Treino focado em execução técnica, precisão de movimentos, economia de esforço e timing, utilizando estações práticas com feedback imediato e metáforas corporais para desenvolver fundamentos motores essenciais para o jogo.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre como seu corpo se move durante o jogo?'\n- Pergunte: 'Você notou diferença quando prestou atenção na sua postura?'\n- Pergunte: 'Qual foi o movimento mais difícil de fazer com fluidez?'\n- Dica para os pais: 'Incentive pausas de alongamento de 2 minutos a cada hora de jogo. Pode ser um momento para vocês alongarem juntos!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar em seu próprio corpo quando está executando um movimento eficiente ou desperdiçando energia.\n- Redução da fadiga durante partidas através de movimentos econômicos e postura adequada.\n- Primeiros passos na autopercepção técnica ('meu dedo está tenso quando...').\n\nPais/responsáveis:\n- Observação concreta de que o curso ensina técnica com base científica e não aleatória.\n- Redução de preocupações sobre lesões por movimentos repetitivos através da abordagem corporal.\n- Compreensão de que habilidades aparentemente simples (como movimentação) exigem treino estruturado.\n\nInstituição:\n- Documentação do processo de construção técnica desde princípios biomecânicos básicos.\n- Fortalecimento da proposta diferenciada que une corpo e mente no treino de e-sports.\n- Base para prevenção de problemas futuros (lesões por repetição, vícios técnicos).",
+    notasInstrutor:
+      "Linguagem:\nUtilizar analogias corporais e musicais: 'seus dedos são como uma orquestra', 'encontre o ritmo do seu pulso'. Usar 'movimento econômico' em vez de 'movimento correto'.\n\nMediação:\nIntervir imediatamente em más posturas ou movimentos incorretos, mas sempre oferecendo alternativa física ('experimente apoiar seu cotovelo aqui').\n\nSensibilidade:\nObservar sinais de fadiga muscular e ter pausas programadas com alongamentos simples. Respeitar diferentes ritmos de aprendizagem motora.\n\nConexão com a família:\nEnviar um guia visual de 'posturas saudáveis para jogar' para os pais, com exercícios simples para casa (alongamento de punhos, postura na cadeira).\n\nRegistro:\nFotografar (com consentimento) as posturas dos alunos durante a execução para usar como referência de evolução.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno executa sequência de movimentos básicos (andar, parar, mirar, atirar) com fluidez e sem tensão excessiva.\n- O aluno identifica pelo menos 1 ajuste postural que melhora sua precisão ou conforto.\n- O aluno explica a diferença entre movimento rápido e movimento eficiente.",
+    metodologias:
+      "- Pedagogia multisensorial (visual, auditivo, cinestésico, tátil)\n- Metáfora corporal\n- Aprendizagem por camadas (base → transição → precisão)\n- Feedback imediato não verbal (luzes, cores, toques suaves)",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Orquestra do Jogo",
+        duracaoMin: 10,
+        descricao:
+          "Analogia musical: 'Nossa mão esquerda é a orquestra de movimentos, nossa direita é a orquestra de ações'. Demonstração em câmera lenta de um movimento eficiente (pouco esforço, muito resultado) vs. movimento ineficiente (muito esforço, pouco resultado). Pergunta: 'O que você sente no seu corpo quando joga? Onde há tensão?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação dos Movimentos Perfeitos",
+        duracaoMin: 20,
+        descricao:
+          "3 estações práticas com feedback imediato: 1) Movimento de Base - foco na economia (mínimo movimento para máximo resultado), usando metrônomo visual/luz pulsante; 2) Transição Suave - foco na fluidez entre ações (como água, não como máquina), com espelho para autoobservação; 3) Ação Precisa - foco no timing exato (nem cedo, nem tarde), usando câmera lenta em tablet para análise imediata. Os alunos rotacionam em duplas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Desafio do Tempo – Sincronização em Equipe",
+        duracaoMin: 15,
+        descricao:
+          "Desafio cooperativo onde timing preciso determina sucesso coletivo. 3 desafios: 1) Individual - executar ação no momento exato indicado por relógio visual; 2) Par - dois jogadores executam ações com diferença exata de 0,5 segundos; 3) Time - todo o time sincroniza uma sequência de movimentos para 'abrir um portal' (iluminação coletiva). Discussão: 'O que aconteceu quando nos apressamos? Quando demoramos?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Dança do Atleta Digital – Integração",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos criam uma 'dança de 30 segundos' que incorpora: movimentos de base econômicos, transições suaves e ações precisas no timing correto. Plataforma interativa no chão projeta feedback em tempo real: cores mostram eficiência energética, formas mostram sincronia. Após a dança, completam a frase: 'Quando meu corpo está no ritmo ideal, eu me sinto...'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um micro-hábito técnico para a semana: 'Antes de cada partida, vou alongar meus dedos por 30 segundos' ou 'Vou prestar atenção na minha postura ao mirar'. Registro no Diário do Atleta Digital: 'Hoje meu corpo aprendeu que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Tapetes com teclas gigantes WASD para exercícios de memória muscular",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo:
+          "Luvas com sensores de pressão coloridos (opcional) ou fitas elásticas para feedback tátil",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Metrônomos visuais com luzes pulsantes",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Espelhos estratégicos para autoobservação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Tablets com câmera lenta para análise imediata",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo:
+          "Plataforma interativa no chão com sensores de pressão (opcional) ou espaço marcado com fitas",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Projetor com feedback visual em tempo real",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Economia de Movimentos: Executa movimentos com fluidez e sem tensão excessiva ou movimentos desperdiçados",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Precisão e Timing: Executa ações no momento adequado, com coordenação entre olho, mão e tempo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Consciência Corporal: Identifica em si mesmo onde há tensão ou oportunidade de ajuste postural",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma percepção sobre seu corpo durante a execução técnica e um micro-hábito para praticar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-07",
+    tipo: 0,
+    nome: "Erro, Derrota e Aprendizado",
+    codigo: "ADGP07",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Transformar a percepção do erro de 'falha pessoal' para 'dado para melhoria', desenvolvendo vocabulário específico para análise sem julgamento e estabelecendo rotina de reflexão pós-partida focada em aprendizados, não apenas resultados.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de analisar um erro ou derrota durante o jogo sem julgamento pessoal, identificando pelo menos um aprendizado específico e transformando-o em uma ação de melhoria para a próxima partida, reconhecendo que erros são oportunidades de crescimento.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Transformar a percepção do erro de 'falha pessoal' para 'dado para melhoria', desenvolvendo vocabulário específico para análise sem julgamento e estabelecendo rotina de reflexão pós-partida focada em aprendizados, não apenas resultados.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu com seus erros hoje?' em vez de 'Você ganhou?'.\n- Pergunte: 'Qual foi o erro mais instrutivo que você cometeu e o que ele te ensinou?'\n- Pergunte: 'Mostre seu Diário de Aprendizados! Que descoberta você fez sobre si mesmo?'\n- Reforce: 'Errar faz parte do jogo. O importante é o que você faz com o erro depois.'",
+    resultadosEsperados:
+      "Alunos:\n- Redução da ansiedade perante situações desafiadoras nos games.\n- Capacidade de identificar pelo menos um aprendizado específico após cada partida.\n- Linguagem para discutir erros sem autocobrança excessiva ('o que posso aprender com isto?' em vez de 'sou ruim nisto').\n\nPais/responsáveis:\n- Observação de mudança na reação do filho após derrotas (menos explosões, mais reflexão).\n- Compreensão de que o curso ensina mentalidade de crescimento aplicável a todas as áreas.\n- Material concreto (Diário de Aprendizados) para acompanhar o desenvolvimento.\n\nInstituição:\n- Documentação sistemática do desenvolvimento socioemocional dos alunos.\n- Fortalecimento da proposta diferenciada que vai além das habilidades técnicas.\n- Base para avaliações formativas contínuas através dos registros nos diários.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar termos como 'dados para melhoria', 'oportunidade de ajuste', 'descoberta do que não funciona' em vez de 'falha', 'erro grave'. Usar a metáfora do 'laboratório científico' para desestigmatizar o erro.\n\nMediação:\nModelar pessoalmente como analisar erros sem julgamento ('Hoje notei que errei em X, então vou treinar Y amanhã'). Criar clima psicológico seguro onde errar é não apenas aceito mas esperado e valorizado.\n\nSensibilidade:\nObservar sinais de vergonha ou autocrítica excessiva e intervir com normalização ('Isto acontece com todos os atletas'). Oferecer espaço para quem não quiser compartilhar publicamente.\n\nConexão com a família:\nEnviar um resumo visual do Diário de Aprendizados para os pais, destacando o processo de reflexão e como podem apoiar em casa ('O que você aprendeu com seus erros hoje?').\n\nRegistro:\nGarantir que cada reflexão termine com uma ação específica ('Na próxima vez vou...'). Coletar exemplos positivos de reflexões para usar como modelo (com consentimento).",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP6 - Execução Técnica + Movimentação",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reformula uma autocrítica destrutiva ('sou ruim') em uma observação construtiva ('preciso melhorar minha mira em movimento').\n- O aluno identifica pelo menos 1 aprendizado específico após uma partida curta.\n- O aluno registra no Diário de Aprendizados uma reflexão sobre um erro e uma ação concreta para melhoria.",
+    metodologias:
+      "- Metáfora transformadora (laboratório científico)\n- Aprendizagem experiencial (partidas controladas)\n- Pedagogia visual (diários ilustrados)\n- Progressão por reflexão (ação → análise → ajuste)\n- Celebração do processo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Laboratório do Aprendizado",
+        duracaoMin: 10,
+        descricao:
+          "Introdução da analogia do 'laboratório científico': 'Cientistas não têm medo de errar porque cada erro gera dados importantes'. Alunos recebem 'jalecos de cientista' simbólicos. Compartilhamento de exemplos reais de atletas profissionais que usaram erros como ponto de partida para melhorias (Pelé perdendo gol, Michael Jordan cortado do time). Pergunta: 'Que erro você cometeu que te ensinou algo importante?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Erros que Me Fizeram Forte",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, alunos recebem cartões ilustrados com 'erros famosos' (Pelé perdendo gol, Michael Jordan sendo cortado, jogador profissional de e-sports perdendo campeonato) e cartões com 'resultados de aprendizado'. Devem combinar cada erro com seu aprendizado correspondente. Depois, compartilham: 'Este erro de X levou a Y aprendizado, que resultou em Z conquista'. Instrutor guia a discussão para destacar o padrão: grandes conquistas sempre vêm após erros significativos.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Laboratório do Erro – Partidas Curtas",
+        duracaoMin: 25,
+        descricao:
+          "Três partidas curtas (5-6 min cada) com objetivos diferentes: 1) Jogar normalmente, sem pressão; 2) 'Dia do Erro' - cometer erros intencionalmente em fundamentos específicos (ex: má comunicação, posicionamento ruim) para observar consequências; 3) Aplicar aprendizados das observações anteriores. Após cada partida, preenchem uma ficha simples: 'O que errei', 'O que isso me ensinou', 'Como vou treinar isso na próxima vez'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Diário de Aprendizados Visual",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Diário de Aprendizados com: capa personalizada com seu 'lema de cientista do jogo', primeira página com seu maior aprendizado da aula de hoje, sistema de adesivos para celebrar reflexões feitas (não vitórias), espaço para desenho do 'erro mais instrutivo do dia'. Compartilham em duplas para troca de ideias.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um compromisso: 'Da próxima vez que eu errar, vou lembrar que é um dado para melhoria e vou...'. Registro no Diário: 'Hoje aprendi com meu erro que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "'Jalecos de cientista' simbólicos (papel ou tecido)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões ilustrados com 'erros famosos' e 'resultados de aprendizado'",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado para as partidas curtas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Fichas estruturadas de análise de erro ('O que errei', 'O que me ensinou', 'Como vou treinar')",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cadernos ou pastas para o Diário de Aprendizados",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Canetas coloridas, adesivos de conquista, materiais de arte para personalização",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital (para registro final)",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Transformação da autocrítica: Reformula um julgamento pessoal em oportunidade de crescimento específica",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de aprendizados: Consegue extrair pelo menos 1 aprendizado específico após uma partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Diário de Aprendizados: Cria um diário personalizado com reflexão genuína e plano de ação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro reflexivo: Descreve no Diário um erro e uma ação concreta para melhoria na próxima partida",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-08",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Técnica, Emoção e Aprendizado",
+    codigo: "ADGP08",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes (tilt, execução técnica, movimentação e cultura do erro), focando na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a autorregulação, a consciência corporal e a reflexão pós-partida.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, as técnicas de autorregulação emocional (ADGP5), os fundamentos de execução técnica e movimentação (ADGP6) e a mentalidade de aprendizado com erros (ADGP7), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve gerenciar emoções, executar com eficiência e aprender com falhas.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes (tilt, execução técnica, movimentação e cultura do erro), focando na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a autorregulação, a consciência corporal e a reflexão pós-partida.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi jogar com a 'mente de cientista'? O que você observou em você mesmo?'\n- Pergunte: 'Você usou alguma técnica de respiração ou pausa hoje? Como se sentiu?'\n- Pergunte: 'Que erro te ensinou algo novo nesta sessão?'\n- Reforce: 'O curso ensina a jogar com consciência. É importante saber se divertir e também saber observar a si mesmo durante a diversão.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de técnicas de respiração ou pausa durante o jogo.\n- Percepção consciente do corpo (postura, tensão) durante a partida.\n- Reflexão natural sobre erros sem autocrítica destrutiva, identificando aprendizados.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando técnicas de autorregulação mesmo em momentos de diversão.\n- Percepção de que o filho está mais consciente do próprio corpo e emoções durante o jogo.\n- Confiança de que o curso integra saúde mental, técnica e prazer no jogo.\n\nInstituição:\n- Consolidação da cultura de 'jogo consciente' e 'aprendizado contínuo' em momentos livres.\n- Observação natural da evolução dos alunos na autorregulação e execução técnica.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência prazerosa e significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar tom leve e encorajador. Reforçar a 'mente de cientista' (ADGP7) e a 'Orquestra do Corpo' (ADGP6). Frases como 'O que seu corpo está sentindo?' e 'Que dado este erro te trouxe?' em vez de julgamentos de desempenho.\n\nMediação:\nObservar sem intervir constantemente. Fazer perguntas pontuais durante as pausas para estimular a reflexão, mas sem interromper o fluxo do jogo. Celebrar quando perceber alunos aplicando técnicas voluntariamente.\n\nSensibilidade:\nEstar atento a alunos que possam estar muito competitivos ou frustrados. Redirecionar suavemente para o prazer do jogo e da descoberta. Lembrar do Kit de Emergência Anti-Tilt se necessário.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os aprendizados sobre emoções, corpo e erros de forma prática e prazerosa. Sugerir que perguntem: 'Como foi jogar usando o que você aprendeu sobre tilt e corpo?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação das técnicas de regulação e na fluidez dos movimentos, comparando com a ADGP4.",
+    preRequisitos:
+      "- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP7 - Erro, Derrota e Aprendizado",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno joga respeitando as pausas sugeridas e/ou iniciando pausas voluntárias.\n- O aluno identifica, ao final, pelo menos 1 momento em que aplicou uma técnica de regulação ou ajuste postural.\n- O aluno compartilha um aprendizado obtido a partir de um erro cometido durante a sessão.",
+    metodologias:
+      "- Aprendizagem experiencial\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo Consciente",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar com a 'mente de cientista' que aprendemos. Observem seus corpos (execução), observem suas emoções (tilt) e observem seus erros (aprendizado). Lembrem-se das técnicas que praticamos!'. Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere a menos que haja necessidade. Pode fazer perguntas rápidas e discretas: 'Como está seu corpo?', 'Lembrou de respirar?', 'Que erro você está coletando como dado agora?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in Corporal e Emocional",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida: 'Alguém percebeu seu corpo tenso?' 'Alguém sentiu o 'termômetro' subir e usou uma técnica?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa se os alunos aplicam as técnicas voluntariamente e se há mais consciência corporal e emocional.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Quem usou a respiração ou pausa hoje?' 'Quem percebeu seu corpo fazendo um movimento mais econômico?' 'Quem errou e conseguiu pensar 'que dado legal para melhorar'?'. Instrutor celebra as descobertas e conecta com as aulas anteriores.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, jogando livremente, percebi que...' ou 'A técnica que usei e funcionou foi...' ou 'Um erro que me ensinou algo novo foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Aplicação de Técnicas de Regulação: Demonstra uso de respiração, pausa ou ajuste postural durante o jogo livre",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Consciência Corporal e Emocional: Consegue identificar e descrever sensações corporais ou emocionais durante a partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Mentalidade de Aprendizado: Reage a erros com curiosidade (coleta de dados) em vez de frustração destrutiva",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa um aprendizado ou técnica aplicada",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-09",
+    tipo: 0,
+    nome: "Visão de Mapa e Consciência de Jogo",
+    codigo: "ADGP09",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da habilidade de processar múltiplas informações simultaneamente, ampliando a percepção do ambiente de jogo através de consciência de mapa, visão periférica e leitura de contexto, com analogias de águias e guardiões para tornar acessível o conceito.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de processar informações visuais periféricas durante o jogo, identificando padrões de movimento, posicionamento de aliados e inimigos, e tomando decisões baseadas em uma leitura mais ampla do mapa, com rotinas visuais específicas para diferentes momentos da partida.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da habilidade de processar múltiplas informações simultaneamente, ampliando a percepção do ambiente de jogo através de consciência de mapa, visão periférica e leitura de contexto, com analogias de águias e guardiões para tornar acessível o conceito.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre 'ver' o jogo de forma diferente?'\n- Pergunte: 'Como você faz para 'ampliar sua visão' quando está jogando?'\n- Pergunte: 'Qual foi a informação mais útil que você percebeu no mapa hoje?'\n- Dica: 'Faça um jogo de observação em casa: 'O que você vê que eu não vejo?' para treinar a visão periférica em família.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e nomear seus próprios 'pontos cegos' visuais pessoais.\n- Redução da ansiedade durante partidas através de maior consciência do ambiente completo.\n- Desenvolvimento de rotinas visuais específicas para diferentes momentos de jogo.\n\nPais/responsáveis:\n- Compreensão concreta de como o curso desenvolve habilidades cognitivas avançadas (não apenas reflexos).\n- Redução de preocupações sobre 'fixação excessiva na tela' através da abordagem de visão ampla.\n- Pontos de conversa específicos para fortalecer o vínculo ('como você 'viu' aquele perigo antes dos outros?').\n\nInstituição:\n- Documentação do desenvolvimento de habilidades cognitivas superiores através de registros visuais.\n- Fortalecimento da proposta diferenciada que vai além de mecânicas básicas para processamento avançado.\n- Base para personalização do ensino conforme padrões visuais individuais de cada aluno.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar analogias naturais: 'olhos de águia', 'antenas que captam informações', 'radar'. Evitar jargões técnicos. Usar 'mapa interno' em vez de 'consciência situacional'.\n\nMediação:\nIncentivar a prática da 'varredura visual' com perguntas: 'O que você vê além do seu personagem?'. Celebrar quando alunos perceberem algo antes dos colegas.\n\nSensibilidade:\nTer atividades alternativas para alunos com problemas visuais ou dificuldade extrema de processamento múltiplo. Observar sinais de sobrecarga sensorial.\n\nConexão com a família:\nEnviar um guia visual de 'exercícios simples para ampliar a visão' para os pais, com atividades para fazer em casa (ex: jogos de memória visual, observação de detalhes em imagens).\n\nRegistro:\nFotografar (com consentimento) os mapas táteis construídos pelos alunos para criar um atlas visual da turma.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP6 - Execução Técnica + Movimentação",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente a posição de pelo menos 2 aliados e 2 inimigos após uma rápida varredura do mapa.\n- O aluno descreve uma situação em que usou a visão periférica para identificar algo importante.\n- O aluno cria uma 'rotina visual' pessoal (ex: olhar o mapa a cada 10 segundos).",
+    metodologias:
+      "- Pedagogia da visão expandida\n- Aprendizagem multimodal (visual, auditivo, tátil)\n- Metáfora natural (animais)\n- Feedback não intrusivo (vibrações, cores, sons)\n- Integração cognição-emocional",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Olhos de Águia",
+        duracaoMin: 10,
+        descricao:
+          "Analogia da águia: 'A águia não vê apenas a presa, vê todo o céu e a terra ao mesmo tempo'. Demonstração de visão central vs. periférica. Atividade inicial: com visão normal, contar quantos colegas estão levantando a mão enquanto focam em um ponto central. Depois, com instrução de 'ampliar a visão', repetir o desafio. Discussão: 'O que você viu na segunda vez que não viu na primeira?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação dos Mapas Vivos – Construção Colaborativa",
+        duracaoMin: 20,
+        descricao:
+          "Três estações rotativas: 1) Mapa Tátil - plataforma elevada com relevo físico do mapa do jogo e miniaturas móveis de personagens; 2) Mapa Emocional - projeção interativa onde cores representam estados emocionais das áreas (vermelho = perigo, azul = segurança); 3) Mapa Sonoro - alto-falantes posicionados estrategicamente com sons característicos de diferentes regiões. Em grupos, os alunos constroem um caminho estratégico usando as miniaturas, identificam zonas de stress e segurança, e fecham os olhos para identificar a localização de perigos apenas pelos sons.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Desafio da Consciência Ampliada",
+        duracaoMin: 20,
+        descricao:
+          "Três níveis progressivos de complexidade: 1) Nível 1 (Consciência dupla) - jogar enquanto responder perguntas simples sobre o que está acontecendo em outra parte da tela; 2) Nível 2 (Consciência tripla) - jogar enquanto monitorar um contador de recursos, ouvir comunicações do time e identificar movimentos do inimigo; 3) Nível 3 (Consciência total) - jogar enquanto gerenciar múltiplas informações, com pausas programadas para descrever mentalmente todo o mapa. A cada 30 segundos, uma vibração/pulseira lembra de 'ampliar a visão'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Time dos Olhos Abertos – Partida Cooperativa",
+        duracaoMin: 15,
+        descricao:
+          "Partida com regras específicas de comunicação visual: 1) Antes de tomar qualquer ação importante, o jogador deve descrever verbalmente o que vê em todo o mapa; 2) Cada jogador é responsável por uma 'zona visual' específica do mapa, reportando mudanças; 3) Quando um jogador identifica uma oportunidade ou perigo, deve apontar fisicamente na direção correta na tela. Após a partida, análise no quadro: 'Quais decisões foram tomadas graças a informações que só um jogador viu?'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define uma 'rotina visual' pessoal: 'Vou olhar o mapa a cada 10 segundos' ou 'Vou verificar as posições dos meus aliados antes de avançar'. Registro no Diário: 'Hoje meus olhos aprenderam a ver...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo:
+          "Óculos especiais com filtros coloridos (verde para visão central, azul para periférica)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Plataformas elevadas com relevo físico do mapa do jogo",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Miniaturas móveis de personagens",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Projeção interativa com cores para 'mapa emocional' (opcional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Alto-falantes posicionados estrategicamente com sons de diferentes regiões",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Pulseiras com vibração para lembrete de 'ampliar visão'",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para os desafios",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Quadro magnético para registro coletivo de decisões",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Percepção Periférica: Identifica informações fora do foco central durante os desafios",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Comunicação Visual: Compartilha informações visuais com clareza durante a partida cooperativa",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Consciência de Mapa: Demonstra conhecimento da posição de aliados e inimigos durante a partida",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário sua 'rotina visual' e como ela pode ajudá-lo no jogo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-10",
+    tipo: 0,
+    nome: "Regras, Fair Play e Confiança",
+    codigo: "ADGP10",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Exploração do papel das regras como estruturas que permitem liberdade criativa em equipe, identificação de comportamentos de fair play e unfair play, e construção coletiva de um 'Código de Honra' para fortalecer a confiança e a cultura do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender que regras não são limitações, mas estruturas que permitem a convivência e a liberdade criativa em equipe, identificando comportamentos de fair play e unfair play em situações específicas de jogo e estabelecendo compromissos concretos de comportamento para o time, conectando a ética digital com valores transferíveis para outras áreas da vida.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Exploração do papel das regras como estruturas que permitem liberdade criativa em equipe, identificação de comportamentos de fair play e unfair play, e construção coletiva de um 'Código de Honra' para fortalecer a confiança e a cultura do time.",
+    sugestoesPais:
+      "- Pergunte: 'O que é o Código de Honra do seu time? Você pode me mostrar?'\n- Pergunte: 'Por que a confiança é importante em um time? O que acontece quando alguém quebra a confiança?'\n- Pergunte: 'Como você se sentiu na rodada onde todos podiam 'trapacear'? E na rodada justa?'\n- Reforce: 'Seu compromisso com a honestidade no jogo reflete seu caráter em casa e na escola.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão prática de como pequenas quebras de regras destroem confiança rapidamente.\n- Capacidade de identificar situações de unfair play antes de participar delas.\n- Desenvolvimento de vocabulário para confrontar comportamentos inadequados de forma respeitosa ('Isso não está alinhado com nosso Código de Honra').\n- Orgulho de pertencer a um time com valores claros e compartilhados.\n\nPais/responsáveis:\n- Tranquilidade ao saber que o curso aborda ética e valores de forma explícita e prática.\n- Observação de mudança no comportamento do filho sobre honestidade em jogos online.\n- Evidência tangível do compromisso com valores ('Código de Honra' do time).\n\nInstituição:\n- Fortalecimento da identidade ética do programa como diferencial competitivo.\n- Redução significativa de conflitos internos e problemas comportamentais nas aulas.\n- Documentação clara dos valores e expectativas para todos os participantes.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos como 'atalho' em vez de 'trapaça', 'reconstruir confiança' em vez de 'pedir desculpas', 'código de honra' em vez de 'regras'. Manter neutralidade em situações ambíguas, focando em consequências.\n\nMediação:\nValidar que todos cometem erros, mas a escolha de corrigir ou justificar define o caráter. Intervir imediatamente se alunos desvalorizarem comportamentos éticos.\n\nSensibilidade:\nEstar atento a alunos que podem ter sido vítimas ou perpetradores de unfair play em contextos anteriores. Criar clima seguro para compartilhamento sem julgamento.\n\nConexão com a família:\nEnviar uma cópia visual do 'Código de Honra' para os pais, destacando como estes valores se aplicam em casa (ex: honestidade, responsabilidade).\n\nRegistro:\nFotografar (com consentimento) o Código de Honra assinado para incluir no dossiê da turma e usar como referência futura.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP7 - Erro, Derrota e Aprendizado",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica e classifica corretamente situações de fair play e unfair play.\n- O aluno participa ativamente da construção do 'Código de Honra' e assina o compromisso.\n- O aluno reformula uma situação de unfair play em uma solução construtiva.",
+    metodologias:
+      "- Pedagogia da confiança (escudo)\n- Aprendizagem experiencial contrastante (rodadas com e sem fair play)\n- Análise crítica mediada (vídeos)\n- Compromisso simbólico (Código de Honra)",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Escudo de Confiança",
+        duracaoMin: 10,
+        descricao:
+          "Analogia visual: 'Cada time tem um escudo de confiança invisível'. Cartões com comportamentos (ex: 'trapacear em partida amigável', 'avisar sobre bug', 'culpar colega por erro') são colocados sobre o escudo. Cada comportamento quebra ou fortalece o escudo. Discussão: 'Quanto tempo levaria para reconstruir esta confiança?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Detetive do Fair Play",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, alunos assistem a 4 vídeos curtos (30-45s) de situações ambíguas de fair play. Cada grupo recebe uma ficha de detetive com perguntas: 'O que realmente aconteceu?', 'Quem foi afetado?', 'Qual foi o impacto na confiança?', 'O que eu faria no lugar dele?'. Discutem e compartilham descobertas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Consequências do Atalho",
+        duracaoMin: 20,
+        descricao:
+          "Duas rodadas do mesmo desafio em times: 1) Rodada Livre - podem usar qualquer estratégia ou atalho para vencer (inclusive combinar trapaças); 2) Rodada Fair Play - seguem regras estritas de fair play acordadas previamente. Após cada rodada, respondem: 'Quem você confiaria para formar time na próxima partida?' e 'Como você se sentiu sobre suas próprias escolhas?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Código de Honra do Time",
+        duracaoMin: 15,
+        descricao:
+          "Com base nas experiências anteriores, o grupo constrói seu Código de Honra com 4-5 compromissos concretos e observáveis. Exemplos: 'Sempre avisaremos se descobrirmos um bug', 'Nunca culparemos um colega por derrota - analisaremos juntos', 'Respeitaremos a meta de treino combinada'. Cada aluno assina o pergaminho com seu selo pessoal.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno escolhe um compromisso do Código de Honra que considera mais importante e registra no Diário: 'Este compromisso é importante porque...' e 'Vou honrá-lo esta semana quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Escudo grande de cartolina com divisões",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartas com comportamentos (fortalecem ou quebram o escudo)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Vídeos curtos editados (30-45s) de situações de fair play/unfair play",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de 'detetive' com perguntas-guia",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Lupas de brinquedo simbólicas",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para as duas rodadas",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Pergaminho grande ou cartolina para o Código de Honra",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Canetas especiais e selos de cera simbólicos (adesivos) para assinatura",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Fair/Unfair Play: Classifica corretamente situações como justas ou injustas, justificando com argumentos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Comportamento Ético na Simulação: Mantém comportamento respeitoso mesmo na rodada 'livre', demonstrando integridade",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Contribuição para o Código de Honra: Propõe compromissos específicos e realistas para o grupo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve a importância de um compromisso e como vai honrá-lo na prática",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-11",
+    tipo: 0,
+    nome: "Papéis Básicos no Time",
+    codigo: "ADGP11",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Descoberta de papéis funcionais dentro do time (suporte, atacante, controlador, vigilante), compreensão de como diferentes responsabilidades criam sinergia coletiva, e construção de identidades funcionais significativas com compromissos específicos.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender que diferentes papéis complementares geram sinergia coletiva, identificando seu perfil funcional natural com base em habilidades e preferências, e deve reconhecer a importância de cada função para o sucesso do time, conectando autoconhecimento emocional com adequação a papéis específicos.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Descoberta de papéis funcionais dentro do time (suporte, atacante, controlador, vigilante), compreensão de como diferentes responsabilidades criam sinergia coletiva, e construção de identidades funcionais significativas com compromissos específicos.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi o seu papel hoje no time? O que você descobriu sobre si mesmo?'\n- Pergunte: 'Você experimentou um papel diferente? Como foi?'\n- Pergunte: 'Por que você acha que é importante ter pessoas com diferentes papéis no time?'\n- Reforce: 'Em casa também temos diferentes papéis. Cada contribuição é valiosa para a família funcionar bem.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar seu perfil funcional natural com base em habilidades e preferências.\n- Redução da frustração quando não pode desempenhar o 'papel dos sonhos' através do entendimento de complementariedade.\n- Desenvolvimento de vocabulário para reconhecer e valorizar diferentes contribuições ('você é nosso radar hoje').\n- Sentimento de pertencimento independente do papel atribuído ('sem guardiões, não há heróis').\n\nPais/responsáveis:\n- Compreensão de que o curso desenvolve habilidades de colaboração genuínas, não apenas competição individual.\n- Observação de mudança na capacidade do filho de valorizar contribuições diferentes das suas.\n- Redução de conflitos sobre 'querer sempre ser o melhor' através da valorização de papéis complementares.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência coletiva através de registros de interações funcionais.\n- Fortalecimento da proposta diferenciada que forma atletas integrais, não apenas técnicos individuais.\n- Base para criação de times equilibrados com papéis complementares nas competições internas.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de valor: 'guardião' em vez de 'suporte', 'construtor' em vez de 'controlador', 'guardião da moral' em vez de 'líder'. Evitar hierarquias (ex: 'atacante' não é 'melhor' que 'vigilante').\n\nMediação:\nIntervir imediatamente quando alunos desvalorizarem papéis, usando perguntas: 'O que aconteceria se não tivéssemos este guardião?'.\n\nSensibilidade:\nObservar sinais de frustração ou ansiedade durante a rotação de papéis; ter papéis 'híbridos' para transições suaves.\n\nConexão com a família:\nEnviar um guia visual de 'papéis em família' mostrando como diferentes contribuições são valorizadas em casa (ex: quem organiza, quem cozinha, quem anima).\n\nRegistro:\nFotografar (com consentimento) as capas dos Guardiões para criar um mural de identidades funcionais da turma.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP10 - Regras, Fair Play e Confiança",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica seu perfil funcional natural (ex: 'sou mais vigilante') e explica por quê.\n- O aluno reconhece a importância de papéis complementares e valoriza contribuições alheias.\n- O aluno participa da construção do 'Código dos Responsáveis' e assume um compromisso funcional.",
+    metodologias:
+      "- Pedagogia da identidade funcional\n- Aprendizagem por descoberta guiada (estações)\n- Metáfora natural (ecossistemas)\n- Ritual educativo (Cerimônia dos Guardiões)\n- Integração individual-coletivo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Ecossistema do Time",
+        duracaoMin: 10,
+        descricao:
+          "Analogia natural: 'Assim como na floresta, nosso time precisa de diferentes funções para sobreviver'. Cartas com animais e suas funções (águia = vigilante, formiga = construtora, urso = protetora, leopardo = atacante) são conectadas a papéis de jogo. Pergunta: 'Qual desses animais funciona melhor na sua forma de jogar?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação dos Superpoderes Funcionais",
+        duracaoMin: 20,
+        descricao:
+          "Quatro estações rotativas: 1) Vigia - tela dividida com múltiplos ângulos, fone com comunicação constante; 2) Construtora - interface com marcadores de área e tempo; 3) Protetora - configuração com maior resistência e visão defensiva; 4) Atacante - configuração com mobilidade e dano aumentados. Em cada estação, um desafio específico. Após cada estação, alunos registram: 'Neste papel, me senti como...' e 'Minha contribuição mais importante foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Desafio do Time Equilibrado",
+        duracaoMin: 20,
+        descricao:
+          "Três missões com distribuição de papéis: 1) Estático - defender posição com distribuição fixa; 2) Dinâmico - atacar com rotação obrigatória de papéis a cada 2 minutos; 3) Adaptativo - time decide coletivamente qual configuração funcional usar. Regras especiais: ninguém pode desempenhar seu 'papel preferido' na Missão 1; na Missão 2, a rotação só acontece quando o time verbaliza 'Estou pronto para servir como [papel]'. Análise: 'Quem teve que sair da zona de conforto?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Cerimônia dos Guardiões – Ritual e Compromisso",
+        duracaoMin: 15,
+        descricao:
+          "Ritual simbólico: sentados em círculo com uma vela (LED) no centro, cada aluno escolhe uma cor de capa (azul claro = Vigia, verde = Construtor, vermelho = Protetor, dourado = Atacante) que representa seu papel naquela semana. Cada aluno personaliza sua capa e, um por um, completa as frases: 'Eu me comprometo a servir como [papel] com [qualidade]' e 'Peço ajuda quando precisar de [apoio específico]'. O grupo responde: '[Nome], seu [papel] fortalece nosso time!'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Meu papel natural no time é... porque...' e 'Nesta semana, vou praticar ser [papel alternativo] para entender melhor meus colegas.'",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartas com animais e suas funções (águia, formiga, urso, leopardo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "4 estações configuradas para cada papel (Vigia, Construtora, Protetora, Atacante)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Fichas de registro para cada estação ('Neste papel, me senti como...')",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para os desafios",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Capas de tecido simples em 4 cores (azul claro, verde, vermelho, dourado)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Tintas não tóxicas para personalização das capas",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Vela simbólica (LED) para a Cerimônia",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Pergaminho para o 'Código dos Responsáveis' (compromissos do time)",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Perfil Funcional: Reconhece suas preferências e habilidades naturais, explicando por que se identifica com determinado papel",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Valorização de Papéis Complementares: Reconhece a importância de funções diferentes das suas e valoriza contribuições alheias",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Flexibilidade e Adaptação: Demonstra disposição para experimentar papéis fora de sua zona de conforto",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Compromisso Funcional: Assume um compromisso específico relacionado ao seu papel no time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-12",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Papéis, Fair Play e Visão de Mapa",
+    codigo: "ADGP12",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes (papéis no time, fair play e visão de mapa), focando na aplicação prática dos papéis funcionais, na manutenção do Código de Honra e no uso da consciência de mapa em ambiente livre, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os papéis funcionais descobertos (ADGP11), os princípios de fair play e confiança (ADGP10) e as habilidades de visão de mapa e consciência de jogo (ADGP9), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve saber seu papel, respeitar as regras e enxergar o jogo como um todo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes (papéis no time, fair play e visão de mapa), focando na aplicação prática dos papéis funcionais, na manutenção do Código de Honra e no uso da consciência de mapa em ambiente livre, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi seu papel hoje e como você ajudou seu time?'\n- Pergunte: 'O Código de Honra ajudou vocês a jogarem melhor juntos?'\n- Pergunte: 'O que você percebeu no mapa que foi importante para a partida?'\n- Reforce: 'Saber seu papel, respeitar as regras e enxergar o jogo como um todo são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de seu papel funcional durante a partida.\n- Respeito ao Código de Honra mesmo em momentos de competitividade.\n- Uso da visão de mapa para orientar decisões e comunicações com o time.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando a importância do trabalho em equipe e dos valores éticos.\n- Percepção de que o filho está mais atento ao ambiente do jogo como um todo.\n- Confiança de que o curso integra técnica, ética e consciência situacional.\n\nInstituição:\n- Consolidação da cultura de jogo consciente e colaborativo.\n- Observação natural da aplicação dos papéis funcionais e dos valores do Código de Honra.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência prática e significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar tom leve e encorajador. Reforçar as identidades funcionais (Guardiões) e o Código de Honra. Frases como 'Como seu Guardião está contribuindo agora?' e 'O que o mapa está te mostrando?'.\n\nMediação:\nObservar sem intervir constantemente. Fazer perguntas pontuais durante as pausas para estimular a reflexão sobre papéis e fair play. Celebrar quando perceber alunos aplicando os conceitos voluntariamente.\n\nSensibilidade:\nEstar atento a disputas sobre papéis ou frustrações. Lembrar que todos os papéis são importantes e que o Código de Honra é um compromisso coletivo.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os aprendizados sobre papéis, fair play e visão de mapa de forma prática e prazerosa. Sugerir que perguntem: 'Qual foi seu papel hoje e como você ajudou o time?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos papéis, no respeito ao Código de Honra e no uso da consciência de mapa.",
+    preRequisitos:
+      "- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP10 - Regras, Fair Play e Confiança\n- ADGP11 - Papéis Básicos no Time",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno joga respeitando o Código de Honra do time (sem atalhos ou comportamentos tóxicos).\n- O aluno demonstra consciência do mapa, compartilhando informações visuais com o time.\n- O aluno desempenha seu papel funcional com intencionalidade, mesmo que com falhas técnicas.",
+    metodologias:
+      "- Aprendizagem experiencial\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Propósito",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar como os Guardiões que descobriram na aula passada. Lembrem-se do Código de Honra e usem seus 'olhos de águia' para ver o mapa inteiro. Não se preocupem com o resultado, mas com como vocês vão contribuir para o time.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere a menos que haja necessidade. Pode fazer perguntas rápidas e discretas: 'Qual é seu papel agora?', 'O que você está vendo no mapa?', 'Como o Código de Honra está guiando suas decisões?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in de Papéis e Ética",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida: 'Alguém conseguiu desempenhar seu papel?', 'Alguém viu algo importante no mapa que ajudou o time?', 'Alguém lembrou do Código de Honra em um momento difícil?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa se os alunos aplicam os papéis, o fair play e a visão de mapa voluntariamente, e se há mais consciência coletiva.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Qual foi seu papel hoje e como você contribuiu?', 'Você percebeu algo no mapa que mudou sua decisão?', 'Como o Código de Honra ajudou o time a jogar melhor?'. Instrutor celebra as descobertas e conecta com as aulas anteriores.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, jogando como [papel], percebi que...' ou 'O Código de Honra me ajudou a...' ou 'Vi no mapa que... e isso fez a diferença porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Capas dos Guardiões (opcional, para reforçar identidade)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cópia do Código de Honra afixada na parede",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Aplicação do Papel Funcional: Demonstra intencionalidade no desempenho de seu papel durante o jogo livre",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Respeito ao Código de Honra: Mantém comportamento ético, mesmo em situações competitivas",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Consciência de Mapa: Compartilha informações visuais relevantes com o time durante a partida",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa como aplicou os conceitos aprendidos",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-13",
+    tipo: 0,
+    nome: "Vida Digital Saudável + Energia para Performance",
+    codigo: "ADGP13",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Conexão entre hábitos digitais saudáveis (sono, alimentação, pausas, postura) e performance nos games, com construção de um 'Plano de Energia do Atleta' e identificação de sinais corporais de cansaço, usando analogias do jardim do atleta digital.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender que a performance nos games está diretamente conectada a hábitos saudáveis de sono, alimentação, hidratação e pausas, identificando 3 sinais corporais pessoais de cansaço ou excesso de tela, e deve ter elaborado um 'Plano de Energia do Atleta' com rituais de pausa e recuperação, reconhecendo que cuidar do corpo é parte essencial do treino de um Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Conexão entre hábitos digitais saudáveis (sono, alimentação, pausas, postura) e performance nos games, com construção de um 'Plano de Energia do Atleta' e identificação de sinais corporais de cansaço, usando analogias do jardim do atleta digital.",
+    sugestoesPais:
+      "- Pergunte: 'Quais são seus sinais de que precisa de uma pausa? Como você sabe?'\n- Pergunte: 'O que você colocou no seu Plano de Energia? Como posso ajudar você a cumprir?'\n- Pergunte: 'Você percebeu diferença no seu jogo quando está descansado versus cansado?'\n- Dica: 'Que tal fazermos uma pausa de alongamento juntos depois de cada hora de tela em casa?'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar 3 sinais corporais pessoais de cansaço ou excesso de tela.\n- Desenvolvimento de rotina simples de pausas ativas que melhoram performance nos games.\n- Redução da ansiedade quando precisam parar de jogar através de transições estruturadas.\n- Conexão entre corpo saudável e mente focada ('quando meu corpo está bem, minha mira também está').\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso aborda explicitamente saúde digital, principal preocupação familiar.\n- Observação concreta de mudança nos hábitos do filho em relação a tempo de tela e pausas.\n- Pontos de conversa específicos para fortalecer autocuidado em casa ('como você sabe quando precisa de uma pausa?').\n\nInstituição:\n- Documentação do desenvolvimento de hábitos saudáveis através de registros de autocuidado.\n- Fortalecimento da proposta diferenciada que forma atletas completos, não apenas técnicos.\n- Base para criação de parcerias com profissionais de saúde (fisioterapeutas, nutricionistas).",
+    notasInstrutor:
+      "Linguagem:\nUsar termos corporais e positivos: 'meu corpo me avisa quando preciso de pausa' em vez de 'sintomas de fadiga visual'. Usar analogias de jardins e ecossistemas para explicar equilíbrio.\n\nMediação:\nEnfatizar que saúde digital é sobre escolhas conscientes, não restrições. Validar que cada aluno tem uma realidade familiar diferente e oferecer alternativas realistas.\n\nSensibilidade:\nObservar sinais de desconforto ou ansiedade ao falar sobre limites; enfatizar autonomia ('escolhas que faço para jogar melhor') em vez de restrições.\n\nConexão com a família:\nEnviar um guia visual de 'sinais corporais de alerta' com rituais simples para implementar em casa (alongamento, hidratação).\n\nRegistro:\nColetar os Planos de Energia para arquivo no dossiê do aluno e possível revisão nas próximas aulas.",
+    preRequisitos:
+      "- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 sinais corporais pessoais de cansaço ou excesso de tela.\n- O aluno cria um 'Plano de Energia do Atleta' com rituais de pausa e recuperação específicos.\n- O aluno explica por que sono, alimentação e pausas afetam sua performance nos games.",
+    metodologias:
+      "- Pedagogia do corpo consciente\n- Aprendizagem experiencial (estações sensoriais)\n- Metáfora ecológica (jardim)\n- Autodiagnóstico guiado\n- Transições estruturadas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Jardim do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do jardim: 'Nosso corpo é como um jardim - cada parte precisa de cuidados específicos para florescer'. Apresentação de flores (necessidades): raízes = corpo (descanso, hidratação, movimento); caule = mente (pausas, alimentação consciente); folhas = emoções (calma, conexão); flores = performance (treino estruturado). Pergunta: 'Qual parte do seu jardim você tem negligenciado?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação do Corpo – Sinais de Alerta",
+        duracaoMin: 20,
+        descricao:
+          "Três estações sensoriais: 1) Visual - espelhos e cartas com sinais oculares (olhos secos, visão turva); 2) Postural - bancos ergonômicos ajustáveis e sensores simples de postura; 3) Energia - relógios de corpo com zonas de energia (verde=alta, amarelo=média, vermelho=baixa). Atividades: 5 minutos observando tela com e sem pausas para piscar; jogar por 3 minutos em posturas diferentes (curvado, ereto, relaxado); 4 minutos de jogo intenso seguidos de diferentes tipos de pausa (parado, alongamento, hidratação). Registro: 'Meus 3 sinais de alerta pessoais são...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Desafio do Tempo – Gestão de Energia",
+        duracaoMin: 20,
+        descricao:
+          "Simulação de um 'dia ideal' de 90 minutos. Cada aluno recebe 10 contas de energia para distribuir entre atividades: treino estruturado (2 contas por 15 min), jogo livre (1 conta por 10 min), pausa ativa (devolve 1 conta após 5 min), hidratação/alimentação (devolve 2 contas). Executam o plano com timer visual e registro de energia real. Quando ficam com menos de 3 contas, pausa obrigatória. Análise: 'Onde subestimei minha necessidade de energia?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Plano de Energia do Atleta",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Plano de Energia com três compromissos: 1) Compromisso Corporal (ex: 'Me levantarei a cada 30 minutos para alongar'); 2) Compromisso de Pausa (ex: 'Quando meus olhos arderem, fecharei por 2 minutos'); 3) Compromisso de Transição (ex: 'Quando terminar de jogar, esperarei 2 minutos antes de começar os deveres'). Compartilham em duplas para feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um micro-compromisso para a semana: 'Esta semana, vou prestar atenção em [sinal corporal] e vou [ação específica]'. Registro no Diário do Atleta Digital: 'Meu corpo me ensinou que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Jardim simbólico no chão com zonas (corpo, mente, emoções, performance)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Flores de papel com necessidades básicas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Espelhos grandes e cartas com sinais oculares",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Bancos ergonômicos ajustáveis e sensores de postura (fitas elásticas)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Relógios de corpo com zonas de energia (verde, amarelo, vermelho)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para as simulações",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Contas de energia (pedrinhas coloridas) para o Desafio do Tempo",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Moldes do Plano de Energia do Atleta",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Sinais Corporais: Reconhece e descreve pelo menos 3 sinais pessoais de cansaço ou excesso de tela",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Plano de Energia: Cria um plano com compromissos específicos, realistas e mensuráveis",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão da Conexão Corpo-Performance: Explica por que sono, alimentação e pausas afetam sua performance nos games",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um compromisso de autocuidado e por que é importante para seu jogo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-14",
+    tipo: 0,
+    nome: "Mini-Estratégias: Começo, Meio e Fim de Partida",
+    codigo: "ADGP14",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Compreensão da estrutura de uma partida dividida em fases (começo, meio e fim), desenvolvimento de adaptação estratégica conforme o momento do jogo, e criação de sistema de comunicação simples para sinalizar mudanças de fase ao time, usando analogias de narrativas e viagens.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender que uma partida se divide em fases (começo, meio, fim) com objetivos e desafios distintos, desenvolvendo habilidade de adaptação estratégica conforme o momento do jogo e criando um sistema de comunicação simples para sinalizar mudanças de fase ao time, conectando planejamento prévio com flexibilidade durante a execução.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Compreensão da estrutura de uma partida dividida em fases (começo, meio e fim), desenvolvimento de adaptação estratégica conforme o momento do jogo, e criação de sistema de comunicação simples para sinalizar mudanças de fase ao time, usando analogias de narrativas e viagens.",
+    sugestoesPais:
+      "- Pergunte: 'Como você planeja o começo de uma partida? E o meio? E o fim?'\n- Pergunte: 'O que você faz quando o plano inicial não está funcionando?'\n- Pergunte: 'Como você se prepara emocionalmente para o final de uma partida importante?'\n- Reforce: 'Saber que uma partida tem fases ajuda a não desistir no meio. O mesmo vale para os desafios da vida.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e nomear a fase atual da partida sem precisar de ajuda externa.\n- Redução da ansiedade no final de partidas através de preparação emocional progressiva.\n- Desenvolvimento de vocabulário estratégico simples para comunicar transições ('estamos entrando na fase do meio').\n- Sentimento de controle sobre o processo completo da partida, não apenas sobre momentos específicos.\n\nPais/responsáveis:\n- Compreensão de que o curso ensina pensamento estratégico estruturado, não apenas reflexos rápidos.\n- Observação de melhoria na capacidade de planejamento do filho em outras áreas (estudos, projetos).\n- Redução de frustrações pós-partida através da compreensão de que cada fase tem seu propósito.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento estratégico através de registros narrativos.\n- Fortalecimento da proposta diferenciada que forma atletas pensadores, não apenas executores.\n- Base para criação de metodologia de análise de partidas acessível para jovens.",
+    notasInstrutor:
+      "Linguagem:\nUtilizar termos narrativos em vez de técnicos ('estamos no meio da nossa história' em vez de 'fase intermediária'). Usar analogias de heróis e jornadas para explicar estrutura de partidas.\n\nMediação:\nEnfatizar que cada fase tem seu propósito e que a transição entre elas é onde muitos times erram. Celebrar adaptações bem-sucedidas.\n\nSensibilidade:\nObservar sinais de ansiedade durante a fase final das simulações; ter estratégias de acalma disponíveis (respiração, pausa).\n\nConexão com a família:\nEnviar um guia visual de 'fases em projetos familiares' mostrando como planejar começo, meio e fim juntos (ex: fazer uma refeição, organizar um evento).\n\nRegistro:\nColetar os Mapas Narrativos Pessoais e registros de adaptações para acompanhar evolução.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP11 - Papéis Básicos no Time",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente em qual fase da partida está e quais são os objetivos daquela fase.\n- O aluno demonstra adaptação de estratégia durante a simulação, ajustando comportamento conforme a fase.\n- O aluno comunica uma transição de fase ao time usando vocabulário específico ('estamos entrando no meio').",
+    metodologias:
+      "- Pedagogia narrativa (estrutura de histórias)\n- Aprendizagem experiencial por fases\n- Metáfora do herói\n- Transições emocionais integradas\n- Teatro educativo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – História em 3 Atos",
+        duracaoMin: 10,
+        descricao:
+          "Analogia narrativa: 'Toda grande história tem três partes, assim como nossas partidas'. Teatro de fantoches simples: 1) Começo (Atos 1): 'O herói se prepara, conhece seus poderes e planeja a jornada'; 2) Meio (Atos 2): 'O herói enfrenta desafios, adapta seu plano e aprende com os erros'; 3) Fim (Atos 3): 'O herói usa tudo o que aprendeu para conquistar seu objetivo'. Pergunta: 'Que herói você quer ser em cada fase?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Estação das Fases – Construção de Mapas Narrativos",
+        duracaoMin: 20,
+        descricao:
+          "Três estações rotativas: 1) Mapa do Começo - tapete com áreas para preparação, marcadores de recursos iniciais, cartões de objetivos iniciais; 2) Mapa do Meio - plataforma interativa com zonas de adaptação, cartões com 'surpresas' para resolver; 3) Mapa do Fim - tela com contagem regressiva visual, marcadores de pressão emocional. Em grupos, os alunos constroem um 'mapa narrativo' para uma partida ideal, definindo objetivos e adaptações para cada fase.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Missão em Sequência – Simulação por Fases",
+        duracaoMin: 20,
+        descricao:
+          "Partida dividida em três segmentos: 1) Começo (5 min) - foco em preparação e coleta de informações, sem confrontos diretos; 2) Meio (7 min) - foco em adaptação e execução do plano inicial com ajustes; 3) Fim (3 min) - foco em execução sob pressão com clareza emocional. Regras especiais: no Começo, ninguém avança para a zona de confronto antes do sinal coletivo; no Meio, a cada mudança de estratégia o time verbaliza o motivo; no Fim, antes de cada decisão importante, pausa de 3 segundos para respiração coletiva. Análise: 'O que funcionou na transição entre fases?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Teatro das Estratégias – Dramatização de Decisões",
+        duracaoMin: 15,
+        descricao:
+          "Em círculo, alunos recebem cartas com dilemas típicos de cada fase: 1) Dilemas do Começo - 'Seu colega quer avançar rápido, mas o plano é esperar'; 2) Dilemas do Meio - 'O plano inicial não está funcionando. Como vocês se adaptam sem pânico?'; 3) Dilemas do Fim - 'Vocês estão perdendo nos últimos segundos. Como manter a comunicação clara?'. Três voluntários encenam como o time lidaria com o dilema. Discussão: 'Qual fase esta decisão representa? Como os sentimentos do time afetaram a decisão?'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um objetivo específico para cada fase da próxima partida: 'No começo, vou...', 'No meio, vou...', 'No fim, vou...'. Registro no Diário do Atleta Digital: 'Aprendi que cada fase da partida pede...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Teatro de fantoches simples com três cenários (floresta, montanha, castelo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartas com elementos narrativos (herói, desafio, recompensa)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tapete com áreas para preparação (Mapa do Começo)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Plataforma interativa com zonas de adaptação (Mapa do Meio)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Tela com contagem regressiva visual (Mapa do Fim)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Missão em Sequência",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Cartas com dilemas típicos de cada fase",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Adereços simples para o Teatro (capas, espelhos)",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Fases: Consegue identificar e nomear a fase atual da partida e seus objetivos específicos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Adaptação Estratégica: Demonstra flexibilidade no plano conforme a fase muda, ajustando comportamento e decisões",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Comunicação de Transições: Comunica claramente ao time quando a partida está mudando de fase",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Define objetivos específicos para cada fase da próxima partida",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-15",
+    tipo: 0,
+    nome: "Comunicação em Jogo I: O que Ajuda e o que Atrapalha",
+    codigo: "ADGP15",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de distinguir entre comunicações que constroem e comunicações que destroem o time, com criação de consciência sobre impacto emocional das palavras em ambiente competitivo e estabelecimento de vocabulário funcional positivo para substituir padrões comunicativos tóxicos.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar automaticamente padrões comunicativos tóxicos antes de reproduzi-los, substituindo críticas destrutivas por comunicações construtivas usando um vocabulário funcional positivo, compreendendo o impacto emocional das palavras na performance e na confiança do time, e aplicando o 'Filtro de Palavras Poderosas' em situações de jogo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de distinguir entre comunicações que constroem e comunicações que destroem o time, com criação de consciência sobre impacto emocional das palavras em ambiente competitivo e estabelecimento de vocabulário funcional positivo para substituir padrões comunicativos tóxicos.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre palavras que ajudam e palavras que atrapalham?'\n- Pergunte: 'Me mostre seu Filtro de Palavras Poderosas! Que palavra você vai substituir?'\n- Pergunte: 'Como você se sente quando alguém fala com você de forma construtiva versus destrutiva?'\n- Dica para os pais: 'Quando perceber que seu filho está frustrado, pergunte: 'Qual palavra você pode usar agora que vai ajudar?' em vez de 'Para de reclamar!''",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar automaticamente padrões comunicativos tóxicos antes de reproduzi-los.\n- Vocabulário funcional positivo para substituir xingamentos e críticas destrutivas.\n- Redução da ansiedade em situações competitivas através de comunicação clara e construtiva.\n- Sentimento de segurança emocional ao saber que o time valoriza palavras que constroem.\n\nPais/responsáveis:\n- Observação concreta de mudança no comportamento comunicativo do filho em casa e online.\n- Redução significativa de preocupações sobre exposição a ambientes tóxicos em games.\n- Pontos de conversa específicos para fortalecer comunicação familiar saudável.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência emocional coletiva através de registros comunicativos.\n- Fortalecimento da proposta diferenciada que forma atletas emocionalmente inteligentes.\n- Criação de cultura de equipe saudável que serve como modelo para outras turmas.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'jardim da comunicação' para falar sobre palavras que nutrem ou envenenam. Usar termos como 'palavras que constroem' em vez de 'comunicação positiva'.\n\nMediação:\nCriar um clima seguro onde os alunos possam compartilhar experiências pessoais sem medo de julgamento. Validar que todos já usaram palavras que não gostariam de ter usado e que o importante é aprender a transformar.\n\nSensibilidade:\nEstar atento a alunos que podem ter vivenciado comunicação tóxica intensa em casa ou online; ter alternativas para participação se necessário.\n\nConexão com a família:\nEnviar um guia visual de 'comunicação construtiva em família' com frases modelo e técnicas de transformação para os pais.\n\nRegistro:\nFotografar (com consentimento) os Filtros de Palavras Poderosas para criar um mural de inspiração na sala.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP10 - Regras, Fair Play e Confiança\n- ADGP11 - Papéis Básicos no Time",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente comunicações construtivas e destrutivas em exemplos práticos.\n- O aluno transforma uma frase tóxica em uma comunicação construtiva usando o vocabulário aprendido.\n- O aluno cria um 'Filtro de Palavras Poderosas' pessoal com substituições específicas para seus padrões comunicativos.",
+    metodologias:
+      "- Pedagogia do jardim (metáfora natural)\n- Aprendizagem por contraste (comunicação boa vs. ruim)\n- Metacognição comunicativa\n- Simulação emocionalmente segura\n- Transformação prática (substituições concretas)",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Jardim da Comunicação",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do jardim: 'Nossa comunicação é como um jardim - cada palavra plantada cresce e afeta todo o ecossistema do time'. Apresentação de 'flores' (palavras que nutrem: 'Vamos tentar de novo', 'Estou aqui para ajudar') e 'ervas daninhas' (palavras que destroem: 'Você é ruim nisso', 'Desiste'). Pergunta: 'Que palavras você já plantou que gostaria de ter colhido?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Sons",
+        duracaoMin: 15,
+        descricao:
+          "Três estações auditivas em trios: 1) Estação Calma - ouvem áudios de comunicação clara em situações de baixa pressão e identificam o que construiu no time; 2) Estação Pressão - ouvem áudios de comunicação sob estresse moderado e identificam o que mudou sob pressão; 3) Estação Tóxica - ouvem exemplos curtos de comunicação destrutiva (editados para não serem traumáticos) e reescrevem cada frase transformando-a em construção ('Em vez de 'você errou', poderia dizer 'vamos ajustar esta jogada'). Registro: 'Uma descoberta surpreendente sobre comunicação foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Labirinto da Comunicação",
+        duracaoMin: 20,
+        descricao:
+          "Labirinto físico com 3 desafios comunicativos: 1) Obstáculo da Frustração - time perde um objetivo importante; comunicar de forma construtiva sem culpar ninguém (regra: nenhuma palavra que inclua 'você' como acusação); 2) Ponte da Pressão - últimos segundos de partida com vantagem mínima; manter comunicação clara e calmante (regra: cada comunicação começa com o nome do colega); 3) Jardim Renovado - time em tilt coletivo; restaurar comunicação positiva (regra: 3 comunicações positivas antes de qualquer sugestão de melhoria). Pulseiras monitoram volume e tom (verde = calmo, vermelho = agressivo). Análise: 'Qual desafio foi mais difícil e por quê?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Filtro de Palavras Poderosas",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria um 'Filtro de Palavras Poderosas' com três camadas: 1) Camada da Consciência - lista as 5 palavras/frases mais comuns que usa quando frustrado e identifica o gatilho emocional; 2) Camada da Transformação - para cada palavra tóxica, cria uma substituição construtiva ('Você é ruim' → 'Vamos praticar esta jogada juntos'); 3) Camada da Prática - cria um 'código de ativação' pessoal para usar antes de falar sob pressão ('Respira e escolhe').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define uma 'palavra poderosa' para praticar na próxima scrim. Registro no Diário: 'Hoje aprendi que a palavra [palavra tóxica] pode ser substituída por [palavra construtiva] porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Jardim simbólico no chão (flores e ervas daninhas de papel)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Fones de ouvido com áudios de comunicação (calma, pressão, tóxica)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Fichas de análise para cada estação",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Labirinto físico no chão com caminhos e desafios",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Pulseiras com sensores de voz (medem volume e tom) ou simbólicas",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartas de situação com dilemas comunicativos",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Moldes do Filtro de Palavras Poderosas (3 camadas)",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Comunicação Tóxica/Construtiva: Reconhece e classifica corretamente padrões comunicativos em exemplos práticos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Transformação de Frases: Consegue reformular uma frase tóxica em uma comunicação construtiva",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Filtro de Palavras Poderosas: Cria um filtro pessoal com substituições realistas e específicas para seus padrões",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma substituição de palavra e o impacto que espera que ela tenha",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-16",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Comunicação, Estratégia e Energia",
+    codigo: "ADGP16",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Comunicação Construtiva e Filtro de Palavras Poderosas (ADGP15), Estratégias por Fases (ADGP14) e Gestão de Energia e Sinais Corporais (ADGP13). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a comunicação clara, a adaptação estratégica e o autocuidado durante o jogo.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, a comunicação construtiva com substituição de palavras tóxicas (ADGP15), a adaptação estratégica às fases da partida (ADGP14) e a gestão de energia com identificação de sinais corporais (ADGP13), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve falar bem, planejar bem e cuidar-se bem.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Comunicação Construtiva e Filtro de Palavras Poderosas (ADGP15), Estratégias por Fases (ADGP14) e Gestão de Energia e Sinais Corporais (ADGP13). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a comunicação clara, a adaptação estratégica e o autocuidado durante o jogo.",
+    sugestoesPais:
+      "- Pergunte: 'Que superpoder você usou hoje no jogo? Comunicação, Estratégia ou Energia?'\n- Pergunte: 'Você conseguiu substituir alguma palavra que não gostaria de ter dito?'\n- Pergunte: 'Como você percebeu as diferentes fases do jogo?'\n- Pergunte: 'O que seu corpo te disse hoje e como você cuidou dele?'\n- Reforce: 'Usar palavras que constroem, pensar nas fases e cuidar do corpo são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de substituições de palavras tóxicas por construtivas durante a partida.\n- Percepção consciente das fases da partida (começo, meio, fim) e adaptação da estratégia.\n- Reconhecimento de sinais corporais de cansaço e aplicação de pausas ou rituais de recuperação.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando a comunicação respeitosa como hábito.\n- Percepção de que o filho está mais estratégico e menos reativo durante o jogo.\n- Confiança de que o curso integra habilidades sociais, cognitivas e de autocuidado.\n\nInstituição:\n- Consolidação da cultura de jogo consciente, respeitoso e estrategicamente orientado.\n- Observação natural da evolução dos alunos na aplicação dos conceitos integrados.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa e prazerosa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como seu Filtro de Palavras está ajudando o time hoje?', 'Em qual fase da nossa história estamos agora?', 'O que seu corpo está te dizendo?'. Reforçar que essa é uma prática livre para experimentar os conceitos.\n\nMediação:\nObservar ativamente as interações verbais, celebrando quando perceber substituições de palavras tóxicas. Durante as pausas, fazer perguntas sobre as fases e a energia do time. Intervir gentilmente se a comunicação tóxica surgir, lembrando o Filtro.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar as substituições de palavras sob pressão. Reforçar que é um processo e que errar faz parte do aprendizado (conectando com ADGP7).\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a comunicação respeitosa, a visão estratégica e o autocuidado de forma prática. Sugerir que perguntem: 'Que palavra você conseguiu substituir hoje?' e 'Como você percebeu seu corpo durante o jogo?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (comunicação, estratégia, energia) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP13 - Vida Digital Saudável + Energia para Performance\n- ADGP14 - Mini-Estratégias: Começo, Meio e Fim de Partida\n- ADGP15 - Comunicação em Jogo I: O que Ajuda e o que Atrapalha",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos uma substituição do Filtro de Palavras Poderosas durante a partida.\n- O aluno identifica em qual fase da partida está e ajusta brevemente sua abordagem.\n- O aluno respeita pausas e hidratação, demonstrando consciência dos sinais corporais.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo Consciente Integrado",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando tudo o que aprendemos nas últimas aulas: usem o Filtro de Palavras para se comunicarem, lembrem-se das fases da partida (começo, meio, fim) e escutem os sinais do corpo. Não se preocupem com o resultado, mas com como vão aplicar estes três superpoderes juntos.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Que palavra você está substituindo agora?', 'Em que fase do jogo vocês estão?', 'Alguém sentiu um sinal do corpo?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in Tríplice",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Comunicação: 'Alguém usou uma palavra do Filtro?' 2) Estratégia: 'Em que fase vocês estavam?' 3) Energia: 'Alguém percebeu um sinal do corpo?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: comunicação construtiva, consciência de fases e autorregulação energética.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – Os Três Superpoderes em Ação",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Quem usou o Filtro de Palavras? Como foi?', 'Quem percebeu a mudança de fase e ajustou a estratégia?', 'Quem escutou o corpo e fez uma pausa ou ajuste?'. Instrutor celebra as descobertas e conecta com a vida real: 'Esses três superpoderes funcionam fora do jogo também!'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei o superpoder da comunicação quando...' ou 'Percebi a fase do jogo e ajustei minha estratégia ao...' ou 'Meu corpo me avisou que... e eu fiz...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartões com os 3 pilares (Comunicação, Estratégia, Energia) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Filtros de Palavras Poderosas (feitos na ADGP15) - opcional para consulta",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Comunicação Construtiva: Demonstra uso de substituições do Filtro de Palavras Poderosas durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Consciência Estratégica (Fases): Identifica e ajusta brevemente a estratégia conforme a fase da partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Autogestão de Energia: Respeita pausas e hidratação, demonstrando consciência dos sinais corporais",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-17",
+    tipo: 0,
+    nome: "Comunicação Técnica Básica + Callouts",
+    codigo: "ADGP17",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de transmitir informações técnicas de forma rápida, clara e precisa durante o jogo, utilizando callouts (comunicações curtas padronizadas) para alertar, coordenar e celebrar com o time, com foco em economia de fala e informações acionáveis.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de transmitir informações técnicas rápidas e precisas durante o jogo, utilizando callouts padronizados (localização + situação + ação sugerida) para comunicar alertas, coordenação e celebrações com o time, desenvolvendo a habilidade de comunicação sob pressão com economia de palavras e clareza de informações.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de transmitir informações técnicas de forma rápida, clara e precisa durante o jogo, utilizando callouts (comunicações curtas padronizadas) para alertar, coordenar e celebrar com o time, com foco em economia de fala e informações acionáveis.",
+    sugestoesPais:
+      "- Pergunte: 'O que é um callout? Você pode me dar um exemplo?'\n- Pergunte: 'Qual foi o callout mais eficaz que você usou ou ouviu hoje?'\n- Pergunte: 'Como foi comunicar de forma rápida e clara em vez de 'gritar'?'\n- Reforce: 'Saber comunicar com clareza em poucas palavras é uma habilidade importante em qualquer área da vida, não só nos jogos.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de comunicar informações críticas em 5 segundos ou menos com clareza.\n- Desenvolvimento de vocabulário técnico para diferentes situações de jogo ('alvo à esquerda', 'recurso baixo').\n- Redução de comunicações vagas ('cuidado', 'ali') e substituição por callouts específicos.\n- Sentimento de eficiência e clareza na comunicação com o time.\n\nPais/responsáveis:\n- Observação de que o filho está desenvolvendo habilidades de comunicação estruturada e objetiva.\n- Compreensão de que o curso ensina comunicação técnica, não apenas jogo.\n- Redução de preocupações com comunicação caótica em ambientes online.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades comunicativas estruturadas.\n- Fortalecimento da proposta diferenciada que forma atletas comunicadores.\n- Base para criação de protocolos de comunicação em competições internas.",
+    notasInstrutor:
+      "Linguagem:\nEnfatizar o formato: ONDE + O QUÊ + O QUE FAZER (ex: 'Esquerda, inimigo sozinho, cercar'). Destacar a diferença entre comunicação emocional e técnica. Usar termos como 'códigos' ou 'atalhos mentais' para callouts.\n\nMediação:\nModelar os callouts de forma clara e em um ritmo que os alunos possam acompanhar. Corrigir comunicações vagas gentilmente: 'Como podemos dizer isso de forma mais específica?'.\n\nSensibilidade:\nRespeitar diferentes ritmos de aprendizado na comunicação. Alunos mais tímidos podem praticar em duplas antes de usar com o time completo.\n\nConexão com a família:\nEnviar um guia visual de 'Callouts em Casa' com exemplos de comunicação clara em situações cotidianas (ex: 'Na cozinha, leite acabou, comprar mais').\n\nRegistro:\nRegistrar a evolução da qualidade da comunicação ao longo da aula (número de callouts usados, clareza, tempo de resposta).",
+    preRequisitos:
+      "- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP11 - Papéis Básicos no Time\n- ADGP15 - Comunicação em Jogo I: O que Ajuda e o que Atrapalha",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 3 callouts diferentes durante a simulação, seguindo o formato (localização + situação + ação).\n- O aluno reduz o tempo de comunicação para menos de 5 segundos por callout.\n- O aluno demonstra compreensão de quando usar cada tipo de callout (alerta, coordenação, celebração).",
+    metodologias:
+      "- Pedagogia da comunicação técnica\n- Aprendizagem por prática estruturada\n- Simulação com restrição (tempo limitado)\n- Repetição guiada\n- Feedback imediato (verbal e visual)",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Código da Comunicação Rápida",
+        duracaoMin: 10,
+        descricao:
+          "Explicação do conceito de callout: comunicação curta, rápida e padronizada. Demonstração do formato: ONDE (localização) + O QUÊ (situação/inimigo) + O QUE FAZER (ação sugerida). Contraste: 'Cuidado!' (vago) vs. 'Esquerda, inimigo sozinho, cercar' (callout eficaz). Apresentação de 3 categorias: Alerta (perigo), Coordenação (ação planejada), Celebração (reconhecimento).",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Callouts",
+        duracaoMin: 20,
+        descricao:
+          "Três estações rotativas em duplas, cada uma focada em um tipo de callout com desafios específicos: 1) Estação Alerta - cartas com situações de perigo iminente; praticar callouts com limite de 5 palavras; 2) Estação Coordenação - simular situações de planejamento de ataque; praticar callouts com especificação de tempo (ex: 'Avançar esquerda em 10 segundos'); 3) Estação Celebração - simular situações de conquista; praticar callouts que reconhecem contribuições específicas ('Bom tiro João, limpamos direita'). Cada dupla recebe feedback imediato do instrutor sobre clareza e tempo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Missão de Comunicação",
+        duracaoMin: 20,
+        descricao:
+          "Partida curta com regras específicas de comunicação: 1) Antes de cada ação importante, o jogador deve fazer um callout completo (Localização + Situação + Ação); 2) Comunicações vagas ('cuidado', 'ali') não são permitidas e devem ser reformuladas; 3) O time deve usar pelo menos 1 callout de cada categoria (Alerta, Coordenação, Celebração) durante a partida. Instrutor observa e anota a qualidade dos callouts.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Protocolo de Callouts do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu próprio protocolo de callouts com 3 frases para cada categoria: 1) Alertas (ex: 'Esquerda, inimigo, recuar'); 2) Coordenação (ex: 'Meio, vamos juntos em 5'); 3) Celebração (ex: 'Boa defesa, time!'). Os protocolos são compartilhados entre os times para troca de ideias.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno define um compromisso: 'Na próxima partida, vou usar o callout [específico] quando...'. Registro no Diário do Atleta Digital: 'Hoje aprendi que comunicar com clareza é como...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartões com situações de jogo para cada estação",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetros para treino de tempo de comunicação",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Missão de Comunicação",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Quadro branco para registro dos Protocolos de Callouts",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cartões com exemplos de callouts para consulta",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Callouts: Utiliza pelo menos 3 callouts diferentes durante a simulação com clareza",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Tempo de Comunicação: Mantém comunicações em menos de 5 segundos",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Estrutura do Callout: Segue o formato ONDE + O QUÊ + O QUE FAZER",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Protocolo do Time: Contribui com sugestões realistas para o Protocolo de Callouts do time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-18",
+    tipo: 0,
+    nome: "Introdução à Análise de VOD",
+    codigo: "ADGP18",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Introdução à análise de partidas gravadas (VOD) como ferramenta de autoaprendizagem, desenvolvendo a capacidade de identificar padrões pessoais de comportamento e tomada de decisão, transformando erros em oportunidades de crescimento através de observação estruturada e compassiva.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de assistir a uma partida gravada (VOD) com olhar analítico, identificando padrões pessoais de comportamento (técnicos e emocionais) através de observação externa, extraindo pelo menos 1 aprendizado específico e transformando-o em uma ação de melhoria, utilizando perguntas guiadas para análise estruturada e autocompaixão.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução à análise de partidas gravadas (VOD) como ferramenta de autoaprendizagem, desenvolvendo a capacidade de identificar padrões pessoais de comportamento e tomada de decisão, transformando erros em oportunidades de crescimento através de observação estruturada e compassiva.",
+    sugestoesPais:
+      "- Pergunte: 'O que você descobriu sobre si mesmo ao assistir seu jogo?'\n- Pergunte: 'Qual foi o momento mais interessante que você analisou?'\n- Pergunte: 'O que você vai fazer diferente na próxima partida baseado no que viu?'\n- Reforce: 'Analisar os próprios erros sem se julgar é uma habilidade importante para a vida toda.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de assistir a um VOD sem julgamento imediato (\"não fui bom\") e com curiosidade (\"o que posso aprender?\").\n- Desenvolvimento de vocabulário específico para descrever padrões de comportamento.\n- Primeiros passos na autopercepção objetiva através do 'eu externo' observando o 'eu do jogo'.\n- Redução da ansiedade perante erros através da normalização da análise como parte do processo.\n\nPais/responsáveis:\n- Compreensão de que o curso ensina autoanálise estruturada como habilidade para vida toda.\n- Tranquilidade ao ver que erros são tratados como dados para melhoria, não como falhas pessoais.\n- Pontos de conversa específicos para fortalecer reflexão ('o que você descobriu sobre si mesmo hoje?').\n\nInstituição:\n- Documentação do desenvolvimento da metacognição através de registros de análises.\n- Fortalecimento da proposta diferenciada que forma atletas pensadores.\n- Base para personalização do ensino conforme padrões individuais identificados nas análises.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Máquina do Tempo' para tornar a análise mais lúdica. Utilizar termos descritivos em vez de julgamentos ('notei que seu personagem ficou parado' em vez de 'você congelou').\n\nMediação:\nModelar a análise com vulnerabilidade apropriada ('no meu VOD, notei que quando estou ansioso, repito o mesmo movimento'). Garantir que pelo menos 50% do tempo de análise seja dedicado a pontos positivos e sucessos.\n\nSensibilidade:\nObservar sinais de vergonha ou desconforto durante a análise; ter 'espaço seguro' para alunos que precisem de pausa. Estabelecer regra: 'O que é visto aqui fica aqui'.\n\nConexão com a família:\nEnviar um guia visual de 'como conversar sobre partidas em casa' com perguntas construtivas para os pais.\n\nRegistro:\nRegistrar os padrões identificados por cada aluno para acompanhamento da evolução.",
+    preRequisitos:
+      "- ADGP7 - Erro, Derrota e Aprendizado\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP14 - Mini-Estratégias: Começo, Meio e Fim de Partida",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 2 padrões comportamentais durante a análise guiada.\n- O aluno extrai pelo menos 1 aprendizado específico de um erro observado no VOD.\n- O aluno registra no Diário uma ação concreta para melhoria baseada na análise.",
+    metodologias:
+      "- Pedagogia da autocompaixão\n- Aprendizagem visual (marcações no VOD)\n- Metáfora da máquina do tempo\n- Análise por momentos (não partidas inteiras)\n- Co-construção de significados",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Máquina do Tempo",
+        duracaoMin: 10,
+        descricao:
+          "Introdução da metáfora: 'Nosso VOD é como uma máquina do tempo - podemos voltar para entender melhor nossas decisões'. Apresentação das 3 perguntas transformadoras: 1) Pergunta do Passado: 'O que eu sabia naquele momento?'; 2) Pergunta do Presente: 'O que eu sei agora que não sabia antes?'; 3) Pergunta do Futuro: 'O que farei diferente da próxima vez?'. Conexão com ADGP7: 'Como cientistas do jogo, coletamos dados das nossas partidas.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Espelhos",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em duplas: 1) Espelho do Corpo - tela com câmera lateral mostrando postura durante o jogo (se disponível) ou análise de postura; 2) Espelho da Tela - VOD com marcações visuais em momentos-chave (pausas a cada 30s para análise); 3) Espelho do Tempo - linha do tempo interativa com pontos de decisão marcados. Os alunos analisam 3 momentos: Momento de Sucesso (o que deu certo), Momento de Aprendizado (o que não funcionou), Momento de Transição (mudança de fase). Respondem com perguntas guiadas: 'O que meu corpo estava fazendo?', 'Como minha comunicação estava?', 'Que emoção eu senti?'. Registram uma 'descoberta surpreendente'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Caça aos Tesouros Escondidos",
+        duracaoMin: 20,
+        descricao:
+          "Em grupos de 3, missão de detetive com 3 tesouros a encontrar em VODs curtos (30-45s): 1) Tesouro Técnico - encontrar um momento onde uma habilidade técnica fez diferença; 2) Tesouro Emocional - encontrar um sinal corporal de tilt ou calma; 3) Tesouro Coletivo - encontrar uma transição bem-sucedida entre fases. Regras: descrever com palavras-chave, não criticar o jogador, encontrar pelo menos um 'tesouro escondido' positivo. Cada grupo compartilha: 'O tesouro mais surpreendente que encontramos foi...'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Conversa do Time – Análise Coletiva",
+        duracaoMin: 15,
+        descricao:
+          "Análise coletiva de um VOD completo (8 min) da turma com ritual específico em 3 passos: 1) Observação - assistir em silêncio anotando observações; 2) Compartilhamento - cada jogador compartilha uma observação em cada quadrante (O que vimos, O que sentimos, O que aprendemos, O que faremos), começando sempre pelo positivo; 3) Síntese - grupo vota nos 3 aprendizados mais importantes. Regras de ouro: 'Falamos sobre comportamentos, não sobre pessoas' e 'Cada crítica deve vir com uma sugestão de melhoria'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um padrão que notei em mim foi...' e 'Na próxima partida, vou tentar...'. Compartilham em duplas a promessa de melhoria.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "VODs curtos (30-45s) da turma ou de partidas modelo",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Fichas de análise com as 3 perguntas transformadoras",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Projetor para análise coletiva",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Quadro com quatro quadrantes (O que vimos, O que sentimos, O que aprendemos, O que faremos)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Lupas de brinquedo simbólicas para a Caça aos Tesouros",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Padrões: Identifica pelo menos 2 padrões comportamentais durante a análise guiada",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Extração de Aprendizados: Extrai pelo menos 1 aprendizado específico de um erro observado",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Análise sem Julgamento: Descreve comportamentos observados sem linguagem de julgamento pessoal",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Registra no Diário uma ação concreta para melhoria baseada na análise",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-19",
+    tipo: 0,
+    nome: "Respeito e Colaboração: Anti-Toxicity Básico",
+    codigo: "ADGP19",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Compreensão do impacto da toxicidade no desempenho e na saúde emocional do time, desenvolvimento de empatia prática através da experiência de perspectivas diferentes, e construção de um compromisso coletivo de respeito com rituais de intervenção gentil para situações de toxicidade emergente.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar comportamentos específicos de toxicidade em ambiente competitivo, desenvolver empatia prática através da experiência de diferentes perspectivas, e estabelecer um compromisso coletivo de respeito com rituais de intervenção gentil para situações de toxicidade emergente, compreendendo que respeito e colaboração são tão importantes quanto habilidade técnica para a performance de um time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Compreensão do impacto da toxicidade no desempenho e na saúde emocional do time, desenvolvimento de empatia prática através da experiência de perspectivas diferentes, e construção de um compromisso coletivo de respeito com rituais de intervenção gentil para situações de toxicidade emergente.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre toxicidade hoje? Como ela afeta um time?'\n- Pergunte: 'Você fez alguma promessa sobre como vai agir quando sentir frustração?'\n- Pergunte: 'Como você pode ajudar um amigo que está em tilt?'\n- Reforce: 'Respeito não é sobre nunca errar, mas sobre como você se recupera quando erra. O mesmo vale para o jogo e para a vida.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar sinais precoces de toxicidade em si mesmo e nos colegas.\n- Desenvolvimento de técnicas práticas de intervenção gentil quando colegas estão em tilt.\n- Redução da normalização de comportamentos tóxicos como 'parte do jogo'.\n- Sentimento de segurança emocional ao saber que o time protege seu bem-estar.\n- Conexão entre respeito coletivo e performance individual ('quando me sinto seguro, jogo melhor').\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso aborda explicitamente a toxicidade online, um dos maiores medos parentais.\n- Observação concreta de mudança no comportamento do filho em interações online e offline.\n- Pontos de conversa específicos para fortalecer empatia em casa ('como você ajudou alguém hoje?').\n- Confiança no ambiente do curso como espaço seguro para desenvolvimento emocional.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência emocional e social através de registros comportamentais.\n- Fortalecimento da proposta diferenciada que forma atletas socialmente responsáveis.\n- Criação de cultura institucional onde o respeito é valor tão importante quanto a performance.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de ação em vez de abstratos ('palavras que curam' em vez de 'comunicação positiva'). Utilizar metáforas de pontes e jardins para falar sobre reconstrução de confiança.\n\nMediação:\nCriar um ambiente seguro onde os alunos possam compartilhar experiências sem julgamento. Estabelecer claramente que situações reais não serão reproduzidas; todas as simulações são controladas.\n\nSensibilidade:\nObservar sinais de desconforto durante atividades que envolvem perspectivas de toxicidade; ter alternativas para participação. Estar atento a alunos que possam ter vivenciado toxicidade em casa ou online.\n\nConexão com a família:\nEnviar um guia visual de 'intervenção gentil em família' com técnicas para pais e filhos, incluindo frases modelo para situações de conflito.\n\nRegistro:\nFotografar (com consentimento) o 'Jardim Coletivo' e o 'Pano da Promessa' para criar um memorial visual da cultura do time.",
+    preRequisitos:
+      "- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP10 - Regras, Fair Play e Confiança\n- ADGP15 - Comunicação em Jogo I: O que Ajuda e o que Atrapalha",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente comportamentos tóxicos e seus impactos no time.\n- O aluno pratica uma intervenção gentil durante simulação ou partida.\n- O aluno participa ativamente da construção do compromisso coletivo de respeito.",
+    metodologias:
+      "- Pedagogia da empatia experiencial\n- Aprendizagem por contraste\n- Metáfora ecológica (jardim)\n- Ritual de pertencimento\n- Intervenção gentil estruturada",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Ponte do Respeito",
+        duracaoMin: 10,
+        descricao:
+          "Analogia da ponte: 'Nosso respeito é como esta ponte - cada tábua representa uma perspectiva diferente que precisamos entender para atravessar juntos'. Apresentação de 3 perspectivas com cartões: Novato (não sabe as regras), Frustrado (está em tilt), Experiente (pode ajudar). Cada aluno recebe um cartão e completa a frase: 'Do meu lado da ponte, eu preciso que você...'. Conexão com ADGP10: 'Nosso Código de Honra nos dá a direção, a Ponte do Respeito nos mostra o caminho.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Espelhos",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em trios com rotação de papéis: 1) Espelho do Novato - simulação com controles confusos e interface incompreensível; identificar o que ajudaria a se sentir acolhido em vez de julgado; 2) Espelho do Frustrado - simulação com falhas programadas e pressão de tempo; reconhecer os sinais físicos e verbais de frustração; 3) Espelho do Testemunha - assistir situações de toxicidade em VODs curtos; praticar intervenções gentis usando o Filtro de Palavras Poderosas (ADGP15). Registro: 'Uma descoberta surpreendente sobre diferentes perspectivas foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Jardim Coletivo",
+        duracaoMin: 20,
+        descricao:
+          "Construção colaborativa do Jardim em 3 camadas: 1) Raízes - cada aluno planta uma 'raiz' com uma regra de respeito básico ('Nunca atacamos a pessoa, só o comportamento'); 2) Tronco - time constrói rituais de intervenção ('Quando alguém está em tilt, oferecemos uma pausa de 30 segundos'); 3) Flores - cada aluno planta uma 'flor' com uma promessa de cuidado ('Prometo notar quando alguém está se esforçando'). Regra: O jardim só floresce quando todas as camadas estão completas.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Cerimônia do Compromisso Anti-Toxicity",
+        duracaoMin: 15,
+        descricao:
+          "Ritual simbólico em 3 momentos: 1) Momento da Verdade - cada aluno completa silenciosamente um cartão ('Uma vez, eu causei toxicidade quando...', 'Uma vez, eu sofri toxicidade quando...', 'Aprendi que...'); 2) Momento do Compromisso - cada aluno faz uma promessa pessoal específica ('Prometo que quando sentir tilt, vou...', 'Prometo que quando ver colega em dificuldade, vou...') e coloca sua impressão digital no 'Pano da Promessa'; 3) Momento da Proteção - time cria um código de proteção coletivo ('Se alguém violar nosso compromisso, primeiro lembraremos gentilmente', 'Se continuar, faremos uma pausa coletiva'). Todos colocam as mãos sobre o Pano da Promessa e repetem: 'Nosso time é forte porque respeitamos uns aos outros.'",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Minha promessa para evitar toxicidade é...' e 'Vou praticar a intervenção gentil quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ponte simbólica no chão com tábuas móveis",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com as 3 perspectivas (Novato, Frustrado, Experiente)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "3 estações configuradas para os Espelhos (Novato, Frustrado, Testemunha)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "VODs curtos (30-45s) com situações de toxicidade (editados para uso educativo)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Jardim simbólico no chão (terra, flores, raízes de papel)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartões para o Momento da Verdade",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Pano da Promessa (tecido branco) e tintas para impressão digital",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Toxicidade: Reconhece corretamente comportamentos tóxicos e seus impactos no time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Intervenção Gentil: Pratica uma intervenção respeitosa durante simulação, usando linguagem construtiva",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compromisso Coletivo: Contribui com promessas específicas e realistas para o compromisso anti-toxicity",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma promessa pessoal contra toxicidade e como vai honrá-la",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-20",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Comunicação Técnica, Análise de VOD e Anti-Toxicity",
+    codigo: "ADGP20",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Callouts e Comunicação Técnica (ADGP17), Análise de VOD (ADGP18) e Anti-Toxicity e Respeito (ADGP19). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a comunicação técnica clara, a reflexão sobre erros através do olhar do observador e a manutenção de um ambiente respeitoso e colaborativo.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os callouts e a comunicação técnica clara (ADGP17), a mentalidade de análise de VOD para observar padrões e extrair aprendizados (ADGP18), e os princípios de respeito e intervenção gentil contra toxicidade (ADGP19), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve comunicar com precisão, aprender com os erros e cuidar do ambiente do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Callouts e Comunicação Técnica (ADGP17), Análise de VOD (ADGP18) e Anti-Toxicity e Respeito (ADGP19). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a comunicação técnica clara, a reflexão sobre erros através do olhar do observador e a manutenção de um ambiente respeitoso e colaborativo.",
+    sugestoesPais:
+      "- Pergunte: 'Que superpoder você usou hoje no jogo? Comunicação Técnica, Olhar de Analista ou Respeito?'\n- Pergunte: 'Você conseguiu usar um callout claro? Pode me dar um exemplo?'\n- Pergunte: 'O que você percebeu sobre seu próprio jogo hoje?'\n- Pergunte: 'Como o time se cuidou para manter o respeito?'\n- Reforce: 'Comunicar com clareza, aprender com os erros e respeitar os outros são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de callouts (Localização + Situação + Ação) durante a partida.\n- Percepção de padrões pessoais durante o jogo, com identificação de aprendizados.\n- Manutenção de comunicação respeitosa e intervenções gentis quando necessário.\n- Conexão entre comunicação clara, aprendizado contínuo e ambiente saudável.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando a comunicação técnica como hábito.\n- Percepção de que o filho está mais reflexivo sobre seus próprios erros e padrões.\n- Confiança de que o curso integra habilidades técnicas, reflexivas e sociais.\n\nInstituição:\n- Consolidação da cultura de jogo comunicativo, reflexivo e respeitoso.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Que callout você usou agora?', 'Que padrão você percebeu em si mesmo?', 'Como o time está se cuidando hoje?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente a qualidade dos callouts e a dinâmica comunicativa. Celebrar quando perceber callouts eficazes. Durante as pausas, fazer perguntas sobre padrões observados. Intervir gentilmente se a comunicação tóxica surgir, lembrando as promessas da ADGP19.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os callouts sob pressão. Reforçar que a fluência vem com a prática e que errar faz parte do processo (conectando com ADGP7 e ADGP18).\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a comunicação técnica, a reflexão sobre padrões e o respeito de forma prática. Sugerir que perguntem: 'Que callout você usou hoje?' e 'O que você percebeu sobre seu jogo?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (comunicação técnica, reflexão, respeito) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP18 - Introdução à Análise de VOD\n- ADGP19 - Respeito e Colaboração: Anti-Toxicity Básico",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 2 callouts diferentes (formato ONDE + O QUÊ + AÇÃO) durante a partida.\n- O aluno compartilha um aprendizado sobre seu próprio padrão de jogo após a sessão.\n- O aluno demonstra comunicação respeitosa mesmo em situações de frustração.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo com olhar de VOD\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Superpoderes",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três superpoderes: 1) Comunicação Técnica - usem os callouts que aprenderam (Localização + Situação + Ação); 2) Olhar de Analista - observem seus próprios padrões como se estivessem vendo um VOD; 3) Respeito - mantenham o compromisso anti-toxicity e pratiquem intervenções gentis se necessário.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Que callout você usou agora?', 'Que padrão você está percebendo em si mesmo?', 'Como o time está se comunicando?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Superpoderes",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Comunicação Técnica: 'Alguém usou um callout eficaz?' 2) Olhar de Analista: 'Alguém percebeu um padrão em si mesmo?' 3) Respeito: 'Alguém usou uma intervenção gentil ou viu o time se cuidando?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: callouts claros, percepção de padrões, comunicação respeitosa.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Que callout você usou e funcionou bem?', 'Que padrão você percebeu em si mesmo?', 'Como o time manteve o respeito mesmo sob pressão?'. Instrutor celebra as descobertas e conecta com a vida real: 'Esses três superpoderes - comunicar com clareza, aprender com erros e respeitar o time - funcionam em qualquer lugar, não só nos games.'",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei o superpoder da comunicação técnica quando...' ou 'Percebi um padrão em mim quando...' ou 'Vi o time se respeitar quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Cartões com os 3 pilares (Comunicação Técnica, Olhar de Analista, Respeito) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Comunicação Técnica (Callouts): Utiliza callouts com formato ONDE + O QUÊ + AÇÃO durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Olhar de Analista (Percepção de Padrões): Identifica e compartilha um padrão percebido em si mesmo durante o jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Respeito e Intervenção Gentil: Mantém comunicação respeitosa e/ou pratica intervenção gentil quando necessário",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-21",
+    tipo: 0,
+    nome: "Scrim Guiada com Foco em Fundamentos",
+    codigo: "ADGP21",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Partida simulada (scrim) com objetivos específicos focados em fundamentos técnicos, comunicação e trabalho em equipe, preparando os alunos para ambiente competitivo estruturado e promovendo a aplicação integrada dos aprendizados do módulo.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de aplicar em uma scrim (partida simulada) os fundamentos técnicos, de comunicação e de trabalho em equipe desenvolvidos ao longo do módulo, demonstrando capacidade de executar movimentos básicos, comunicar-se com clareza usando callouts e coordenar ações com o time, preparando-se para ambientes competitivos estruturados.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Partida simulada (scrim) com objetivos específicos focados em fundamentos técnicos, comunicação e trabalho em equipe, preparando os alunos para ambiente competitivo estruturado e promovendo a aplicação integrada dos aprendizados do módulo.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi a scrim de hoje? O que vocês treinaram?'\n- Pergunte: 'Você conseguiu usar os callouts que aprendeu?'\n- Pergunte: 'O que você aprendeu com a scrim que vai levar para a próxima?'\n- Reforce: 'Scrim é treino, não competição. O importante é o que se aprende, não o resultado.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação integrada de fundamentos em situação simulada de competição.\n- Desenvolvimento de capacidade de manter comunicação clara sob pressão.\n- Percepção de como os fundamentos individuais contribuem para o sucesso coletivo.\n- Preparação para scrims mais complexas nos níveis seguintes.\n\nPais/responsáveis:\n- Observação de que o curso está evoluindo para prática mais aplicada e competitiva.\n- Compreensão de que os fundamentos estão sendo consolidados em ambiente estruturado.\n- Percepção do crescimento do filho na comunicação e trabalho em equipe.\n\nInstituição:\n- Consolidação dos fundamentos do módulo em atividade prática.\n- Avaliação formativa do desenvolvimento dos alunos em ambiente simulado.\n- Base para progressão para níveis mais avançados de scrim.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de preparação para competição: 'scrim', 'ambiente controlado', 'fundamentos em ação'. Reforçar a diferença entre scrim (treino estruturado) e partida casual.\n\nMediação:\nDefinir objetivos claros antes da scrim. Fazer pausas estratégicas para correções rápidas durante a partida, se necessário. Conduzir o debriefing com foco em aprendizados, não apenas em resultado.\n\nSensibilidade:\nObservar sinais de ansiedade competitiva; reforçar que scrim é treino, não avaliação definitiva. Celebrar esforço e aplicação de fundamentos tanto quanto resultado.\n\nConexão com a família:\nExplicar aos pais que a scrim é uma ferramenta de treino estruturado, não apenas uma partida. Compartilhar que os fundamentos estão sendo consolidados em ambiente controlado.\n\nRegistro:\nRegistrar observações sobre a aplicação dos fundamentos por cada aluno para acompanhamento de evolução.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP11 - Papéis Básicos no Time\n- ADGP17 - Comunicação Técnica Básica + Callouts",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno executa movimentos básicos com fluidez durante a scrim.\n- O aluno utiliza pelo menos 3 callouts diferentes durante a partida.\n- O aluno demonstra consciência de mapa, compartilhando informações relevantes com o time.\n- O aluno participa do debriefing identificando pelo menos um aprendizado da scrim.",
+    metodologias:
+      "- Aprendizagem baseada em simulação\n- Prática supervisionada estruturada\n- Briefing e debriefing guiado\n- Avaliação formativa por observação\n- Feedback imediato e específico",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para a Scrim",
+        duracaoMin: 10,
+        descricao:
+          "Explicação do que é uma scrim: partida simulada com objetivo de treino estruturado. Definição dos objetivos da scrim: 1) Aplicar movimentação básica com eficiência; 2) Usar callouts claros (Localização + Situação + Ação); 3) Manter consciência de mapa e compartilhar informações; 4) Respeitar o Código de Honra e o compromisso anti-toxicity. Divisão dos times e definição de papéis (Guardiões). Definição de regras especiais: pausa de 30s para respiração se alguém sentir tilt.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Scrim Guiada – 1º Tempo",
+        duracaoMin: 15,
+        descricao:
+          "Primeiro tempo da scrim. Instrutor observa ativamente, anotando pontos fortes e áreas de melhoria. Pode fazer pausas curtas (30s) para correções pontuais: 'Lembrem-se do formato do callout!', 'Alguém está com visão do mapa?'. Cronômetro de pausas (a cada 15 min) para hidratação e alongamento rápido.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Estratégica – Check-in Rápido",
+        duracaoMin: 5,
+        descricao:
+          "Pausa de 5 minutos para hidratação e respiração. Momento de compartilhar uma frase rápida: 'O que está funcionando bem?', 'O que precisamos ajustar?'. Instrutor dá feedback rápido sobre um ponto coletivo observado.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Scrim Guiada – 2º Tempo",
+        duracaoMin: 15,
+        descricao:
+          "Segundo tempo da scrim. Instrutor observa se os ajustes sugeridos estão sendo aplicados. Reforça positivamente quando perceber aplicação correta dos fundamentos. Registra observações finais.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Análise da Scrim",
+        duracaoMin: 20,
+        descricao:
+          "Momento estruturado de análise: 1) O que aconteceu? - resumo factual do que ocorreu na scrim; 2) O que aprendemos? - cada aluno compartilha um aprendizado sobre si mesmo ou sobre o time; 3) O que faremos diferente? - definição de 1-2 ajustes para a próxima scrim. Instrutor conecta os aprendizados com os fundamentos trabalhados ao longo do módulo. Celebração das conquistas coletivas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Na scrim de hoje, percebi que...' e 'Na próxima scrim, vou focar em...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Timer para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Ficha de observação do instrutor (impressa)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Quadro para anotações do debriefing",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Código de Honra e Compromisso Anti-Toxicity afixados na parede",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Aplicação de Fundamentos Técnicos: Executa movimentos básicos com fluidez durante a scrim",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Comunicação Técnica (Callouts): Utiliza callouts com formato claro (Localização + Situação + Ação)",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Consciência de Mapa: Compartilha informações relevantes sobre o mapa com o time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Trabalho em Equipe: Coordena ações com o time e respeita os compromissos coletivos",
+      },
+      {
+        id: "rubrica-05",
+        descricao:
+          "Reflexão Pós-Scrim: Identifica pelo menos um aprendizado ou ajuste para a próxima scrim",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-22",
+    tipo: 0,
+    nome: "Liderança Básica: Capitão da Vez",
+    codigo: "ADGP22",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de habilidades de liderança situacional através da rotação do papel de capitão durante partidas, com foco em tomada de decisão, comunicação clara e serviço ao time, promovendo a compreensão de que liderar é uma responsabilidade temporária de apoio coletivo, não uma posição de poder ou status.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender que liderança não é uma posição de poder, mas uma responsabilidade temporária de serviço ao time, sendo capaz de assumir o papel de capitão durante uma partida com rituais claros de transição, tomando decisões rápidas com comunicação clara ao time, e entregando o papel no momento adequado, desenvolvendo confiança e maturidade para liderar e ser liderado.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades de liderança situacional através da rotação do papel de capitão durante partidas, com foco em tomada de decisão, comunicação clara e serviço ao time, promovendo a compreensão de que liderar é uma responsabilidade temporária de apoio coletivo, não uma posição de poder ou status.",
+    sugestoesPais:
+      "- Pergunte: 'Você foi capitão hoje? Como foi?'\n- Pergunte: 'O que você fez como capitão para ajudar o time?'\n- Pergunte: 'Como você se sentiu quando entregou o leme para outro?'\n- Reforce: 'Liderar não é mandar, é servir. Quando você ajuda o time a tomar decisões, você está liderando de verdade.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de assumir e entregar responsabilidades de liderança sem apego ou medo.\n- Desenvolvimento de vocabulário específico para decisões claras sob pressão.\n- Redução da ansiedade perante tomada de decisão através de rituais estruturados.\n- Sentimento de segurança ao saber que a liderança é temporária e compartilhada.\n- Conexão entre serviço ao time e reconhecimento coletivo ('quando sirvo ao time, todos crescem').\n\nPais/responsáveis:\n- Observação concreta de mudança na capacidade do filho de assumir responsabilidades em casa e na escola.\n- Redução de preocupações sobre desenvolvimento de ego ou autoritarismo através da liderança por serviço.\n- Pontos de conversa específicos para fortalecer tomada de decisão ('como você decidiu o que era melhor para o time?').\n\nInstituição:\n- Documentação do desenvolvimento de liderança servidora através de registros comportamentais.\n- Fortalecimento da proposta diferenciada que forma atletas servidores, não apenas estrelas individuais.\n- Criação de cultura de liderança rotativa onde todos têm oportunidade de desenvolver habilidades.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de serviço em vez de poder ('capitão da vez' em vez de 'líder', 'servir ao time' em vez de 'comandar'). Utilizar metáforas náuticas (farol, leme, navegador) para tornar o conceito acessível.\n\nMediação:\nGarantir que todos os alunos, inclusive os mais tímidos, tenham oportunidades de liderança. Intervir quando a liderança se torna autoritária com perguntas: 'Como esta decisão serve ao time como um todo?'.\n\nSensibilidade:\nObservar sinais de ansiedade durante a liderança; oferecer suporte com perguntas que ajudem a estruturar a decisão. Celebrar tanto a decisão acertada quanto o processo de tentar liderar.\n\nConexão com a família:\nEnviar um guia visual de 'liderança doméstica' mostrando como responsabilidades rotativas fortalecem famílias (ex: quem decide o que fazer no fim de semana, quem organiza a refeição).\n\nRegistro:\nRegistrar observações sobre o estilo de liderança de cada aluno e sua evolução ao longo das rotações.",
+    preRequisitos:
+      "- ADGP10 - Regras, Fair Play e Confiança\n- ADGP11 - Papéis Básicos no Time\n- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP21 - Scrim Guiada com Foco em Fundamentos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno assume o papel de capitão durante pelo menos uma rodada da simulação.\n- O aluno realiza uma transição de liderança usando ritual pré-definido ('Eu entrego o leme porque...' + 'Eu recebo o leme para...').\n- O aluno toma pelo menos 2 decisões claras durante seu período como capitão, comunicando-as ao time.\n- O aluno participa da construção do Mapa da Liderança Temporária com contribuições específicas.",
+    metodologias:
+      "- Pedagogia do serviço\n- Aprendizagem por rotação\n- Metáfora náutica (farol, leme)\n- Ritual de transição\n- Liderança situacional",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Farol do Time",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do farol: 'Nosso capitão é como este farol - sua luz não é para ele, mas para guiar todos no caminho'. Apresentação do conceito de 'Capitão da Vez': liderança como serviço temporário, não poder permanente. Explicação do ritual de transição: 1) O capitão atual completa: 'Eu entrego o leme porque...'; 2) O novo capitão completa: 'Eu recebo o leme para...'; 3) O time reconhece: 'Boa capitania, [nome]!' Conexão com ADGP11: 'Assim como cada Guardião tem seu papel, o Capitão da Vez é um papel que todos podem e devem exercer.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Capitães",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em grupos de 4 com rotação de capitania: 1) Estação Decisão - simulação com múltiplas opções estratégicas e tempo limitado; o capitão tem 60 segundos para decidir entre 3 estratégias e deve explicar usando 'nós' em vez de 'eu'; 2) Estação Conflito - simulação com desacordo entre membros; o capitão deve ouvir ambos os lados antes de sugerir solução; 3) Estação Crise - simulação com pressão externa intensa e recursos escassos; o capitão deve respirar coletivamente antes de decidir. Após cada rodada, o grupo dá feedback específico: 'O que me ajudou como time foi quando você...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Desafio do Navegador",
+        duracaoMin: 20,
+        descricao:
+          "Partida (scrim) com rotação automática de capitania a cada 5 minutos ou em momentos críticos. Regras: 1) A cada rodada, um novo capitão assume; 2) A transição deve seguir o ritual: 'Eu entrego o leme porque...' + 'Eu recebo o leme para...'; 3) O capitão deve tomar pelo menos uma decisão estratégica clara durante seu período; 4) O time apoia a decisão do capitão mesmo que não concorde completamente (a menos que seja antiética). Instrutor observa e anota os momentos de transição.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Mapa da Liderança Temporária",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Mapa em 3 elementos: 1) Sinais de Capitania - criar 3 sinais físicos claros para identificar o capitão atual ('Quando o capitão levanta a mão direita, todos silenciam'); 2) Rituais de Transição - definir passos para entrega e recebimento do leme (Resumo do estado + Razão da troca + Confirmação de entendimento + Primeira decisão + Reconhecimento do trabalho anterior); 3) Promessas do Capitão - cada aluno escreve uma promessa pessoal: 'Prometo ouvir antes de decidir', 'Prometo explicar o porquê das minhas decisões', 'Prometo entregar o leme quando não for mais o melhor para o time'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que aprendi sobre liderança hoje?' e 'Na próxima vez que for capitão, vou...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Farol simbólico (lanterna em suporte decorado)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Decisão, Conflito, Crise)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cartões com situações de liderança",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para o Desafio do Navegador",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Barco simbólico (tapete em forma de barco) e leme rotativo",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartas de tempestade (situações de crise)",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Mapa gigante em branco para construção do Mapa da Liderança Temporária",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Assunção de Liderança: Assume o papel de capitão com confiança durante a simulação",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Tomada de Decisão: Toma decisões claras durante seu período como capitão, comunicando-as ao time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Ritual de Transição: Realiza transição de liderança usando ritual pré-definido (entrega + recebimento)",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Serviço ao Time: Demonstra compreensão de que a liderança é um serviço ao time, não poder pessoal",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-23",
+    tipo: 0,
+    nome: "Inglês In-Game I: Callouts Básicos",
+    codigo: "ADGP23",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Introdução ao vocabulário essencial em inglês para comunicação durante partidas, com foco em termos de localização, ações, status e alertas, utilizando a estrutura de callouts (Onde + O quê + Ação) adaptada para o inglês, promovendo a compreensão de que o inglês é uma ferramenta de conexão global no universo dos games, não uma barreira.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar pelo menos 10 termos essenciais em inglês para comunicação durante partidas (localização, ações, status, alertas), aplicando a estrutura de callouts (Onde + O quê + Ação) em inglês para transmitir informações claras e rápidas ao time, compreendendo que o inglês é uma ferramenta de conexão global que amplia suas possibilidades como Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução ao vocabulário essencial em inglês para comunicação durante partidas, com foco em termos de localização, ações, status e alertas, utilizando a estrutura de callouts (Onde + O quê + Ação) adaptada para o inglês, promovendo a compreensão de que o inglês é uma ferramenta de conexão global no universo dos games, não uma barreira.",
+    sugestoesPais:
+      "- Pergunte: 'Que palavras em inglês você aprendeu hoje no jogo?'\n- Pergunte: 'Você conseguiu usar alguma frase em inglês durante a partida?'\n- Pergunte: 'Como o inglês pode te ajudar a se conectar com jogadores de outros países?'\n- Reforce: 'Saber algumas palavras em inglês para o jogo é o primeiro passo para se comunicar com o mundo!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de usar pelo menos 10 termos em inglês com confiança em situações reais de jogo.\n- Redução da ansiedade perante comunicação em inglês através de contexto significativo e prático.\n- Desenvolvimento de curiosidade natural por aprender mais vocabulário funcional.\n- Conexão entre comunicação global e oportunidades futuras ('posso jogar com pessoas do mundo todo').\n\nPais/responsáveis:\n- Surpresa positiva ao ver que o curso ensina inglês de forma engajadora e contextualizada.\n- Observação concreta de aumento no interesse do filho por aprender inglês em outras áreas.\n- Redução de preocupações sobre exposição a ambientes internacionais através de preparação linguística.\n- Pontos de conversa específicos para fortalecer aprendizado ('como você disse 'cuidado' em inglês hoje?').\n\nInstituição:\n- Documentação do desenvolvimento de competência global através de registros de comunicação.\n- Fortalecimento da proposta diferenciada que integra aprendizado linguístico com habilidades técnicas.\n- Base para criação de parcerias internacionais e competições globais para os alunos.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Ponte das Línguas' para mostrar que o inglês conecta, não separa. Associar termos a gestos e imagens para facilitar a memorização. Usar 'vocabulário funcional' em vez de 'lista de palavras'.\n\nMediação:\nCriar um ambiente seguro onde errar a pronúncia é parte do processo. Nunca forçar participação oral pública; oferecer opções de prática em duplas. Celebrar tentativas, não apenas acertos.\n\nSensibilidade:\nObservar sinais de ansiedade linguística. Ter cartões com frases prontas para alunos mais inseguros. Reforçar que o importante é se fazer entender, não ter sotaque perfeito.\n\nConexão com a família:\nEnviar um guia visual de 'inglês do jogo' com termos essenciais para praticar em casa. Incluir dicas de pronúncia simplificada.\n\nRegistro:\nRegistrar o progresso de cada aluno na confiança e no uso de termos em inglês ao longo da aula.",
+    preRequisitos:
+      "- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP22 - Liderança Básica: Capitão da Vez",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica e utiliza corretamente pelo menos 5 termos em inglês durante as atividades.\n- O aluno constrói pelo menos 2 callouts completos em inglês (Localização + Situação + Ação).\n- O aluno participa da Missão Bilingue com comunicação em inglês em momentos específicos.",
+    metodologias:
+      "- Pedagogia contextualizada (inglês no contexto do jogo)\n- Aprendizagem por descoberta (associação termo-imagem-ação)\n- Metáfora de conexão (Ponte das Línguas)\n- Confiança progressiva (termos curtos → frases completas)\n- Integração cultural",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Ponte das Línguas",
+        duracaoMin: 10,
+        descricao:
+          "Analogia: 'Nosso inglês é como uma ponte - não separa, conecta jogadores do mundo todo'. Apresentação de termos que os alunos já usam intuitivamente (GG = Good Game, Noob = Beginner). Conexão com ADGP17: 'Assim como os callouts são códigos de comunicação, o inglês é o código global dos games'. Apresentação das 3 categorias de vocabulário: Localização (Left/Right/Front/Behind), Ação (Push/Fall back/Flank/Hold), Status (Low health/No ammo/Ready).",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Sinais Universais",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em duplas: 1) Estação Visual - cartas com imagens de situações de jogo e termos correspondentes em inglês; os alunos devem associar imagem + termo + gesto; 2) Estação Auditiva - fones com áudios curtos de jogadores profissionais usando termos em contexto; os alunos devem identificar os termos ouvidos; 3) Estação Corporal - espelhos com gestos universais e seus equivalentes verbais em inglês (ex: apontar para a esquerda enquanto diz 'Left'). Registro: 'Os 3 termos mais úteis que aprendi foram...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação dos Callouts em Inglês",
+        duracaoMin: 15,
+        descricao:
+          "Prática de callouts em inglês com foco na estrutura Onde + O quê + Ação. Exemplos: 'Enemy left!', 'Push right!', 'Low health, fall back!'. Em duplas, os alunos praticam: 1) Situação de Alerta: 'Enemy spotted at [location]!'; 2) Situação de Coordenação: 'Push on my signal!'; 3) Situação de Celebração: 'Good job, team!'. Cada dupla grava um áudio curto (15s) com os melhores callouts e ouve para ajustar.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Missão Bilingue (Scrim com Comunicação em Inglês)",
+        duracaoMin: 15,
+        descricao:
+          "Scrim curta (10 min) com regras específicas de comunicação: 1) Fase 1 (Preparação - 3 min) - comunicação normal em português para planejamento inicial; cada jogador deve aprender 1 termo novo antes do início; 2) Fase 2 (Ação Controlada - 7 min) - somente comunicação em inglês para informações críticas (localização de inimigos, estado de recursos); regra: pontuação extra para times que usarem pelo menos 5 termos diferentes corretamente; 3) Fase 3 (Integração - 5 min) - comunicação livre em português ou inglês conforme necessidade, mas o capitão da vez deve usar pelo menos 2 termos em inglês ao tomar decisões. Análise: 'Quando o inglês foi mais útil?'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Construção – Mini-Dicionário do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu próprio Mini-Dicionário com 3 seções: 1) Frases de Emergência - 5 frases essenciais ('Enemy spotted!', 'Need backup!', 'Falling back!', 'Low health!', 'Push now!'); 2) Frases de Coordenação - 5 frases para trabalho em equipe ('Covering you!', 'Taking high ground!', 'Ready to execute!', 'Switching positions!', 'Good call!'); 3) Frases de Respeito - 3 frases para manter ambiente positivo ('Nice play!', 'We'll get them next time!', 'Good game, everyone!'). Cada aluno escolhe 1 frase para praticar até a próxima aula.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A frase em inglês que vou usar na próxima partida é...' e 'O inglês me ajuda a me conectar com...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartas com imagens de situações de jogo e termos em inglês",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Fones de ouvido com áudios de comunicação em inglês",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Espelhos para observação de gestos",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Missão Bilingue",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Gravadores de áudio simples (ou apps) para prática de callouts",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartões com as 3 categorias de vocabulário (Localização, Ação, Status)",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Modelo do Mini-Dicionário do Time (3 seções)",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Vocabulário Funcional: Identifica e utiliza corretamente pelo menos 5 termos em inglês no contexto do jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Callouts em Inglês: Constrói pelo menos 2 callouts completos em inglês (Localização + Situação + Ação)",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Confiança na Comunicação: Participa da Missão Bilingue com comunicação em inglês em momentos específicos",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Registra no Diário uma frase em inglês que vai praticar e por que ela é útil",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-24",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Inglês, Liderança e Comunicação Integrada",
+    codigo: "ADGP24",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Inglês In-Game e Callouts Básicos (ADGP23), Liderança e Capitão da Vez (ADGP22) e Comunicação Técnica (ADGP17). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando o uso de termos em inglês, a rotação de liderança e a comunicação técnica integrada.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os callouts em inglês (ADGP23), a rotação de liderança como Capitão da Vez (ADGP22) e a comunicação técnica clara (ADGP17), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve comunicar em múltiplos idiomas, liderar com serviço e coordenar com precisão.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Inglês In-Game e Callouts Básicos (ADGP23), Liderança e Capitão da Vez (ADGP22) e Comunicação Técnica (ADGP17). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando o uso de termos em inglês, a rotação de liderança e a comunicação técnica integrada.",
+    sugestoesPais:
+      "- Pergunte: 'Que palavra em inglês você usou hoje no jogo?'\n- Pergunte: 'Você foi capitão? Como foi liderar o time?'\n- Pergunte: 'Como a comunicação com callouts ajudou o time?'\n- Reforce: 'Comunicar em inglês, liderar servindo e falar com clareza são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de termos em inglês durante a partida.\n- Rotação de liderança com rituais de transição.\n- Uso de callouts claros (Localização + Situação + Ação) em português e/ou inglês.\n- Integração natural dos três pilares: comunicação, liderança e idioma.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando o uso de inglês como ferramenta natural.\n- Percepção de que o filho está mais confiante para liderar e ser liderado.\n- Confiança de que o curso integra habilidades linguísticas, sociais e técnicas.\n\nInstituição:\n- Consolidação da cultura de jogo comunicativo, liderança servidora e uso de inglês.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Que callout em inglês você usou?', 'Quem é o capitão da vez?', 'Como a comunicação técnica está ajudando o time?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente o uso de inglês, a rotação de liderança e a qualidade dos callouts. Celebrar quando perceber aplicação espontânea. Durante as pausas, fazer perguntas sobre os três pilares. Reforçar positivamente cada tentativa de usar inglês.\n\nSensibilidade:\nEstar atento a alunos que possam ter ansiedade com o uso de inglês ou com a liderança. Reforçar que a fluência e a confiança vêm com a prática. Oferecer suporte discreto quando necessário.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou o uso de inglês, a liderança e a comunicação técnica de forma prática. Sugerir que perguntem: 'Que palavra em inglês você usou hoje?' e 'Como foi ser capitão?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (inglês, liderança, comunicação) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP22 - Liderança Básica: Capitão da Vez\n- ADGP23 - Inglês In-Game I: Callouts Básicos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 2 termos em inglês durante a partida.\n- O aluno participa da rotação de capitania com pelo menos uma transição usando ritual.\n- O aluno utiliza callouts claros (formato ONDE + O QUÊ + AÇÃO) durante o jogo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três pilares: 1) Inglês - usem as palavras e frases que aprenderam na aula passada; 2) Liderança - lembrem-se do Capitão da Vez e façam rotação; 3) Comunicação Técnica - usem callouts claros (Localização + Situação + Ação). Lembrem-se do Código de Honra e do compromisso anti-toxicity.' Definição de um cronômetro para pausas a cada 20 minutos e para rotação de capitania (a cada 5 minutos).",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Que palavra em inglês você usou?', 'Quem é o capitão agora?', 'Que callout você usou?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Inglês: 'Quem usou uma palavra em inglês?' 2) Liderança: 'Como foi a rotação de capitães?' 3) Comunicação: 'Alguém usou um callout eficaz?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: uso de inglês, rotação de liderança, comunicação técnica.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Que palavra em inglês você usou e funcionou?', 'Como foi ser capitão ou receber o leme de outro?', 'Que callout ajudou o time?'. Instrutor celebra as descobertas e conecta com a vida real: 'Esses três pilares - inglês, liderança e comunicação - funcionam em qualquer lugar, não só nos games.'",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei o inglês quando...' ou 'Como capitão, percebi que...' ou 'Um callout que ajudou o time foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas e rotação de capitania",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Cartões com os 3 pilares (Inglês, Liderança, Comunicação Técnica) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Mini-Dicionário do Time (feito na ADGP23) - opcional para consulta",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Inglês: Utiliza pelo menos 2 termos ou frases em inglês durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Liderança (Capitão da Vez): Participa da rotação de capitania com pelo menos uma transição usando ritual",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Comunicação Técnica (Callouts): Utiliza callouts com formato claro (Localização + Situação + Ação)",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-25",
+    tipo: 0,
+    nome: "Comunicação Integrada: PT + Ping + Inglês",
+    codigo: "ADGP25",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de integrar múltiplos canais de comunicação durante o jogo (português, ping e inglês), criando sequências naturais que combinam voz, visual e texto, com foco na escolha do canal mais eficaz para cada situação e na fluência de transição entre canais sem perda de clareza.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de integrar múltiplos canais de comunicação (português, ping e inglês) durante o jogo, escolhendo o canal mais eficaz para cada situação e realizando transições fluidas entre eles, desenvolvendo a habilidade de sequenciar naturalmente a comunicação (ex: ping + voz em português + confirmação em inglês) para transmitir informações com clareza e eficiência, compreendendo que a comunicação multimodal é a realidade dos e-sports profissionais e que diferentes canais se complementam em vez de competirem.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de integrar múltiplos canais de comunicação durante o jogo (português, ping e inglês), criando sequências naturais que combinam voz, visual e texto, com foco na escolha do canal mais eficaz para cada situação e na fluência de transição entre canais sem perda de clareza.",
+    sugestoesPais:
+      "- Pergunte: 'Hoje você usou mais de um jeito de se comunicar no jogo? Como?'\n- Pergunte: 'O que é mais fácil: falar em português, em inglês ou usar o ping?'\n- Pergunte: 'Como você decide qual canal usar em cada situação?'\n- Reforce: 'Saber se comunicar de diferentes formas é uma habilidade importante dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de escolher intuitivamente o melhor canal comunicativo para cada situação de jogo.\n- Redução da ansiedade perante comunicação complexa através de sequências estruturadas.\n- Desenvolvimento de vocabulário multimodal onde palavras, gestos e ping se complementam.\n- Sentimento de confiança ao saber que têm múltiplas ferramentas para se fazer entender.\n- Conexão entre clareza comunicativa e performance individual ('quando comunico bem, jogo melhor').\n\nPais/responsáveis:\n- Compreensão prática de como o curso desenvolve habilidades comunicativas avançadas que transcendem o jogo.\n- Observação de melhoria na capacidade do filho de se comunicar de múltiplas formas em outras áreas (escola, projetos).\n- Redução de preocupações sobre barreiras linguísticas em ambientes internacionais através da preparação multimodal.\n- Pontos de conversa específicos para fortalecer comunicação em família ('como você se comunicaria se não pudesse falar agora?').\n\nInstituição:\n- Documentação do desenvolvimento de comunicação avançada através de gravações e análises.\n- Fortalecimento da proposta diferenciada que prepara atletas para ambientes competitivos reais.\n- Base para competições internacionais e intercâmbios onde a comunicação multimodal é essencial.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos musicais em vez de técnicos ('maestro da comunicação' em vez de 'coordenador multimodal'). Utilizar a metáfora da 'Orquestra da Comunicação' para mostrar que cada canal tem seu momento, mas juntos criam uma sinfonia.\n\nMediação:\nCriar um ambiente de experimentação onde os alunos possam testar diferentes combinações de canais sem medo de errar. Celebrar a fluência nas transições, não apenas a correção de cada canal isolado.\n\nSensibilidade:\nObservar sinais de sobrecarga cognitiva durante sequências mais complexas. Ter versões simplificadas disponíveis. Respeitar diferentes ritmos de integração.\n\nConexão com a família:\nEnviar um guia visual de 'comunicação familiar multimodal' com exemplos de situações domésticas onde múltiplos canais são usados (ex: gestos + palavras).\n\nRegistro:\nRegistrar a capacidade de cada aluno de integrar múltiplos canais e planejar reforço para os que apresentarem mais dificuldade.",
+    preRequisitos:
+      "- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP23 - Inglês In-Game I: Callouts Básicos\n- ADGP9 - Visão de Mapa e Consciência de Jogo",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 2 canais diferentes durante a Sinfonia do Time.\n- O aluno realiza uma sequência integrada (ex: ping + português + inglês) com fluidez.\n- O aluno demonstra adaptação às restrições de canal durante a simulação.",
+    metodologias:
+      "- Pedagogia orquestral\n- Aprendizagem por sequências\n- Metáfora musical\n- Progressão por complexidade\n- Fluidez comunicativa",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Orquestra da Comunicação",
+        duracaoMin: 10,
+        descricao:
+          "Analogia musical: 'Nossa comunicação é como uma orquestra - cada instrumento (canal) tem seu momento, mas juntos criam uma sinfonia'. Apresentação dos 3 canais: 1) Voz (Português) - comunicação verbal clara para planejamento e coordenação; 2) Ping (Visual) - marcação no mapa para localização rápida; 3) Voz (Inglês) - comunicação global para chamadas internacionais. Demonstração de uma sequência integrada: ping no mapa + voz em português ('Inimigo marcado aqui') + confirmação em inglês ('Enemy spotted!'). Conexão com ADGP17 e ADGP23: 'Assim como aprendemos callouts em português e inglês separadamente, agora vamos aprender a tocá-los juntos.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Canais",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em grupos de 3, cada uma focada em uma sequência integrada: 1) Sequência Básica - comunicar localização de inimigo (Passo 1: Ping visual + Passo 2: Voz em português + Passo 3: Confirmação em inglês); 2) Sequência Intermediária - comunicar mudança de estratégia (Passo 1: Voz em português explicando + Passo 2: Ping visual mostrando nova posição + Passo 3: Comando em inglês para execução); 3) Sequência Avançada - coordenar ataque complexo (Passo 1: Planejamento prévio em português + Passo 2: Ping contínuo durante execução + Passo 3: Comandos em inglês para sincronização). Cada grupo registra: 'A sequência mais natural para nosso time foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Sinfonia do Time",
+        duracaoMin: 20,
+        descricao:
+          "Partida (scrim) de 20 minutos dividida em 3 movimentos sinfônicos: 1) Movimento 1 (Andante - 8 min) - comunicação normal com ênfase na clareza entre canais; regra: para cada decisão importante, usar pelo menos 2 canais diferentes; 2) Movimento 2 (Allegro - 8 min) - restrições rotativas de canais: 'Sem comunicação verbal por 2 minutos - só ping e inglês escrito', 'Sem ping por 2 minutos - só voz em português e inglês', 'Sem inglês por 2 minutos - só português e ping'; regra: time deve se adaptar sem perder eficácia; 3) Movimento 3 (Presto - 4 min) - pressão máxima com comunicação integrada completa; regra: capitão da vez coordena usando todos os canais simultaneamente. Análise: 'Qual movimento foi mais desafiador e por quê?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Protocolo Multimodal do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Protocolo em 3 seções: 1) Para Situações Calmas - sequências para planejamento e estratégia ('Primeiro: Voz em português para explicar ideia completa; Segundo: Ping no mapa para visualizar; Terceiro: Confirmação em inglês para alinhamento global'); 2) Para Situações de Pressão - sequências rápidas e eficazes ('Primeiro: Ping imediato no mapa; Segundo: Comando curto em inglês; Terceiro: Confirmação em português se necessário'); 3) Para Situações de Crise - sequências de emergência ('Primeiro: Comando em inglês alto e claro; Segundo: Ping contínuo na rota de escape; Terceiro: Explicação posterior em português').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A sequência integrada que vou praticar é...' e 'O canal que preciso melhorar é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Orquestra simbólica (cartazes com instrumentos, batuta de maestro)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Sequência Básica, Intermediária, Avançada)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Sinfonia do Time",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fones para comunicação durante a simulação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cartas com restrições de canal para o Movimento 2",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Partitura gigante em branco para o Protocolo Multimodal",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Múltiplos Canais: Utiliza pelo menos 2 canais diferentes durante a Sinfonia do Time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Sequência Integrada: Realiza uma sequência integrada (ex: ping + português + inglês) com fluidez",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Adaptação a Restrições: Demonstra capacidade de se adaptar a restrições de canal durante a simulação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Protocolo Multimodal: Contribui com sugestões específicas para o Protocolo do time em diferentes situações",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-26",
+    tipo: 0,
+    nome: "Tela não é Vilã, mas também não é Santa",
+    codigo: "ADGP26",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de uma relação equilibrada e consciente com as telas, através da classificação de atividades digitais por propósito e impacto real, estabelecendo critérios pessoais para decidir quando usar e quando não usar dispositivos, promovendo a autonomia e a responsabilidade digital.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de classificar atividades digitais por seu propósito e impacto real (Aprendizado, Conexão, Entretenimento, Desperdício), estabelecendo critérios pessoais para decidir conscientemente quando usar e quando não usar dispositivos, compreendendo que o propósito do uso é tão importante quanto o tempo gasto e que uma relação saudável com as telas envolve escolhas intencionais, não apenas restrições ou liberdade irrestrita.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de uma relação equilibrada e consciente com as telas, através da classificação de atividades digitais por propósito e impacto real, estabelecendo critérios pessoais para decidir quando usar e quando não usar dispositivos, promovendo a autonomia e a responsabilidade digital.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi o propósito do seu tempo na tela hoje? Aprendizado, conexão, entretenimento ou desperdício?'\n- Pergunte: 'O que você descobriu sobre como usa as telas?'\n- Pergunte: 'Qual é a sua pergunta antes de pegar um dispositivo?'\n- Reforce: 'O importante não é quanto tempo você fica na tela, mas por que você está lá e o que você leva disso.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de classificar qualquer atividade digital em categorias de propósito (aprendizado, conexão, entretenimento, desperdício).\n- Desenvolvimento de vocabulário para justificar escolhas de uso com base em propósitos claros.\n- Redução da culpa ou defensividade em relação ao uso de telas através de análise objetiva.\n- Sentimento de empowerment ao decidir ativamente como usar as telas em vez de ser usado por elas.\n- Conexão entre propósito do uso e satisfação ('quando uso com propósito, me sinto mais realizado').\n\nPais/responsáveis:\n- Compreensão prática de como o curso desenvolve pensamento crítico sobre tecnologia, não apenas restrições.\n- Observação de mudança na capacidade do filho de explicar suas escolhas de uso de telas.\n- Redução de conflitos diários através de critérios objetivos em vez de debates emocionais.\n- Pontos de conversa específicos para fortalecer autonomia ('qual é o propósito deste tempo na tela?').\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico digital através de registros de classificação.\n- Fortalecimento da proposta diferenciada que forma cidadãos digitais conscientes, não apenas jogadores.\n- Base para criação de parcerias com escolas e instituições de educação midiática.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Lupa do Tempo' para tornar a análise mais científica e menos julgadora. Utilizar termos de escolha em vez de proibição ('escolher conscientemente' em vez de 'evitar telas'). Manter neutralidade sem demonizar ou romantizar tecnologia.\n\nMediação:\nValidar que todos têm momentos de uso automático e que o importante é desenvolver consciência para fazer escolhas melhores. Evitar julgamentos sobre o uso de telas; focar em propósitos e consequências.\n\nSensibilidade:\nObservar sinais de culpa ou defensividade ao discutir uso de telas. Enfatizar que o objetivo é aprender a fazer escolhas conscientes, não se sentir culpado. Adaptar exemplos para diferentes realidades de acesso à tecnologia.\n\nConexão com a família:\nEnviar um guia visual com as 4 perguntas para análise de atividades digitais para uso em casa. Incluir exemplos de como os pais podem aplicar as mesmas perguntas ao seu próprio uso de telas.\n\nRegistro:\nColetar os Termômetros do Propósito para identificar padrões de uso da turma e planejar reforços.",
+    preRequisitos:
+      "- ADGP13 - Vida Digital Saudável + Energia para Performance\n- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno classifica corretamente atividades digitais em categorias de propósito.\n- O aluno cria um Termômetro do Propósito pessoal com critérios para decisões.\n- O aluno participa do Teatro das Telas, demonstrando capacidade de identificar gatilhos de automaticidade.",
+    metodologias:
+      "- Pedagogia do propósito\n- Aprendizagem crítica mediada\n- Metáfora científica (lupa)\n- Dramatização reflexiva\n- Autonomia responsável",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Lupa do Tempo",
+        duracaoMin: 10,
+        descricao:
+          "Analogia da lupa: 'Nossa lupa não julga o tempo na tela, mas analisa seu propósito'. Apresentação das 4 categorias de propósito: 1) Aprendizado (melhora habilidades, conhecimento); 2) Conexão (fortalece relações, pertencimento); 3) Entretenimento (renova energia, prazer); 4) Desperdício (não gera valor, apenas preenche tempo). Atividade inicial: distribuir um relógio de 60 minutos e cartões com atividades digitais comuns; cada aluno coloca atividades no relógio e responde: 'Esta atividade preenche meu tempo ou transforma meu tempo?'. Conexão com ADGP13: 'Assim como cuidamos do jardim do corpo, hoje cuidamos do jardim do propósito digital.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Propósitos",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em grupos de 3 com a metodologia das 4 perguntas: 1) Estação Aprendizagem - analisar 4 atividades usando: 'Qual é o objetivo real desta atividade?' e classificar em Aprendizado, Conexão, Entretenimento ou Desperdício; 2) Estação Energia - analisar o mesmo conjunto usando: 'Esta atividade me deixa com mais ou menos energia depois?' e classificar em Recarrega, Mantém ou Consome; 3) Estação Tempo - analisar usando: 'Isto poderia ser feito em menos tempo sem perder valor?' e identificar onde o tempo é bem investido e onde é desperdiçado. Cada grupo cria seu 'Termômetro do Propósito' com escala de 1 a 5 para diferentes atividades.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Teatro das Telas",
+        duracaoMin: 20,
+        descricao:
+          "Dramatização em trios de dois cenários com duas versões: 1) Cenário 1 (Sábado à tarde) - 'Terminei deveres, tenho 3 horas livres antes do jantar' - Versão Automática (scrollar redes sociais) vs. Versão Intencional (1h jogo casual + 1h tutorial + 1h parque); discussão: 'Qual versão me deixou mais satisfeito?'; 2) Cenário 2 (Noite de semana) - 'Tenho scrim amanhã, mas estou com vontade de terminar uma série' - Versão Automática (assistir 3 episódios) vs. Versão Intencional (assistir 1 episódio como recompensa); discussão: 'Como minha decisão afeta minha performance e bem-estar?'. Os grupos identificam 'gatilhos de automaticidade' comuns e estratégias para transformá-los em momentos de escolha.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Código do Uso Intencional",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Código em 2 dimensões: 1) Critérios para Dizer SIM - quando uma atividade digital merece tempo ('Quando tem propósito claro de aprendizado ou conexão', 'Quando respeita meus limites de energia', 'Quando posso parar naturalmente sem necessidade compulsiva'); 2) Critérios para Dizer NÃO - quando devo escolher outra atividade ('Quando noto que estou usando a tela para evitar outra responsabilidade', 'Quando meu corpo já está mostrando sinais de cansaço', 'Quando posso obter o mesmo valor com uma atividade não digital'). Cada aluno completa sua bússola pessoal com: 'Minha pergunta antes de pegar qualquer dispositivo é: [pergunta pessoal]'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma atividade digital que vou classificar hoje é...' e 'Minha decisão consciente sobre uso de telas esta semana será...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Lupa gigante simbólica",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Relógios de papel com divisões de tempo",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo:
+          "Cartões com atividades digitais comuns (aprendizado, conexão, entretenimento, desperdício)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Aprendizagem, Energia, Tempo)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Termômetros do Propósito (modelos para preencher)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Adereços simples para o Teatro das Telas (relógio, celular de brinquedo, livro)",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Cartões com cenários para dramatização",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Moldes da Bússola Pessoal do Propósito",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Classificação de Atividades: Classifica corretamente atividades digitais em categorias de propósito (Aprendizado, Conexão, Entretenimento, Desperdício)",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Termômetro do Propósito: Cria um termômetro pessoal com critérios claros para decisões sobre uso de telas",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Identificação de Gatilhos: Identifica gatilhos de automaticidade em seu próprio uso de telas",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma decisão consciente sobre uso de telas e por que ela é importante",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-27",
+    tipo: 0,
+    nome: "Conflitos Simples e Pedido de Desculpas",
+    codigo: "ADGP27",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de identificar e resolver conflitos simples em ambiente competitivo, com foco em comunicação não violenta, escuta ativa e pedidos de desculpas autênticos, utilizando rituais estruturados para transformar conflitos em oportunidades de fortalecimento do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar o núcleo real de um conflito (comportamento específico) em vez de julgar a pessoa, expressar sentimentos sem ataques pessoais usando linguagem não violenta ('Me sinto frustrado quando...' em vez de 'Você é chato'), e realizar um pedido de desculpas genuíno seguindo a estrutura de 4 passos (Reconhecimento, Impacto, Responsabilidade, Reparação), compreendendo que resolver conflitos é uma habilidade essencial para a saúde e performance de um time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de identificar e resolver conflitos simples em ambiente competitivo, com foco em comunicação não violenta, escuta ativa e pedidos de desculpas autênticos, utilizando rituais estruturados para transformar conflitos em oportunidades de fortalecimento do time.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre como resolver conflitos hoje?'\n- Pergunte: 'Como é um pedido de desculpas de verdade? Você pode me dar um exemplo?'\n- Pergunte: 'O que é mais difícil: pedir desculpas ou perdoar?'\n- Reforce: 'Pedir desculpas não é sinal de fraqueza, é sinal de coragem. Reconhecer um erro e tentar repará-lo mostra maturidade.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar o núcleo real do conflito (comportamento específico) em vez de julgar a pessoa.\n- Desenvolvimento de frases modelo para expressar sentimentos sem ataques ('Me sinto frustrado quando...' em vez de 'Você é chato').\n- Redução do medo de pedir desculpas através de protocolo estruturado e seguro.\n- Sentimento de segurança emocional ao saber que conflitos podem ser resolvidos sem rompimento de relações.\n- Conexão entre harmonia relacional e performance individual ('quando estamos em paz, jogamos melhor').\n\nPais/responsáveis:\n- Observação concreta de melhoria na capacidade do filho de resolver conflitos em casa e na escola.\n- Redução de preocupações sobre exposição a ambientes tóxicos através de preparação para reparação.\n- Pontos de conversa específicos para fortalecer relações familiares através de pedidos de desculpas genuínos.\n- Confiança no desenvolvimento de maturidade emocional através da prática de reconciliação.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência emocional através de registros de resolução de conflitos.\n- Fortalecimento da proposta diferenciada que forma atletas emocionalmente maduros.\n- Redução significativa de conflitos internos e evasão através de cultura restaurativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Ponte da Reparação' para falar sobre reconstrução de confiança. Utilizar termos de reparação em vez de punição ('consertar a ponte' em vez de 'resolver o problema').\n\nMediação:\nCriar um clima seguro onde os alunos possam praticar sem medo de julgamento. Estabelecer claramente que as dramatizações são fictícias e que ninguém é obrigado a compartilhar conflitos pessoais reais.\n\nSensibilidade:\nObservar sinais de desconforto durante role-plays; ter alternativas para participação (escrever em vez de falar). Estar atento a alunos com histórico de conflitos familiares.\n\nConexão com a família:\nEnviar um guia visual do 'Ritual da Ponte' para aplicar em conflitos familiares com frases modelo.\n\nRegistro:\nFotografar (com consentimento) o Ritual da Ponte construído para criar um memorial visual da cultura do time.",
+    preRequisitos:
+      "- ADGP10 - Regras, Fair Play e Confiança\n- ADGP15 - Comunicação em Jogo I: O que Ajuda e o que Atrapalha\n- ADGP19 - Respeito e Colaboração: Anti-Toxicity Básico\n- ADGP22 - Liderança Básica: Capitão da Vez",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente o núcleo de um conflito (comportamento específico, não pessoa).\n- O aluno expressa um sentimento usando linguagem não violenta durante role-play.\n- O aluno realiza um pedido de desculpas seguindo a estrutura de 4 passos em dramatização.",
+    metodologias:
+      "- Pedagogia restaurativa\n- Aprendizagem por role-play estruturado\n- Metáfora da ponte\n- Estrutura emocional (4 passos)\n- Ritual de pertencimento",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Círculo da Reparação",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do círculo: 'Nosso círculo é espaço onde conflitos se transformam em conexões'. Apresentação das 3 regras do círculo: 1) Quem segura o objeto fala, os outros ouvem com coração aberto; 2) Falamos sobre comportamentos específicos, não sobre pessoas; 3) Pedir ajuda para resolver conflitos é sinal de coragem. Cada aluno segura o objeto de passagem e completa: 'Uma vez, um conflito me ensinou que...'. Conexão com ADGP19: 'Assim como fizemos promessas contra toxicidade, hoje aprenderemos o que fazer quando elas são quebradas.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Conflitos (Role-play)",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em trios com papéis rotativos (Agressor, Afetado, Mediador): 1) Estação Comunicação - conflito por mal-entendido comunicativo ('Durante partida, um jogador xingou o outro por erro'); mediador ajuda a identificar: 'O que realmente aconteceu?', 'Qual foi o impacto emocional?', 'O que cada um precisa para seguir em frente?'; 2) Estação Recursos - conflito por recursos limitados ('Dois jogadores querem o mesmo equipamento'); mediador ajuda a encontrar solução ganha-ganha; 3) Estação Emocional - conflito por tilt acumulado ('Um jogador está com tilt e afetando todo o time'); mediador ajuda a reconhecer sinais anteriores ignorados. Após cada estação, registram: 'A frase mais difícil de dizer foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Teatro da Reconciliação",
+        duracaoMin: 20,
+        descricao:
+          "Dramatização guiada com estrutura de 4 passos: 1) Reconhecimento - 'Eu reconheço que [comportamento específico] aconteceu' (ex: 'Eu reconheço que gritei com você durante a partida') - sem justificativas ainda; 2) Impacto - 'Eu entendo que isto te fez sentir [emoção específica]' (ex: 'Eu entendo que isto te fez sentir desrespeitado') - perguntar se o impacto foi corretamente entendido; 3) Responsabilidade - 'Isto foi responsabilidade minha porque [razão específica]' (ex: 'Isto foi responsabilidade minha porque eu não pedi uma pausa quando senti o tilt vindo') - assumir 100% da responsabilidade; 4) Reparação - 'Para reparar, eu vou [ação específica] e peço tua ajuda para [pedido específico]' (ex: 'Para reparar, vou praticar minha respiração antes da próxima scrim e peço tua ajuda para me lembrar quando eu começar a falar alto'). Após cada dramatização, o grupo responde: 'O que fez este pedido de desculpas ser autêntico?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Ritual da Ponte",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Ritual em 3 momentos: 1) Sinais de Alerta - identificar 3 sinais corporais de conflito iminente ('Quando minha voz sobe de tom', 'Quando começo a apontar o dedo', 'Quando sinto calor no rosto') + criar sinal de time para pausa imediata ('Quando qualquer um disser 'ponte', todos param e respiram por 10 segundos'); 2) Protocolo de Conversa - definir local e tempo para conversa ('Pedimos 5 minutos em um canto tranquilo, não no meio da scrim', 'Usamos a estrutura de 4 passos', 'Um terceiro jogador serve como mediador neutro'); 3) Ritual de Reparação - criar gesto simbólico de reconciliação ('Apertamos as mãos e dizemos 'nossa ponte está forte''). Cada aluno coloca uma pedra colorida na ponte para votar no protocolo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma frase que vou usar para expressar meus sentimentos sem atacar é...' e 'Se eu magoar alguém, vou reparar com...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Círculo físico no chão com tecido colorido",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Objeto de passagem (pedra polida ou bastão decorado)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Vela simbólica (LED) no centro",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Comunicação, Recursos, Emocional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cartões com situações de conflito para role-play",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Adereços simples para o Teatro da Reconciliação",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Ponte simbólica (madeira ou papelão) para construção do Ritual",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Pedras coloridas para votação no protocolo",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação do Núcleo do Conflito: Consegue identificar o comportamento específico em vez de julgar a pessoa",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Linguagem Não Violenta: Expressa sentimentos usando estrutura de linguagem não violenta ('Me sinto... quando...')",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Pedido de Desculpas em 4 Passos: Realiza pedido de desculpas seguindo estrutura: Reconhecimento, Impacto, Responsabilidade, Reparação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma estratégia para lidar com conflitos ou reparar relações",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-28",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Conflitos, Propósito e Comunicação Integrada",
+    codigo: "ADGP28",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Conflitos e Pedido de Desculpas (ADGP27), Tela não é Vilã (ADGP26) e Comunicação Integrada (ADGP25). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a resolução de conflitos simples, o uso consciente de telas e a comunicação multimodal integrada.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, as habilidades de resolução de conflitos e pedidos de desculpas (ADGP27), a classificação de propósito de uso de telas (ADGP26) e a comunicação multimodal integrada (PT + Ping + Inglês) (ADGP25), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve saber resolver conflitos, usar as telas com intenção e comunicar-se de múltiplas formas.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Conflitos e Pedido de Desculpas (ADGP27), Tela não é Vilã (ADGP26) e Comunicação Integrada (ADGP25). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a resolução de conflitos simples, o uso consciente de telas e a comunicação multimodal integrada.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi a comunicação do time hoje? Vocês usaram português, ping e inglês?'\n- Pergunte: 'Houve algum conflito durante o jogo? Como vocês resolveram?'\n- Pergunte: 'Você pensou sobre o propósito do que estava fazendo na tela?'\n- Reforce: 'Comunicar bem, resolver conflitos e usar as telas com propósito são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de técnicas de resolução de conflitos e pedidos de desculpas.\n- Percepção consciente do propósito do uso da tela durante a sessão.\n- Uso integrado de português, ping e inglês na comunicação com o time.\n- Reflexão sobre como os três pilares se conectam para um jogo mais saudável e eficaz.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando habilidades de resolução de conflitos.\n- Percepção de que o filho está mais consciente do propósito do uso das telas.\n- Confiança de que o curso integra habilidades sociais, cognitivas e de comunicação.\n\nInstituição:\n- Consolidação da cultura de jogo saudável, comunicativo e intencional.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como a comunicação multimodal está ajudando o time?', 'Qual é o propósito do que você está fazendo na tela agora?', 'Como vocês resolveram aquele pequeno conflito?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente a comunicação multimodal, a gestão de conflitos e a consciência de propósito. Celebrar quando perceber aplicação espontânea. Durante as pausas, fazer perguntas sobre os três pilares. Intervir gentilmente se um conflito surgir, lembrando o Ritual da Ponte da ADGP27.\n\nSensibilidade:\nEstar atento a conflitos emergentes e oferecer suporte para resolução usando a estrutura de 4 passos. Reforçar que conflitos são normais e que o importante é como resolvemos. Oferecer espaço para alunos que precisem de apoio adicional.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a comunicação multimodal, a resolução de conflitos e a consciência de propósito de forma prática. Sugerir que perguntem: 'Como foi a comunicação do time hoje?' e 'Houve algum conflito? Como foi resolvido?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (comunicação multimodal, resolução de conflitos, propósito) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP25 - Comunicação Integrada: PT + Ping + Inglês\n- ADGP26 - Tela não é Vilã, mas também não é Santa\n- ADGP27 - Conflitos Simples e Pedido de Desculpas",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza comunicação multimodal integrada (PT + Ping + Inglês) durante a partida.\n- O aluno reflete sobre o propósito do uso da tela durante a sessão.\n- O aluno demonstra capacidade de resolver um conflito simples ou fazer um pedido de desculpas, se necessário.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três pilares: 1) Comunicação Multimodal - usem português, ping e inglês de forma integrada; 2) Resolução de Conflitos - lembrem-se do Ritual da Ponte e da estrutura de 4 passos; 3) Propósito - perguntem-se: 'Qual é o propósito do que estou fazendo na tela agora?'. Lembrem-se do Código de Honra e do compromisso anti-toxicity.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Que canais você está usando para se comunicar?', 'Qual é o propósito do que você está fazendo?', 'Como está a harmonia do time?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Comunicação Multimodal: 'Quem usou português, ping e inglês juntos?' 2) Resolução de Conflitos: 'Houve algum conflito? Como foi resolvido?' 3) Propósito: 'Alguém percebeu o propósito do que estava fazendo?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: comunicação multimodal, resolução de conflitos e consciência de propósito.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como foi comunicar com português, ping e inglês juntos?', 'Houve algum conflito? Como vocês resolveram?', 'Alguém percebeu o propósito do que estava fazendo na tela?'. Instrutor celebra as descobertas e conecta com a vida real: 'Comunicar bem, resolver conflitos e usar as telas com propósito são habilidades que funcionam em qualquer lugar.'",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei a comunicação multimodal quando...' ou 'Um conflito que resolvemos foi...' ou 'Percebi o propósito do meu uso de tela quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Cartões com os 3 pilares (Comunicação Multimodal, Resolução de Conflitos, Propósito) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Comunicação Multimodal: Utiliza integração de português, ping e inglês durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Resolução de Conflitos: Demonstra capacidade de resolver conflitos simples ou fazer pedidos de desculpas",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Consciência de Propósito: Reflete sobre o propósito do uso da tela durante a sessão",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-29",
+    tipo: 0,
+    nome: "Debriefing Simples + Como Explicar aos Pais",
+    codigo: "ADGP29",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de realizar um debriefing pós-partida estruturado com foco em aprendizados e não apenas em resultados, criando ferramentas para explicar o valor educativo do curso aos pais em linguagem acessível, fortalecendo a ponte entre o ambiente de aula e o familiar.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de realizar um debriefing pós-partida estruturado com foco em aprendizados, não apenas em resultados, utilizando a metodologia de 3 passos (O que aconteceu? O que aprendemos? O que faremos diferente?), e deve ter desenvolvido ferramentas práticas para explicar o valor educativo do curso aos pais em linguagem acessível, transformando a comunicação familiar em uma oportunidade de fortalecer a confiança e o reconhecimento do seu desenvolvimento como Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de realizar um debriefing pós-partida estruturado com foco em aprendizados e não apenas em resultados, criando ferramentas para explicar o valor educativo do curso aos pais em linguagem acessível, fortalecendo a ponte entre o ambiente de aula e o familiar.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu hoje no curso que gostaria de compartilhar comigo?'\n- Pergunte: 'Como foi a partida de hoje? O que você aprendeu com ela?'\n- Pergunte: 'O que você vai fazer diferente na próxima vez baseado no que aprendeu?'\n- Reforce: 'Quando você me explica o que aprendeu no curso, eu entendo melhor o valor do que você está fazendo. Continue compartilhando!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar pelo menos 1 aprendizado técnico e 1 socioemocional após cada partida.\n- Redução da ansiedade em compartilhar resultados com pais através de estrutura clara e positiva.\n- Desenvolvimento de confiança para explicar o valor do curso em linguagem acessível aos pais.\n- Sentimento de orgulho ao ver seus aprendizados reconhecidos e valorizados em casa.\n- Conexão entre identidade de Atleta Digital e papel familiar ('meus pais entendem quem eu estou me tornando').\n\nPais/responsáveis:\n- Compreensão concreta do valor educativo do curso através de relatos estruturados dos filhos.\n- Redução de preocupações sobre 'só jogar' através de demonstração clara de aprendizados transferíveis.\n- Pontos de conversa específicos para fortalecer diálogo sobre games e desenvolvimento.\n- Confiança no processo pedagógico através de evidências tangíveis de progresso.\n- Satisfação em ver o filho capaz de articular suas conquistas e desafios com maturidade.\n\nInstituição:\n- Fortalecimento da relação família-instituição através de comunicação clara de resultados.\n- Aumento da retenção de alunos através do reconhecimento familiar do valor do curso.\n- Documentação do impacto educativo através de relatos estruturados dos alunos para suas famílias.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mapa do Tesouro das Aprendizagens' para tornar o debriefing mais lúdico. Utilizar termos de valor em vez de técnicos ('conquistas' em vez de 'aprendizados', 'tesouros' em vez de 'resultados').\n\nMediação:\nCriar um ambiente seguro onde os alunos possam praticar a comunicação com os pais sem medo de julgamento. Oferecer frases modelo para diferentes situações familiares (pais preocupados, indiferentes, entusiasmados).\n\nSensibilidade:\nObservar sinais de desconforto ao falar sobre família; ter alternativas para alunos com situações familiares complexas. Garantir que todos os alunos saiam com pelo menos uma conquista específica para compartilhar.\n\nConexão com a família:\nPlanejar envio real da carta modelo e/ou vídeo resumo para as famílias após a aula (com consentimento prévio).\n\nRegistro:\nColetar as cartas modelo e planos de comunicação para avaliar a capacidade de tradução de linguagem.",
+    preRequisitos:
+      "- ADGP18 - Introdução à Análise de VOD\n- ADGP21 - Scrim Guiada com Foco em Fundamentos\n- ADGP27 - Conflitos Simples e Pedido de Desculpas",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno realiza um debriefing estruturado com pelo menos 1 aprendizado técnico e 1 socioemocional.\n- O aluno cria uma carta modelo ou ferramenta para explicar o curso aos pais.\n- O aluno pratica uma conversa com pais em simulação usando linguagem acessível.",
+    metodologias:
+      "- Pedagogia da tradução\n- Aprendizagem por simulação\n- Metáfora do tesouro\n- Ritual de fechamento\n- Comunicação não violenta",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa do Tesouro das Aprendizagens",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do mapa do tesouro: 'Nosso debriefing é como um mapa do tesouro - não buscamos ouro, mas aprendizados valiosos'. Apresentação das 3 perguntas do debriefing: 1) O que aconteceu? (fatos observáveis, sem julgamento); 2) O que aprendemos? (1 aprendizado técnico + 1 socioemocional); 3) O que faremos diferente? (ação concreta para a próxima partida). Conexão com ADGP18: 'Assim como na análise de VOD, o debriefing é uma ferramenta de aprendizado contínuo.' Cada aluno segura um 'tesouro' simbólico e completa: 'O maior tesouro que encontrei hoje foi...'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Tesouros (Debriefing Guiado)",
+        duracaoMin: 15,
+        descricao:
+          "Em trios, os alunos praticam debriefing com 3 passos: 1) Passo 1 - O que aconteceu? - assistir VOD de 3 minutos da última scrim e responder apenas com fatos observáveis ('Naquele momento, fizemos X'); 2) Passo 2 - O que aprendemos? - identificar 1 aprendizado técnico e 1 socioemocional em fichas coloridas; 3) Passo 3 - O que faremos diferente? - completar a frase: 'Da próxima vez, vou tentar... porque...'. Cada trio registra seu 'tesouro mais valioso'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Ponte do Diálogo (Conversa com Pais)",
+        duracaoMin: 25,
+        descricao:
+          "Simulação em duplas de dois cenários: 1) Cenário 1 - Vitória: 'Ganhamos uma scrim importante com trabalho em equipe' - estrutura: 'Primeiro conto o que aconteceu de forma simples; Depois explico o que aprendemos como time; Finalmente conecto com algo que meus pais valorizam' (ex: 'Hoje nosso time ganhou porque nos comunicamos bem. Isso me lembra quando você me ensinou que conversar resolve mais que gritar.'); 2) Cenário 2 - Derrota: 'Perdemos uma scrim mesmo após bom planejamento inicial' - estrutura: 'Primeiro reconheço o resultado sem desculpas; Depois compartilho o que aprendemos com o erro; Finalmente mostro como vou aplicar isto na próxima vez' (ex: 'Perdemos hoje, mas descobrimos que nossa comunicação quebra quando estamos nervosos. Na próxima vez, vou praticar respirar antes de falar.'). Instrutor fornece feedback sobre clareza e conexão com valores familiares.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Cofre de Conquistas (Ferramenta para Pais)",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Cofre com 3 elementos: 1) Carta Modelo - template de carta para pais com estrutura: 'Prezados pais, [Nome] teve um dia importante de aprendizados: ★ Conquista técnica: [descrever habilidade específica]; ★ Conquista emocional: [descrever gestão de emoções]; ★ Conquista coletiva: [descrever trabalho em equipe]. Na próxima semana, vamos trabalhar em [próximo objetivo]. Com carinho, Time PROPLAYER'; 2) Vídeo Resumo - planejamento de vídeo de 60 segundos: 'Somos o Time [nome]; Mostrar um aprendizado técnico em ação; Compartilhar um momento de apoio emocional; Encerramento: 'Estamos aprendendo juntos!''; 3) Ritual do Cofre - cada aluno escreve uma conquista pessoal em papel especial e promete: 'Compartilharei isto com minha família esta semana'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A conquista que vou compartilhar com meus pais esta semana é...' e 'Vou explicar o curso dizendo que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Mapa do Tesouro das Aprendizagens (cartaz grande)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Tesouros simbólicos (caixas decoradas) e bússola",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "VODs curtos (3 min) da turma para debriefing",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas coloridas para registro de aprendizados",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Ponte simbólica (tecido ou madeira) para simulação",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Cartas com tipos de pais (preocupado, indiferente, entusiasmado)",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Moldes de cartas para pais",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Cofre grande decorado para construção do Cofre de Conquistas",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Debriefing Estruturado: Realiza debriefing com metodologia de 3 passos (O que aconteceu? O que aprendemos? O que faremos diferente?)",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Aprendizados: Identifica pelo menos 1 aprendizado técnico e 1 socioemocional",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Comunicação com Pais: Consegue explicar o valor do curso em linguagem acessível durante simulação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma conquista que compartilhará com a família e como vai explicá-la",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-30",
+    tipo: 0,
+    nome: "Mini-desafio de Disciplina + Autocontrole",
+    codigo: "ADGP30",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da autodisciplina através de desafios práticos progressivos, com foco na transformação do conceito abstrato de disciplina em ações concretas e mensuráveis, criando um sistema de recompensas intrínsecas e um plano pessoal de missão com acompanhamento coletivo.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de transformar o conceito abstrato de disciplina em ações concretas e mensuráveis, desenvolvendo autoconsciência sobre seus gatilhos pessoais que desafiam a disciplina e estabelecendo um sistema de recompensas intrínsecas (não apenas extrínsecas) para manter a motivação, compreendendo que disciplina é uma ferramenta de autonomia e confiança pessoal, não de obediência cega.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da autodisciplina através de desafios práticos progressivos, com foco na transformação do conceito abstrato de disciplina em ações concretas e mensuráveis, criando um sistema de recompensas intrínsecas e um plano pessoal de missão com acompanhamento coletivo.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi o desafio de disciplina que você enfrentou hoje?'\n- Pergunte: 'O que você colocou no seu Plano de Missão Pessoal? Como posso ajudar?'\n- Pergunte: 'Qual é a recompensa que você escolheu para quando cumprir seu desafio?'\n- Reforce: 'Disciplina não é sobre fazer o que os outros mandam. É sobre fazer o que você decidiu que é importante, mesmo quando é difícil.'",
+    resultadosEsperados:
+      "Alunos:\n- Experiência prática de como pequenos atos de disciplina geram grandes benefícios na performance.\n- Capacidade de identificar seus próprios 'inimigos da disciplina' pessoais (gatilhos).\n- Sentimento de empowerment através da conquista de desafios autoimpostos.\n- Redução da resistência à disciplina quando associada a recompensas significativas.\n- Linguagem específica para negociar autonomia com os pais baseada em demonstração de responsabilidade.\n\nPais/responsáveis:\n- Observação concreta de mudanças no comportamento do filho em relação a limites.\n- Compreensão de que disciplina não é sobre controle, mas sobre desenvolvimento de autonomia.\n- Ferramentas para estabelecer sistema de recompensas significativas em casa.\n- Redução de conflitos diários através de expectativas claras e pactuadas.\n\nInstituição:\n- Documentação objetiva do desenvolvimento de autogestão dos alunos.\n- Fortalecimento da proposta educativa que vai além do técnico para o desenvolvimento de caráter.\n- Material concreto para demonstrar impacto real em reuniões com responsáveis.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Treinador Invisível' para falar sobre autodisciplina. Utilizar termos como 'escolhas de campeão' em vez de 'regras'. Enfatizar que disciplina é ferramenta para ganhar liberdade, não para perder direitos.\n\nMediação:\nCriar um clima de celebração de esforço e progressão, não apenas sucesso absoluto nos desafios. Celebrar a tentativa e o aprendizado com as falhas como dados para melhoria.\n\nSensibilidade:\nObservar sinais de ansiedade com desafios e oferecer versões adaptadas sem vergonha. Respeitar diferentes ritmos e capacidades.\n\nConexão com a família:\nEnviar cópia digital do Plano de Missão Pessoal para os responsáveis com explicação do propósito pedagógico e sugestões de como apoiar em casa.\n\nRegistro:\nFotografar (com consentimento) os Planos de Missão Pessoal para criar um mural de inspiração na sala.",
+    preRequisitos:
+      "- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso\n- ADGP7 - Erro, Derrota e Aprendizado\n- ADGP5 - Emoções em Jogo: Entendendo o Tilt",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno completa pelo menos 3 dos 4 desafios da Missão: Autocontrole.\n- O aluno identifica seu principal 'inimigo da disciplina' e seu 'superpoder' correspondente.\n- O aluno cria um Plano de Missão Pessoal com desafio específico, marcos mensuráveis e recompensa intrínseca.",
+    metodologias:
+      "- Gamificação educativa\n- Aprendizagem experiencial\n- Pedagogia da autonomia\n- Sistema de recompensas duplo (intrínseco + simbólico)\n- Contrato social educativo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Treinador Invisível",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do 'Treinador Invisível': 'Cada atleta tem um treinador invisível dentro de si que ajuda a tomar boas decisões'. Apresentação de 'inimigos comuns' da disciplina: 'O distraído' (celular notificando), 'O guloso' (querer jogar mais que o combinado), 'O impaciente' (pular aquecimento). Cada aluno recebe óculos simbólicos e escolhe um 'inimigo pessoal' e um 'superpoder' correspondente ('Foco laser', 'Tempo congelado', 'Escudo de compromisso'). Conexão com ADGP7: 'Assim como aprendemos a usar erros como dados, hoje aprenderemos a usar a disciplina como ferramenta.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Missão: Autocontrole (Estaçõess)",
+        duracaoMin: 20,
+        descricao:
+          "Quatro estações com desafios progressivos: 1) Estação 1 (Fácil) - focar em uma tarefa simples enquanto distrações leves ocorrem ao redor (ex: completar puzzle enquanto colegas conversam); 2) Estação 2 (Médio) - respeitar tempo limite rigoroso para decisão (escolher estratégia em 30 segundos com pressão); 3) Estação 3 (Difícil) - manter compostura após 'derrota injusta' (configuração propositalmente desfavorável); 4) Estação 4 (Desafio) - ensinar uma habilidade simples a um colega mantendo calma e clareza. Cada estação completada com sucesso rende uma 'moeda de poder' para usar na próxima atividade.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Laboratório do Tempo",
+        duracaoMin: 20,
+        descricao:
+          "Tabuleiro gigante no chão com caminhos diferentes. Em grupos de 4, os alunos caminham enfrentando dilemas reais de disciplina: 'Jogar agora ou terminar deveres?' - Caminho do 'Sim' imediato: recompensa rápida mas consequências negativas; Caminho da 'Espera estratégica': recompensa inicial menor mas benefícios maiores. Instrutor pausa após cada escolha para discussão: 'O que seu treinador invisível diria aqui?' Os alunos usam suas 'moedas de poder' para 'comprar' dicas quando precisam de ajuda.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Plano de Missão Pessoal",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Plano de Missão Pessoal com: 1) 1 Desafio Principal - escolhido dentre as estações anteriores (ex: 'Focar 20 minutos em fundamentos antes de jogar livremente'); 2) 3 Marcos Mensuráveis - etapas concretas para acompanhar progresso (ex: 'Segunda: 5 minutos de foco', 'Sexta: 20 minutos de foco'); 3) 1 Recompensa Intrínseca - benefício pessoal significativo (ex: 'Me sentir mais confiante para ensinar meu irmão', 'Ter energia para brincar depois do jogo'); 4) 1 Recompensa Simbólica - pequeno reconhecimento do time (ex: 'Escolher a música da próxima aula', 'Ser capitão por uma rodada').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Meu maior inimigo da disciplina é...' e 'Meu plano para vencê-lo é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Óculos de 'treinador invisível' (armações coloridas sem lentes)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "4 estações com desafios (Fácil, Médio, Difícil, Desafio)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Fichas de missão coloridas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Timer visual",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Moedas de 'poder' (fichas plásticas)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Tabuleiro gigante no chão com caminhos diferentes",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Cartas de escolha ('Jogar agora ou terminar deveres?')",
+      },
+      {
+        id: "material-08",
+        tipo: "fisico",
+        titulo: "Marcadores coloridos",
+      },
+      {
+        id: "material-09",
+        tipo: "fisico",
+        titulo: "Moldes do 'Plano de Missão Pessoal'",
+      },
+      {
+        id: "material-10",
+        tipo: "fisico",
+        titulo: "Selos de compromisso",
+      },
+      {
+        id: "material-11",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Autocontrole em Desafios: Completa pelo menos 3 dos 4 desafios da Missão: Autocontrole",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Gatilhos: Identifica corretamente seu principal 'inimigo da disciplina' pessoal",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Plano de Missão Pessoal: Cria plano com desafio específico, marcos mensuráveis e recompensa significativa",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário seu inimigo da disciplina e um plano para superá-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-31",
+    tipo: 0,
+    nome: "Noção de Jogo e Trade Kill - Entry, Trade, Cover",
+    codigo: "ADGP31",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de noção de jogo e entendimento dos conceitos de Trade Kill (Entry, Trade, Cover), promovendo a compreensão de como a coordenação em equipe e a tomada de decisão estratégica em combate se conectam para criar vantagem coletiva, utilizando analogias de esportes e jogos de tabuleiro para tornar os conceitos acessíveis.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender os conceitos de Entry (primeiro a entrar), Trade (troca de abates) e Cover (cobertura) como elementos essenciais da coordenação em equipe, sendo capaz de identificar em quais papéis se encaixa melhor e executar sequências simples de Trade Kill com o time durante uma partida, desenvolvendo a percepção de que o trabalho em equipe coordenado é mais eficaz do que ações individuais isoladas.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de noção de jogo e entendimento dos conceitos de Trade Kill (Entry, Trade, Cover), promovendo a compreensão de como a coordenação em equipe e a tomada de decisão estratégica em combate se conectam para criar vantagem coletiva, utilizando analogias de esportes e jogos de tabuleiro para tornar os conceitos acessíveis.",
+    sugestoesPais:
+      "- Pergunte: 'O que são Entry, Trade e Cover? Você pode me explicar?'\n- Pergunte: 'Qual desses papéis você gostou mais de fazer? Qual foi mais difícil?'\n- Pergunte: 'Como foi coordenar com seu time para fazer um Trade Kill?'\n- Reforce: 'Trabalhar em equipe significa que cada um tem um papel. Quando todos fazem sua parte, o time fica mais forte.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão clara dos conceitos de Entry, Trade e Cover e suas funções no time.\n- Capacidade de identificar em qual papel se encaixa melhor naturalmente.\n- Desenvolvimento de habilidade de coordenar sequências de Trade Kill com o time.\n- Percepção de que o trabalho em equipe coordenado é mais eficaz do que ações individuais.\n\nPais/responsáveis:\n- Observação de que o curso está desenvolvendo pensamento estratégico e coordenação em equipe.\n- Compreensão de que o filho está aprendendo a trabalhar em equipe de forma estruturada.\n- Percepção de que o curso vai além do individual para o coletivo, preparando para o trabalho em equipe na vida real.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento tático e coordenação em equipe.\n- Fortalecimento da proposta diferenciada que ensina estratégia coletiva, não apenas técnica individual.\n- Base para competições mais avançadas onde a coordenação em equipe é essencial.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias de esportes (ex: no futebol, o Entry é quem avança primeiro, o Trade é quem apoia, o Cover é quem cobre a defesa) e jogos de tabuleiro (ex: no xadrez, o peão que avança primeiro cria espaço). Utilizar termos em português primeiro antes de introduzir os termos em inglês.\n\nMediação:\nEnfatizar que cada papel é importante e que ninguém é 'melhor' por ser Entry ou Trade - todos são partes de um sistema. Celebrar a coordenação coletiva tanto quanto os abates individuais.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados a serem sempre Entry; reforçar que papéis podem ser rotativos e que todos devem experimentar. Respeitar diferentes ritmos de aprendizado tático.\n\nConexão com a família:\nEnviar um guia visual com os conceitos de Entry, Trade e Cover explicados em linguagem simples, com analogias para situações do dia a dia (ex: na fila do mercado, quem vai na frente, quem segura o lugar, quem cobre as laterais).\n\nRegistro:\nRegistrar a capacidade de cada aluno de executar sequências de Trade Kill e sua evolução na coordenação em equipe.",
+    preRequisitos:
+      "- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP11 - Papéis Básicos no Time\n- ADGP17 - Comunicação Técnica Básica + Callouts\n- ADGP21 - Scrim Guiada com Foco em Fundamentos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente os papéis de Entry, Trade e Cover em exemplos práticos.\n- O aluno executa pelo menos uma sequência de Trade Kill durante a simulação.\n- O aluno explica com suas palavras por que coordenar ações em equipe é mais eficaz do que agir sozinho.",
+    metodologias:
+      "- Aprendizagem baseada em analogias (esportes, xadrez)\n- Prática estruturada em estações (Entry, Trade, Cover)\n- Simulação em equipe (Scrim com foco em Trade Kill)\n- Reflexão guiada sobre tomada de decisão\n- Rotação de papéis",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Jogo como Sistema",
+        duracaoMin: 10,
+        descricao:
+          "Analogia do esporte: 'No futebol, o atacante avança (Entry), o meio-campo apoia (Trade) e o zagueiro cobre (Cover)'. Explicação dos 3 conceitos: 1) Entry - o primeiro a entrar em combate, cria espaço e coleta informações (coragem e visão); 2) Trade - o segundo a entrar, aproveita a distração do Entry para abater o inimigo ou trocar abates (precisão e timing); 3) Cover - o que cobre as laterais, protege o time de flancos e garante a segurança da jogada (consciência de mapa e paciência). Conexão com ADGP11: 'Assim como cada Guardião tem seu papel, no combate cada um tem uma função específica.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Papéis",
+        duracaoMin: 20,
+        descricao:
+          "Três estações em trios com rotação de papéis: 1) Estação Entry - simulação onde o aluno deve avançar primeiro, criar espaço e comunicar informações ao time; foco em coragem e visão; 2) Estação Trade - simulação onde o aluno deve reagir rapidamente ao movimento do Entry, abater o inimigo e realizar a troca; foco em precisão e timing; 3) Estação Cover - simulação onde o aluno deve proteger os flancos, vigiar ângulos e garantir segurança; foco em consciência de mapa e paciência. Cada aluno passa por todas as estações e registra: 'Neste papel, me senti...' e 'Minha maior dificuldade foi...'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Missão Trade Kill",
+        duracaoMin: 20,
+        descricao:
+          "Scrim curta (15 min) com regras específicas de Trade Kill: 1) Cada time deve designar um Entry, um Trade e um Cover para cada rodada; 2) O Entry deve sempre anunciar antes de avançar ('Entrando!'); 3) O Trade deve estar posicionado para reagir imediatamente; 4) O Cover deve comunicar qualquer movimento lateral; 5) Objetivo: executar pelo menos 2 sequências de Trade Kill completas (Entry avança → Trade abate o inimigo → Cover protege o flanco). Instrutor observa e anota a coordenação.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Código de Combate do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Código de Combate com 3 elementos: 1) Sinais de Entry - como o Entry anuncia seu avanço ('Entrando em 3, 2, 1!'), como o time confirma que está pronto; 2) Regras de Trade - distância ideal entre Entry e Trade, tempo máximo de reação, como comunicar se o Entry caiu; 3) Protocolo de Cover - como o Cover comunica flancos, quando deve se reposicionar, como proteger a retaguarda. Cada aluno escolhe um papel para praticar na próxima scrim.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O papel que mais gostei foi... porque...' e 'O papel que preciso praticar mais é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartões com analogias de esportes e jogos de tabuleiro",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Entry, Trade, Cover)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Missão Trade Kill",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Quadro para registro do Código de Combate",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação dos Papéis: Identifica corretamente Entry, Trade e Cover em exemplos práticos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Execução de Trade Kill: Executa pelo menos uma sequência de Trade Kill durante a simulação",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Coordenação em Equipe: Demonstra compreensão de que a coordenação coletiva é mais eficaz que ações individuais",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o papel que mais gostou e o que precisa praticar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-32",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Trade Kill, Disciplina e Noção de Jogo",
+    codigo: "ADGP32",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Noção de Jogo e Trade Kill (Entry, Trade, Cover) (ADGP31), Mini-desafio de Disciplina e Autocontrole (ADGP30) e Debriefing e Comunicação com Pais (ADGP29). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a coordenação em equipe, a autodisciplina e a reflexão sobre aprendizados.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de Entry, Trade e Cover (ADGP31), a autodisciplina e o autocontrole (ADGP30) e a capacidade de refletir sobre aprendizados (ADGP29), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve coordenar-se com o time, manter o foco e aprender continuamente.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Noção de Jogo e Trade Kill (Entry, Trade, Cover) (ADGP31), Mini-desafio de Disciplina e Autocontrole (ADGP30) e Debriefing e Comunicação com Pais (ADGP29). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a coordenação em equipe, a autodisciplina e a reflexão sobre aprendizados.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi a coordenação do time hoje? Vocês conseguiram fazer Trade Kills?'\n- Pergunte: 'Você lembrou das pausas e limites? Como se sentiu ao respeitá-los?'\n- Pergunte: 'O que você aprendeu com a partida de hoje?'\n- Reforce: 'Coordenação, disciplina e reflexão são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de sequências de Trade Kill (Entry, Trade, Cover) durante a partida.\n- Demonstração de autodisciplina no cumprimento de pausas e limites.\n- Capacidade de refletir sobre aprendizados após a partida.\n- Conexão entre coordenação em equipe, disciplina e aprendizado contínuo.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando a coordenação em equipe e a disciplina.\n- Percepção de que o filho está mais estratégico e menos impulsivo durante o jogo.\n- Confiança de que o curso integra habilidades técnicas, sociais e de autogestão.\n\nInstituição:\n- Consolidação da cultura de jogo coordenado, disciplinado e reflexivo.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como está a coordenação do time?', 'Quem lembrou da disciplina das pausas?', 'Que aprendizado vocês vão levar para casa?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente a coordenação em Trade Kill, a aplicação de disciplina e a qualidade da reflexão. Celebrar quando perceber aplicação espontânea. Durante as pausas, fazer perguntas sobre os três pilares.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em coordenar com o time ou em manter a disciplina. Oferecer suporte discreto e reforço positivo para tentativas, não apenas acertos.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a coordenação em equipe, a disciplina e a reflexão de forma prática. Sugerir que perguntem: 'Como foi a coordenação do time hoje?' e 'O que você aprendeu com a partida?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (coordenação, disciplina, reflexão) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP29 - Debriefing Simples + Como Explicar aos Pais\n- ADGP30 - Mini-desafio de Disciplina + Autocontrole\n- ADGP31 - Noção de Jogo e Trade Kill - Entry, Trade, Cover",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno participa de pelo menos uma sequência de Trade Kill durante a partida.\n- O aluno respeita as pausas e limites definidos, demonstrando autodisciplina.\n- O aluno compartilha pelo menos um aprendizado durante o debriefing pós-jogo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo (Debriefing)\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três pilares: 1) Coordenação - lembrem-se dos papéis de Entry, Trade e Cover; 2) Disciplina - respeitem as pausas e limites que definimos; 3) Reflexão - estejam prontos para compartilhar um aprendizado no final. Lembrem-se do Código de Honra e do compromisso anti-toxicity.' Definição de um cronômetro para pausas a cada 20 minutos e lembretes para Trade Kill.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Quem é o Entry?', 'Alguém lembrou de fazer uma pausa?', 'Como está a coordenação do time?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Coordenação: 'Alguém fez um Trade Kill?' 2) Disciplina: 'Alguém lembrou da pausa?' 3) Reflexão: 'Que aprendizado já está surgindo?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: coordenação em Trade Kill, disciplina e reflexão.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing estruturado com as 3 perguntas: 1) O que aconteceu? - resumo factual da partida; 2) O que aprendemos? - cada aluno compartilha um aprendizado (técnico ou socioemocional); 3) O que faremos diferente? - definição de 1 ajuste para a próxima partida. Instrutor celebra as descobertas e conecta com a vida real: 'Coordenação, disciplina e reflexão são habilidades que funcionam em qualquer lugar.'",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, coordenei com meu time quando...' ou 'Usei disciplina ao...' ou 'Aprendi que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartões com os 3 pilares (Coordenação, Disciplina, Reflexão) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Coordenação em Trade Kill: Participa de pelo menos uma sequência de Trade Kill (Entry, Trade, Cover)",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Disciplina e Autocontrole: Respeita pausas e limites definidos durante a sessão",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Reflexão e Aprendizado: Compartilha pelo menos um aprendizado durante o debriefing pós-jogo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro no Diário: Registra uma reflexão sobre coordenação, disciplina ou aprendizado",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-33",
+    tipo: 0,
+    nome: "Técnicas Avançadas - Spray, Flicking e Crosshair Placement",
+    codigo: "ADGP33",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de habilidades técnicas avançadas de mira e precisão, com foco em Spray (controle de recuo e padrão de tiros), Flicking (movimentos rápidos e precisos) e Crosshair Placement (posicionamento da mira para antecipação), utilizando exercícios progressivos e feedback imediato.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de executar técnicas avançadas de mira com maior precisão e controle: Spray (controle de recuo e padrão de tiros), Flicking (movimentos rápidos e precisos para acertar alvos) e Crosshair Placement (posicionamento da mira para antecipar a chegada de inimigos e reduzir o tempo de reação), compreendendo que a precisão técnica é resultado de prática deliberada e consciente, não de talento inato, e que estas habilidades são fundamentais para a progressão como Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades técnicas avançadas de mira e precisão, com foco em Spray (controle de recuo e padrão de tiros), Flicking (movimentos rápidos e precisos) e Crosshair Placement (posicionamento da mira para antecipação), utilizando exercícios progressivos e feedback imediato.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre mira hoje? O que é Spray, Flicking e Crosshair Placement?'\n- Pergunte: 'Qual dessas técnicas você achou mais fácil? Qual foi mais difícil?'\n- Pergunte: 'O que você vai praticar esta semana para melhorar sua mira?'\n- Reforce: 'A precisão é uma habilidade que se desenvolve com prática. Cada tentativa te deixa um pouco mais perto do seu objetivo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de executar Spray com controle básico de recuo em distâncias curtas.\n- Desenvolvimento de Flicking com precisão em movimentos de curta distância.\n- Compreensão e aplicação do Crosshair Placement para antecipar inimigos.\n- Percepção de que a precisão técnica é resultado de prática deliberada e consciente.\n- Redução da frustração com erros de mira através de exercícios estruturados.\n\nPais/responsáveis:\n- Observação de que o curso está desenvolvendo habilidades técnicas avançadas de forma estruturada.\n- Compreensão de que a precisão nos games é uma habilidade treinável, não apenas talento.\n- Percepção do crescimento do filho na execução técnica e no controle motor fino.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades técnicas avançadas.\n- Fortalecimento da proposta diferenciada que ensina técnica de alto nível.\n- Base para progressão para níveis mais avançados de gameplay.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias físicas para explicar os conceitos: 'Spray é como controlar uma mangueira de jardim', 'Flicking é como acertar um alvo com uma bolinha de papel', 'Crosshair Placement é como manter o olho na altura certa para ver o que vem'. Evitar jargões técnicos excessivos.\n\nMediação:\nEnfatizar que a precisão vem com a prática e que erros são parte do processo. Celebrar pequenos progressos, não apenas acertos perfeitos. Oferecer exercícios adaptados para diferentes níveis de habilidade.\n\nSensibilidade:\nObservar sinais de frustração com a precisão. Reforçar que a técnica é como um músculo que se fortalece com treino. Ter exercícios mais simples disponíveis para alunos que precisarem.\n\nConexão com a família:\nEnviar um guia visual com os exercícios de mira para os pais, explicando como podem apoiar a prática em casa de forma segura e com limites de tempo.\n\nRegistro:\nRegistrar o progresso de cada aluno na precisão e no controle de mira para acompanhamento de evolução.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP17 - Comunicação Técnica Básica + Callouts",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno executa Spray com controle básico de recuo em distâncias curtas.\n- O aluno realiza Flicking com precisão em movimentos de curta distância.\n- O aluno demonstra Crosshair Placement adequado durante os exercícios.",
+    metodologias:
+      "- Aprendizagem por estações práticas\n- Feedback imediato (visual e verbal)\n- Repetição guiada com variação\n- Gamificação (desafios de precisão)\n- Prática deliberada estruturada",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Arte da Precisão",
+        duracaoMin: 10,
+        descricao:
+          "Introdução dos 3 conceitos: 1) Spray - controlar o recuo da arma para manter os tiros concentrados (analogia: mangueira de jardim); 2) Flicking - movimento rápido e preciso para acertar alvos que aparecem subitamente (analogia: acertar uma bolinha de papel no alvo); 3) Crosshair Placement - posicionar a mira onde o inimigo provavelmente vai aparecer para reduzir o tempo de reação (analogia: manter o olho na altura certa para ver o que vem). Demonstração prática de cada técnica. Conexão com ADGP6: 'Assim como treinamos nosso corpo para se mover com eficiência, hoje treinamos nossos olhos e mãos para serem precisos.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação do Spray",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - disparar contra uma parede e observar o padrão do spray (forma como os tiros se espalham); 2) Fase 2 - tentar controlar o recuo puxando o mouse para baixo enquanto dispara; 3) Fase 3 - praticar em alvos estáticos a curta distância (5-10m). Desafio: 'Conseguir manter 70% dos tiros no alvo'. Instrutor circula dando feedback individual sobre o controle do recuo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação do Flicking",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - mirar em um ponto fixo e, ao sinal, mover rapidamente para um alvo que aparece; 2) Fase 2 - praticar com alvos que aparecem em diferentes distâncias e ângulos; 3) Fase 3 - combinar Flicking com movimento (andar e acertar alvo). Desafio: 'Acertar 5 alvos em 10 tentativas'. Instrutor observa e dá dicas sobre a técnica de movimento do pulso e braço.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Estação do Crosshair Placement",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - andar pelo mapa mantendo a mira na altura da cabeça dos inimigos (usando referências visuais); 2) Fase 2 - prever onde os inimigos vão aparecer em esquinas e portas e posicionar a mira antecipadamente; 3) Fase 3 - combinar Crosshair Placement com movimentação e paradas bruscas. Desafio: 'Reduzir o tempo de reação para menos de 0.5 segundos'. Instrutor observa e corrige a altura e a posição da mira.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Simulação – Desafio de Precisão",
+        duracaoMin: 15,
+        descricao:
+          "Desafio integrado combinando as 3 técnicas: os alunos enfrentam uma série de alvos que exigem Spray (alvos próximos), Flicking (alvos que aparecem repentinamente) e Crosshair Placement (alvos em esquinas). Pontuação baseada em precisão e tempo. Os alunos podem tentar o desafio 3 vezes, registrando sua melhor pontuação. Instrutor celebra o progresso e reforça que a prática leva à melhoria.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A técnica que mais preciso praticar é...' e 'Meu plano de prática para a semana é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Configurações de treino (alvos estáticos, dinâmicos, paredes para spray)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Timer para os desafios",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de pontuação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Controle de Spray: Executa Spray com controle básico de recuo em distâncias curtas",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Precisão em Flicking: Realiza Flicking com precisão em movimentos de curta distância",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Crosshair Placement: Demonstra posicionamento adequado da mira durante os exercícios",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário a técnica que precisa praticar e um plano para fazê-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-34",
+    tipo: 0,
+    nome: "Uso Correto de Utilitárias ou Habilidades",
+    codigo: "ADGP34",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de usar utilitárias (granadas, flashes, habilidades especiais) de forma estratégica e eficiente durante o jogo, compreendendo o propósito de cada item, o momento adequado para utilizá-lo e a importância da gestão de recursos para o sucesso coletivo.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar e utilizar corretamente as utilitárias ou habilidades disponíveis no jogo, compreendendo seu propósito estratégico (abrir espaço, atrasar inimigos, criar vantagens táticas), o momento adequado para cada uma e a importância da gestão de recursos para o sucesso coletivo, desenvolvendo a percepção de que o uso inteligente de habilidades é tão importante quanto a precisão dos tiros e que a economia de recursos é uma habilidade tática fundamental.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de usar utilitárias (granadas, flashes, habilidades especiais) de forma estratégica e eficiente durante o jogo, compreendendo o propósito de cada item, o momento adequado para utilizá-lo e a importância da gestão de recursos para o sucesso coletivo.",
+    sugestoesPais:
+      "- Pergunte: 'O que são utilitárias ou habilidades no jogo? Você pode me explicar?'\n- Pergunte: 'Qual utilitária você usou melhor hoje? Como você decidiu usá-la?'\n- Pergunte: 'Por que é importante guardar recursos em vez de usar tudo de uma vez?'\n- Reforce: 'Saber quando usar um recurso e quando guardá-lo é uma habilidade importante na vida também. O mesmo vale para tempo, dinheiro e energia.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e descrever o propósito de cada utilitária ou habilidade disponível.\n- Desenvolvimento de senso de momento adequado para uso de utilitárias.\n- Compreensão da importância da gestão de recursos para o time.\n- Redução do uso impulsivo de habilidades e aumento do uso estratégico.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve pensamento estratégico e gestão de recursos.\n- Compreensão de que o uso de habilidades é uma habilidade tática, não apenas técnica.\n- Percepção do crescimento do filho na tomada de decisão estratégica.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento tático e gestão de recursos.\n- Fortalecimento da proposta diferenciada que ensina estratégia coletiva e individual.\n- Base para competições mais avançadas onde o uso de utilitárias é essencial.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos simples e familiares: 'ferramentas táticas' em vez de 'utilitárias'. Explicar cada habilidade com analogias do cotidiano (ex: 'flash é como uma lanterna na cara de alguém', 'granada de fumaça é como uma cortina de fumaça').\n\nMediação:\nEnfatizar que cada utilitária tem seu momento e que usá-la no momento errado pode ser pior do que não usá-la. Celebrar o uso estratégico, não apenas o uso por usar.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em gerenciar múltiplos recursos; oferecer exercícios simplificados com menos variáveis.\n\nConexão com a família:\nEnviar um guia visual com as principais utilitárias e seus usos, explicando como os conceitos de 'gestão de recursos' e 'momento certo' se aplicam a situações do dia a dia (ex: saber quando gastar a mesada, quando poupar).\n\nRegistro:\nRegistrar a capacidade de cada aluno de identificar o momento adequado para cada utilitária.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP33 - Técnicas Avançadas - Spray, Flicking e Crosshair Placement",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente o propósito de pelo menos 3 utilitárias ou habilidades.\n- O aluno usa pelo menos uma utilitária no momento adequado durante a simulação.\n- O aluno explica por que a gestão de recursos é importante para o time.",
+    metodologias:
+      "- Aprendizagem por estações de reconhecimento\n- Simulação de situações específicas\n- Prática com feedback imediato\n- Gestão de recursos em jogo\n- Debriefing pós-simulação",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Arsenal do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de utilitárias: 'Ferramentas táticas que ajudam o time a ganhar vantagem'. Apresentação das principais utilitárias e seus propósitos: 1) Flash/Stun - cegar ou desorientar inimigos, criar espaço para avançar; 2) Granada de Fumaça - bloquear visão, criar cobertura para reposicionamento; 3) Granada Explosiva (Frag) - causar dano em área, forçar inimigos a sair de posições; 4) Habilidades Especiais (ex: cura, escudo) - fortalecer o time em situações específicas. Conexão com ADGP33: 'Assim como a mira precisa ser precisa, o uso de utilitárias precisa ser inteligente.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação de Reconhecimento (Conhecendo as Ferramentas)",
+        duracaoMin: 15,
+        descricao:
+          "Estação prática em duplas: os alunos exploram cada utilitária no ambiente do jogo, testando seu funcionamento e observando seus efeitos. Fichas de registro: 'Nome da utilitária', 'Para que serve', 'Quando usar', 'Quando NÃO usar'. Instrutor circula respondendo perguntas e corrigindo interpretações equivocadas. Desafio: 'Identificar o melhor uso para cada situação apresentada'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação de Aplicação (Quando e Como Usar)",
+        duracaoMin: 15,
+        descricao:
+          "Estação prática em duplas com situações específicas: 1) Cenário 1 - avançar por uma passagem estreita com inimigos escondidos (melhor usar flash ou fumaça?); 2) Cenário 2 - inimigo atrás de uma cobertura (melhor usar granada explosiva ou flanquear?); 3) Cenário 3 - time precisa recuar e se reposicionar (melhor usar fumaça ou habilidade de cobertura?). Cada dupla pratica e justifica suas escolhas. Instrutor fornece feedback sobre a eficácia das decisões.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Scrim com Foco em Utilitárias",
+        duracaoMin: 20,
+        descricao:
+          "Scrim curta (15 min) com regras específicas de uso de utilitárias: 1) Cada jogador deve usar pelo menos uma utilitária de forma estratégica durante a partida; 2) Após cada uso, o jogador deve comunicar ao time qual utilitária usou e com que propósito ('Flash na entrada A para cegar defensor'); 3) Objetivo: o time que fizer o melhor uso coletivo das utilitárias vence, independentemente do placar final. Instrutor observa e anota os usos estratégicos.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Gestão de Recursos e Decisões",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Análise dos usos de utilitárias - quais foram eficazes, quais foram desperdiçados; 2) Discussão sobre economia de recursos - quando guardar para o próximo round, quando gastar tudo; 3) Conexão com valores do time - 'usar recursos com sabedoria é uma forma de respeitar o time'. Cada aluno compartilha: 'A utilitária que usei melhor foi...' e 'A que devo praticar mais é...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A utilitária que vou praticar é...' e 'Vou lembrar de usá-la quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Configuração com todas as utilitárias disponíveis",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Fichas de registro de utilitárias",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartões com cenários de aplicação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Timer para a scrim",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Utilitárias: Identifica e descreve corretamente o propósito de pelo menos 3 utilitárias",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Uso Estratégico: Utiliza pelo menos uma utilitária no momento adequado durante a simulação",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Gestão de Recursos: Demonstra compreensão da importância de economizar e usar recursos de forma inteligente",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma utilitária que precisa praticar e por quê",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-35",
+    tipo: 0,
+    nome: "Economia de Recursos e Armamento Correto",
+    codigo: "ADGP35",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da compreensão sobre gestão de recursos econômicos dentro do jogo, com foco em decisões de compra de armamentos, economia coletiva e planejamento estratégico de gastos para maximizar o potencial do time ao longo da partida.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de compreender o sistema econômico do jogo, tomando decisões informadas sobre compra de armamentos e equipamentos, gerenciando recursos de forma individual e coletiva, e planejando estrategicamente os gastos para maximizar o potencial do time ao longo da partida, entendendo que a economia correta é uma habilidade tática fundamental que pode determinar o sucesso ou fracasso de uma partida, independentemente da habilidade individual.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da compreensão sobre gestão de recursos econômicos dentro do jogo, com foco em decisões de compra de armamentos, economia coletiva e planejamento estratégico de gastos para maximizar o potencial do time ao longo da partida.",
+    sugestoesPais:
+      "- Pergunte: 'Como funciona a economia no jogo? Você pode me explicar?'\n- Pergunte: 'Como você decide o que comprar? O que você considera antes de gastar?'\n- Pergunte: 'Como é a comunicação do time sobre as compras? Vocês decidem juntos?'\n- Reforce: 'Saber quando gastar e quando economizar é uma habilidade importante na vida. O mesmo vale para tempo, dinheiro e energia.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão do sistema econômico do jogo (ganhos por rodada, custos de equipamentos).\n- Capacidade de tomar decisões informadas sobre compra de armamentos e equipamentos.\n- Desenvolvimento de senso de economia coletiva (sincronizar gastos com o time).\n- Percepção de que a gestão de recursos é uma habilidade tática fundamental.\n- Redução de compras impulsivas e aumento do planejamento estratégico.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve habilidades de planejamento financeiro e gestão de recursos.\n- Compreensão de que o curso ensina pensamento estratégico de longo prazo.\n- Conexão clara entre habilidades do jogo e habilidades de vida (gestão de recursos, planejamento).\n\nInstituição:\n- Documentação do desenvolvimento de pensamento estratégico e gestão de recursos.\n- Fortalecimento da proposta diferenciada que ensina habilidades transferíveis para a vida.\n- Base para competições mais avançadas onde a economia é um fator decisivo.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias do mundo real: 'economia do jogo é como administrar uma mesada', 'comprar arma cara sem dinheiro é como gastar tudo no começo do mês'. Conectar com conceitos de planejamento financeiro básico.\n\nMediação:\nEnfatizar que decisões econômicas são decisões de time, não individuais. Celebrar quando o time sincroniza suas compras. Discutir os trade-offs: 'vale a pena comprar uma arma cara agora ou economizar para a próxima rodada?'.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em abrir mão de um equipamento desejado para beneficiar o time; reforçar que o sucesso coletivo vem acima do individual.\n\nConexão com a família:\nEnviar um guia visual sobre 'economia no jogo' explicando como os conceitos se aplicam à vida real (planejamento financeiro, poupança, gastos conscientes).\n\nRegistro:\nRegistrar a capacidade de cada aluno de tomar decisões econômicas alinhadas com a estratégia do time.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP11 - Papéis Básicos no Time\n- ADGP34 - Uso Correto de Utilitárias ou Habilidades",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno explica corretamente o sistema econômico básico do jogo.\n- O aluno toma decisões de compra alinhadas com a estratégia do time durante a simulação.\n- O aluno demonstra compreensão da importância de economizar para rodadas futuras.",
+    metodologias:
+      "- Aprendizagem por simulação econômica\n- Análise de decisões de compra\n- Prática com feedback imediato\n- Debriefing sobre decisões coletivas\n- Conexão com vida real",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Economia do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao sistema econômico do jogo: 1) Como funciona a economia (ganhos por rodada, bônus por vitória/derrota, custos de equipamentos); 2) Decisões individuais e coletivas - o que comprar, quando comprar, quando economizar; 3) Conceitos chave: 'Eco Round' (rodada econômica, poupar para comprar junto), 'Force Buy' (comprar mesmo sem dinheiro suficiente, risco alto), 'Full Buy' (todos compram o melhor equipamento disponível). Conexão com ADGP34: 'Assim como cada utilitária tem seu momento, cada compra tem seu momento certo.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Simulação de Economia (Tabletop)",
+        duracaoMin: 20,
+        descricao:
+          "Simulação em grupo usando fichas e tabuleiro: 1) Cada time começa com uma quantidade de dinheiro; 2) Rodadas simuladas com vitórias e derrotas; 3) Decisões de compra a cada rodada; 4) Objetivo: chegar à rodada final com o melhor equipamento possível. Os times discutem e decidem juntos: 'Compramos agora ou economizamos?'. Instrutor anota as decisões e discute os resultados.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação de Decisões de Compra",
+        duracaoMin: 15,
+        descricao:
+          "Estaçãos prática em duplas com cenários de economia: 1) Cenário 1 - 'Você tem dinheiro para uma arma média, mas o time está economizando. O que você faz?'; 2) Cenário 2 - 'Você perdeu as últimas 2 rodadas e tem pouco dinheiro. Compra barato ou economiza para a próxima?'; 3) Cenário 3 - 'Seu time está com dinheiro suficiente para compras completas, mas você tem menos. Como se comunica com o time?'. Cada dupla pratica e justifica suas decisões. Instrutor fornece feedback sobre as escolhas.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Scrim com Foco em Economia",
+        duracaoMin: 20,
+        descricao:
+          "Scrim curta (15 min) com regras específicas de economia: 1) Antes de cada rodada, o time deve decidir coletivamente a estratégia de compra ('Eco', 'Force' ou 'Full Buy'); 2) O capitão da vez deve anunciar a decisão ao time antes do início da rodada; 3) Após a rodada, registrar se a decisão foi acertada ou não; 4) Objetivo: o time que fizer as melhores decisões econômicas vence, independentemente do placar final. Instrutor observa e anota as decisões.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Decisões Econômicas e Aprendizados",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Análise das decisões de compra - quais foram acertadas, quais foram erradas; 2) Discussão sobre comunicação - como o time decidiu junto; 3) Conexão com a vida real - 'assim como no jogo, na vida precisamos decidir quando gastar e quando economizar'. Cada aluno compartilha: 'A decisão econômica que acertei foi...' e 'O que aprendi sobre economia hoje foi...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A decisão econômica que vou praticar é...' e 'Vou lembrar de comunicar ao time antes de comprar...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Tabuleiro e fichas para simulação econômica",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com cenários de decisão de compra",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Scrim com Foco em Economia",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de decisões econômicas",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Compreensão do Sistema Econômico: Explica corretamente o sistema econômico básico do jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Decisões de Compra: Toma decisões de compra alinhadas com a estratégia do time durante a simulação",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Comunicação e Alinhamento: Comunica decisões econômicas ao time e alinha compras coletivamente",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma decisão econômica que acertou e o que aprendeu",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-36",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Técnicas Avançadas, Utilitárias e Economia",
+    codigo: "ADGP36",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Técnicas Avançadas de Mira (Spray, Flicking, Crosshair Placement) (ADGP33), Uso Correto de Utilitárias (ADGP34) e Economia de Recursos (ADGP35). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a precisão técnica, o uso estratégico de habilidades e a gestão inteligente de recursos em situações reais de jogo.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, as técnicas avançadas de mira (Spray, Flicking, Crosshair Placement), o uso estratégico de utilitárias e habilidades, e a gestão inteligente de recursos econômicos, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve precisão técnica, decisões estratégicas e planejamento econômico integrados.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Técnicas Avançadas de Mira (Spray, Flicking, Crosshair Placement) (ADGP33), Uso Correto de Utilitárias (ADGP34) e Economia de Recursos (ADGP35). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a precisão técnica, o uso estratégico de habilidades e a gestão inteligente de recursos em situações reais de jogo.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi sua mira hoje? Você usou Flicking ou Spray?'\n- Pergunte: 'Que utilitária você usou e como ela ajudou o time?'\n- Pergunte: 'Como o time decidiu o que comprar? Vocês conversaram sobre isso?'\n- Reforce: 'Precisão, estratégia e planejamento são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de técnicas de mira (Spray, Flicking, Crosshair Placement) durante a partida.\n- Uso estratégico de utilitárias no momento adequado, com justificativa clara.\n- Tomada de decisões econômicas alinhadas com a estratégia do time.\n- Integração natural dos três pilares: técnica, tática e economia.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando habilidades técnicas, táticas e de planejamento.\n- Percepção de que o filho está mais preciso, estratégico e consciente de recursos.\n- Confiança de que o curso integra habilidades motoras, cognitivas e de gestão.\n\nInstituição:\n- Consolidação da cultura de jogo técnico, estratégico e economicamente consciente.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como está sua precisão hoje?', 'Que utilitária você usou e por quê?', 'Como o time decidiu a economia?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente a aplicação das técnicas de mira, o uso de utilitárias e as decisões econômicas. Celebrar quando perceber aplicação espontânea. Durante as pausas, fazer perguntas sobre os três pilares. Reforçar positivamente cada tentativa de aplicar os conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em integrar múltiplos conceitos. Oferecer suporte discreto e reforço positivo para tentativas, não apenas acertos. Respeitar diferentes ritmos de aprendizado.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou técnicas avançadas, uso de utilitárias e economia de forma prática. Sugerir que perguntem: 'Como foi sua mira hoje?' e 'Que decisão econômica você tomou?'.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares (técnica, tática, economia) para feedback personalizado.",
+    preRequisitos:
+      "- ADGP33 - Técnicas Avançadas - Spray, Flicking e Crosshair Placement\n- ADGP34 - Uso Correto de Utilitárias ou Habilidades\n- ADGP35 - Economia de Recursos e Armamento Correto",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno aplica pelo menos uma técnica de mira avançada durante a partida.\n- O aluno utiliza pelo menos uma utilitária de forma estratégica.\n- O aluno toma uma decisão econômica alinhada com o time (Eco, Force ou Full Buy).",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três pilares: 1) Técnica - lembrem-se do Spray, Flicking e Crosshair Placement; 2) Tática - usem as utilitárias no momento certo; 3) Economia - tomem decisões de compra inteligentes, conversando com o time. Lembrem-se do Código de Honra e do compromisso anti-toxicity.' Definição de um cronômetro para pausas a cada 20 minutos e lembretes para decisões econômicas.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Como está seu Crosshair Placement?', 'Que utilitária você usou agora?', 'Como o time decidiu a economia?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Técnica: 'Quem usou Flicking ou Spray com sucesso?' 2) Tática: 'Quem usou uma utilitária no momento certo?' 3) Economia: 'Como foi a decisão de compra do time?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: técnica de mira, uso de utilitárias e decisões econômicas.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Qual técnica de mira você usou e funcionou?', 'Que utilitária fez a diferença?', 'Como foi a decisão econômica do time?'. Instrutor celebra as descobertas e conecta com a vida real: 'Precisão, estratégia e planejamento são habilidades que funcionam em qualquer lugar.'",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei a técnica de mira quando...' ou 'A utilitária que funcionou foi...' ou 'Aprendi sobre economia que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartões com os 3 pilares (Técnica, Tática, Economia) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Técnica de Mira: Aplica pelo menos uma técnica avançada (Spray, Flicking ou Crosshair Placement) durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Uso de Utilitárias: Utiliza pelo menos uma utilitária de forma estratégica durante a partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Decisão Econômica: Toma uma decisão econômica alinhada com o time durante a partida",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-37",
+    tipo: 0,
+    nome: "Trigger Discipline",
+    codigo: "ADGP37",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de controlar o impulso de atirar, compreendendo quando atirar, quando esperar e quando se reposicionar, com foco em paciência tática, economia de munição, ocultação de posição e tomada de decisão consciente em situações de pressão.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de controlar o impulso de atirar em situações de jogo, compreendendo os momentos adequados para atirar, esperar ou se reposicionar, desenvolvendo paciência tática, economia de munição e consciência situacional, entendendo que a disciplina de não atirar é frequentemente mais valiosa do que atirar impulsivamente, e que a tomada de decisão consciente sob pressão é uma habilidade essencial para um Atleta Digital de alto nível.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de controlar o impulso de atirar, compreendendo quando atirar, quando esperar e quando se reposicionar, com foco em paciência tática, economia de munição, ocultação de posição e tomada de decisão consciente em situações de pressão.",
+    sugestoesPais:
+      "- Pergunte: 'O que é Trigger Discipline? Você pode me explicar?'\n- Pergunte: 'Como você decide quando atirar e quando esperar?'\n- Pergunte: 'Você conseguiu controlar o impulso de atirar em algum momento hoje?'\n- Reforce: 'Saber quando agir e quando esperar é uma habilidade importante na vida também. O mesmo vale para falar, gastar dinheiro e tomar decisões.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar situações em que não atirar é a melhor decisão.\n- Desenvolvimento de paciência tática e controle de impulso.\n- Compreensão da importância de não revelar posição desnecessariamente.\n- Redução de tiros impulsivos e aumento de tiros intencionais e precisos.\n- Conexão entre autocontrole emocional e disciplina tática.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve autocontrole e paciência, habilidades valiosas para a vida.\n- Compreensão de que o jogo ensina tomada de decisão consciente sob pressão.\n- Conexão clara entre habilidades do jogo e habilidades de vida (impulso, paciência, estratégia).\n\nInstituição:\n- Documentação do desenvolvimento de autocontrole e tomada de decisão estratégica.\n- Fortalecimento da proposta diferenciada que ensina habilidades socioemocionais através do jogo.\n- Base para progressão para níveis mais avançados de gameplay tático.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias do dia a dia: 'Trigger Discipline é como segurar a língua quando queremos falar algo impulsivo', 'é como esperar o momento certo para agir em vez de reagir'. Utilizar termos como 'paciência tática', 'controle de impulso', 'disparo intencional'.\n\nMediação:\nEnfatizar que atirar nem sempre é a melhor opção. Celebrar momentos em que os alunos optam por não atirar e isso resulta em vantagem tática. Discutir situações em que atirar cedo demais prejudicou o time.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em controlar o impulso de atirar (especialmente os mais competitivos); oferecer exercícios específicos de paciência.\n\nConexão com a família:\nEnviar um guia visual sobre Trigger Discipline explicando como o conceito se aplica à vida real (controle de impulsos, paciência, esperar o momento certo para agir).\n\nRegistro:\nRegistrar a capacidade de cada aluno de controlar o impulso de atirar e tomar decisões conscientes.",
+    preRequisitos:
+      "- ADGP5 - Emoções em Jogo: Entendendo o Tilt\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP33 - Técnicas Avançadas - Spray, Flicking e Crosshair Placement\n- ADGP34 - Uso Correto de Utilitárias ou Habilidades",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente situações em que não atirar é a melhor decisão.\n- O aluno demonstra controle de impulso durante a simulação (não atira impulsivamente).\n- O aluno explica por que a Trigger Discipline é importante para o time.",
+    metodologias:
+      "- Pedagogia do autocontrole tático\n- Aprendizagem por simulação de situações de pressão\n- Exercícios de paciência e timing\n- Reflexão guiada sobre decisões\n- Conexão com vida real",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Poder de Não Atirar",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de Trigger Discipline: 'A capacidade de controlar o impulso de atirar'. Discussão sobre situações em que atirar é prejudicial: 1) Revelar posição para vários inimigos; 2) Gastar munição desnecessariamente; 3) Perder a oportunidade de um tiro mais certeiro; 4) Atrapalhar a estratégia do time. Analogia: 'Ter Trigger Discipline é como saber quando falar e quando calar em uma conversa importante.' Conexão com ADGP5: 'Assim como controlamos o tilt, controlamos o gatilho - ambos são impulsos que precisam de disciplina.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Exercício de Paciência e Controle de Impulso",
+        duracaoMin: 15,
+        descricao:
+          "Exercício prático: 1) Alunos posicionados em um mapa com inimigos se movendo; 2) Objetivo: não atirar até que o inimigo esteja em uma posição vulnerável ou até que o time esteja pronto; 3) O aluno que atirar impulsivamente perde pontos; 4) O aluno que esperar e acertar no momento certo ganha pontos. Instrutor observa e anota os momentos de impulso e de paciência. Discussão: 'Quando você sentiu vontade de atirar, mesmo sabendo que não era o momento?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação de Decisões Táticas (Atirar ou Não Atirar)",
+        duracaoMin: 15,
+        descricao:
+          "Estação prática com cenários: 1) Cenário 1 - 'Você vê um inimigo de longe, mas não tem certeza se consegue acertar. Atira ou espera se aproximar?'; 2) Cenário 2 - 'Você está escondido e vê dois inimigos passando. Atira no primeiro ou espera os dois passarem para atirar no segundo?'; 3) Cenário 3 - 'Seu time está se preparando para uma emboscada. Você vê um inimigo se aproximando. Atira agora ou espera o sinal do time?'. Cada aluno pratica e justifica sua decisão. Instrutor fornece feedback sobre as escolhas.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Scrim com Foco em Trigger Discipline",
+        duracaoMin: 20,
+        descricao:
+          "Scrim curta (15 min) com regras específicas de Trigger Discipline: 1) Cada jogador deve pensar antes de atirar - 'Este tiro é necessário agora?'; 2) Se um jogador atirar impulsivamente e revelar a posição do time, o time perde um ponto; 3) Se um jogador esperar e acertar um tiro decisivo, o time ganha um ponto; 4) Objetivo: o time com mais pontos de 'disciplina' vence. Instrutor observa e anota os momentos de impulso e de disciplina.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Disciplina e Decisões",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Análise dos momentos de impulso - o que levou a atirar sem necessidade; 2) Análise dos momentos de disciplina - o que ajudou a esperar; 3) Conexão com a vida real - 'saber quando agir e quando esperar é uma habilidade importante em qualquer área'. Cada aluno compartilha: 'Um momento em que segurei o gatilho e deu certo foi...' e 'O que aprendi sobre Trigger Discipline hoje foi...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma situação em que vou praticar Trigger Discipline é...' e 'Vou lembrar de pensar antes de atirar quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Configuração de exercícios de paciência e timing",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cartões com cenários de decisão (Atirar ou Não Atirar)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Timer para os desafios",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Fichas de registro de pontos de disciplina",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Situações de Disciplina: Identifica corretamente situações em que não atirar é a melhor decisão",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Controle de Impulso: Demonstra controle de impulso durante a simulação (não atira impulsivamente)",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão do Conceito: Explica por que a Trigger Discipline é importante para o time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma situação em que vai praticar Trigger Discipline e por quê",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-38",
+    tipo: 0,
+    nome: "Movimentação Avançada - Strafe, Info Peek, Jump Peeking",
+    codigo: "ADGP38",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de técnicas avançadas de movimentação para otimizar a mobilidade, coleta de informações e capacidade de desorientar inimigos, com foco em Strafe (movimento lateral para desviar de tiros), Info Peek (movimento rápido para coletar informações) e Jump Peeking (uso de pulos para surpreender e ganhar vantagem tática).",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de executar técnicas avançadas de movimentação - Strafe (movimento lateral para desviar de tiros e dificultar a mira do inimigo), Info Peek (movimento rápido para coletar informações sem se expor) e Jump Peeking (uso de pulos para surpreender inimigos e ganhar vantagem tática) - compreendendo que a movimentação é uma habilidade tão importante quanto a mira e que a combinação de ambas define um Atleta Digital de alto nível.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de técnicas avançadas de movimentação para otimizar a mobilidade, coleta de informações e capacidade de desorientar inimigos, com foco em Strafe (movimento lateral para desviar de tiros), Info Peek (movimento rápido para coletar informações) e Jump Peeking (uso de pulos para surpreender e ganhar vantagem tática).",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre movimentação hoje? O que é Strafe, Info Peek e Jump Peeking?'\n- Pergunte: 'Qual dessas técnicas você achou mais fácil? Qual foi mais difícil?'\n- Pergunte: 'Como a movimentação ajuda você a jogar melhor?'\n- Reforce: 'Movimentação é tão importante quanto mirar. Saber se mover bem faz a diferença em qualquer jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de executar Strafe com fluidez para desviar de tiros.\n- Desenvolvimento de Info Peek para coletar informações com segurança.\n- Compreensão e aplicação do Jump Peeking para surpreender inimigos.\n- Percepção de que a movimentação é tão importante quanto a mira.\n- Integração de movimentação avançada com técnicas de mira já aprendidas.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve coordenação motora fina e tomada de decisão rápida.\n- Compreensão de que a movimentação avançada é uma habilidade treinável, não apenas talento.\n- Percepção do crescimento do filho na execução técnica e no controle motor.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades motoras avançadas.\n- Fortalecimento da proposta diferenciada que ensina técnica de alto nível.\n- Base para progressão para níveis mais avançados de gameplay.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias físicas para explicar os conceitos: 'Strafe é como andar de lado para desviar de uma bola', 'Info Peek é como espiar rapidamente por uma porta', 'Jump Peeking é como pular para ver por cima de um muro'. Conectar com movimentos do dia a dia.\n\nMediação:\nEnfatizar que a movimentação é uma habilidade que se desenvolve com prática. Celebrar a fluidez, não apenas a velocidade. Oferecer exercícios adaptados para diferentes níveis de habilidade.\n\nSensibilidade:\nObservar sinais de frustração com a coordenação motora. Reforçar que a técnica é como um músculo que se fortalece com treino. Ter exercícios mais simples disponíveis para alunos que precisarem.\n\nConexão com a família:\nEnviar um guia visual com os exercícios de movimentação para os pais, explicando como podem apoiar a prática em casa de forma segura.\n\nRegistro:\nRegistrar o progresso de cada aluno na fluidez da movimentação para acompanhamento de evolução.",
+    preRequisitos:
+      "- ADGP2 - Fundamentos do Jogo + Controles Básicos\n- ADGP6 - Execução Técnica + Movimentação\n- ADGP33 - Técnicas Avançadas - Spray, Flicking e Crosshair Placement",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno executa Strafe com fluidez durante exercícios práticos.\n- O aluno realiza Info Peek de forma segura (coleta informação sem se expor).\n- O aluno aplica Jump Peeking em pelo menos uma situação durante a simulação.",
+    metodologias:
+      "- Aprendizagem por estações práticas\n- Feedback imediato (visual e verbal)\n- Repetição guiada com variação\n- Gamificação (desafios de movimentação)\n- Prática deliberada estruturada",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Dança do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução dos 3 conceitos: 1) Strafe - movimento lateral para desviar de tiros e dificultar a mira do inimigo (analogia: andar de lado para desviar de uma bola); 2) Info Peek - movimento rápido para coletar informações sem se expor (analogia: espiar rapidamente por uma porta); 3) Jump Peeking - uso de pulos para surpreender inimigos e ganhar vantagem tática (analogia: pular para ver por cima de um muro). Conexão com ADGP6: 'Assim como treinamos movimentos básicos, hoje vamos aprender a dançar durante o combate.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação do Strafe",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - praticar movimento lateral (esquerda/direita) mantendo a mira em um ponto fixo; 2) Fase 2 - combinar Strafe com disparos contra um alvo estático; 3) Fase 3 - Strafe contra um alvo que também se move. Desafio: 'Manter a mira no alvo enquanto se move lateralmente'. Instrutor circula dando feedback sobre a fluidez do movimento.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação do Info Peek",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - praticar movimento rápido para fora da cobertura, coletar informação e voltar; 2) Fase 2 - combinar Info Peek com comunicação ao time sobre o que foi visto; 3) Fase 3 - Info Peek em diferentes tipos de cobertura (paredes, caixas, cantos). Desafio: 'Coletar informações sem ser atingido'. Instrutor observa e dá dicas sobre o timing e a segurança do movimento.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Estação do Jump Peeking",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos em estação: 1) Fase 1 - praticar pulos para ver por cima de obstáculos; 2) Fase 2 - combinar Jump Peeking com disparos durante o pulo; 3) Fase 3 - Jump Peeking em diferentes tipos de obstáculos (caixas, muros, escadas). Desafio: 'Acertar um tiro durante um pulo'. Instrutor observa e dá dicas sobre a coordenação entre pulo, mira e disparo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Simulação – Desafio de Movimentação Integrada",
+        duracaoMin: 15,
+        descricao:
+          "Desafio integrado combinando as 3 técnicas: os alunos enfrentam uma série de obstáculos e inimigos que exigem Strafe (desviar de tiros), Info Peek (coletar informações sobre a posição dos inimigos) e Jump Peeking (surpreender inimigos por cima de obstáculos). Pontuação baseada em precisão, sobrevivência e eficiência. Os alunos podem tentar o desafio 3 vezes, registrando sua melhor pontuação. Instrutor celebra o progresso e reforça que a movimentação é uma habilidade fundamental.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A técnica de movimentação que mais preciso praticar é...' e 'Meu plano de prática para a semana é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Configuração de exercícios de movimentação (obstáculos, alvos)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Timer para os desafios",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de pontuação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Fluidez no Strafe: Executa Strafe com fluidez durante exercícios práticos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Segurança no Info Peek: Realiza Info Peek de forma segura, coletando informações sem se expor",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Aplicação de Jump Peeking: Aplica Jump Peeking em pelo menos uma situação durante a simulação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário a técnica de movimentação que precisa praticar e um plano para fazê-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-39",
+    tipo: 0,
+    nome: "Posicionamento e Game Sense - Clutch, Leitura de Mapa, Estratégias",
+    codigo: "ADGP39",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento de game sense e posicionamento estratégico através da compreensão de situações de Clutch (vencer rodadas em desvantagem), Leitura de Mapa (antecipar movimentos inimigos) e Estratégias Avançadas (decisões táticas em diferentes momentos da partida), promovendo a percepção de que o jogo se ganha com a mente tanto quanto com as mãos.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de compreender e aplicar conceitos avançados de game sense: Clutch (capacidade de vencer rodadas em desvantagem numérica mantendo a calma e tomando decisões inteligentes), Leitura de Mapa (antecipar movimentos e posicionamentos inimigos baseados em informações disponíveis) e Estratégias Avançadas (tomar decisões táticas em diferentes momentos da partida, considerando recursos, posicionamento e objetivos), integrando posicionamento, leitura de jogo e tomada de decisão para maximizar o impacto no time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de game sense e posicionamento estratégico através da compreensão de situações de Clutch (vencer rodadas em desvantagem), Leitura de Mapa (antecipar movimentos inimigos) e Estratégias Avançadas (decisões táticas em diferentes momentos da partida), promovendo a percepção de que o jogo se ganha com a mente tanto quanto com as mãos.",
+    sugestoesPais:
+      "- Pergunte: 'O que é game sense? Como você usa sua mente para ganhar vantagem no jogo?'\n- Pergunte: 'Você já viveu uma situação de Clutch? Como você lidou com a pressão?'\n- Pergunte: 'Como você antecipa os movimentos dos inimigos? O que você observa?'\n- Reforce: 'Saber ler uma situação e tomar a decisão certa é uma habilidade importante na vida também. O mesmo vale para desafios na escola, no trabalho e nos relacionamentos.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar situações de Clutch e aplicar estratégias para vencê-las.\n- Desenvolvimento de Leitura de Mapa para antecipar movimentos inimigos.\n- Compreensão de diferentes estratégias para diferentes momentos da partida.\n- Integração de posicionamento, leitura de jogo e tomada de decisão.\n- Percepção de que o jogo se ganha com a mente tanto quanto com as mãos.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve pensamento estratégico e tomada de decisão sob pressão.\n- Compreensão de que o jogo ensina habilidades cognitivas avançadas (antecipação, planejamento, adaptação).\n- Conexão clara entre habilidades do jogo e habilidades de vida (estratégia, adaptação, resiliência).\n\nInstituição:\n- Documentação do desenvolvimento de game sense e pensamento estratégico.\n- Fortalecimento da proposta diferenciada que ensina habilidades cognitivas avançadas.\n- Base para progressão para níveis mais avançados de gameplay tático e estratégico.",
+    notasInstrutor:
+      "Linguagem:\nUsar analogias do xadrez para explicar game sense: 'Clutch é como estar em desvantagem no xadrez mas encontrar um xeque-mate', 'Leitura de Mapa é como prever o próximo movimento do oponente'. Conectar com estratégias da vida real (planejamento, adaptação, resiliência).\n\nMediação:\nEnfatizar que game sense é uma habilidade que se desenvolve com experiência e reflexão. Celebrar boas leituras de jogo mesmo quando o resultado não é favorável. Discutir decisões estratégicas em grupo.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados em situações de Clutch; reforçar que errar faz parte do aprendizado. Oferecer suporte emocional e técnico.\n\nConexão com a família:\nEnviar um guia visual sobre game sense explicando como os conceitos se aplicam à vida real (antecipação, planejamento, adaptação a situações adversas).\n\nRegistro:\nRegistrar a capacidade de cada aluno de ler o jogo e tomar decisões estratégicas.",
+    preRequisitos:
+      "- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP14 - Mini-Estratégias: Começo, Meio e Fim de Partida\n- ADGP18 - Introdução à Análise de VOD\n- ADGP31 - Noção de Jogo e Trade Kill - Entry, Trade, Cover",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente situações de Clutch e propõe uma estratégia.\n- O aluno demonstra Leitura de Mapa antecipando movimentos inimigos durante a simulação.\n- O aluno toma decisões estratégicas alinhadas com o momento da partida.",
+    metodologias:
+      "- Pedagogia do game sense\n- Aprendizagem por análise de situações\n- Simulação de Clutch e tomada de decisão\n- Reflexão guiada sobre leitura de jogo\n- Conexão com vida real (estratégia, adaptação)",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Xadrez Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de game sense: 'A capacidade de ler o jogo e tomar decisões inteligentes'. Apresentação dos 3 pilares: 1) Clutch - vencer rodadas em desvantagem (ex: 1 contra 3) mantendo a calma e usando inteligência; 2) Leitura de Mapa - antecipar movimentos inimigos baseado em informações (ex: onde o inimigo provavelmente está, para onde vai); 3) Estratégias Avançadas - tomar decisões táticas em diferentes momentos da partida (ex: quando arriscar, quando recuar). Conexão com ADGP18: 'Assim como na análise de VOD, game sense é sobre entender o que está acontecendo e o que vai acontecer.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação de Análise de Situações de Clutch",
+        duracaoMin: 15,
+        descricao:
+          "Análise em grupos de situações de Clutch: 1) Assistir a VODs curtos de situações 1x2, 1x3; 2) Identificar quais decisões levaram à vitória ou derrota; 3) Discutir: 'O que o jogador fez de certo?', 'O que poderia ter feito diferente?'; 4) Cada grupo apresenta uma análise. Instrutor complementa com insights sobre posicionamento, timing e psicologia do Clutch.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação de Leitura de Mapa",
+        duracaoMin: 15,
+        descricao:
+          "Exercícios práticos de Leitura de Mapa: 1) Mapas com informações parciais (ex: última posição conhecida do inimigo); 2) Alunos devem prever onde o inimigo provavelmente está e para onde vai; 3) Verificar as previsões com o replay; 4) Discutir: 'Que informações usei para fazer esta previsão?', 'O que me levou a errar?'. Instrutor fornece dicas sobre como ler o mapa de forma mais eficiente.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Scrim com Foco em Game Sense",
+        duracaoMin: 20,
+        descricao:
+          "Scrim curta (15 min) com regras específicas de game sense: 1) Cada time deve identificar e comunicar situações de Clutch ('Estamos em desvantagem, vamos jogar com calma e inteligência'); 2) Os jogadores devem fazer leituras de mapa e comunicar ao time ('O inimigo provavelmente está em A, vamos para B'); 3) Objetivo: o time com as melhores leituras de jogo e decisões estratégicas vence. Instrutor observa e anota as leituras e decisões.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Leitura de Jogo e Decisões Estratégicas",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Análise das situações de Clutch - o que funcionou, o que não funcionou; 2) Discussão sobre leituras de mapa - quais foram corretas, quais foram erradas; 3) Conexão com a vida real - 'antecipar, planejar e se adaptar são habilidades importantes em qualquer área'. Cada aluno compartilha: 'Uma leitura de jogo que acertei foi...' e 'O que aprendi sobre game sense hoje foi...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma situação de Clutch que vou praticar mentalmente é...' e 'Vou melhorar minha leitura de mapa prestando atenção em...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "VODs de situações de Clutch para análise",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Mapas com informações parciais para exercícios de Leitura de Mapa",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para a Scrim com Foco em Game Sense",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Quadro para anotações de análises",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Análise de Situações de Clutch: Identifica corretamente situações de Clutch e propõe estratégias para vencê-las",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Leitura de Mapa: Demonstra Leitura de Mapa antecipando movimentos inimigos durante a simulação",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Decisões Estratégicas: Toma decisões estratégicas alinhadas com o momento da partida",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma situação de Clutch que vai praticar e uma melhoria na leitura de mapa",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-40",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de Movimentação Avançada, Game Sense e Trigger Discipline",
+    codigo: "ADGP40",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Movimentação Avançada (Strafe, Info Peek, Jump Peeking) (ADGP38), Posicionamento e Game Sense (Clutch, Leitura de Mapa, Estratégias) (ADGP39) e Trigger Discipline (ADGP37). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a movimentação fluida, a leitura de jogo e o controle de impulso em situações reais.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, as técnicas de movimentação avançada (Strafe, Info Peek, Jump Peeking), o game sense (Clutch, Leitura de Mapa, Estratégias) e a Trigger Discipline, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que jogar bem envolve mover-se com fluidez, ler o jogo com inteligência e controlar os impulsos.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: Movimentação Avançada (Strafe, Info Peek, Jump Peeking) (ADGP38), Posicionamento e Game Sense (Clutch, Leitura de Mapa, Estratégias) (ADGP39) e Trigger Discipline (ADGP37). Foco na aplicação prática em ambiente livre, sem pressão avaliativa, estimulando a movimentação fluida, a leitura de jogo e o controle de impulso em situações reais.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi sua movimentação hoje? Você usou Strafe ou Jump Peeking?'\n- Pergunte: 'Que leitura de jogo você fez que ajudou o time?'\n- Pergunte: 'Você conseguiu controlar o impulso de atirar em algum momento?'\n- Reforce: 'Movimentação, leitura de jogo e disciplina são habilidades que fazem a diferença dentro e fora do jogo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de técnicas de movimentação avançada durante a partida.\n- Demonstração de leitura de jogo e tomada de decisão estratégica.\n- Controle de impulso e disciplina tática em situações de pressão.\n- Integração natural dos três pilares: movimentação, game sense e disciplina.\n\nPais/responsáveis:\n- Observação de que o filho está internalizando habilidades motoras, cognitivas e de autocontrole.\n- Percepção de que o filho está mais fluido, estratégico e disciplinado.\n- Confiança de que o curso integra habilidades físicas, mentais e emocionais.\n\nInstituição:\n- Consolidação da cultura de jogo fluido, inteligente e disciplinado.\n- Observação natural da evolução dos alunos na aplicação integrada dos conceitos.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como está sua movimentação hoje?', 'Que leitura de jogo você fez?', 'Como foi seu controle de impulso?'. Reforçar que essa é uma prática livre para experimentar os três pilares juntos.\n\nMediação:\nObservar ativamente a movimentação, a leitura de jogo e a disciplina. Celebrar quando perceber aplicação espontânea. Durante as pausas, fazer perguntas sobre os três pilares.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em integrar múltiplos conceitos. Oferecer suporte discreto e reforço positivo para tentativas.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou movimentação, game sense e disciplina de forma prática.\n\nRegistro:\nObservar discretamente e anotar progressos individuais na aplicação dos três pilares.",
+    preRequisitos:
+      "- ADGP37 - Trigger Discipline\n- ADGP38 - Movimentação Avançada - Strafe, Info Peek, Jump Peeking\n- ADGP39 - Posicionamento e Game Sense - Clutch, Leitura de Mapa, Estratégias",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno aplica pelo menos uma técnica de movimentação avançada durante a partida.\n- O aluno demonstra leitura de jogo e tomada de decisão estratégica.\n- O aluno controla o impulso de atirar em situações de pressão.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando três pilares: 1) Movimentação - lembrem-se do Strafe, Info Peek e Jump Peeking; 2) Game Sense - usem a leitura de mapa e as estratégias de Clutch; 3) Disciplina - pratiquem Trigger Discipline. Lembrem-se do Código de Honra.' Definição de um cronômetro para pausas a cada 20 minutos.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Como está sua movimentação?', 'Que leitura de jogo você fez?', 'Como foi seu controle de impulso?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in dos Três Pilares",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre cada pilar: 1) Movimentação: 'Quem usou Strafe ou Jump Peeking?' 2) Game Sense: 'Quem fez uma boa leitura de mapa?' 3) Disciplina: 'Quem conseguiu controlar o impulso de atirar?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada dos três pilares: movimentação, game sense e disciplina.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Qual técnica de movimentação você usou?', 'Que leitura de jogo você fez?', 'Como foi controlar o impulso de atirar?'. Instrutor celebra as descobertas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei a movimentação quando...' ou 'Fiz uma leitura de jogo que...' ou 'Controlei meu impulso quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo:
+          "Cartões com os 3 pilares (Movimentação, Game Sense, Disciplina) afixados na parede",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Movimentação Avançada: Aplica pelo menos uma técnica de movimentação avançada durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Game Sense: Demonstra leitura de jogo e tomada de decisão estratégica",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Trigger Discipline: Controla o impulso de atirar em situações de pressão",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Reflexão Pós-Jogo: Consegue articular no Diário ou na roda de conversa a aplicação de pelo menos um dos pilares",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-41",
+    tipo: 0,
+    nome: "IA como Coach de Gameplay (Leitura de Partidas)",
+    codigo: "ADGP41",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Introdução ao uso de Inteligência Artificial como ferramenta de análise de gameplay e coaching, com foco em identificar padrões de jogo, pontos fortes e áreas de melhoria, e receber sugestões personalizadas para desenvolvimento, compreendendo a IA como ferramenta de apoio ao treinamento e não como substituta da análise humana.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar ferramentas de Inteligência Artificial para analisar seu gameplay, identificando padrões de comportamento, pontos fortes e áreas de melhoria, compreendendo a IA como uma ferramenta de apoio ao treinamento (coach) e não como substituta da análise humana, integrando as sugestões da IA ao seu processo de desenvolvimento como Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução ao uso de Inteligência Artificial como ferramenta de análise de gameplay e coaching, com foco em identificar padrões de jogo, pontos fortes e áreas de melhoria, e receber sugestões personalizadas para desenvolvimento, compreendendo a IA como ferramenta de apoio ao treinamento e não como substituta da análise humana.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você a analisar seu jogo hoje?'\n- Pergunte: 'O que a IA viu que você não tinha percebido?'\n- Pergunte: 'Você concorda com todas as sugestões da IA? Por quê?'\n- Reforce: 'A tecnologia pode nos ajudar a enxergar padrões que não vemos sozinhos, mas o julgamento humano ainda é essencial.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar IA para identificar padrões em seu gameplay.\n- Compreensão do papel da IA como ferramenta de apoio, não substituta.\n- Desenvolvimento de habilidade para integrar sugestões da IA ao treino.\n- Redução da resistência ao uso de tecnologia como ferramenta de aprendizado.\n\nPais/responsáveis:\n- Observação de que o curso está incorporando tecnologia de ponta de forma educativa.\n- Compreensão de que a IA é usada como ferramenta de apoio, não como substituta do pensamento crítico.\n- Percepção do crescimento do filho no uso consciente de tecnologia.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de análise com IA.\n- Fortalecimento da proposta diferenciada que integra tecnologia educativa.\n- Base para uso responsável de IA em treinamento.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Coach Digital' para explicar o papel da IA. Enfatizar que a IA é uma ferramenta de apoio, não um substituto do treinador humano.\n\nMediação:\nDemonstrar o uso da IA antes de os alunos praticarem. Enfatizar que as sugestões da IA devem ser validadas pelo instrutor e pelo próprio aluno.\n\nSensibilidade:\nObservar alunos que possam ter resistência ao uso de tecnologia ou medo de que a IA substitua o julgamento humano; reforçar o papel complementar da IA.\n\nConexão com a família:\nExplicar aos pais que a IA é usada como ferramenta educativa para apoiar o desenvolvimento do filho, não como substituta do treinamento humano.\n\nRegistro:\nRegistrar a capacidade de cada aluno de utilizar a IA de forma crítica e integrada.",
+    preRequisitos:
+      "- ADGP18 - Introdução à Análise de VOD\n- ADGP39 - Posicionamento e Game Sense - Clutch, Leitura de Mapa, Estratégias",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza uma ferramenta de IA para analisar seu gameplay.\n- O aluno identifica pelo menos 1 ponto forte e 1 área de melhoria a partir da análise da IA.\n- O aluno integra uma sugestão da IA em seu plano de treino.",
+    metodologias:
+      "- Aprendizagem baseada em tecnologia\n- Análise guiada com IA\n- Reflexão crítica sobre resultados\n- Integração de sugestões ao plano de treino",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Coach Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao uso de IA como coach de gameplay: 'A IA pode analisar suas partidas e sugerir padrões que você talvez não tenha percebido'. Explicação: 1) Como a IA analisa gameplay (padrões de movimento, tomada de decisão, posicionamento); 2) O que a IA pode oferecer (sugestões de melhoria, identificação de pontos fortes); 3) O que a IA NÃO pode fazer (substituir o julgamento humano, entender contexto emocional). Conexão com ADGP18: 'Assim como analisamos VODs com nossos olhos, agora podemos ter um olhar extra com a IA.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – IA em Ação",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Instrutor carrega um VOD em uma ferramenta de IA (ex: Mobalytics, Aim Lab, ou similar); 2) Mostra como a IA identifica padrões (ex: 'você tende a recuar demais', 'sua mira melhora no início das partidas'); 3) Discute os resultados: 'O que a IA viu que você não tinha percebido?', 'Todas as sugestões fazem sentido?'. Alunos observam e fazem perguntas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Análise de VOD com IA",
+        duracaoMin: 20,
+        descricao:
+          "Em duplas, os alunos: 1) Carregam um VOD curto (3-5 min) de uma partida recente em uma ferramenta de IA; 2) Analisam os resultados da IA; 3) Identificam pelo menos 1 ponto forte e 1 área de melhoria; 4) Discutem: 'A IA está certa?', 'O que ela não viu?', 'Como posso usar esta informação no treino?'. Instrutor circula e apoia a interpretação crítica.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Plano de Treino com IA",
+        duracaoMin: 15,
+        descricao:
+          "Com base na análise da IA, cada aluno define um plano de treino: 1) 1 ponto forte para manter (ex: 'continuar praticando o que já faço bem'); 2) 1 área de melhoria para focar (ex: 'praticar strafe com mira'); 3) 1 exercício específico sugerido pela IA (ex: 'fazer 10 minutos de treino de mira por dia'). Os planos são compartilhados com a dupla para feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Crítica e Integração",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Discussão sobre os resultados da IA - o que foi útil, o que não foi; 2) Reflexão sobre o papel da IA - 'em que situações a IA ajuda mais?', 'em que situações o olhar humano é insubstituível?'; 3) Conexão com a vida real - 'assim como a IA nos ajuda a ver padrões, podemos aprender a nos observar melhor'. Cada aluno compartilha: 'Uma sugestão da IA que vou usar é...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma descoberta que a IA me ajudou a fazer foi...' e 'Vou integrar a IA ao meu treino...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para análise de gameplay (ex: Mobalytics, Aim Lab)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "VODs curtos (3-5 min) dos alunos (com consentimento)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tablets/computadores com acesso às ferramentas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de análise (pontos fortes, áreas de melhoria)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Uso da IA: Utiliza uma ferramenta de IA para analisar seu gameplay",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Padrões: Identifica pelo menos 1 ponto forte e 1 área de melhoria a partir da análise da IA",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Integração Crítica: Integra uma sugestão da IA em seu plano de treino de forma crítica",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma descoberta da IA e como vai usá-la no treino",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-42",
+    tipo: 0,
+    nome: "IA na Leitura de Jogos e Tomada de Decisões",
+    codigo: "ADGP42",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de utilizar IA para leitura de jogos e tomada de decisões, com foco em identificar padrões de comportamento inimigo, antecipar movimentos e tomar decisões mais informadas durante a partida, integrando a análise da IA com a intuição e experiência do jogador.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar ferramentas de IA para aprimorar sua leitura de jogos, identificando padrões de comportamento inimigo, antecipando movimentos e tomando decisões mais informadas durante a partida, integrando a análise da IA com sua própria intuição e experiência, compreendendo que a IA é uma ferramenta de apoio à decisão, não um substituto do julgamento humano.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de utilizar IA para leitura de jogos e tomada de decisões, com foco em identificar padrões de comportamento inimigo, antecipar movimentos e tomar decisões mais informadas durante a partida, integrando a análise da IA com a intuição e experiência do jogador.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você a entender melhor seus adversários hoje?'\n- Pergunte: 'Que padrão a IA identificou que você não tinha percebido?'\n- Pergunte: 'Você confiou mais na IA ou na sua intuição? Por quê?'\n- Reforce: 'Usar dados para tomar decisões é uma habilidade importante na vida. A IA é uma ferramenta, mas o julgamento humano ainda é essencial.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar padrões de comportamento inimigo com auxílio de IA.\n- Desenvolvimento de habilidades de antecipação de movimentos inimigos.\n- Tomada de decisões mais informadas durante a partida.\n- Integração da análise da IA com a intuição e experiência do jogador.\n\nPais/responsáveis:\n- Observação de que o curso está utilizando IA para desenvolver pensamento crítico e tomada de decisão.\n- Compreensão de que a IA é usada como ferramenta de apoio à decisão, não como substituta.\n- Percepção do crescimento do filho na capacidade de análise e antecipação.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de análise e decisão com IA.\n- Fortalecimento da proposta diferenciada que integra tecnologia e pensamento crítico.\n- Base para uso responsável de IA em tomada de decisão.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Analista de Dados' para explicar o papel da IA na leitura de jogos. Enfatizar que a IA é uma ferramenta de apoio à decisão, não um substituto do julgamento humano.\n\nMediação:\nDemonstrar casos práticos de uso da IA para decisões. Enfatizar que a IA pode sugerir, mas a decisão final é do jogador.\n\nSensibilidade:\nObservar alunos que possam confiar excessivamente na IA; reforçar que a intuição e a experiência são insubstituíveis.\n\nConexão com a família:\nExplicar aos pais que a IA é usada como ferramenta para desenvolver pensamento crítico e tomada de decisão, não como substituta.\n\nRegistro:\nRegistrar a capacidade de cada aluno de integrar a análise da IA com sua própria intuição.",
+    preRequisitos:
+      "- ADGP9 - Visão de Mapa e Consciência de Jogo\n- ADGP39 - Posicionamento e Game Sense - Clutch, Leitura de Mapa, Estratégias\n- ADGP41 - IA como Coach de Gameplay (Leitura de Partidas)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza IA para identificar um padrão de comportamento inimigo.\n- O aluno antecipa um movimento inimigo durante a partida com base na análise da IA.\n- O aluno toma uma decisão informada integrando a análise da IA com sua própria intuição.",
+    metodologias:
+      "- Aprendizagem baseada em tecnologia\n- Análise de padrões com IA\n- Simulação de tomada de decisão\n- Reflexão crítica sobre decisões",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Analista de Dados Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao uso de IA na leitura de jogos: 'A IA pode analisar padrões de comportamento inimigo e ajudar você a tomar decisões mais informadas'. Explicação: 1) Como a IA identifica padrões de comportamento (ex: 'inimigo tende a flanquear pela esquerda'); 2) Como usar estas informações para antecipar movimentos; 3) Como integrar a análise da IA com a intuição do jogador. Conexão com ADGP41: 'Assim como a IA nos ajuda a nos conhecer melhor, ela pode nos ajudar a conhecer melhor nossos adversários.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – IA Analisando o Adversário",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Instrutor carrega dados de partidas anteriores em uma ferramenta de IA (ex: padrões de movimento, posicionamento, tomada de decisão); 2) Mostra como a IA identifica padrões do adversário (ex: 'inimigo sempre recua quando sob pressão', 'tende a flanquear após 2 minutos'); 3) Discute os resultados: 'Como podemos usar esta informação na próxima partida?'. Alunos observam e fazem perguntas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Análise de Padrões com IA",
+        duracaoMin: 20,
+        descricao:
+          "Em duplas, os alunos: 1) Analisam dados de partidas de um time adversário (previamente fornecidos); 2) Identificam padrões de comportamento com auxílio da IA; 3) Discutem: 'O que a IA está mostrando sobre o adversário?', 'Como podemos usar isso a nosso favor?'; 4) Criam um plano de ação para a próxima partida baseado na análise. Instrutor circula e apoia a interpretação dos dados.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Tomada de Decisão com IA",
+        duracaoMin: 20,
+        descricao:
+          "Scrim com regras específicas: 1) Antes da partida, cada time recebe uma análise da IA sobre o adversário; 2) Durante a partida, os jogadores devem usar as informações para tomar decisões (ex: 'A IA disse que eles flanqueiam, então vamos vigiar o flanco'); 3) Após a partida, discutir: 'A IA estava certa?', 'Como ela ajudou na tomada de decisão?'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Integração e Reflexão",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Discussão sobre a utilidade da IA na tomada de decisão; 2) Reflexão sobre o equilíbrio entre análise da IA e intuição humana; 3) Conexão com a vida real - 'assim como a IA nos ajuda a tomar decisões no jogo, podemos usar dados para decisões na vida'. Cada aluno compartilha: 'Uma decisão que a IA me ajudou a tomar foi...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um padrão que a IA me ajudou a identificar foi...' e 'Vou usar a IA para tomar decisões quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para análise de padrões de jogo",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Dados de partidas de times adversários (previamente fornecidos)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tablets/computadores com acesso às ferramentas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de análises de padrões",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Análise de Padrões com IA: Utiliza IA para identificar padrões de comportamento inimigo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Antecipação de Movimentos: Antecipa um movimento inimigo durante a partida com base na análise da IA",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Tomada de Decisão Informada: Toma uma decisão informada integrando a análise da IA com a intuição",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um padrão identificado pela IA e como vai usá-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-43",
+    tipo: 0,
+    nome: "IA nas Estatísticas e Dados do E-sport / IA para Listar Pontos Fortes e Fracos em Jogo",
+    codigo: "ADGP43",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Desenvolvimento da capacidade de utilizar IA para analisar estatísticas e dados de e-sports, identificando pontos fortes e fracos individuais e coletivos, e transformando dados em insights acionáveis para melhoria contínua, compreendendo a importância dos dados no treinamento de alto nível.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar ferramentas de IA para analisar estatísticas e dados de e-sports, identificando pontos fortes e fracos individuais e coletivos, transformando dados em insights acionáveis para melhoria contínua, compreendendo que dados são uma ferramenta poderosa para o desenvolvimento do Atleta Digital, mas que a interpretação humana e o contexto são essenciais para uma análise significativa.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de utilizar IA para analisar estatísticas e dados de e-sports, identificando pontos fortes e fracos individuais e coletivos, e transformando dados em insights acionáveis para melhoria contínua, compreendendo a importância dos dados no treinamento de alto nível.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre seus dados hoje?'\n- Pergunte: 'Que ponto forte você descobriu? Que ponto fraco você vai trabalhar?'\n- Pergunte: 'Como você vai usar os dados para melhorar seu treino?'\n- Reforce: 'Dados são ferramentas poderosas para entender o que está funcionando e o que precisa de ajuste - no jogo e na vida.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar IA para analisar estatísticas de gameplay.\n- Identificação de pontos fortes e fracos individuais e coletivos.\n- Transformação de dados em insights acionáveis para melhoria.\n- Compreensão da importância dos dados no treinamento de alto nível.\n\nPais/responsáveis:\n- Observação de que o curso desenvolve habilidades de análise de dados.\n- Compreensão de que o filho está aprendendo a usar dados para tomada de decisão.\n- Percepção do crescimento do filho na capacidade de análise crítica.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de análise de dados.\n- Fortalecimento da proposta diferenciada que integra dados e tecnologia.\n- Base para uso de dados no treinamento de alto nível.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Detetive de Dados' para explicar a análise de estatísticas. Enfatizar que dados são ferramentas, não sentenças.\n\nMediação:\nDemonstrar a análise de dados antes de os alunos praticarem. Enfatizar que dados devem ser interpretados com contexto.\n\nSensibilidade:\nObservar alunos que possam se sentir desmotivados por dados negativos; reforçar que dados são oportunidades de melhoria.\n\nConexão com a família:\nExplicar aos pais que a análise de dados é uma habilidade valiosa para a vida, não apenas para o jogo.\n\nRegistro:\nRegistrar a capacidade de cada aluno de transformar dados em ações.",
+    preRequisitos:
+      "- ADGP18 - Introdução à Análise de VOD\n- ADGP41 - IA como Coach de Gameplay (Leitura de Partidas)\n- ADGP42 - IA na Leitura de Jogos e Tomada de Decisões",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza IA para analisar estatísticas de seu gameplay.\n- O aluno identifica pelo menos 1 ponto forte e 1 ponto fraco a partir dos dados.\n- O aluno transforma um dado em uma ação concreta para melhoria.",
+    metodologias:
+      "- Aprendizagem baseada em dados\n- Análise de estatísticas com IA\n- Transformação de dados em ações\n- Reflexão crítica sobre dados",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Detetive de Dados",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à análise de dados com IA: 'Dados são como pistas em uma investigação - eles nos ajudam a entender o que está acontecendo'. Explicação: 1) Quais dados a IA pode analisar (ex: precisão de mira, tempo de reação, tomada de decisão, posicionamento); 2) Como interpretar estes dados (ex: 'sua precisão cai no final da partida - isso pode indicar cansaço ou pressão'); 3) Como transformar dados em ações (ex: 'treinar 5 minutos de mira extra para melhorar no final da partida'). Conexão com ADGP41: 'Assim como a IA nos ajuda a nos conhecer melhor, os dados nos ajudam a medir nosso progresso.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Análise de Dados com IA",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Instrutor carrega dados de partidas recentes em uma ferramenta de IA (ex: painel de estatísticas); 2) Mostra como a IA identifica padrões (ex: 'sua precisão de mira é 10% maior em mapas abertos'); 3) Discute os resultados: 'O que estes dados estão dizendo?', 'Como podemos usar isso para melhorar?'. Alunos observam e fazem perguntas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Análise de Estatísticas Individuais",
+        duracaoMin: 20,
+        descricao:
+          "Em duplas, os alunos: 1) Acessam dados de partidas recentes (próprias ou fornecidas); 2) Com auxílio da IA, identificam pelo menos 1 ponto forte e 1 ponto fraco; 3) Discutem: 'O que os dados estão mostrando?', 'O que isso significa para meu desenvolvimento?'; 4) Criam uma ação concreta para melhorar o ponto fraco. Instrutor circula e apoia a interpretação dos dados.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Transformando Dados em Ações",
+        duracaoMin: 15,
+        descricao:
+          "Com base na análise de dados, cada aluno define: 1) 1 ponto forte para manter e potencializar; 2) 1 ponto fraco para trabalhar; 3) 1 ação específica para melhorar o ponto fraco (ex: 'treinar 10 minutos de mira por dia', 'praticar strafe com precisão'). Os alunos compartilham com a dupla e recebem feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Debriefing – Dados e Contexto",
+        duracaoMin: 15,
+        descricao:
+          "Debriefing focado em: 1) Discussão sobre a utilidade dos dados - o que eles mostram, o que não mostram; 2) Reflexão sobre a importância do contexto (ex: 'dados mostraram que minha mira piora no final, mas talvez seja porque estou cansado'); 3) Conexão com a vida real - 'assim como os dados nos ajudam no jogo, podem nos ajudar na escola e no trabalho'. Cada aluno compartilha: 'Um dado que me surpreendeu foi...'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um dado que me surpreendeu foi...' e 'Vou usar dados para melhorar meu treino quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para análise de estatísticas (ex: painéis de dados)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Dados de partidas recentes dos alunos (com consentimento)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tablets/computadores com acesso às ferramentas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Fichas de registro de análise de dados (pontos fortes, pontos fracos, ações)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Análise de Dados com IA: Utiliza IA para analisar estatísticas de seu gameplay",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Pontos Fortes e Fracos: Identifica pelo menos 1 ponto forte e 1 ponto fraco a partir dos dados",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Transformação de Dados em Ações: Transforma um dado em uma ação concreta para melhoria",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um dado que o surpreendeu e como vai usá-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-gp-aula-44",
+    tipo: 0,
+    nome: "GAMEPLAY - Consolidação de IA como Coach, Leitura de Jogos e Análise de Dados",
+    codigo: "ADGP44",
+    cursoId: "c-ad",
+    grupo: "GP",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: IA como Coach de Gameplay (ADGP41), IA na Leitura de Jogos e Tomada de Decisões (ADGP42) e IA nas Estatísticas e Dados do E-sport (ADGP43). Foco na aplicação prática da IA como ferramenta de análise, decisão e melhoria, consolidando a integração entre tecnologia, estratégia e autoconhecimento.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, a IA como coach para análise de gameplay, a IA na leitura de jogos e tomada de decisões, e a IA na análise de estatísticas e dados, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a IA é uma ferramenta poderosa para o desenvolvimento do Atleta Digital quando usada com inteligência e pensamento crítico.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados recentes: IA como Coach de Gameplay (ADGP41), IA na Leitura de Jogos e Tomada de Decisões (ADGP42) e IA nas Estatísticas e Dados do E-sport (ADGP43). Foco na aplicação prática da IA como ferramenta de análise, decisão e melhoria, consolidando a integração entre tecnologia, estratégia e autoconhecimento.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você no jogo hoje?'\n- Pergunte: 'Que descoberta você fez usando a IA?'\n- Pergunte: 'O que a IA te ensinou sobre seu jogo?'\n- Reforce: 'A tecnologia pode ser uma grande aliada, mas o julgamento humano e a experiência ainda são insubstituíveis.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea da IA como ferramenta de análise e decisão.\n- Integração da IA com a intuição e experiência durante a partida.\n- Uso de dados para orientar decisões e identificar padrões.\n- Percepção de que a IA amplifica a inteligência humana, não a substitui.\n\nPais/responsáveis:\n- Observação de que o filho está integrando tecnologia de forma inteligente ao treino.\n- Percepção de que o filho está usando dados e análise para melhorar.\n- Confiança de que o curso ensina uso consciente e crítico da tecnologia.\n\nInstituição:\n- Consolidação da cultura de uso inteligente e crítico da IA.\n- Observação natural da evolução dos alunos na integração da tecnologia.\n- Fortalecimento do vínculo dos alunos com o curso através da experiência significativa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como a IA te ajudou hoje?', 'O que a IA viu que você não tinha visto?', 'Como você integrou a IA com sua intuição?'. Reforçar que essa é uma prática livre para experimentar a IA como ferramenta.\n\nMediação:\nObservar como os alunos estão utilizando a IA. Celebrar quando perceber integração crítica e inteligente. Durante as pausas, fazer perguntas sobre o uso da IA.\n\nSensibilidade:\nEstar atento a alunos que possam confiar excessivamente na IA ou, inversamente, resistir ao uso. Oferecer suporte e equilíbrio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou o uso crítico e inteligente da IA como ferramenta de desenvolvimento.\n\nRegistro:\nObservar discretamente e anotar o nível de integração crítica da IA por cada aluno.",
+    preRequisitos:
+      "- ADGP41 - IA como Coach de Gameplay (Leitura de Partidas)\n- ADGP42 - IA na Leitura de Jogos e Tomada de Decisões\n- ADGP43 - IA nas Estatísticas e Dados do E-sport / IA para Listar Pontos Fortes e Fracos em Jogo",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza a IA como ferramenta de apoio durante a partida.\n- O aluno integra a análise da IA com sua intuição e experiência.\n- O aluno reflete sobre como a IA pode ajudá-lo a melhorar.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo do uso crítico da tecnologia",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com IA",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando a IA como ferramenta: 1) Coach - analise seu gameplay com IA; 2) Estrategista - use IA para ler o adversário; 3) Analista - use dados para orientar decisões. Lembrem-se: a IA é uma ferramenta, não um substituto do seu julgamento.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente, utilizando as ferramentas de IA disponíveis. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas e discretas: 'Como a IA está te ajudando?', 'O que você está aprendendo com os dados?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in do Uso da IA",
+        duracaoMin: 5,
+        descricao:
+          "Todos param. Alongamento rápido de 2 minutos, hidratação. Momento de compartilhar uma frase rápida sobre o uso da IA: 'Quem usou a IA para tomar uma decisão?', 'Quem descobriu algo novo com os dados?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação integrada da IA como ferramenta de análise, decisão e melhoria.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como a IA ajudou você hoje?', 'Que descoberta você fez com a IA?', 'Quando você confiou mais na IA e quando confiou mais em você?'. Instrutor celebra as descobertas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei a IA para...' ou 'Uma descoberta que fiz com a IA foi...' ou 'Aprendi que a IA é melhor para...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA disponíveis (coach, análise de dados, estatísticas)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cronômetro ou timer visual para pausas",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Cartões com os papéis da IA (Coach, Estrategista, Analista) afixados na parede",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Uso da IA como Ferramenta: Utiliza a IA de forma ativa durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Integração Crítica: Integra a análise da IA com sua intuição e experiência",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Reflexão sobre a IA: Reflete sobre como a IA pode ajudá-lo a melhorar como jogador",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro no Diário: Registra uma descoberta feita com a IA e como vai usá-la no futuro",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-01",
+    tipo: 0,
+    nome: "Nome, Símbolo e Avatar (Aplicação para Perfil)",
+    codigo: "ADDS01",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento da identidade digital do time através da criação de nome, símbolo e avatar, com aplicação prática em perfis de jogos e redes sociais, compreendendo a importância da consistência visual e da autenticidade na construção de uma marca coletiva.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de criar um nome, símbolo e avatar para o time que representem sua identidade coletiva, aplicando esses elementos em perfis de jogos e redes sociais de forma consistente, compreendendo que a identidade digital é uma extensão da identidade do time e que a consistência visual fortalece o reconhecimento e a confiança da comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da identidade digital do time através da criação de nome, símbolo e avatar, com aplicação prática em perfis de jogos e redes sociais, compreendendo a importância da consistência visual e da autenticidade na construção de uma marca coletiva.",
+    sugestoesPais:
+      "- Pergunte: 'Como vocês escolheram o nome do time? O que ele significa?'\n- Pergunte: 'Me mostre o símbolo do time! O que cada elemento representa?'\n- Pergunte: 'O que seu avatar diz sobre você dentro do time?'\n- Reforce: 'A identidade de um time é construída com a participação de todos. Cada um de vocês contribuiu para criar a cara do time.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de criar um nome significativo para o time, com base em valores e propósito.\n- Desenvolvimento de um símbolo que represente visualmente a identidade do time.\n- Criação de um avatar funcional para perfis de jogos e redes sociais.\n- Compreensão da importância da consistência visual para reconhecimento e confiança.\n\nPais/responsáveis:\n- Observação do desenvolvimento da criatividade e do senso de identidade coletiva do filho.\n- Compreensão de que a identidade digital é uma habilidade importante para o futuro profissional.\n- Material visual tangível (símbolo, avatar) para compartilhar com a família.\n\nInstituição:\n- Documentação do processo criativo e da identidade visual do time.\n- Fortalecimento da identidade institucional através de times com marcas próprias.\n- Material concreto para marketing e captação de novos alunos.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa de Identidade' para falar sobre nome, símbolo e avatar. Enfatizar que a identidade digital é uma extensão da identidade real. Utilizar exemplos de times conhecidos para inspirar, mas reforçar a importância da originalidade.\n\nMediação:\nGarantir que todos os alunos participem da escolha do nome e símbolo. Mediar conflitos criativos com a pergunta: 'O que melhor representa nosso time?'. Celebrar a diversidade de ideias e a construção de consenso.\n\nSensibilidade:\nObservar alunos que possam se sentir excluídos do processo criativo; garantir que todos contribuam. Respeitar diferentes níveis de habilidade artística.\n\nConexão com a família:\nEnviar uma cópia do símbolo e avatar do time para os pais, com uma explicação do significado de cada elemento. Sugerir que perguntem: 'O que este símbolo representa para você?'.\n\nRegistro:\nFotografar (com consentimento) o processo criativo e os resultados finais para incluir no portfólio do time.",
+    preRequisitos:
+      "- ADGP1 - O que é ser Atleta Digital + Diagnóstico Inicial\n- ADGP10 - Regras, Fair Play e Confiança\n- ADGP11 - Papéis Básicos no Time",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time define um nome com significado coletivo, validado por todos os membros.\n- O time cria um símbolo que representa visualmente seus valores.\n- Cada aluno cria um avatar pessoal que se alinha com a identidade do time.",
+    metodologias:
+      "- Pedagogia da identidade coletiva\n- Aprendizagem por metáfora visual\n- Construção de consenso em grupo\n- Criação prática (desenho, design digital)\n- Reflexão sobre significado e propósito",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa de Identidade",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de identidade digital: 'Nosso nome, símbolo e avatar são a cara do nosso time'. Apresentação de exemplos de times conhecidos e discussão sobre o que torna uma identidade marcante. Pergunta disparadora: 'Se nosso time fosse uma pessoa, como ela se chamaria? Que símbolo a representaria?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Escolha do Nome do Time",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos propõem nomes para o time e justificam suas escolhas. Cada proposta é avaliada com base em: 1) Significado (o que representa); 2) Sonoridade (como soa); 3) Disponibilidade (pode ser usado em jogos e redes sociais). O time vota e escolhe o nome final.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Símbolo",
+        duracaoMin: 20,
+        descricao:
+          "Com base no nome escolhido, os alunos criam um símbolo para o time. Fase 1: brainstorm de ideias visuais (formas, cores, elementos). Fase 2: esboço de 3 opções. Fase 3: escolha coletiva da melhor opção e refinamento. Regra: o símbolo deve ser simples o suficiente para funcionar em tamanho pequeno (avatar).",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Criação do Avatar",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu avatar pessoal baseado no símbolo e cores do time. O avatar deve: 1) Incorporar elementos do símbolo do time; 2) Ser reconhecível como parte do time; 3) Ter um toque pessoal que reflita a individualidade de cada um.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O nome do nosso time significa...' e 'Meu avatar representa...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos visuais de identidades de times (profissionais e amadores)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Papel, lápis, canetas coloridas para esboços",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tablets ou computadores com ferramentas simples de design (opcional)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Moldes para criação de avatar (opcional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Significado do Nome: O nome escolhido tem significado coletivo e é justificado pelo time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Originalidade do Símbolo: O símbolo é original, simples e representa visualmente o time",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Avatar Pessoal: O avatar incorpora elementos do time e tem toque pessoal",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro Reflexivo: Descreve no Diário o significado do nome e do avatar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-02",
+    tipo: 0,
+    nome: "Layout em Tela (Overlay) e Composição",
+    codigo: "ADDS02",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento de habilidades de design de interface e composição visual para streams e conteúdo digital, com foco em overlays funcionais, hierarquia visual e equilíbrio entre estética e usabilidade.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de criar um overlay funcional para streams e conteúdo digital, aplicando princípios básicos de hierarquia visual, composição e usabilidade, compreendendo que o design de tela deve equilibrar estética e funcionalidade, priorizando a experiência do espectador e a identidade do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades de design de interface e composição visual para streams e conteúdo digital, com foco em overlays funcionais, hierarquia visual e equilíbrio entre estética e usabilidade.",
+    sugestoesPais:
+      "- Pergunte: 'O que é um overlay? Como ele ajuda na transmissão?'\n- Pergunte: 'Me mostre o overlay que você criou! O que cada elemento significa?'\n- Pergunte: 'Como você decidiu onde colocar cada informação?'\n- Reforce: 'Design não é só sobre beleza, é sobre comunicação clara e funcionalidade.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar elementos essenciais de um overlay funcional.\n- Desenvolvimento de habilidade para criar layouts com hierarquia visual clara.\n- Compreensão da importância da usabilidade e da experiência do espectador.\n- Criação de um overlay que reflete a identidade visual do time.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de design e comunicação visual.\n- Compreensão de que o curso ensina design funcional, não apenas estética.\n- Material visual tangível (overlay) para compartilhar com a família.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de design de interface.\n- Fortalecimento da imagem institucional através de streams com design profissional.\n- Material concreto para demonstrar o diferencial do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Janela do Mundo' para falar sobre overlay. Enfatizar que o overlay é uma ferramenta de comunicação, não apenas decoração. Utilizar exemplos de overlays bons e ruins para comparação.\n\nMediação:\nDemonstrar a criação de um overlay passo a passo antes de os alunos praticarem. Oferecer templates para alunos com menos experiência. Celebrar a criatividade e a funcionalidade.\n\nSensibilidade:\nObservar alunos que possam se sentir frustrados com ferramentas digitais; oferecer alternativas manuais (desenho do layout).\n\nConexão com a família:\nEnviar uma imagem do overlay criado pelos alunos para os pais, explicando como ele será usado e qual a função de cada elemento.\n\nRegistro:\nRegistrar os overlays criados para portfólio do time.",
+    preRequisitos: "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno cria um overlay funcional com informações claras e organizadas.\n- O aluno aplica princípios básicos de hierarquia visual (tamanho, cor, posição).\n- O overlay reflete a identidade visual do time (cores, símbolo).",
+    metodologias:
+      "- Pedagogia do design funcional\n- Aprendizagem por restrição espacial\n- Metáfora da janela estratégica\n- Testes em condições reais (simulação de stream)\n- Adaptação contextual",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Janela do Mundo",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de overlay: 'Nosso overlay é a janela que mostramos ao mundo enquanto jogamos'. Apresentação de overlays profissionais e amadores, destacando o que funciona e o que não funciona. Princípios básicos: 1) Hierarquia visual (o que é mais importante deve ser maior); 2) Usabilidade (informações devem ser fáceis de ler rapidamente); 3) Identidade (cores e símbolos do time). Pergunta: 'O que um espectador precisa ver em um overlay?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Análise de Overlays",
+        duracaoMin: 15,
+        descricao:
+          "Em duplas, os alunos analisam exemplos de overlays (bons e ruins) e identificam: 1) O que funciona; 2) O que não funciona; 3) O que poderia ser melhorado. Cada dupla compartilha uma descoberta com o grupo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Overlay",
+        duracaoMin: 25,
+        descricao:
+          "Com base na análise, os alunos criam seu próprio overlay. Fase 1: definir as informações essenciais (nome do time, placar, lives dos jogadores, etc.). Fase 2: organizar visualmente os elementos (hierarquia, cores, posicionamento). Fase 3: aplicar a identidade do time (cores, símbolo). Regra: o overlay deve ser funcional em diferentes tamanhos de tela.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Teste do Overlay",
+        duracaoMin: 15,
+        descricao:
+          "Simulação de stream onde os alunos testam seus overlays em condições reais (jogando e observando como o overlay aparece). Cada aluno recebe feedback de um colega sobre: 1) Clareza das informações; 2) Estética; 3) Identidade do time.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que aprendi sobre design de overlay foi...' e 'Meu overlay representa nosso time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de overlays (bons e ruins) para análise",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Ferramentas de design (ex: Canva, Adobe Express, ou papel para rascunho)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para teste do overlay",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Funcionalidade: O overlay apresenta informações claras e organizadas",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Hierarquia Visual: Elementos mais importantes são visualmente destacados",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Identidade Visual: O overlay reflete as cores e o símbolo do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro Reflexivo: Descreve no Diário o que aprendeu sobre design de overlay",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-03",
+    tipo: 0,
+    nome: "Cor, Emoção e Legibilidade",
+    codigo: "ADDS03",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Exploração da psicologia das cores e sua aplicação no design do time, com foco em como diferentes cores afetam emoções, percepções e legibilidade, desenvolvendo uma paleta de cores significativa para a identidade visual do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender como diferentes cores afetam emoções, percepções e legibilidade, sendo capaz de escolher e aplicar uma paleta de cores significativa para a identidade visual do time, justificando suas escolhas com base em princípios de psicologia das cores e usabilidade, entendendo que a cor é uma ferramenta de comunicação e não apenas um elemento estético.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Exploração da psicologia das cores e sua aplicação no design do time, com foco em como diferentes cores afetam emoções, percepções e legibilidade, desenvolvendo uma paleta de cores significativa para a identidade visual do time.",
+    sugestoesPais:
+      "- Pergunte: 'Como vocês escolheram as cores do time? O que cada cor representa?'\n- Pergunte: 'Me mostre a paleta de cores! Por que estas cores combinam?'\n- Pergunte: 'Como as cores ajudam a transmitir a identidade do time?'\n- Reforce: 'Cada cor tem um significado. Escolher as cores certas é uma forma de comunicação.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar como diferentes cores afetam emoções e percepções.\n- Desenvolvimento de uma paleta de cores para o time com significado.\n- Compreensão da importância da legibilidade na escolha de cores.\n- Justificativa das escolhas cromáticas com base em princípios e propósito.\n\nPais/responsáveis:\n- Observação do desenvolvimento do pensamento crítico aplicado a escolhas visuais.\n- Compreensão de que o curso ensina design com significado, não apenas estética.\n- Material visual tangível (paleta de cores) para compartilhar com a família.\n\nInstituição:\n- Documentação do processo de escolha cromática e seu significado.\n- Fortalecimento da identidade visual institucional através de paletas significativas.\n- Material concreto para demonstrar metodologia de design com propósito.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Paleta das Emoções' para falar sobre cores. Enfatizar que as cores são mensageiras de sentimentos. Utilizar exemplos de marcas conhecidas e suas cores.\n\nMediação:\nDemonstrar como diferentes cores afetam percepções antes de os alunos escolherem. Oferecer um guia de psicologia das cores simplificado.\n\nSensibilidade:\nObservar alunos que possam ter daltonismo; adaptar atividades para incluir texturas e padrões como alternativa.\n\nConexão com a família:\nEnviar a paleta de cores do time para os pais, com uma explicação do significado de cada cor.\n\nRegistro:\nRegistrar a paleta de cores do time para uso em todos os materiais visuais.",
+    preRequisitos: "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time define uma paleta de cores com significado coletivo.\n- As cores escolhidas são legíveis em diferentes contextos (fundo claro/escuro).\n- O aluno justifica as escolhas cromáticas com base em propósito e emoção.",
+    metodologias:
+      "- Pedagogia sensorial\n- Aprendizagem contextualizada\n- Metáfora comunicativa (cores como mensageiras)\n- Legibilidade como ética\n- Escolhas intencionais",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Paleta das Emoções",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à psicologia das cores: 'As cores não são apenas bonitas, elas comunicam emoções'. Apresentação de como diferentes cores afetam percepções (ex: vermelho = energia, azul = calma, verde = crescimento). Pergunta: 'Que emoções queremos que nosso time transmita?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Experimentação de Cores",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos experimentam diferentes combinações de cores. Cada grupo recebe uma cartela com cores e deve: 1) Identificar as emoções que cada cor transmite; 2) Escolher uma combinação que represente o time; 3) Testar a legibilidade em diferentes fundos. Os grupos compartilham suas escolhas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação da Paleta do Time",
+        duracaoMin: 20,
+        descricao:
+          "Com base na experimentação, o time define sua paleta oficial: 1) Cor principal (a que mais representa o time); 2) Cores secundárias (para complementar); 3) Cor de destaque (para chamar atenção). Cada cor recebe um significado: 'Azul representa nossa calma estratégica', 'Dourado representa nossa energia positiva'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Aplicação da Paleta",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos aplicam a paleta de cores em elementos existentes: 1) Atualizar o símbolo do time com as cores escolhidas; 2) Aplicar as cores ao overlay; 3) Verificar a legibilidade em diferentes contextos. Os alunos justificam suas escolhas.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A cor que mais representa nosso time é... porque...' e 'Uma descoberta sobre cores que fiz hoje foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartelas de cores (físicas ou digitais)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Guia simplificado de psicologia das cores",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Ferramentas de design para aplicação das cores",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Significado das Cores: As cores escolhidas têm significado coletivo e são justificadas",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Legibilidade: A paleta é legível em diferentes contextos (fundo claro e escuro)",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Aplicação: As cores são aplicadas de forma consistente nos elementos do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o significado de uma cor e uma descoberta sobre cores",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Design: Identidade, Overlay e Cores",
+    codigo: "ADDS04",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (identidade, overlay, cores) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os elementos de design criados (nome, símbolo, avatar, overlay, paleta de cores), consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a identidade visual é uma ferramenta de expressão e comunicação, não apenas um elemento estético.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (identidade, overlay, cores) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi jogar usando o avatar e as cores do seu time?'\n- Pergunte: 'O que você sentiu ao ver o time todo usando a mesma identidade visual?'\n- Reforce: 'A identidade visual ajuda a criar um senso de pertencimento e unidade.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea da identidade visual do time (avatar, overlay) durante a partida.\n- Percepção de como a identidade visual afeta a experiência de jogo e a percepção do time.\n- Reflexão sobre como as escolhas de design refletem a identidade coletiva.\n\nPais/responsáveis:\n- Observação de que o filho está integrando a identidade visual ao jogo.\n- Percepção de que o curso ensina design como ferramenta de expressão.\n- Confiança de que o curso integra criatividade e técnica.\n\nInstituição:\n- Consolidação da identidade visual do time em ambiente prático.\n- Observação natural da aplicação dos elementos de design.\n- Fortalecimento do vínculo dos alunos com a identidade do time.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como seu avatar representa você hoje?', 'O overlay está funcionando?'. Reforçar que essa é uma prática livre para experimentar a identidade visual em ação.\n\nMediação:\nObservar como os alunos estão utilizando os elementos de design. Celebrar quando perceber a identidade visual sendo aplicada.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os elementos; oferecer suporte.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a identidade visual do time de forma prática.\n\nRegistro:\nRegistrar a aplicação da identidade visual durante a partida.",
+    preRequisitos:
+      "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS2 - Layout em Tela (Overlay) e Composição\n- ADDS3 - Cor, Emoção e Legibilidade",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza o avatar do time durante a partida.\n- O aluno reflete sobre como a identidade visual afeta a experiência de jogo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Identidade Visual",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando os elementos de design que criaram: avatares, overlay e cores. Observem como a identidade visual do time se manifesta durante o jogo.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente utilizando seus avatares e overlays. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como seu avatar está representando você?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da Identidade Visual",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém notou como o overlay ajudou ou atrapalhou?', 'O que as cores do time transmitiram durante a partida?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação da identidade visual.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como foi usar o avatar do time?', 'O overlay funcionou bem?', 'O que as cores transmitiram durante a partida?'. Instrutor celebra as descobertas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei o avatar do time quando...' ou 'Percebi que as cores do time...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com avatares e overlays configurados",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso da Identidade Visual: Utiliza o avatar e/ou overlay do time durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Reflexão sobre Design: Reflete sobre como a identidade visual afetou a experiência de jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Registro no Diário: Registra uma observação sobre a aplicação da identidade visual",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-05",
+    tipo: 0,
+    nome: "Cartaz de Scrim/Torneio + Roteiro Mínimo",
+    codigo: "ADDS05",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento de habilidades de comunicação visual e verbal para eventos, com foco na criação de cartazes para scrims/torneios e roteiros mínimos para apresentações, compreendendo a importância de comunicar informações essenciais de forma clara e atrativa para diferentes públicos.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de criar um cartaz para scrims ou torneios que comunique informações essenciais de forma clara e atrativa, e desenvolver um roteiro mínimo para apresentação de eventos (abertura, transições, encerramento), compreendendo que a comunicação visual e verbal são ferramentas essenciais para engajar diferentes públicos (jogadores, pais, espectadores) e fortalecer a imagem do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades de comunicação visual e verbal para eventos, com foco na criação de cartazes para scrims/torneios e roteiros mínimos para apresentações, compreendendo a importância de comunicar informações essenciais de forma clara e atrativa para diferentes públicos.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre como comunicar um evento?'\n- Pergunte: 'Me mostre o cartaz que você criou! O que ele comunica?'\n- Pergunte: 'Como você se preparou para apresentar o evento?'\n- Reforce: 'Comunicar bem é uma habilidade importante para qualquer área da vida.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de criar um cartaz funcional para eventos do time.\n- Desenvolvimento de roteiros mínimos para diferentes momentos de um evento.\n- Compreensão da importância de adaptar a comunicação para diferentes públicos.\n- Integração da identidade visual do time na comunicação de eventos.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de comunicação visual e verbal.\n- Compreensão de que o curso ensina comunicação estratégica, não apenas design.\n- Material tangível (cartaz, roteiro) para compartilhar com a família.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de comunicação de eventos.\n- Fortalecimento da imagem institucional através de eventos bem comunicados.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mural da Comunidade' para falar sobre cartazes e roteiros. Enfatizar que a comunicação é uma forma de convite e engajamento. Utilizar exemplos de cartazes bons e ruins.\n\nMediação:\nDemonstrar a criação de um cartaz e um roteiro antes de os alunos praticarem. Oferecer templates para alunos com menos experiência.\n\nSensibilidade:\nObservar alunos que possam ter ansiedade com apresentações; oferecer opções de roteiros escritos para quem preferir.\n\nConexão com a família:\nEnviar uma cópia do cartaz e do roteiro para os pais, explicando como serão usados no próximo evento.\n\nRegistro:\nRegistrar os cartazes e roteiros criados para portfólio do time.",
+    preRequisitos:
+      "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS2 - Layout em Tela (Overlay) e Composição\n- ADDS3 - Cor, Emoção e Legibilidade",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time cria um cartaz para um evento com informações claras e atrativas.\n- O time desenvolve um roteiro mínimo para abertura, transições e encerramento do evento.\n- Os materiais de comunicação refletem a identidade visual do time.",
+    metodologias:
+      "- Pedagogia da comunicação essencial\n- Aprendizagem por restrição de tempo (roteiro curto)\n- Metáfora do mural comunitário\n- Testes práticos (simulação de evento)\n- Adaptação para público",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mural da Comunidade",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à comunicação de eventos: 'Nosso cartaz e roteiro são convites para a comunidade participar da nossa jornada'. Apresentação de exemplos de cartazes e roteiros. Pergunta: 'O que um pai precisa saber sobre um evento? O que um jogador precisa saber?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Criação do Cartaz",
+        duracaoMin: 20,
+        descricao:
+          "Em grupos, os alunos criam um cartaz para um evento do time (scrim, torneio, apresentação). Elementos obrigatórios: 1) Nome do evento e do time; 2) Data, hora e local; 3) Informações para pais (contato, horário de saída); 4) Identidade visual do time (cores, símbolo). Regra: o cartaz deve ser legível em diferentes tamanhos (impresso, digital).",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Roteiro Mínimo",
+        duracaoMin: 20,
+        descricao:
+          "Com base no cartaz, os alunos criam um roteiro mínimo para o evento: 1) Abertura (60 segundos) - apresentação do time e propósito do evento; 2) Transições (30 segundos) - resumo do que aconteceu e preparação para o próximo momento; 3) Encerramento (90 segundos) - agradecimentos, reconhecimento de conquistas, próximos passos. Regra: o roteiro deve ser claro e adaptado para diferentes públicos.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação do Evento",
+        duracaoMin: 15,
+        descricao:
+          "Simulação onde os alunos apresentam o evento usando o cartaz e o roteiro. Cada grupo apresenta para os outros, que atuam como diferentes públicos (pais, jogadores, espectadores). Feedback sobre clareza e impacto.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que aprendi sobre comunicação de eventos foi...' e 'Meu cartaz/roteiro representa nosso time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de cartazes (bons e ruins)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Materiais para criação de cartaz (papel, canetas, ou ferramentas digitais)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de roteiro mínimo",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Cartaz Funcional: O cartaz comunica informações essenciais de forma clara e atrativa",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Roteiro Mínimo: O roteiro cobre abertura, transições e encerramento com clareza",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Identidade Visual: O cartaz e o roteiro refletem a identidade visual do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o que aprendeu sobre comunicação de eventos",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-06",
+    tipo: 0,
+    nome: "A Cara do Time: Marca em Linguagem Simples",
+    codigo: "ADDS06",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento de uma identidade de marca para o time em linguagem simples, compreendendo a importância de uma marca autêntica e significativa que comunique valores e propósito de forma clara e acessível a diferentes públicos, incluindo famílias e comunidade.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de desenvolver uma identidade de marca para o time em linguagem simples, compreendendo que uma marca é mais que um logo — é um conjunto de valores, propósito e personalidade que comunica quem o time é e o que representa, traduzindo esses elementos em uma narrativa acessível para diferentes públicos (jogadores, pais, comunidade).",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de uma identidade de marca para o time em linguagem simples, compreendendo a importância de uma marca autêntica e significativa que comunique valores e propósito de forma clara e acessível a diferentes públicos, incluindo famílias e comunidade.",
+    sugestoesPais:
+      "- Pergunte: 'O que significa a marca do seu time? O que ela representa?'\n- Pergunte: 'Qual é o valor mais importante do time? Por quê?'\n- Pergunte: 'Como você descreveria o time para alguém que não conhece?'\n- Reforce: 'Uma marca forte é construída com valores e propósito. O time de vocês já tem uma cara!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de articular os valores e propósito do time em linguagem simples.\n- Desenvolvimento de uma narrativa de marca acessível para diferentes públicos.\n- Compreensão de que a marca é uma ferramenta de comunicação e conexão.\n- Integração dos elementos visuais (nome, símbolo, cores) com a narrativa da marca.\n\nPais/responsáveis:\n- Observação do desenvolvimento da capacidade de articular valores e propósito.\n- Compreensão de que o curso ensina branding e comunicação estratégica.\n- Material tangível (narrativa da marca) para compartilhar com a família.\n\nInstituição:\n- Documentação da identidade de marca do time como diferencial educativo.\n- Fortalecimento da imagem institucional através de marcas com significado.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Espelho do Time' para falar sobre marca. Enfatizar que a marca é um reflexo de quem o time é. Utilizar exemplos de marcas conhecidas e suas histórias.\n\nMediação:\nGuiar os alunos na descoberta dos valores do time antes de criar a narrativa. Celebrar a autenticidade e a originalidade.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em articular valores; oferecer perguntas guiadas.\n\nConexão com a família:\nEnviar a narrativa da marca do time para os pais, explicando como ela foi construída.\n\nRegistro:\nRegistrar a narrativa da marca do time para uso em todas as comunicações.",
+    preRequisitos:
+      "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS3 - Cor, Emoção e Legibilidade\n- ADDS5 - Cartaz de Scrim/Torneio + Roteiro Mínimo",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time articula seus valores e propósito em linguagem simples.\n- O time cria uma narrativa de marca acessível para diferentes públicos.\n- Os elementos visuais (nome, símbolo, cores) estão alinhados com a narrativa da marca.",
+    metodologias:
+      "- Pedagogia da identidade de marca\n- Aprendizagem por metáfora visual\n- Construção de narrativa coletiva\n- Tradução para linguagem simples\n- Conexão com valores e propósito",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Espelho do Time",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de marca: 'Nossa marca é o que os outros veem quando olham para nós'. Discussão sobre o que torna uma marca memorável (valores, propósito, autenticidade). Pergunta: 'O que queremos que as pessoas sintam quando ouvem o nome do nosso time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Descoberta dos Valores do Time",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos identificam os valores do time: 1) O que é importante para nós? 2) Como queremos ser lembrados? 3) Que legado queremos deixar? Cada grupo compartilha seus valores e o time chega a um consenso sobre os 3-5 valores principais.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação da Narrativa da Marca",
+        duracaoMin: 20,
+        descricao:
+          "Com base nos valores, os alunos criam uma narrativa da marca: 1) Quem somos (nome e identidade); 2) O que fazemos (propósito); 3) Como fazemos (valores em ação). A narrativa deve ser em linguagem simples e acessível. Regra: qualquer pessoa deve entender a mensagem, inclusive pais e comunidade.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação da Marca",
+        duracaoMin: 15,
+        descricao:
+          "Simulação onde os alunos apresentam a marca do time para diferentes públicos (pais, novos jogadores, comunidade). Cada grupo apresenta a narrativa e recebe feedback sobre clareza e impacto.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O valor mais importante do nosso time é...' e 'A marca do nosso time representa...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de marcas conhecidas e suas histórias",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para descoberta de valores",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de narrativa de marca",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Articulação de Valores: O time articula seus valores e propósito em linguagem simples",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Narrativa da Marca: A narrativa é acessível e reflete quem o time é",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Alinhamento Visual: Os elementos visuais estão alinhados com a narrativa da marca",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o valor mais importante do time e o que a marca representa",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-07",
+    tipo: 0,
+    nome: "Storytelling do Time: Construindo uma Narrativa",
+    codigo: "ADDS07",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento de habilidades de storytelling para o time, compreendendo como construir uma narrativa coletiva autêntica que comunique a jornada, os valores e as conquistas do time de forma envolvente e significativa para diferentes públicos.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de construir uma narrativa coletiva para o time que conte sua história de forma envolvente e significativa, comunicando a jornada, os valores e as conquistas do time, compreendendo que o storytelling é uma ferramenta poderosa para conectar-se com diferentes públicos (jogadores, pais, comunidade) e fortalecer a identidade coletiva.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades de storytelling para o time, compreendendo como construir uma narrativa coletiva autêntica que comunique a jornada, os valores e as conquistas do time de forma envolvente e significativa para diferentes públicos.",
+    sugestoesPais:
+      "- Pergunte: 'Qual é a história do seu time? Como vocês chegaram até aqui?'\n- Pergunte: 'O que foi o maior desafio que o time enfrentou? Como vocês superaram?'\n- Pergunte: 'O que vocês aprenderam juntos que é mais importante?'\n- Reforce: 'Toda equipe tem uma história. A história de vocês é o que os torna únicos.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar a jornada do time (desafios, conquistas, aprendizados).\n- Desenvolvimento de uma narrativa coletiva que comunique valores e propósito.\n- Compreensão da importância do storytelling para conectar-se com diferentes públicos.\n- Integração da narrativa com a identidade visual e a marca do time.\n\nPais/responsáveis:\n- Observação do desenvolvimento da capacidade de contar histórias e articular valores.\n- Compreensão de que o curso ensina storytelling como ferramenta de comunicação e conexão.\n- Material narrativo (história do time) para compartilhar com a família.\n\nInstituição:\n- Documentação da história do time como parte da identidade institucional.\n- Fortalecimento da imagem institucional através de narrativas autênticas.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Livro do Time' para falar sobre storytelling. Enfatizar que cada time tem uma história única. Utilizar exemplos de histórias de times conhecidos.\n\nMediação:\nGuiar os alunos na descoberta da jornada do time. Celebrar a autenticidade e a vulnerabilidade (compartilhar desafios, não apenas vitórias).\n\nSensibilidade:\nObservar alunos que possam se sentir desconfortáveis em compartilhar desafios; criar um ambiente seguro e acolhedor.\n\nConexão com a família:\nEnviar a história do time para os pais, com uma explicação de como ela foi construída e o que ela representa.\n\nRegistro:\nRegistrar a história do time como parte do portfólio.",
+    preRequisitos:
+      "- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS6 - A Cara do Time: Marca em Linguagem Simples",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time identifica sua jornada (desafios, conquistas, aprendizados).\n- O time cria uma narrativa coletiva que comunica valores e propósito.\n- A narrativa é adaptada para diferentes públicos (jogadores, pais, comunidade).",
+    metodologias:
+      "- Pedagogia da narrativa\n- Aprendizagem por descoberta da jornada\n- Metáfora do livro\n- Construção coletiva da história\n- Adaptação para diferentes públicos",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Livro do Time",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao storytelling: 'Cada time tem uma história. A nossa história é o que nos torna únicos'. Discussão sobre o que torna uma história envolvente (personagens, desafios, superação). Pergunta: 'Qual é a história do nosso time? Como chegamos até aqui?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Mapeamento da Jornada do Time",
+        duracaoMin: 20,
+        descricao:
+          "Em grupos, os alunos mapeiam a jornada do time: 1) Começo - como o time surgiu; 2) Desafios - o que foi difícil e como superamos; 3) Conquistas - o que já alcançamos; 4) Aprendizados - o que aprendemos juntos. Cada grupo compartilha uma parte da história e o time constrói a narrativa completa.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação da Narrativa Final",
+        duracaoMin: 15,
+        descricao:
+          "Com base no mapeamento, os alunos criam uma versão final da história do time. A história deve: 1) Ser autêntica e verdadeira; 2) Comunicar valores e propósito; 3) Ser adaptada para diferentes públicos (versão para jogadores, para pais, para comunidade). Regra: a história deve ser contada em 2-3 minutos.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Contando a História",
+        duracaoMin: 15,
+        descricao:
+          "Simulação onde os alunos contam a história do time para diferentes públicos. Cada grupo apresenta a história e recebe feedback sobre clareza e impacto. Os alunos praticam a adaptação para diferentes audiências.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A parte mais importante da nossa história é...' e 'Aprendi que contar histórias é importante porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de histórias de times conhecidos",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para mapeamento da jornada",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de narrativa",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Mapeamento da Jornada: O time identifica sua jornada (começo, desafios, conquistas, aprendizados)",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Narrativa Coletiva: A narrativa é autêntica, envolvente e comunica valores e propósito",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Adaptação para Públicos: A narrativa é adaptada para diferentes públicos (jogadores, pais, comunidade)",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário a parte mais importante da história do time e por que contar histórias é importante",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-08",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Design: Marca, Storytelling e Comunicação",
+    codigo: "ADDS08",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (marca, storytelling, comunicação de eventos) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os elementos de marca, storytelling e comunicação de eventos criados, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a identidade, a história e a comunicação do time são ferramentas de conexão e pertencimento.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (marca, storytelling, comunicação de eventos) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como foi jogar carregando a história do seu time?'\n- Pergunte: 'O que você sentiu ao fazer parte desta história?'\n- Reforce: 'A história do time é o que conecta vocês. Cada partida é um novo capítulo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea dos elementos de marca e storytelling durante a partida.\n- Reflexão sobre como a identidade e a história do time afetam a experiência de jogo.\n- Conexão entre comunicação de eventos e a identidade do time.\n\nPais/responsáveis:\n- Observação de que o filho está integrando a identidade e a história do time ao jogo.\n- Percepção de que o curso ensina design, storytelling e comunicação como ferramentas integradas.\n- Confiança de que o curso desenvolve habilidades de comunicação e identidade.\n\nInstituição:\n- Consolidação da identidade, história e comunicação do time em ambiente prático.\n- Observação natural da aplicação dos elementos de marca e storytelling.\n- Fortalecimento do vínculo dos alunos com a identidade do time.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como a história do time se manifesta hoje?', 'A marca do time está presente no jogo?'. Reforçar que essa é uma prática livre para experimentar a identidade e a história em ação.\n\nMediação:\nObservar como os alunos estão aplicando os elementos de marca e storytelling. Celebrar quando perceber a identidade e a história sendo manifestadas.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em articular a história; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou a identidade e a história do time de forma prática.\n\nRegistro:\nRegistrar a manifestação da identidade e da história durante a partida.",
+    preRequisitos:
+      "- ADDS5 - Cartaz de Scrim/Torneio + Roteiro Mínimo\n- ADDS6 - A Cara do Time: Marca em Linguagem Simples\n- ADDS7 - Storytelling do Time: Construindo uma Narrativa",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como a identidade e a história do time se manifestam durante o jogo.\n- O aluno articula um elemento da história do time durante a partida.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Identidade e História",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar carregando a identidade e a história do time. Observem como a marca e a história se manifestam durante o jogo.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como a história do time está presente hoje?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da Identidade e História",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém sentiu a presença da história do time durante o jogo?', 'A marca do time foi visível?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a manifestação da identidade e história.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como a história do time afetou sua experiência?', 'A marca do time esteve presente?', 'O que você sentiu ao jogar como parte deste time?'. Instrutor celebra as descobertas.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, senti que a história do time...' ou 'Percebi que a marca do time...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identidade e História: Reflete sobre como a identidade e a história do time se manifestam durante o jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Articulação da História: Articula um elemento da história do time durante a partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Registro no Diário: Registra uma reflexão sobre a identidade e história do time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-09",
+    tipo: 0,
+    nome: "O que é Conteúdo e por que o Time Precisa Disso",
+    codigo: "ADDS09",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Compreensão do que é conteúdo digital e por que um time de e-sports precisa de uma estratégia de conteúdo, com foco em propósito, autenticidade e construção de comunidade, diferenciando conteúdo significativo de conteúdo superficial.",
+    objetivoResultados:
+      "Ao final, o aluno deve compreender o que é conteúdo digital no contexto de um time de e-sports, identificando a diferença entre conteúdo significativo (com propósito, autêntico, que constrói comunidade) e conteúdo superficial (sem propósito, apenas para engajamento), reconhecendo que uma estratégia de conteúdo bem planejada fortalece a identidade do time, engaja a comunidade e comunica valores, e que o conteúdo é uma extensão da marca e da história do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Compreensão do que é conteúdo digital e por que um time de e-sports precisa de uma estratégia de conteúdo, com foco em propósito, autenticidade e construção de comunidade, diferenciando conteúdo significativo de conteúdo superficial.",
+    sugestoesPais:
+      "- Pergunte: 'O que é conteúdo para o time de vocês? Qual é o propósito?'\n- Pergunte: 'Me mostre o Manifesto do Conteúdo! O que ele diz?'\n- Pergunte: 'Que tipo de conteúdo vocês planejam criar?'\n- Reforce: 'Conteúdo com propósito é uma forma de compartilhar a história do time e conectar-se com a comunidade.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão do que é conteúdo digital e seu propósito para o time.\n- Capacidade de diferenciar conteúdo significativo de conteúdo superficial.\n- Reconhecimento da importância do conteúdo para fortalecer a identidade e a comunidade do time.\n- Conexão entre conteúdo e os valores, marca e história do time.\n\nPais/responsáveis:\n- Observação do desenvolvimento da compreensão sobre comunicação digital estratégica.\n- Compreensão de que o curso ensina criação de conteúdo com propósito, não apenas técnicas virais.\n- Material concreto (Manifesto do Conteúdo) para compartilhar com a família.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico sobre conteúdo digital.\n- Fortalecimento da proposta diferenciada que forma criadores conscientes.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa dos Significados' para falar sobre conteúdo. Enfatizar que conteúdo é uma forma de comunicação e conexão, não apenas entretenimento. Utilizar exemplos de conteúdo significativo e superficial.\n\nMediação:\nGuiar os alunos na reflexão sobre o propósito do conteúdo. Celebrar a autenticidade e a conexão com os valores do time.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados a criar conteúdo 'viral'; reforçar que o propósito é mais importante que o engajamento.\n\nConexão com a família:\nEnviar o Manifesto do Conteúdo para os pais, explicando como ele orienta a produção de conteúdo do time.\n\nRegistro:\nRegistrar o Manifesto do Conteúdo para uso em todas as produções.",
+    preRequisitos:
+      "- ADDS6 - A Cara do Time: Marca em Linguagem Simples\n- ADDS7 - Storytelling do Time: Construindo uma Narrativa",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno explica o que é conteúdo digital e seu propósito para o time.\n- O aluno diferencia conteúdo significativo de conteúdo superficial.\n- O time cria um Manifesto do Conteúdo com princípios orientadores.",
+    metodologias:
+      "- Pedagogia do significado\n- Aprendizagem por contraste\n- Metáfora da caixa\n- Coautoria coletiva\n- Ética como fundação",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa dos Significados",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de conteúdo: 'Conteúdo é uma forma de contar a história do time e conectar-se com a comunidade'. Apresentação de exemplos de conteúdo significativo (com propósito) e superficial (sem propósito). Pergunta: 'Que tipo de conteúdo queremos criar para o nosso time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Análise de Conteúdo",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam exemplos de conteúdo de outros times (ou criadores) e identificam: 1) O propósito do conteúdo; 2) Se é significativo ou superficial; 3) Como poderia ser melhorado. Cada grupo compartilha uma análise.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Manifesto do Conteúdo",
+        duracaoMin: 20,
+        descricao:
+          "Com base na análise, o time cria um Manifesto do Conteúdo com princípios orientadores: 1) Propósito - por que criamos conteúdo; 2) Autenticidade - como nos manteremos verdadeiros; 3) Responsabilidade - como cuidaremos da nossa comunidade; 4) Inclusão - como acolheremos diferentes públicos. Regra: o manifesto deve refletir os valores e a história do time.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Planejamento de Conteúdo",
+        duracaoMin: 15,
+        descricao:
+          "Com base no manifesto, os alunos planejam um conteúdo para o time (ex: post para redes sociais, vídeo curto). Eles devem: 1) Definir o propósito do conteúdo; 2) Identificar o público; 3) Planejar o formato e a mensagem. Os planos são compartilhados e discutidos.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que aprendi sobre conteúdo foi...' e 'O manifesto do nosso time me ensinou que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de conteúdo (significativo e superficial)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para análise de conteúdo",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Manifesto do Conteúdo",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Compreensão de Conteúdo: Explica o que é conteúdo digital e seu propósito para o time",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Diferenciação: Diferencia conteúdo significativo de conteúdo superficial",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Manifesto do Conteúdo: O manifesto reflete os valores e a história do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o que aprendeu sobre conteúdo e o significado do manifesto",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-10",
+    tipo: 0,
+    nome: "Registrando Evolução com o Diário do Atleta Digital",
+    codigo: "ADDS10",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento do hábito de registro de evolução através do Diário do Atleta Digital, com foco em reflexão sobre aprendizados técnicos, emocionais e sociais, e documentação da jornada de desenvolvimento do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar o Diário do Atleta Digital como ferramenta de registro e reflexão sobre sua evolução, documentando aprendizados técnicos, emocionais e sociais, e reconhecendo a importância do registro contínuo para o desenvolvimento pessoal e coletivo, compreendendo que a evolução é um processo gradual que merece ser celebrado e documentado.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento do hábito de registro de evolução através do Diário do Atleta Digital, com foco em reflexão sobre aprendizados técnicos, emocionais e sociais, e documentação da jornada de desenvolvimento do time.",
+    sugestoesPais:
+      "- Pergunte: 'O que você registrou no seu Diário hoje?'\n- Pergunte: 'O que você aprendeu sobre si mesmo ao refletir sobre sua jornada?'\n- Pergunte: 'Como você se sente ao ver sua evolução registrada?'\n- Reforce: 'Registrar sua jornada ajuda a ver o quanto você já cresceu.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e registrar aprendizados significativos.\n- Desenvolvimento do hábito de reflexão sobre a própria evolução.\n- Documentação da jornada de desenvolvimento do time.\n- Reconhecimento da importância do registro contínuo para o crescimento.\n\nPais/responsáveis:\n- Observação do desenvolvimento da capacidade de reflexão e autoconhecimento.\n- Compreensão de que o curso valoriza o processo de aprendizado, não apenas resultados.\n- Material tangível (Diário) para acompanhar a evolução do filho.\n\nInstituição:\n- Documentação da evolução individual e coletiva dos alunos.\n- Fortalecimento da proposta diferenciada que valoriza o processo de aprendizado.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa do Tempo' para falar sobre o Diário. Enfatizar que o Diário é um registro da jornada, não um julgamento de desempenho. Utilizar exemplos de registros significativos.\n\nMediação:\nGuiar os alunos na reflexão sobre sua evolução. Celebrar a honestidade e a vulnerabilidade nos registros.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em se expressar por escrito; oferecer opções de registro (desenho, áudio, vídeo).\n\nConexão com a família:\nCompartilhar trechos do Diário com os pais (com consentimento), destacando o crescimento do filho.\n\nRegistro:\nGarantir que todos os alunos façam registros regulares no Diário.",
+    preRequisitos:
+      "- ADDS7 - Storytelling do Time: Construindo uma Narrativa\n- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno faz um registro significativo no Diário do Atleta Digital.\n- O aluno identifica um aprendizado técnico, emocional ou social.\n- O aluno reflete sobre sua evolução e a do time.",
+    metodologias:
+      "- Pedagogia da reflexão estruturada\n- Aprendizagem por personalização\n- Metáfora da caixa do tempo\n- Compaixão sobre perfeição\n- Ritualização do aprendizado",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa do Tempo",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao Diário do Atleta Digital: 'Nosso Diário é uma caixa do tempo onde guardamos nossa evolução'. Apresentação de exemplos de registros significativos. Pergunta: 'O que você gostaria de registrar sobre sua jornada até hoje?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Reflexão sobre a Jornada",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos refletem sobre sua jornada no curso: 1) Como eu era quando comecei? 2) O que aprendi até agora? 3) O que ainda quero aprender? Cada grupo compartilha uma reflexão.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Registro no Diário",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno faz um registro no Diário do Atleta Digital: 1) Um aprendizado técnico recente; 2) Um aprendizado emocional ou social; 3) Uma meta para a próxima semana. Regra: o registro deve ser honesto e reflexivo, não apenas descritivo.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Compartilhamento de Registros",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos compartilham trechos de seus registros (com consentimento) com o grupo. Cada aluno recebe feedback positivo sobre sua evolução. Instrutor destaca padrões de crescimento coletivo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário: 'O que aprendi sobre mim mesmo ao refletir sobre minha jornada foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital (físico ou digital)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para reflexão",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Exemplos de registros significativos",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital (para registro final)",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Registro Significativo: Faz um registro honesto e reflexivo no Diário do Atleta Digital",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Aprendizados: Identifica um aprendizado técnico, emocional ou social",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Reflexão sobre Evolução: Reflete sobre sua evolução e a do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro no Diário: Registra o que aprendeu sobre si mesmo ao refletir sobre sua jornada",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-11",
+    tipo: 0,
+    nome: "Objetivo do Conteúdo e Público",
+    codigo: "ADDS11",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento da capacidade de definir objetivos claros para o conteúdo e identificar o público-alvo, compreendendo que conteúdo eficaz é criado com propósito e direcionado a necessidades específicas, integrando os valores, a marca e a história do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de definir objetivos claros e mensuráveis para o conteúdo do time, identificar e segmentar o público-alvo (jogadores, pais, comunidade), e planejar conteúdo que atenda às necessidades específicas de cada público, compreendendo que conteúdo eficaz é criado com propósito e direcionado a audiências concretas, e que a segmentação de público é uma habilidade essencial para a comunicação estratégica.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de definir objetivos claros para o conteúdo e identificar o público-alvo, compreendendo que conteúdo eficaz é criado com propósito e direcionado a necessidades específicas, integrando os valores, a marca e a história do time.",
+    sugestoesPais:
+      "- Pergunte: 'Para quem vocês estão criando conteúdo? Quem é o público?'\n- Pergunte: 'O que vocês querem alcançar com o conteúdo do time?'\n- Pergunte: 'Como vocês planejam o conteúdo para diferentes públicos?'\n- Reforce: 'Conhecer o público e definir objetivos claros é o primeiro passo para criar conteúdo com propósito.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de definir objetivos claros para o conteúdo.\n- Desenvolvimento de habilidade para identificar e segmentar o público-alvo.\n- Planejamento de conteúdo direcionado a necessidades específicas.\n- Integração dos valores, marca e história do time no planejamento de conteúdo.\n\nPais/responsáveis:\n- Observação do desenvolvimento de pensamento estratégico e empatia (entender diferentes públicos).\n- Compreensão de que o curso ensina planejamento consciente em vez de criação impulsiva.\n- Material concreto (Guia do Alvo) para apoiar o planejamento de conteúdo.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento estratégico e segmentação de público.\n- Fortalecimento da proposta diferenciada que forma criadores com propósito.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Bússola do Criador' para falar sobre definição de objetivos e público. Enfatizar que conteúdo sem objetivo é como navegar sem rumo. Utilizar exemplos de conteúdo para diferentes públicos.\n\nMediação:\nGuiar os alunos na definição de objetivos SMART (Simples, Mensurável, Alcançável, Relevante, Temporal). Celebrar a empatia e a compreensão de diferentes perspectivas.\n\nSensibilidade:\nObservar alunos que possam ter dificuldade em entender diferentes públicos; oferecer exemplos concretos.\n\nConexão com a família:\nEnviar o Guia do Alvo para os pais, mostrando como os alunos estão planejando conteúdo com propósito.\n\nRegistro:\nRegistrar os objetivos e públicos identificados para orientar a produção de conteúdo.",
+    preRequisitos: "- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O time define 3 objetivos diferentes para seu conteúdo (ex: educar, entreter, conectar).\n- O time identifica 3 públicos diferentes (jogadores, pais, comunidade) e suas necessidades.\n- O aluno planeja um conteúdo para um público específico com objetivo claro.",
+    metodologias:
+      "- Pedagogia do alvo claro\n- Aprendizagem por personas\n- Metáfora da navegação (bússola)\n- Objetivos SMART adaptados\n- Teste antes de lançar",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Bússola do Criador",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao planejamento de conteúdo: 'Conteúdo sem objetivo é como navegar sem bússola'. Apresentação do conceito de objetivo e público. Pergunta: 'Para quem estamos criando conteúdo? O que queremos alcançar?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Identificação de Públicos",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos identificam os públicos do time: 1) Jogadores (o que eles precisam?); 2) Pais (o que eles querem saber?); 3) Comunidade (o que eles valorizam?). Cada grupo cria uma 'persona' para cada público (nome, idade, interesses, necessidades).",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Definição de Objetivos",
+        duracaoMin: 20,
+        descricao:
+          "Com base nos públicos, os alunos definem objetivos para o conteúdo: 1) Objetivo para jogadores (ex: ensinar uma técnica); 2) Objetivo para pais (ex: mostrar o valor educativo do curso); 3) Objetivo para comunidade (ex: fortalecer a imagem do time). Regra: os objetivos devem ser específicos e mensuráveis.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Planejamento de Conteúdo",
+        duracaoMin: 15,
+        descricao:
+          "Com base nos objetivos e públicos, os alunos planejam um conteúdo específico: 1) Público-alvo; 2) Objetivo; 3) Formato (vídeo, post, imagem); 4) Mensagem principal. Os planos são compartilhados e discutidos.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um público que aprendi a entender foi...' e 'Um objetivo que defini para o conteúdo do time foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Modelo de persona para públicos",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Modelo de objetivo SMART",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para planejamento de conteúdo",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Públicos: Identifica 3 públicos diferentes e suas necessidades",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Definição de Objetivos: Define objetivos claros e mensuráveis para cada público",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Planejamento de Conteúdo: Planeja conteúdo direcionado a um público específico com objetivo claro",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um público que aprendeu a entender e um objetivo definido",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-12",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Conteúdo, Diário e Planejamento",
+    codigo: "ADDS12",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (conteúdo, diário, objetivos e público) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de conteúdo com propósito, registro no Diário e planejamento para diferentes públicos, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que o conteúdo, o registro e o planejamento são ferramentas de conexão, reflexão e crescimento.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design (conteúdo, diário, objetivos e público) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como o propósito afetou sua experiência hoje?'\n- Pergunte: 'O que você registrou no Diário sobre esta partida?'\n- Reforce: 'Jogar com propósito significa pensar no que você quer aprender e compartilhar.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como o conteúdo com propósito afeta a experiência do time.\n- Aplicação dos conceitos de planejamento durante a partida.\n- Registro de uma observação sobre a evolução do time.\n\nPais/responsáveis:\n- Observação de que o filho está integrando planejamento e reflexão ao jogo.\n- Percepção de que o curso ensina conteúdo, registro e planejamento como ferramentas integradas.\n- Confiança de que o curso desenvolve habilidades de planejamento e reflexão.\n\nInstituição:\n- Consolidação dos conceitos de conteúdo, diário e planejamento em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como o conteúdo com propósito se manifesta hoje?', 'O que você vai registrar sobre esta partida?'. Reforçar que essa é uma prática livre para experimentar os conceitos.\n\nMediação:\nObservar como os alunos estão refletindo sobre conteúdo, registro e planejamento. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em refletir sobre os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de conteúdo, diário e planejamento de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos durante a partida.",
+    preRequisitos:
+      "- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso\n- ADDS10 - Registrando Evolução com o Diário do Atleta Digital\n- ADDS11 - Objetivo do Conteúdo e Público",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como o conteúdo com propósito afeta a experiência do time.\n- O aluno aplica conceitos de planejamento durante a partida.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Propósito",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar com propósito. Pensem no que vão registrar no Diário e como o conteúdo com propósito pode se manifestar durante o jogo.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'O que você está pensando em registrar?', 'Como o propósito se manifesta?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in do Propósito",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém já pensou no que vai registrar?', 'O propósito esteve presente?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de propósito, registro e planejamento.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como o propósito afetou sua experiência?', 'O que você vai registrar sobre esta partida?', 'Como o planejamento ajudou?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, joguei com propósito quando...' ou 'Vou registrar esta partida porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Propósito: Reflete sobre como o conteúdo com propósito afeta a experiência do time",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Aplicação de Planejamento: Aplica conceitos de planejamento durante a partida",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Registro no Diário: Registra uma reflexão sobre propósito, registro ou planejamento",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-13",
+    tipo: 0,
+    nome: "Roteiro Simples para Vídeo Curto (Começo, Meio, Fim)",
+    codigo: "ADDS13",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento da capacidade de estruturar roteiros simples para vídeos curtos (15-60 segundos) com começo, meio e fim claros, aplicando técnicas de storytelling digital para criar conteúdo envolvente e com propósito para diferentes plataformas, compreendendo que um bom roteiro é a base de um vídeo impactante.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de estruturar um roteiro simples para vídeos curtos (15-60 segundos) com começo (gancho que prende a atenção), meio (conteúdo principal com clareza) e fim (chamada para ação ou reflexão), aplicando técnicas de storytelling digital para criar conteúdo envolvente e com propósito, compreendendo que um bom roteiro é a base de um vídeo impactante, e que a estrutura narrativa transforma um clipe comum em uma experiência memorável para a comunidade, adaptando o roteiro para diferentes plataformas (TikTok, Instagram Reels, YouTube Shorts).",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de estruturar roteiros simples para vídeos curtos (15-60 segundos) com começo, meio e fim claros, aplicando técnicas de storytelling digital para criar conteúdo envolvente e com propósito para diferentes plataformas, compreendendo que um bom roteiro é a base de um vídeo impactante.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre como estruturar um vídeo curto hoje?'\n- Pergunte: 'Me mostre o roteiro que você criou! Como ele começa, meio e termina?'\n- Pergunte: 'Que gancho você usou para prender a atenção?'\n- Reforce: 'Um bom roteiro é a base de um vídeo impactante. Começo, meio e fim bem estruturados fazem toda a diferença.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de estruturar um vídeo curto (15-60 segundos) com começo, meio e fim claros.\n- Desenvolvimento de habilidade para criar 'ganchos' eficazes nos primeiros 3 segundos.\n- Compreensão da importância da estrutura narrativa para engajamento e clareza.\n- Criação de roteiros adaptados para diferentes plataformas digitais.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de comunicação estruturada em projetos digitais.\n- Pontos de conversa específicos para fortalecer diálogo sobre organização de ideias.\n- Material concreto (roteiros) para compreender o processo criativo do filho.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades narrativas através de registros de roteiros.\n- Fortalecimento da proposta diferenciada que forma comunicadores eficazes.\n- Base para criação de conteúdo educativo com impacto real.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mapa da História' para explicar a estrutura de começo, meio e fim. Enfatizar que os primeiros 3 segundos são os mais importantes para prender a atenção. Utilizar exemplos de vídeos curtos eficazes.\n\nMediação:\nDemonstrar a diferença entre um vídeo sem estrutura e um com estrutura clara. Guiar os alunos na criação de ganchos eficazes. Celebrar a criatividade e a clareza.\n\nSensibilidade:\nObservar alunos que possam se sentir bloqueados criativamente; oferecer prompts e exemplos adicionais.\n\nConexão com a família:\nEnviar um exemplo de roteiro criado pelo filho para os pais, explicando a estrutura de começo, meio e fim.\n\nRegistro:\nRegistrar os roteiros criados para o banco de conteúdo do time.",
+    preRequisitos:
+      "- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso\n- ADDS11 - Objetivo do Conteúdo e Público\n- ADDS5 - Cartaz de Scrim/Torneio + Roteiro Mínimo",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno estrutura um roteiro com começo (gancho), meio (conteúdo) e fim (chamada para ação).\n- O aluno identifica o gancho mais eficaz para diferentes tipos de público.\n- O aluno adapta o roteiro para pelo menos 2 plataformas diferentes.",
+    metodologias:
+      "- Pedagogia da estrutura narrativa\n- Aprendizagem por análise de exemplos\n- Metáfora do mapa da história\n- Criação prática de roteiros\n- Adaptação para diferentes plataformas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa da História",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à estrutura de vídeos curtos: 'Todo bom vídeo é uma jornada com começo, meio e fim'. Apresentação dos 3 elementos: 1) Começo (Gancho) - primeiros 3 segundos para prender a atenção (pergunta, estatística, problema); 2) Meio (Conteúdo) - a mensagem principal com clareza e exemplos; 3) Fim (Chamada para Ação) - o que o espectador deve fazer depois (comentar, praticar, compartilhar). Pergunta: 'Que vídeos curtos você já viu que te prenderam do começo ao fim?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Ganchos",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam diferentes tipos de ganchos para vídeos: 1) Pergunta direta ('Você sabia que...?'); 2) Estatística surpreendente ('9 em cada 10 jogadores cometem este erro'); 3) Problema comum ('Já aconteceu de você perder uma scrim por causa disso?'); 4) Visual impactante (mostrar um clipe impressionante primeiro). Cada grupo escolhe o melhor gancho para um vídeo do time e justifica.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Roteiro Completo",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno cria um roteiro completo para um vídeo curto (30 segundos) sobre um tema do time (ex: dica de comunicação, conquista, bastidores). Estrutura: 1) Começo (3s) - gancho; 2) Meio (20s) - conteúdo principal com exemplos; 3) Fim (7s) - chamada para ação. Regra: o roteiro deve ser adaptado para uma plataforma específica (TikTok, Instagram, YouTube).",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Gravação e Feedback",
+        duracaoMin: 15,
+        descricao:
+          "Em duplas, os alunos gravam seus vídeos (ou leem seus roteiros em voz alta) e recebem feedback do parceiro sobre: 1) O gancho prendeu a atenção? 2) O conteúdo foi claro? 3) A chamada para ação foi eficaz? Cada dupla ajusta o roteiro com base no feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um gancho que aprendi a usar foi...' e 'O roteiro que criei pode ser usado para...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de vídeos curtos eficazes (TikTok, Reels, Shorts)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com diferentes tipos de gancho",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de roteiro (começo, meio, fim)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Câmeras ou smartphones para gravação (opcional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Estrutura do Roteiro: Estrutura um roteiro com começo (gancho), meio (conteúdo) e fim (chamada para ação)",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Eficácia do Gancho: Cria um gancho eficaz para prender a atenção nos primeiros 3 segundos",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Adaptação para Plataforma: Adapta o roteiro para pelo menos 2 plataformas diferentes",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um gancho aprendido e o propósito do roteiro criado",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-14",
+    tipo: 0,
+    nome: "Estratégias de Conteúdo: O Papel de Cada Post",
+    codigo: "ADDS14",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Compreensão do papel estratégico de cada post na comunicação do time, com foco em identificar diferentes tipos de conteúdo (educativo, inspiracional, de engajamento, de bastidores) e definir a função de cada um na jornada do público, criando um mix equilibrado de conteúdos para fortalecer a identidade e o relacionamento com a comunidade.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar diferentes papéis que um post pode ter na comunicação do time (educativo, inspiracional, de engajamento, de bastidores, de celebração), compreender a função de cada tipo na jornada do público (despertar interesse, educar, fortalecer vínculo, incentivar ação), e criar um mix equilibrado de conteúdos para uma semana do time, reconhecendo que cada post tem um propósito específico e que a variedade de papéis mantém a comunidade engajada e fortalece a identidade do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Compreensão do papel estratégico de cada post na comunicação do time, com foco em identificar diferentes tipos de conteúdo (educativo, inspiracional, de engajamento, de bastidores) e definir a função de cada um na jornada do público, criando um mix equilibrado de conteúdos para fortalecer a identidade e o relacionamento com a comunidade.",
+    sugestoesPais:
+      "- Pergunte: 'Que tipos de conteúdo vocês planejam para o time?'\n- Pergunte: 'Qual é o papel de cada post na comunicação do time?'\n- Pergunte: 'Por que é importante ter diferentes tipos de conteúdo?'\n- Reforce: 'Assim como um cardápio equilibrado, um feed equilibrado mantém as pessoas interessadas e engajadas.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar diferentes papéis que um post pode ter.\n- Compreensão da função de cada tipo de conteúdo na jornada do público.\n- Criação de um mix equilibrado de conteúdos para o time.\n- Reconhecimento de que cada post tem um propósito específico.\n\nPais/responsáveis:\n- Observação do desenvolvimento de pensamento estratégico sobre comunicação digital.\n- Compreensão de que o curso ensina planejamento de conteúdo com propósito.\n- Material concreto (mix de conteúdo) para acompanhar a estratégia do time.\n\nInstituição:\n- Documentação do desenvolvimento de estratégia de conteúdo.\n- Fortalecimento da proposta diferenciada que ensina comunicação com propósito.\n- Base para criação de conteúdo consistente e variado.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Cardápio de Conteúdo' para falar sobre os diferentes papéis dos posts. Enfatizar que, assim como um cardápio equilibrado tem entradas, prato principal e sobremesa, um feed equilibrado tem diferentes tipos de conteúdo.\n\nMediação:\nGuiar os alunos na identificação dos papéis de posts de times e criadores conhecidos. Celebrar a variedade e o equilíbrio.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados a criar apenas conteúdo 'viral'; reforçar que cada papel tem sua importância.\n\nConexão com a família:\nEnviar o mix de conteúdo criado para os pais, explicando o propósito de cada tipo de post.\n\nRegistro:\nRegistrar os mixes de conteúdo criados para o banco de estratégias do time.",
+    preRequisitos:
+      "- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso\n- ADDS11 - Objetivo do Conteúdo e Público\n- ADDS13 - Roteiro Simples para Vídeo Curto (Começo, Meio, Fim)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente o papel de diferentes tipos de post.\n- O aluno explica a função de cada tipo de conteúdo na jornada do público.\n- O aluno cria um mix equilibrado de conteúdos para uma semana do time.",
+    metodologias:
+      "- Pedagogia do cardápio de conteúdo\n- Aprendizagem por análise de casos\n- Metáfora do cardápio\n- Criação de mix de conteúdo\n- Equilíbrio e variedade",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Cardápio de Conteúdo",
+        duracaoMin: 10,
+        descricao:
+          "Introdução aos papéis do conteúdo: 'Assim como um cardápio equilibrado tem diferentes pratos, um feed equilibrado tem diferentes tipos de post'. Apresentação dos 5 papéis principais: 1) Educativo - ensina algo (dicas, tutoriais); 2) Inspiracional - motiva e emociona (histórias, conquistas); 3) Engajamento - convida à interação (perguntas, enquetes); 4) Bastidores - mostra a humanidade do time (diversão, preparação); 5) Celebração - reconhece conquistas (vitórias, marcos). Pergunta: 'Que tipos de conteúdo você mais gosta de ver de times ou criadores?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Papéis",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam posts de diferentes times/criadores e classificam cada um em uma das 5 categorias. Para cada post, identificam: 1) Qual é o papel principal? 2) Que emoção ou ação ele busca gerar? 3) Como ele se conecta com a identidade do time? Cada grupo compartilha uma descoberta.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Mix de Conteúdo",
+        duracaoMin: 20,
+        descricao:
+          "Cada time cria um mix de conteúdo para uma semana (5 posts), garantindo que cada papel seja representado: 1) Segunda - Educativo; 2) Terça - Engajamento; 3) Quarta - Bastidores; 4) Quinta - Inspiracional; 5) Sexta - Celebração. Para cada post, definem: título, formato, público-alvo e objetivo. Regra: o mix deve refletir a identidade do time.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação do Mix",
+        duracaoMin: 15,
+        descricao:
+          "Cada time apresenta seu mix de conteúdo para o grupo, explicando: 1) Por que escolheram cada papel; 2) Como cada post se conecta com a identidade do time; 3) Que jornada o público fará ao longo da semana. O grupo dá feedback sobre o equilíbrio e a variedade.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O papel de conteúdo que mais gostei de planejar foi...' e 'O mix de conteúdo do time para a semana inclui...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de posts de diferentes times/criadores (impressos ou digitais)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo:
+          "Cartões com os 5 papéis de conteúdo (Educativo, Inspiracional, Engajamento, Bastidores, Celebração)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de mix de conteúdo semanal",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Papéis: Identifica corretamente o papel de diferentes tipos de post",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Compreensão da Função: Explica a função de cada tipo de conteúdo na jornada do público",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Mix de Conteúdo: Cria um mix equilibrado de conteúdos para uma semana do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o papel que mais gostou de planejar e o mix criado",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-15",
+    tipo: 0,
+    nome: "Editorial de Conteúdo: Planejando o que Postar",
+    codigo: "ADDS15",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Desenvolvimento da capacidade de planejar editorialmente o conteúdo do time, com foco em definir temas mensais, criar séries de conteúdo, organizar um fluxo editorial consistente e alinhar o conteúdo com os objetivos estratégicos do time, compreendendo que um planejamento editorial transforma a criação de conteúdo de uma atividade reativa em um processo estratégico e sustentável.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de planejar editorialmente o conteúdo do time, definindo temas mensais, criando séries de conteúdo recorrentes, organizando um fluxo editorial consistente (que inclui planejamento, criação, revisão e publicação), e alinhando o conteúdo com os objetivos estratégicos do time, compreendendo que um planejamento editorial transforma a criação de conteúdo de uma atividade reativa (postar quando dá vontade) em um processo estratégico, sustentável e alinhado com a identidade e os objetivos do time, e que a consistência editorial constrói confiança e reconhecimento com a comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de planejar editorialmente o conteúdo do time, com foco em definir temas mensais, criar séries de conteúdo, organizar um fluxo editorial consistente e alinhar o conteúdo com os objetivos estratégicos do time, compreendendo que um planejamento editorial transforma a criação de conteúdo de uma atividade reativa em um processo estratégico e sustentável.",
+    sugestoesPais:
+      "- Pergunte: 'Qual é o tema mensal do conteúdo do time?'\n- Pergunte: 'Que séries de conteúdo vocês criaram?'\n- Pergunte: 'Como vocês planejam e organizam a criação de conteúdo?'\n- Reforce: 'Planejar o conteúdo com antecedência transforma a criação de uma tarefa estressante em um processo prazeroso e estratégico.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de definir temas mensais de conteúdo para o time.\n- Desenvolvimento de séries de conteúdo recorrentes.\n- Organização de um fluxo editorial consistente.\n- Alinhamento do conteúdo com os objetivos estratégicos do time.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de planejamento e organização.\n- Compreensão de que o curso ensina planejamento editorial estratégico.\n- Material concreto (editorial) para acompanhar a produção do time.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de planejamento editorial.\n- Fortalecimento da proposta diferenciada que ensina estratégia de conteúdo.\n- Base para criação de fluxo editorial sustentável.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mapa Editorial' para falar sobre planejamento de conteúdo. Enfatizar que o planejamento editorial é um mapa que guia a criação de conteúdo, não uma prisão.\n\nMediação:\nGuiar os alunos na definição de temas mensais que se conectam com a identidade e os objetivos do time. Celebrar a consistência e a criatividade.\n\nSensibilidade:\nObservar alunos que possam se sentir sobrecarregados com o planejamento; enfatizar que o editorial é um guia flexível, não uma regra rígida.\n\nConexão com a família:\nEnviar o plano editorial do time para os pais, explicando como ele orienta a produção de conteúdo.\n\nRegistro:\nRegistrar os planos editoriais criados para o banco de estratégias do time.",
+    preRequisitos:
+      "- ADDS14 - Estratégias de Conteúdo: O Papel de Cada Post\n- ADEC3 - Calendário Inteligente de Conteúdo (Anti-Aleatoriedade)\n- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno define um tema mensal para o conteúdo do time.\n- O aluno cria pelo menos 2 séries de conteúdo recorrentes.\n- O aluno organiza um fluxo editorial completo (planejamento, criação, revisão, publicação).",
+    metodologias:
+      "- Pedagogia do mapa editorial\n- Aprendizagem por planejamento estratégico\n- Metáfora do mapa\n- Criação de temas e séries\n- Fluxo editorial sustentável",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa Editorial",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao planejamento editorial: 'O planejamento editorial é o mapa que guia nossa criação de conteúdo, não uma prisão'. Apresentação dos 4 elementos do planejamento editorial: 1) Tema Mensal - o assunto principal do mês; 2) Séries de Conteúdo - formatos recorrentes (ex: 'Dica da Semana', 'Bastidores da Scrim'); 3) Fluxo Editorial - as etapas do processo (planejamento, criação, revisão, publicação); 4) Alinhamento Estratégico - como o conteúdo serve aos objetivos do time. Pergunta: 'Que temas seriam interessantes para o conteúdo do time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Definição de Tema Mensal",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos definem um tema mensal para o conteúdo do time. Considerações: 1) O tema se conecta com a identidade do time? 2) O tema é relevante para o público? 3) O tema permite variedade de formatos? Cada grupo apresenta seu tema e justifica.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Séries de Conteúdo",
+        duracaoMin: 15,
+        descricao:
+          "Com base no tema mensal, cada time cria 2 séries de conteúdo recorrentes: 1) Série 1 - formato educativo/explicativo (ex: 'Dica Técnica da Semana'); 2) Série 2 - formato de bastidores/conexão (ex: 'Momento do Time'). Cada série deve ter: nome, formato, frequência e propósito.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Fluxo Editorial Completo",
+        duracaoMin: 20,
+        descricao:
+          "Cada time organiza seu fluxo editorial completo para o mês: 1) Fase de Planejamento - quando e como planejar os posts; 2) Fase de Criação - quem cria cada tipo de conteúdo; 3) Fase de Revisão - como revisar e ajustar; 4) Fase de Publicação - quando e onde publicar. Regra: o fluxo deve ser realista e respeitar os limites de energia do time.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O tema mensal do time é...' e 'Uma série de conteúdo que criei foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Modelo de planejamento editorial (tema mensal, séries, fluxo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de temas mensais de outros times ou criadores",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo:
+          "Cartões com elementos do fluxo editorial (planejamento, criação, revisão, publicação)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Definição de Tema Mensal: Define um tema mensal para o conteúdo do time",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Criação de Séries: Cria pelo menos 2 séries de conteúdo recorrentes",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Fluxo Editorial: Organiza um fluxo editorial completo (planejamento, criação, revisão, publicação)",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o tema mensal e uma série de conteúdo criada",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ds-aula-16",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Design: Roteiro, Estratégia e Planejamento Editorial",
+    codigo: "ADDS16",
+    cursoId: "c-ad",
+    grupo: "DS",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design e estratégia de conteúdo (roteiro, papéis dos posts, planejamento editorial), com foco em refletir sobre como criar conteúdo a partir da experiência de jogo, planejar a comunicação do time e fortalecer a identidade digital, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de roteiro para vídeos curtos, papéis estratégicos dos posts e planejamento editorial, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a criação de conteúdo é uma extensão natural da identidade do time no ambiente digital, e que o planejamento e a estratégia transformam a comunicação em uma ferramenta poderosa de conexão com a comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de design e estratégia de conteúdo (roteiro, papéis dos posts, planejamento editorial), com foco em refletir sobre como criar conteúdo a partir da experiência de jogo, planejar a comunicação do time e fortalecer a identidade digital, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Que momento do jogo você transformaria em conteúdo?'\n- Pergunte: 'Qual seria o papel deste post na comunicação do time?'\n- Pergunte: 'Como este momento se encaixaria no planejamento editorial?'\n- Reforce: 'A criação de conteúdo é uma extensão natural da identidade do time no ambiente digital.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como criar conteúdo a partir da experiência de jogo.\n- Aplicação dos conceitos de roteiro, papéis dos posts e planejamento editorial.\n- Consciência sobre a importância da estratégia de conteúdo para a identidade digital do time.\n- Conexão entre a experiência de jogo e a produção de conteúdo significativo.\n\nPais/responsáveis:\n- Observação de que o filho está integrando conceitos de criação de conteúdo à prática de jogo.\n- Percepção de que o curso ensina criação de conteúdo com estratégia e propósito.\n- Confiança no desenvolvimento de habilidades de comunicação e planejamento.\n\nInstituição:\n- Consolidação dos conceitos de design e estratégia de conteúdo em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Que momento desta partida seria um bom conteúdo?', 'Qual seria o papel deste post?', 'Como este momento se encaixa no planejamento editorial do time?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre a criação de conteúdo. Celebrar quando perceber a aplicação dos conceitos de roteiro, estratégia e planejamento.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de criação de conteúdo de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos de conteúdo durante a partida.",
+    preRequisitos:
+      "- ADDS13 - Roteiro Simples para Vídeo Curto (Começo, Meio, Fim)\n- ADDS14 - Estratégias de Conteúdo: O Papel de Cada Post\n- ADDS15 - Editorial de Conteúdo: Planejando o que Postar",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como criar conteúdo a partir da experiência de jogo.\n- O aluno identifica um momento da partida que poderia ser transformado em conteúdo.\n- O aluno aplica princípios de planejamento e estratégia de conteúdo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Olhar de Conteúdo",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar com o olhar de quem cria conteúdo. Observem momentos que seriam bons para vídeos curtos, pensem em que papel cada post teria, e como esses momentos se encaixariam no planejamento editorial do time.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Que momento você transformaria em conteúdo?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in do Conteúdo",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém viu um momento que seria um bom conteúdo?', 'Qual seria o papel deste post?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de criação de conteúdo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Que momento você transformaria em conteúdo?', 'Qual seria o papel deste post?', 'Como este momento se encaixaria no planejamento editorial do time?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, vi um momento para conteúdo quando...' ou 'Um post que poderia sair desta partida seria...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Criação de Conteúdo: Reflete sobre como criar conteúdo a partir da experiência de jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Oportunidades: Identifica um momento da partida que poderia ser transformado em conteúdo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Aplicação de Conceitos: Aplica princípios de planejamento e estratégia de conteúdo",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro no Diário: Registra uma reflexão sobre conteúdo a partir da partida",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-01",
+    tipo: 0,
+    nome: "O que é IA e o que ela não é + Como Fazer um Bom Prompt",
+    codigo: "ADIA01",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Introdução ao conceito de Inteligência Artificial, desmistificando mitos comuns e estabelecendo uma compreensão prática do que a IA realmente é e não é, além do desenvolvimento da habilidade de formular prompts claros e eficazes para interagir com ferramentas de IA.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de explicar em linguagem simples o que a Inteligência Artificial realmente é (ferramenta que aprende com padrões) e o que ela não é (consciência, sentimento, pensamento autônomo), distinguindo mitos de fatos sobre IA, e deve ser capaz de formular prompts claros e específicos para interagir com ferramentas de IA, compreendendo que a qualidade do input determina a qualidade do output, e que o uso consciente e crítico da IA é uma habilidade essencial para o Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução ao conceito de Inteligência Artificial, desmistificando mitos comuns e estabelecendo uma compreensão prática do que a IA realmente é e não é, além do desenvolvimento da habilidade de formular prompts claros e eficazes para interagir com ferramentas de IA.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre IA hoje? O que ela é e o que não é?'\n- Pergunte: 'Como você faz uma boa pergunta para a IA?'\n- Pergunte: 'Que mito sobre IA você descobriu que não era verdade?'\n- Reforce: 'Saber perguntar bem é tão importante quanto saber a resposta. A IA é uma ferramenta que responde melhor quando perguntamos com clareza.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão prática do que é IA e o que ela não é.\n- Capacidade de distinguir mitos comuns sobre IA de fatos reais.\n- Habilidade de formular prompts claros e específicos para diferentes tarefas.\n- Percepção de que a qualidade da pergunta determina a qualidade da resposta.\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso aborda IA de forma crítica e não apenas técnica.\n- Compreensão de que o filho está aprendendo a usar IA de forma consciente e ética.\n- Pontos de conversa específicos para fortalecer diálogo sobre tecnologia em casa.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico digital.\n- Fortalecimento da proposta diferenciada que forma atletas tecnologicamente conscientes.\n- Base para criação de parcerias com empresas éticas de IA.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa Mágica' para explicar IA: 'Não é mágica, é uma caixa que aprende com exemplos'. Utilizar analogias concretas (ex: 'IA é como uma calculadora muito avançada, não como um amigo que pensa').\n\nMediação:\nDemonstrar a diferença entre prompts vagos e específicos antes de os alunos praticarem. Celebrar a clareza na comunicação.\n\nSensibilidade:\nObservar sinais de ansiedade ou fascínio excessivo por IA; oferecer uma visão equilibrada.\n\nConexão com a família:\nEnviar um guia visual sobre 'mitos e fatos da IA' para os pais, com exemplos práticos.\n\nRegistro:\nRegistrar os prompts criados pelos alunos para acompanhar a evolução.",
+    preRequisitos: "- ADGP41 - IA como Coach de Gameplay (Leitura de Partidas)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno explica com suas palavras o que é IA e o que ela não é.\n- O aluno identifica pelo menos 2 mitos comuns sobre IA e os corrige.\n- O aluno formula um prompt claro e específico para uma tarefa de IA.",
+    metodologias:
+      "- Pedagogia do desmistificação\n- Aprendizagem por contraste (mito vs. fato)\n- Metáfora da caixa\n- Pensamento crítico aplicado\n- Ética como prática",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa Mágica",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito de IA: 'Esta não é uma caixa mágica com consciência, é uma caixa que aprende com o que você coloca dentro dela'. Apresentação de mitos comuns (ex: 'IA tem sentimentos', 'IA pode pensar sozinha') e fatos reais (ex: 'IA aprende com exemplos', 'IA só faz o que foi programada para fazer'). Pergunta: 'O que você já ouviu sobre IA que pareceu estranho ou exagerado?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Mitos",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos recebem cartões com mitos e fatos sobre IA. Devem classificar cada afirmação como 'mito' ou 'fato' e justificar sua escolha. Exemplos: 'A IA pode sentir emoções' (mito), 'A IA aprende com dados que recebe' (fato). Cada grupo compartilha uma descoberta.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Como Fazer um Bom Prompt",
+        duracaoMin: 20,
+        descricao:
+          "Demonstração prática: o instrutor mostra a diferença entre um prompt vago ('me ajuda') e um prompt específico ('como jogador iniciante, preciso de 3 dicas para melhorar minha mira em jogos de tiro'). Em duplas, os alunos praticam: 1) Transformar perguntas vagas em específicas; 2) Incluir contexto e propósito; 3) Definir formato desejado. Cada dupla compartilha seu melhor prompt.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Testando Prompts",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos testam seus prompts em uma ferramenta de IA simples (ex: ChatGPT, ou simulador). Observam como a qualidade do prompt afeta a qualidade da resposta. Discussão: 'O que funcionou? O que não funcionou?'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um mito sobre IA que eu acreditava era...' e 'Aprendi que para fazer um bom prompt é preciso...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartões com mitos e fatos sobre IA",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de prompts (vagos e específicos)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Ferramenta de IA simples para testes (ou simulador)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Compreensão de IA: Explica com suas palavras o que é IA e o que ela não é",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Mitos: Identifica pelo menos 2 mitos comuns sobre IA e os corrige",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Formulação de Prompts: Formula um prompt claro e específico para uma tarefa",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um mito que acreditava e uma descoberta sobre prompts",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-02",
+    tipo: 0,
+    nome: "IA, Jogos e o Medo dos Pais",
+    codigo: "ADIA02",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Desenvolvimento de empatia pela perspectiva dos pais sobre tecnologia e IA, com foco em identificar preocupações parentais e construir estratégias de comunicação para transformar medos em oportunidades de diálogo construtivo, usando a IA como ferramenta de apoio à mediação.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar 3 preocupações reais dos pais sobre tecnologia e IA, demonstrar empatia pela perspectiva parental através de role-plays estruturados, e estabelecer estratégias específicas para transformar medos em oportunidades de diálogo construtivo, compreendendo que a IA pode ser uma ferramenta de apoio à mediação familiar, e que a transparência e a comunicação clara são fundamentais para construir confiança.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de empatia pela perspectiva dos pais sobre tecnologia e IA, com foco em identificar preocupações parentais e construir estratégias de comunicação para transformar medos em oportunidades de diálogo construtivo, usando a IA como ferramenta de apoio à mediação.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu hoje sobre como conversar sobre IA em família?'\n- Pergunte: 'Como você pode me ajudar a entender melhor como você usa IA?'\n- Pergunte: 'O que você gostaria que eu soubesse sobre a IA que você usa?'\n- Reforce: 'Conversar sobre tecnologia em família é uma forma de construir confiança e entendimento mútuo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar preocupações reais dos pais sobre IA e tecnologia.\n- Desenvolvimento de empatia pela perspectiva parental.\n- Construção de estratégias para transformar medos em diálogos construtivos.\n- Compreensão da IA como ferramenta de apoio à mediação familiar.\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso prepara os filhos para diálogos maduros sobre tecnologia.\n- Pontos de conversa específicos para fortalecer o relacionamento familiar.\n- Redução de medos infundados através de explicações claras e exemplos concretos.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência social e mediação familiar.\n- Fortalecimento da relação família-instituição através de redução de conflitos.\n- Base para criação de eventos familiares integrados.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Ponte entre Mundos' para falar sobre mediação familiar. Enfatizar que compreender o medo dos pais é o primeiro passo para construir confiança.\n\nMediação:\nCriar um ambiente seguro onde os alunos possam compartilhar experiências familiares sem julgamento. Validar que os medos dos pais são reais e merecem respeito.\n\nSensibilidade:\nObservar sinais de ansiedade ou trauma durante role-plays; ter alternativas para alunos com situações familiares complexas.\n\nConexão com a família:\nEnviar um guia visual de 'como conversar sobre IA em família' com frases modelo.\n\nRegistro:\nRegistrar as estratégias de mediação criadas pelos alunos.",
+    preRequisitos: "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 preocupações reais dos pais sobre IA e tecnologia.\n- O aluno demonstra empatia pela perspectiva parental em role-play.\n- O aluno cria uma estratégia para transformar um medo parental em diálogo construtivo.",
+    metodologias:
+      "- Pedagogia da empatia experiencial\n- Aprendizagem por role-play estruturado\n- Metáfora da ponte\n- Estrutura de mediação\n- Voz da criança como mediadora",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Ponte entre Mundos",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à mediação familiar: 'Os medos dos pais sobre IA são reais e merecem ser compreendidos'. Apresentação de preocupações comuns: medo de vício, medo de substituição do pensamento crítico, medo de perda de privacidade. Pergunta: 'O que seus pais já disseram sobre tecnologia que mostrou preocupação?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Preocupações",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam cartas com preocupações parentais comuns: 1) 'Meu filho vai ficar viciado em IA'; 2) 'A IA vai fazer meu filho pensar menos'; 3) 'A IA vai expor meu filho a conteúdos inadequados'. Para cada preocupação, os alunos identificam: 'O que está por trás deste medo?' e 'Como podemos responder com fatos e empatia?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Teatro da Mediação",
+        duracaoMin: 20,
+        descricao:
+          "Role-play em trios (Pai/Mãe, Filho, Observador). Cenário: 'Os pais descobriram que o filho está usando IA para ajudar nos treinos e estão preocupados'. Estrutura: 1) Escuta ativa ('Entendo que você se preocupa porque...'); 2) Tradução cultural ('A IA me ajuda a analisar padrões, não substitui meu pensamento'); 3) Evidências concretas ('Posso mostrar como uso a IA de forma consciente'); 4) Propostas colaborativas ('Podemos combinar limites claros de uso'). Cada trio recebe feedback.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Criação do Manual da Ponte",
+        duracaoMin: 15,
+        descricao:
+          "Com base nas simulações, cada aluno cria seu 'Manual da Ponte' com: 1) Frases para começar a conversa (ex: 'Mãe/Pai, hoje aprendi algo interessante sobre IA'); 2) Respostas para preocupações comuns (ex: 'Sobre vício: o curso ensina limites claros'); 3) Convites para participação (ex: 'Gostaria que vocês vissem como uso IA nos treinos').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma preocupação dos meus pais que entendi melhor foi...' e 'Vou usar esta frase para conversar com eles sobre IA...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartas com preocupações parentais comuns sobre IA",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cenários para role-play",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Manual da Ponte",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Preocupações: Identifica pelo menos 3 preocupações reais dos pais sobre IA e tecnologia",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Empatia Parental: Demonstra empatia pela perspectiva parental em role-play",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Estratégia de Mediação: Cria uma estratégia para transformar um medo em diálogo construtivo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma preocupação parental que entendeu melhor e uma frase para conversar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-03",
+    tipo: 0,
+    nome: "IA não é Muleta (IA não substitui o raciocínio)",
+    codigo: "ADIA03",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Compreensão dos limites éticos e práticos do uso de IA, com foco em distinguir entre usar IA como ferramenta de apoio e usar IA como muleta (substituição do raciocínio), desenvolvendo consciência sobre a importância de manter habilidades humanas essenciais.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de distinguir entre usar IA como ferramenta de apoio (amplificador da inteligência) e usar IA como muleta (substituta do raciocínio), compreendendo os limites éticos e práticos do uso de IA, e desenvolvendo consciência sobre a importância de manter habilidades humanas essenciais como pensamento crítico, criatividade e julgamento, reconhecendo que a IA é uma ferramenta que amplifica, não substitui, a inteligência humana.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Compreensão dos limites éticos e práticos do uso de IA, com foco em distinguir entre usar IA como ferramenta de apoio e usar IA como muleta (substituição do raciocínio), desenvolvendo consciência sobre a importância de manter habilidades humanas essenciais.",
+    sugestoesPais:
+      "- Pergunte: 'Como você decide quando usar IA e quando confiar no seu próprio raciocínio?'\n- Pergunte: 'Que habilidades humanas são mais importantes de manter, mesmo com a IA disponível?'\n- Pergunte: 'O que você colocou no seu Código de Uso Consciente da IA?'\n- Reforce: 'A IA é uma ferramenta que amplia nossa capacidade, mas não substitui o pensamento crítico e a criatividade.'",
+    resultadosEsperados:
+      "Alunos:\n- Distinção clara entre usar IA como ferramenta de apoio e como muleta.\n- Compreensão dos limites éticos do uso de IA.\n- Consciência da importância de manter habilidades humanas essenciais.\n- Capacidade de identificar situações onde o uso de IA é adequado e onde é inadequado.\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso aborda limites éticos no uso de IA.\n- Compreensão de que o filho está aprendendo a usar IA com responsabilidade.\n- Pontos de conversa específicos para fortalecer diálogo sobre uso consciente de tecnologia.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico sobre tecnologia.\n- Fortalecimento da proposta diferenciada que forma usuários conscientes de IA.\n- Prevenção de problemas futuros (dependência tecnológica) através de educação precoce.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Muleta' para explicar uso inadequado de IA. Enfatizar que uma muleta é útil quando você está machucado, mas se você depende dela quando não precisa, seus músculos se enfraquecem.\n\nMediação:\nCriar situações de reflexão onde os alunos precisam decidir se o uso de IA é adequado ou inadequado. Celebrar o pensamento crítico.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados a usar IA para tudo; reforçar que o objetivo é usar IA de forma inteligente, não abusiva.\n\nConexão com a família:\nEnviar um guia visual sobre 'quando usar e quando não usar IA' com exemplos práticos.\n\nRegistro:\nRegistrar as reflexões dos alunos sobre os limites éticos da IA.",
+    preRequisitos: "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno distingue corretamente entre usar IA como ferramenta e como muleta.\n- O aluno identifica pelo menos 2 situações onde o uso de IA é inadequado.\n- O aluno explica por que manter habilidades humanas essenciais é importante.",
+    metodologias:
+      "- Pedagogia da ferramenta consciente\n- Aprendizagem por contraste (uso adequado vs. inadequado)\n- Metáfora da muleta\n- Estudo de caso\n- Reflexão ética",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Muleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito: 'IA é uma ferramenta poderosa, mas não é uma muleta'. Explicação da diferença: 1) Ferramenta = amplia sua capacidade (ex: usar IA para revisar um texto que você escreveu); 2) Muleta = substitui sua capacidade (ex: usar IA para escrever o texto inteiro sem pensar). Pergunta: 'Quando a IA te ajuda a aprender e quando ela te impede de aprender?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Dilemas",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam situações e decidem se o uso de IA é adequado ou inadequado: 1) Usar IA para gerar ideias para um projeto (adequado); 2) Usar IA para escrever um trabalho sem ler o conteúdo (inadequado); 3) Usar IA para analisar seu gameplay (adequado); 4) Usar IA para jogar por você (inadequado). Cada grupo justifica suas decisões.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – O Desafio da Decisão",
+        duracaoMin: 20,
+        descricao:
+          "Simulação onde os alunos enfrentam dilemas: 1) 'Você está com pouco tempo para entregar um projeto. Usa IA para fazer tudo ou pede ajuda ao time?'; 2) 'A IA sugere uma estratégia que parece boa, mas você não entende completamente. Segue a sugestão ou questiona?'; 3) 'Um colega usou IA para criar conteúdo e não contou para ninguém. O que você faz?'. Discussão em grupo sobre cada decisão.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Criação do Código de Uso Consciente",
+        duracaoMin: 15,
+        descricao:
+          "Com base nas reflexões, cada aluno cria seu 'Código de Uso Consciente da IA' com 3 princípios: 1) Quando usar IA; 2) Quando NÃO usar IA; 3) Como verificar se o uso de IA está sendo adequado. Os códigos são compartilhados e discutidos em grupo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma situação onde usaria IA com responsabilidade é...' e 'Uma situação onde NÃO usaria IA é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartões com dilemas de uso de IA",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cenários para simulação",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Código de Uso Consciente",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Distinção Ferramenta vs. Muleta: Distingue corretamente entre usar IA como ferramenta e como muleta",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Uso Inadequado: Identifica pelo menos 2 situações onde o uso de IA é inadequado",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão da Importância das Habilidades Humanas: Explica por que manter habilidades humanas essenciais é importante",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma situação de uso adequado e uma de uso inadequado de IA",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de IA: Conceitos, Mediação e Limites Éticos",
+    codigo: "ADIA04",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre IA (conceitos, mediação familiar e limites éticos) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de IA, as estratégias de mediação familiar e os limites éticos discutidos, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a IA é uma ferramenta que amplifica a inteligência humana quando usada com consciência e responsabilidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre IA (conceitos, mediação familiar e limites éticos) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como você pensou sobre IA durante o jogo hoje?'\n- Pergunte: 'O que você diria para mim sobre o uso da IA nos jogos?'\n- Reforce: 'Usar a IA com consciência e responsabilidade é uma habilidade importante para o futuro.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como os conceitos de IA se aplicam na prática.\n- Aplicação das estratégias de mediação familiar.\n- Consciência dos limites éticos durante o jogo.\n\nPais/responsáveis:\n- Observação de que o filho está integrando conceitos de IA à prática.\n- Percepção de que o curso ensina uso consciente e ético da tecnologia.\n- Confiança no desenvolvimento de habilidades críticas sobre IA.\n\nInstituição:\n- Consolidação dos conceitos de IA em ambiente prático.\n- Observação natural da aplicação dos limites éticos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como você usaria a IA para analisar esta partida?', 'Como você explicaria o uso da IA para seus pais?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre IA, limites éticos e mediação familiar. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de IA de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos de IA durante a partida.",
+    preRequisitos:
+      "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt\n- ADIA2 - IA, Jogos e o Medo dos Pais\n- ADIA3 - IA não é Muleta (IA não substitui o raciocínio)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como os conceitos de IA se aplicam na prática.\n- O aluno demonstra consciência dos limites éticos durante o jogo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com IA Consciente",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar, mas com um convite especial: 'Hoje vocês vão jogar com a IA em mente. Pensem em como a IA pode ajudar vocês, mas também em como usar com responsabilidade.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como a IA poderia ajudar nesta situação?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da IA Consciente",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém pensou em como a IA poderia ajudar?', 'Alguém pensou em limites éticos?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de IA.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como você pensou sobre IA durante o jogo?', 'O que você diria para seus pais sobre o uso da IA?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, pensei sobre IA quando...' ou 'Se meus pais perguntassem sobre IA, eu diria...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Reflexão sobre IA: Reflete sobre como os conceitos de IA se aplicam na prática",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Consciência de Limites: Demonstra consciência dos limites éticos durante o jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Registro no Diário: Registra uma reflexão sobre IA e seu uso consciente",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-05",
+    tipo: 0,
+    nome: "Criação de Scripts, Roteiros e Ideias para Clipes com IA",
+    codigo: "ADIA05",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Desenvolvimento da capacidade de usar IA para criar roteiros, scripts e ideias para clipes e conteúdo do time, compreendendo a IA como catalisadora de criatividade, não como substituta da voz autêntica do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar a IA como ferramenta de brainstorming e estruturação para criar roteiros, scripts e ideias para clipes e conteúdo do time, compreendendo que a IA é uma catalisadora de criatividade, não uma substituta, e que a autenticidade e a voz única do time são o que tornam o conteúdo significativo, devendo sempre revisar, validar e personalizar as sugestões da IA com a identidade e os valores do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de usar IA para criar roteiros, scripts e ideias para clipes e conteúdo do time, compreendendo a IA como catalisadora de criatividade, não como substituta da voz autêntica do time.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você a criar ideias para conteúdo hoje?'\n- Pergunte: 'Me mostre o roteiro que você criou! O que ele conta?'\n- Pergunte: 'Como você adaptou as ideias da IA para o seu time?'\n- Reforce: 'A IA pode ajudar a gerar ideias, mas a sua voz é o que torna o conteúdo único.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de usar IA para gerar ideias e estruturas para conteúdo.\n- Desenvolvimento de habilidade para adaptar sugestões da IA à identidade do time.\n- Criação de roteiros e scripts autênticos com apoio da IA.\n- Compreensão da IA como catalisadora de criatividade, não substituta.\n\nPais/responsáveis:\n- Observação do desenvolvimento da criatividade e do pensamento crítico.\n- Compreensão de que o curso ensina a usar IA de forma criativa e autêntica.\n- Material concreto (roteiros, scripts) para compartilhar com a família.\n\nInstituição:\n- Documentação do processo criativo com apoio de IA.\n- Fortalecimento da proposta diferenciada que ensina uso criativo da tecnologia.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa de Ideias Criativas' para falar sobre o uso da IA no brainstorming. Enfatizar que a IA é um ponto de partida, não o destino final.\n\nMediação:\nDemonstrar como usar a IA para gerar ideias antes de os alunos praticarem. Celebrar a personalização e a autenticidade.\n\nSensibilidade:\nObservar alunos que possam se sentir bloqueados criativamente; oferecer prompts adicionais e apoio.\n\nConexão com a família:\nEnviar um exemplo de roteiro criado com IA para os pais, explicando o processo de personalização.\n\nRegistro:\nRegistrar os roteiros e scripts criados para portfólio do time.",
+    preRequisitos:
+      "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt\n- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso\n- ADDS11 - Objetivo do Conteúdo e Público",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza IA para gerar pelo menos 3 ideias para conteúdo do time.\n- O aluno adapta uma sugestão da IA para refletir a identidade do time.\n- O aluno cria um roteiro ou script curto com apoio da IA.",
+    metodologias:
+      "- Pedagogia da criatividade amplificada\n- Aprendizagem por brainstorm estruturado\n- Metáfora da caixa criativa\n- Personalização e autenticidade\n- Validação coletiva",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa de Ideias Criativas",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao uso da IA para criar conteúdo: 'A IA pode ser uma caixa de ideias que nos ajuda a pensar, mas a nossa voz é o que dá vida ao conteúdo'. Demonstração de como usar a IA para gerar ideias de roteiros. Pergunta: 'Que tipo de conteúdo queremos criar para o time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Geração de Ideias com IA",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos usam IA para gerar ideias para conteúdo do time: 1) Prompt: 'Dê 10 ideias de clipes curtos para um time de e-sports que valoriza [valor do time]'; 2) Selecionam as 3 melhores ideias; 3) Discutem: 'Quais ideias refletem melhor nossa identidade?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Roteiro com IA",
+        duracaoMin: 20,
+        descricao:
+          "Com base nas ideias selecionadas, os alunos criam um roteiro curto para um clipe: 1) Definir o objetivo do conteúdo; 2) Usar IA para estruturar o roteiro (começo, meio, fim); 3) Personalizar com a identidade do time (valores, história). Regra: o roteiro deve ser autêntico e refletir a voz do time.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação do Roteiro",
+        duracaoMin: 15,
+        descricao:
+          "Cada grupo apresenta seu roteiro para os outros, que atuam como público. Feedback sobre: 1) Clareza; 2) Autenticidade; 3) Conexão com a identidade do time. Os grupos refinam seus roteiros com base no feedback.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma ideia que a IA me ajudou a ter foi...' e 'O roteiro que criamos representa nosso time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para brainstorming (ex: ChatGPT)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de prompts para geração de ideias",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de roteiro",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Geração de Ideias com IA: Utiliza IA para gerar pelo menos 3 ideias para conteúdo do time",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Personalização: Adapta uma sugestão da IA para refletir a identidade do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Criação de Roteiro: Cria um roteiro ou script curto com apoio da IA",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma ideia gerada pela IA e o que o roteiro representa",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-06",
+    tipo: 0,
+    nome: "IA para Ideias de Conteúdo do Time",
+    codigo: "ADIA06",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Desenvolvimento da capacidade de usar IA como ferramenta de brainstorming para ideias de conteúdo do time, com foco em gerar, filtrar e adaptar sugestões de forma autêntica e alinhada com a identidade do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar a IA como ferramenta de brainstorming para gerar ideias de conteúdo para o time, filtrando as sugestões com base nos valores e identidade do time, e adaptando-as para refletir a voz autêntica do grupo, compreendendo que a IA é uma amplificadora de ideias, não uma substituta da criatividade humana, e que a autenticidade e o propósito são fundamentais para um conteúdo significativo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de usar IA como ferramenta de brainstorming para ideias de conteúdo do time, com foco em gerar, filtrar e adaptar sugestões de forma autêntica e alinhada com a identidade do time.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você a pensar em ideias para o time hoje?'\n- Pergunte: 'Como você decidiu quais ideias representam melhor o time?'\n- Pergunte: 'Como você adaptou uma ideia da IA para ser autêntica?'\n- Reforce: 'A IA pode ajudar a pensar, mas a autenticidade e os valores do time são o que fazem o conteúdo ser especial.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de usar IA para gerar ideias de conteúdo alinhadas com a identidade do time.\n- Desenvolvimento de habilidade para filtrar sugestões da IA com base em valores.\n- Adaptação de ideias da IA para refletir a voz autêntica do time.\n- Compreensão do papel da IA como amplificadora de criatividade, não substituta.\n\nPais/responsáveis:\n- Observação do desenvolvimento da criatividade e do senso crítico.\n- Compreensão de que o curso ensina a usar IA de forma autêntica e com propósito.\n- Material concreto (plano de conteúdo) para compartilhar com a família.\n\nInstituição:\n- Documentação do processo criativo com apoio de IA.\n- Fortalecimento da proposta diferenciada que ensina uso autêntico da tecnologia.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa de Ideias Sinceras' para falar sobre brainstorming com IA. Enfatizar que a IA amplifica a criatividade, não a substitui.\n\nMediação:\nGuiar os alunos na distinção entre ideias que refletem a identidade do time e ideias que não. Celebrar a autenticidade.\n\nSensibilidade:\nObservar alunos que possam se sentir sobrecarregados com muitas ideias; oferecer técnicas de filtragem.\n\nConexão com a família:\nEnviar um exemplo de brainstorming com IA para os pais, explicando o processo de filtragem e adaptação.\n\nRegistro:\nRegistrar as ideias geradas e adaptadas para o banco de conteúdo do time.",
+    preRequisitos:
+      "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt\n- ADIA5 - Criação de Scripts, Roteiros e Ideias para Clipes com IA\n- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza IA para gerar pelo menos 5 ideias de conteúdo para o time.\n- O aluno filtra as ideias com base nos valores e identidade do time.\n- O aluno adapta uma ideia da IA para refletir a voz autêntica do time.",
+    metodologias:
+      "- Pedagogia da criatividade amplificada\n- Aprendizagem por brainstorm estruturado\n- Filtragem com base em valores\n- Adaptação autêntica\n- Validação coletiva",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa de Ideias Sinceras",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao brainstorming com IA: 'A IA pode nos dar muitas ideias, mas a nossa sinceridade e autenticidade são o que fazem o conteúdo ser significativo'. Demonstração de como gerar ideias com IA. Pergunta: 'Que tipo de conteúdo representa verdadeiramente nosso time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Geração de Ideias com IA",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos usam IA para gerar ideias de conteúdo: 1) Prompt: 'Dê 10 ideias de conteúdo para um time de e-sports que valoriza [valores do time]'; 2) Geram uma lista de ideias; 3) Cada grupo compartilha suas ideias.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Filtragem com Base em Valores",
+        duracaoMin: 15,
+        descricao:
+          "Com base nos valores do time, os alunos filtram as ideias geradas: 1) Quais ideias refletem nossos valores? 2) Quais ideias não refletem? 3) Quais ideias poderiam ser adaptadas? Os grupos selecionam as 3 melhores ideias e justificam.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Adaptação Autêntica",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos escolhem uma ideia e a adaptam para refletir a voz autêntica do time: 1) Como tornar esta ideia única para o nosso time? 2) Que elementos da nossa história podemos incluir? 3) Como tornar esta ideia significativa para nossa comunidade? Os grupos compartilham suas adaptações.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma ideia que a IA gerou e que representa nosso time é...' e 'Uma ideia que filtramos porque não representava nosso time foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para brainstorming",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de prompts",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Lista de valores do time (da aula ADDS6)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Geração de Ideias: Utiliza IA para gerar pelo menos 5 ideias de conteúdo para o time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Filtragem com Base em Valores: Filtra as ideias com base nos valores e identidade do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Adaptação Autêntica: Adapta uma ideia da IA para refletir a voz autêntica do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma ideia que representa o time e uma que foi filtrada",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-07",
+    tipo: 0,
+    nome: "IA para Identidade Visual de Times",
+    codigo: "ADIA07",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Desenvolvimento da capacidade de utilizar IA como ferramenta de inspiração visual para a criação de identidade do time, compreendendo o papel da IA como geradora de referências, não como substituta da identidade única do time, e integrando as inspirações da IA com os valores e história do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar a IA como ferramenta de inspiração para criar elementos visuais para a identidade do time (cores, formas, símbolos, avatares), compreendendo que a IA é uma geradora de referências, não uma substituta da identidade única do time, e integrando as sugestões da IA com os valores, a história e a voz autêntica do time para criar uma identidade visual que seja verdadeiramente representativa e significativa.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de utilizar IA como ferramenta de inspiração visual para a criação de identidade do time, compreendendo o papel da IA como geradora de referências, não como substituta da identidade única do time, e integrando as inspirações da IA com os valores e história do time.",
+    sugestoesPais:
+      "- Pergunte: 'Como a IA ajudou você a criar a identidade visual do time?'\n- Pergunte: 'Me mostre as referências que a IA gerou! Como você as adaptou?'\n- Pergunte: 'O que o símbolo ou avatar do time representa?'\n- Reforce: 'A IA pode ajudar a gerar ideias, mas a identidade única do time é construída por vocês.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de usar IA para gerar referências visuais para a identidade do time.\n- Desenvolvimento de habilidade para integrar sugestões da IA com valores e história do time.\n- Criação de elementos visuais autênticos com inspiração da IA.\n- Compreensão do papel da IA como geradora de inspiração, não substituta.\n\nPais/responsáveis:\n- Observação do desenvolvimento da criatividade e do senso estético.\n- Compreensão de que o curso ensina a usar IA para inspiração, não para cópia.\n- Material visual (paleta, símbolo) para compartilhar com a família.\n\nInstituição:\n- Documentação do processo criativo visual com apoio de IA.\n- Fortalecimento da proposta diferenciada que ensina uso criativo e ético da IA.\n- Material concreto para demonstrar a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Inspirador de Formas' para falar sobre IA na criação visual. Enfatizar que a IA gera referências, mas a identidade única vem do time.\n\nMediação:\nDemonstrar como usar a IA para gerar referências visuais antes de os alunos praticarem. Celebrar a originalidade e a integração com os valores do time.\n\nSensibilidade:\nObservar alunos que possam se sentir limitados artisticamente; oferecer suporte e reforçar que a inspiração da IA é um ponto de partida.\n\nConexão com a família:\nEnviar as referências visuais geradas e os elementos criados para os pais, explicando o processo de inspiração e criação.\n\nRegistro:\nRegistrar as referências geradas pela IA e os elementos visuais criados.",
+    preRequisitos:
+      "- ADIA1 - O que é IA e o que ela não é + Como Fazer um Bom Prompt\n- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS3 - Cor, Emoção e Legibilidade\n- ADDS6 - A Cara do Time: Marca em Linguagem Simples",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza IA para gerar pelo menos 3 referências visuais para o time.\n- O aluno integra uma sugestão da IA com os valores e história do time.\n- O time cria um elemento visual (símbolo ou avatar) com inspiração da IA.",
+    metodologias:
+      "- Pedagogia da inspiração visual\n- Aprendizagem por referências e adaptação\n- Metáfora do inspirador de formas\n- Integração de valores e história\n- Criação autêntica com apoio da IA",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Inspirador de Formas",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao uso da IA para criação visual: 'A IA pode gerar formas, cores e ideias, mas a identidade única do time é o que torna tudo especial'. Demonstração de como usar IA para gerar referências visuais. Pergunta: 'Que tipos de formas, cores e símbolos representam nosso time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Geração de Referências Visuais com IA",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos usam IA para gerar referências visuais: 1) Prompt: 'Gere 5 ideias de símbolos para um time de e-sports que valoriza [valores do time]'; 2) Prompt adicional: 'Sugira uma paleta de cores para um time que transmite [emoções desejadas]'; 3) Cada grupo compartilha as referências geradas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Integração com Valores e História",
+        duracaoMin: 15,
+        descricao:
+          "Com base nas referências geradas pela IA, os alunos: 1) Selecionam as referências que mais se conectam com os valores e história do time; 2) Discutem como adaptar as referências para refletir a identidade única do time; 3) Criam um esboço do símbolo ou avatar final.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Criação do Elemento Visual Final",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos criam a versão final do elemento visual (símbolo ou avatar): 1) Aplicam as cores escolhidas; 2) Incorporam elementos da história do time; 3) Garantem que seja simples e reconhecível. Regra: o elemento final deve ser único e representar o time.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma referência visual que a IA gerou e que inspiramos foi...' e 'O elemento visual criado representa nosso time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Ferramentas de IA para geração de imagens (ex: DALL-E, ou simulador)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de prompts visuais",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Materiais de desenho ou ferramentas digitais",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Lista de valores e história do time",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Geração de Referências Visuais: Utiliza IA para gerar pelo menos 3 referências visuais para o time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Integração com Valores: Integra uma sugestão da IA com os valores e história do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Criação Visual Final: Cria um elemento visual (símbolo ou avatar) com inspiração da IA",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma referência gerada pela IA e o que o elemento visual representa",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ia-aula-08",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de IA: Criação de Conteúdo e Identidade Visual",
+    codigo: "ADIA08",
+    cursoId: "c-ad",
+    grupo: "IA",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre IA (brainstorming, criação de roteiros e identidade visual) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conhecimentos sobre uso de IA para criação de conteúdo e identidade visual, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a IA é uma ferramenta poderosa para a criatividade quando usada com autenticidade e propósito.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre IA (brainstorming, criação de roteiros e identidade visual) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como você pensou em usar IA para criar conteúdo sobre o jogo hoje?'\n- Pergunte: 'Como a identidade visual do time se manifestou?'\n- Reforce: 'A IA pode ajudar a criar conteúdo e identidade visual, mas a autenticidade do time é o que torna tudo especial.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como a IA pode ser usada para criar conteúdo e identidade visual.\n- Aplicação dos conceitos de brainstorming e adaptação com IA.\n- Integração da identidade visual criada com apoio da IA.\n\nPais/responsáveis:\n- Observação de que o filho está integrando IA à criatividade e à identidade visual.\n- Percepção de que o curso ensina uso criativo e autêntico da tecnologia.\n- Confiança no desenvolvimento de habilidades criativas com apoio da IA.\n\nInstituição:\n- Consolidação dos conceitos de IA para criação em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como a IA pode ajudar a criar conteúdo para o time?', 'Como a identidade visual criada com IA se manifesta hoje?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre o uso da IA na criação. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de IA para criação de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos de IA durante a partida.",
+    preRequisitos:
+      "- ADIA5 - Criação de Scripts, Roteiros e Ideias para Clipes com IA\n- ADIA6 - IA para Ideias de Conteúdo do Time\n- ADIA7 - IA para Identidade Visual de Times",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como a IA pode ser usada para criar conteúdo e identidade visual.\n- O aluno aplica os conceitos de brainstorming e adaptação com IA.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com IA Criativa",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar, mas com um convite especial: 'Hoje vocês vão jogar pensando em como a IA pode ajudar a criar conteúdo e identidade visual para o time. Observem como a criatividade e a identidade se manifestam.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como a IA poderia ajudar a criar conteúdo sobre esta partida?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da IA Criativa",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém pensou em como a IA poderia ajudar a criar conteúdo sobre esta partida?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de IA criativa.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como você usaria IA para criar conteúdo sobre esta partida?', 'Como a identidade visual do time se manifestou?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, pensei em usar IA para criar conteúdo sobre...' ou 'A identidade visual do time se manifestou quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre IA Criativa: Reflete sobre como a IA pode ser usada para criar conteúdo e identidade visual",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Aplicação de Conceitos: Aplica os conceitos de brainstorming e adaptação com IA",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Registro no Diário: Registra uma reflexão sobre o uso da IA para criação",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-01",
+    tipo: 0,
+    nome: "Entendendo o Medo dos Pais",
+    codigo: "ADET01",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Desenvolvimento de empatia pela perspectiva dos pais sobre jogos e tecnologia, com foco em identificar preocupações parentais e construir estratégias de comunicação para transformar medos em oportunidades de diálogo construtivo, fortalecendo a relação familiar.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar 3 preocupações reais dos pais sobre jogos e tecnologia, demonstrar empatia pela perspectiva parental através de role-plays estruturados, e estabelecer estratégias específicas para transformar medos em oportunidades de diálogo construtivo, compreendendo que a comunicação aberta e a transparência são fundamentais para construir confiança e fortalecer a relação familiar.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de empatia pela perspectiva dos pais sobre jogos e tecnologia, com foco em identificar preocupações parentais e construir estratégias de comunicação para transformar medos em oportunidades de diálogo construtivo, fortalecendo a relação familiar.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu hoje sobre como conversar sobre jogos em família?'\n- Pergunte: 'Como você pode me ajudar a entender melhor o que você aprende nos jogos?'\n- Pergunte: 'O que você gostaria que eu soubesse sobre os jogos que você joga?'\n- Reforce: 'Conversar sobre jogos em família é uma forma de construir confiança e entendimento mútuo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar preocupações reais dos pais sobre jogos e tecnologia.\n- Desenvolvimento de empatia pela perspectiva parental.\n- Construção de estratégias para transformar medos em diálogos construtivos.\n- Compreensão da importância da transparência para a confiança familiar.\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso prepara os filhos para diálogos maduros sobre tecnologia.\n- Pontos de conversa específicos para fortalecer o relacionamento familiar.\n- Redução de medos infundados através de explicações claras e exemplos concretos.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência social e mediação familiar.\n- Fortalecimento da relação família-instituição através de redução de conflitos.\n- Base para criação de eventos familiares integrados.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Ponte entre Mundos' para falar sobre mediação familiar. Enfatizar que compreender o medo dos pais é o primeiro passo para construir confiança. Validar que os medos dos pais são reais e merecem respeito.\n\nMediação:\nCriar um ambiente seguro onde os alunos possam compartilhar experiências familiares sem julgamento. Oferecer frases modelo para diferentes situações.\n\nSensibilidade:\nObservar sinais de ansiedade ou desconforto durante role-plays; ter alternativas para alunos com situações familiares complexas. Nunca forçar compartilhamento de situações pessoais.\n\nConexão com a família:\nEnviar um guia visual de 'como conversar sobre jogos em família' com frases modelo e sugestões de perguntas abertas.\n\nRegistro:\nRegistrar as estratégias de mediação criadas pelos alunos para acompanhamento.",
+    preRequisitos: "- ADGP10 - Regras, Fair Play e Confiança",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 preocupações reais dos pais sobre jogos e tecnologia.\n- O aluno demonstra empatia pela perspectiva parental em role-play.\n- O aluno cria uma estratégia para transformar um medo parental em diálogo construtivo.",
+    metodologias:
+      "- Pedagogia da empatia experiencial\n- Aprendizagem por role-play estruturado\n- Metáfora da ponte\n- Estrutura de mediação\n- Voz do aluno como mediador",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Ponte entre Mundos",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à mediação familiar: 'Os medos dos pais sobre jogos são reais e merecem ser compreendidos'. Apresentação de preocupações comuns: medo de vício, medo de isolamento, medo de violência, medo de perda de tempo. Pergunta: 'O que seus pais já disseram sobre jogos que mostrou preocupação?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Preocupações",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam cartas com preocupações parentais comuns: 1) 'Meu filho vai viciar em jogos'; 2) 'Meu filho vai se isolar dos amigos'; 3) 'Meu filho vai perder tempo que poderia ser usado nos estudos'. Para cada preocupação, os alunos identificam: 'O que está por trás deste medo?' e 'Como podemos responder com fatos e empatia?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Teatro da Mediação",
+        duracaoMin: 20,
+        descricao:
+          "Role-play em trios (Pai/Mãe, Filho, Observador). Cenário: 'Os pais estão preocupados com o tempo que o filho passa jogando'. Estrutura: 1) Escuta ativa ('Entendo que você se preocupa porque...'); 2) Tradução cultural ('O jogo me ensina trabalho em equipe e comunicação'); 3) Evidências concretas ('Posso mostrar meu Diário do Atleta Digital com reflexões'); 4) Propostas colaborativas ('Podemos combinar horários claros juntos'). Cada trio recebe feedback.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Atividade – Criação do Manual da Ponte",
+        duracaoMin: 15,
+        descricao:
+          "Com base nas simulações, cada aluno cria seu 'Manual da Ponte' com: 1) Frases para começar a conversa (ex: 'Mãe/Pai, hoje aprendi algo interessante no curso'); 2) Respostas para preocupações comuns (ex: 'Sobre vício: o curso ensina limites claros'); 3) Convites para participação (ex: 'Gostaria que vocês vissem nossa próxima scrim').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma preocupação dos meus pais que entendi melhor foi...' e 'Vou usar esta frase para conversar com eles sobre jogos...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Cartas com preocupações parentais comuns sobre jogos",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cenários para role-play",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Manual da Ponte",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Preocupações: Identifica pelo menos 3 preocupações reais dos pais sobre jogos e tecnologia",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Empatia Parental: Demonstra empatia pela perspectiva parental em role-play",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Estratégia de Mediação: Cria uma estratégia para transformar um medo em diálogo construtivo",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma preocupação parental que entendeu melhor e uma frase para conversar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-02",
+    tipo: 0,
+    nome: "Acordos de Tela, Parte 1 (Perspectiva do Aluno)",
+    codigo: "ADET02",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Desenvolvimento da capacidade de propor acordos de tela realistas e pessoais, com foco em autogestão, responsabilidade e negociação com os pais, preparando os alunos para construir acordos saudáveis sobre tempo de tela.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de propor acordos de tela realistas e pessoais baseados em responsabilidades, autoconhecimento e respeito pelos próprios limites, desenvolvendo um 'Passaporte do Acordo' com compromissos específicos e critérios de sucesso, compreendendo que acordos de tela são ferramentas de autonomia e não restrições impostas, e preparando-se para negociar de forma madura com os pais.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de propor acordos de tela realistas e pessoais, com foco em autogestão, responsabilidade e negociação com os pais, preparando os alunos para construir acordos saudáveis sobre tempo de tela.",
+    sugestoesPais:
+      "- Pergunte: 'Como você decidiu seus horários no Passaporte do Acordo?'\n- Pergunte: 'Quais são seus sinais de que precisa de uma pausa?'\n- Pergunte: 'Como posso ajudar você a cumprir seus acordos?'\n- Reforce: 'Acordos de tela não são sobre proibição, são sobre responsabilidade e autonomia.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de propor acordos realistas de tempo de tela baseados em responsabilidades pessoais.\n- Desenvolvimento de sistema pessoal de autogestão com sinais de alerta e rituais de pausa.\n- Redução da resistência a limites através da sensação de protagonismo na definição das regras.\n- Sentimento de confiança e maturidade ao assumir responsabilidade pelo próprio tempo.\n\nPais/responsáveis:\n- Observação concreta da maturidade dos filhos em propor limites pessoais realistas.\n- Redução de conflitos diários através de acordos negociados com os próprios filhos.\n- Pontos de conversa específicos para fortalecer autonomia e responsabilidade.\n\nInstituição:\n- Documentação do desenvolvimento de autonomia e responsabilidade através de acordos pessoais.\n- Fortalecimento da proposta educativa que forma atletas autogestionados.\n- Base para criação de protocolos institucionais de saúde digital.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de responsabilidade em vez de limitação ('meu tempo de qualidade' em vez de 'meu tempo máximo'). Enfatizar que acordos são ferramentas de liberdade, não restrição.\n\nMediação:\nIncentivar acordos desafiadores mas alcançáveis. Ajudar os alunos a identificar sinais corporais reais e específicos. Validar diferentes realidades familiares.\n\nSensibilidade:\nObservar sinais de ansiedade ao discutir autodisciplina; enfatizar progresso gradual, não perfeição imediata. Respeitar realidades familiares diversas.\n\nConexão com a família:\nExplicar que este Passaporte será a base para a construção do acordo final com os pais. Sugerir que os pais perguntem: 'Como você decidiu este horário?'.\n\nRegistro:\nColetar cópias dos Passaportes (com consentimento) para acompanhar implementação e ajustes futuros.",
+    preRequisitos:
+      "- ADGP3 - Rotina de Atleta: Tempo, Estudo e Descanso\n- ADGP13 - Vida Digital Saudável + Energia para Performance\n- ADET1 - Entendendo o Medo dos Pais",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno cria um Passaporte do Acordo com compromissos específicos e realistas.\n- O aluno identifica 3 sinais corporais pessoais de alerta para parar de jogar.\n- O aluno define um sistema de recompensas pessoais para cumprimento dos acordos.",
+    metodologias:
+      "- Pedagogia da autogestão\n- Aprendizagem experiencial (simulação)\n- Metáfora do passaporte\n- Critérios pessoais\n- Recompensas intrínsecas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa do Tempo Consciente",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à autogestão do tempo: 'Nosso tempo é como um território que precisamos explorar com responsabilidade'. Apresentação de um mapa com cinco territórios: Estudos, Família, Corpo, Games, Sonhos. Os alunos recebem 24 moedas de tempo (horas do dia) e devem distribuí-las entre os territórios. Pergunta: 'Quanto tempo você dedica a cada território? Como você sabe se está equilibrado?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Acordos",
+        duracaoMin: 15,
+        descricao:
+          "Em duplas, os alunos trabalham com a metodologia das 3 perguntas: 1) Pergunta do Equilíbrio - 'Que responsabilidades preciso cumprir ANTES de jogar?' (ex: terminar lição, ajudar em casa); 2) Pergunta da Qualidade - 'Como sei que meu jogo está sendo produtivo?' (ex: praticando um fundamento específico, analisando jogadas); 3) Pergunta do Cuidado - 'Que sinais do meu corpo me dizem que preciso parar?' (ex: olhos ardendo, costas doloridas).",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Desafio da Autogestão",
+        duracaoMin: 20,
+        descricao:
+          "Os alunos enfrentam desafios individuais em 3 níveis: 1) Preparação - definir acordo pessoal para simulação (ex: vou jogar por 45 minutos com pausas a cada 15 minutos); 2) Execução - jogar com timer visual e cartas de tentação sorteadas (ex: 'Seu amigo convida para scrim extra - o que você faz?'); 3) Ajuste - analisar o que funcionou e o que precisa ser ajustado no acordo. Cada vez que cumprir seu acordo ou ajustá-lo conscientemente, ganha uma 'moeda de autogestão'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Passaporte do Acordo",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Passaporte com quatro seções: 1) Minhas Responsabilidades Diárias - 3 tarefas que precisa cumprir antes de jogar; 2) Meu Tempo de Qualidade - horários e duração específicos; 3) Meus Sinais de Alerta - 3 sinais pessoais para parar; 4) Meu Sistema de Recompensa - recompensas por cumprir acordos.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Meu maior desafio em autogestão é...' e 'Vou começar ajustando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Mapa do 'Reino do Tempo' com 5 territórios",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Moedas de tempo (fichas coloridas) para distribuição",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Timer visual para simulação",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartas de 'tentação' para o Desafio da Autogestão",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Moldes do Passaporte do Acordo",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Passaporte do Acordo: Cria um Passaporte com compromissos específicos, realistas e mensuráveis",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Sinais Corporais: Identifica 3 sinais corporais pessoais de alerta para parar de jogar",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Autogestão na Simulação: Demonstra capacidade de ajustar comportamento e cumprir acordos durante a simulação",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um desafio de autogestão e um plano para superá-lo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-03",
+    tipo: 0,
+    nome: "O que Seus Pais não Sabem que Você Já Entende",
+    codigo: "ADET03",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Transformação do conhecimento tácito adquirido através dos games em conquistas reconhecíveis e valorizadas pelos pais, desenvolvendo a capacidade de traduzir habilidades técnicas e emocionais em linguagem acessível e significativa para a família.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar e explicar pelo menos 5 habilidades específicas já desenvolvidas através dos games (ex: resolução de problemas, trabalho em equipe, comunicação sob pressão), traduzindo essas habilidades em linguagem acessível para os pais, e construindo um 'Manual do Tradutor Cultural' com frases modelo para diferentes situações, compreendendo que o conhecimento adquirido através dos games tem valor real e transferível para outras áreas da vida.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Transformação do conhecimento tácito adquirido através dos games em conquistas reconhecíveis e valorizadas pelos pais, desenvolvendo a capacidade de traduzir habilidades técnicas e emocionais em linguagem acessível e significativa para a família.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu nos games que eu não sei que você sabe?'\n- Pergunte: 'Como você pode me explicar o que você aprende no jogo de uma forma que eu entenda?'\n- Pergunte: 'Que habilidade você desenvolveu nos games que te ajuda na escola ou em casa?'\n- Reforce: 'O conhecimento que você adquire nos games tem valor real, mesmo que às vezes seja invisível para os outros.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e explicar pelo menos 5 habilidades específicas já desenvolvidas através dos games.\n- Desenvolvimento de confiança para compartilhar conquistas com os pais através de linguagem acessível.\n- Redução da frustração perante incompreensão familiar através de estratégias concretas de tradução.\n- Sentimento de orgulho pela expertise já adquirida que antes era invisível.\n\nPais/responsáveis:\n- Surpresa positiva ao descobrir habilidades complexas que seus filhos desenvolveram sem perceberem.\n- Pontos de conversa específicos para fortalecer diálogo sobre games e desenvolvimento.\n- Redução de preconceitos sobre valor educativo dos games através de exemplos concretos.\n\nInstituição:\n- Documentação do desenvolvimento de inteligência comunicativa através de registros de tradução familiar.\n- Fortalecimento da relação família-instituição através de melhor compreensão do valor do curso.\n- Redução de evasão através do fortalecimento do reconhecimento familiar do programa.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de ponte em vez de defesa ('construir compreensão' em vez de 'convencer os pais'). Enfatizar que a tradução é um ato de respeito e amor.\n\nMediação:\nValidar que toda habilidade tem valor, mesmo que os pais não reconheçam imediatamente. Celebrar cada descoberta.\n\nSensibilidade:\nObservar sinais de ansiedade ou vergonha ao discutir dinâmicas familiares; ter alternativas para alunos com situações complexas.\n\nConexão com a família:\nEnviar uma carta ou vídeo dos alunos explicando uma habilidade que desenvolveram para os pais.\n\nRegistro:\nColetar as frases modelo mais eficazes para criar um banco de estratégias do curso.",
+    preRequisitos:
+      "- ADET1 - Entendendo o Medo dos Pais\n- ADGP7 - Erro, Derrota e Aprendizado\n- ADGP10 - Regras, Fair Play e Confiança",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 5 habilidades específicas desenvolvidas através dos games.\n- O aluno traduz uma habilidade técnica em linguagem acessível para pais.\n- O aluno cria um Manual do Tradutor Cultural com frases modelo para diferentes situações.",
+    metodologias:
+      "- Pedagogia da tradução significativa\n- Aprendizagem por ponte cultural\n- Metáfora da ponte\n- Reconhecimento do conhecimento informal\n- Mediação respeitosa",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Ponte do Conhecimento",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito: 'Nossa ponte não cruza rios, cruza mundos - do jogo para o coração dos nossos pais'. Apresentação de habilidades não reconhecidas: 'Tomar decisões rápidas com informações limitadas', 'Ler mapas e navegar em espaços complexos', 'Comunicar com clareza sob pressão'. Pergunta: 'O que você sabe fazer nos games que seus pais não sabem que você sabe?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Descobertas",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos trabalham com a metodologia das 3 perguntas: 1) Pergunta do Reconhecimento - 'Quando foi a última vez que tomei uma decisão rápida que salvou o time?'; 2) Pergunta da Tradução - transformar habilidades em linguagem familiar (ex: 'Fiz um flanco perfeito' → 'Aprendi a pensar nas consequências antes de agir'); 3) Pergunta da Conexão - relacionar habilidades com valores familiares (ex: 'Como esta habilidade se conecta com o que meus pais sempre me ensinaram sobre responsabilidade?').",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Oficina da Tradução",
+        duracaoMin: 20,
+        descricao:
+          "Role-play em trios com 3 cenários: 1) Pai Preocupado - 'Você precisa explicar por que passou duas horas em uma scrim especial' (começar com valores familiares, conectar com aplicação prática); 2) Pai Indiferente - 'Você precisa explicar por que está orgulhoso de uma conquista' (usar analogias familiares, focar no crescimento pessoal); 3) Pai Entusiasmado - 'Você precisa explicar como usou inglês para se comunicar com jogadores internacionais' (compartilhar história completa, convidar para participação).",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Manual do Tradutor Cultural",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Manual com 3 capítulos: 1) Conquistas Técnicas - frases para traduzir habilidades específicas (ex: 'melhorei minha mira' → 'treinei minha paciência e timing'); 2) Valores Pessoais - conectar com educação familiar (ex: 'O que meu pai sempre me ensinou sobre responsabilidade eu pratico quando...'); 3) Próximos Passos - convites para participação (ex: 'Gostaria de te mostrar uma scrim especial na próxima semana').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma habilidade que meus pais não sabem que eu tenho é...' e 'A frase mais importante que vou usar com meus pais é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo:
+          "Cartas com habilidades não reconhecidas (tomada de decisão, leitura de mapa, comunicação)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cenários para role-play com diferentes perfis de pais",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Manual do Tradutor Cultural",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Habilidades: Identifica pelo menos 5 habilidades específicas desenvolvidas através dos games",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Tradução para Pais: Traduz uma habilidade técnica em linguagem acessível para pais",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Manual do Tradutor: Cria um Manual com frases modelo realistas e aplicáveis",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma habilidade não reconhecida e uma frase para conversar com os pais",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Ética e Telas: Mediação e Autogestão",
+    codigo: "ADET04",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre ética e telas (mediação familiar, acordos de tela, tradução de habilidades) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de mediação familiar, acordos de tela e tradução de habilidades, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a ética e a autogestão são partes fundamentais da jornada do Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre ética e telas (mediação familiar, acordos de tela, tradução de habilidades) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como você aplicou seus acordos de tela hoje?'\n- Pergunte: 'Como você explicaria esta partida para mim?'\n- Reforce: 'A ética e a autogestão são partes importantes da jornada de um Atleta Digital.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como os conceitos de ética e telas se aplicam na prática.\n- Aplicação dos princípios de autogestão durante o jogo.\n- Consciência da importância da comunicação familiar sobre o uso de telas.\n\nPais/responsáveis:\n- Observação de que o filho está aplicando conceitos de autogestão e ética.\n- Percepção de que o curso ensina equilíbrio e responsabilidade.\n- Confiança no desenvolvimento de habilidades de autogestão.\n\nInstituição:\n- Consolidação dos conceitos de ética e telas em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como você está aplicando seus acordos hoje?', 'Como você explicaria esta partida para seus pais?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre ética e autogestão. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de ética e telas de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos durante a partida.",
+    preRequisitos:
+      "- ADET1 - Entendendo o Medo dos Pais\n- ADET2 - Acordos de Tela, Parte 1 (Perspectiva do Aluno)\n- ADET3 - O que Seus Pais não Sabem que Você Já Entende",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como aplicar os conceitos de ética e telas durante o jogo.\n- O aluno demonstra consciência dos limites e acordos definidos.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Ética e Autogestão",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar, mas com um convite especial: 'Hoje vocês vão jogar aplicando os conceitos de ética e telas. Pensem nos acordos que fizeram, nos sinais do corpo e em como explicariam esta partida para seus pais.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como você está aplicando seus acordos hoje?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da Ética e Autogestão",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém lembrou dos sinais do corpo?', 'Alguém pensou em como explicaria esta partida para os pais?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de ética e autogestão.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como você aplicou seus acordos hoje?', 'Como você explicaria esta partida para seus pais?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, apliquei meus acordos quando...' ou 'Se meus pais perguntassem sobre esta partida, eu diria...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Ética e Autogestão: Reflete sobre como aplicar os conceitos de ética e telas durante o jogo",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Consciência de Limites: Demonstra consciência dos limites e acordos definidos",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Registro no Diário: Registra uma reflexão sobre ética, autogestão ou comunicação familiar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-05",
+    tipo: 0,
+    nome: "Games como Ferramenta de Treino, Estudo e Conexão",
+    codigo: "ADET05",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Exploração do valor educativo dos games como ferramentas de treino, estudo e conexão social, com foco em identificar habilidades transferíveis e construir projetos concretos onde os games servem como ponte para aprendizado e relacionamentos significativos.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar e articular pelo menos 3 habilidades específicas aprendidas através dos games que são transferíveis para outras áreas da vida (estudos, relações sociais, projetos), criar um 'Plano de Aplicação Pessoal' com exemplos concretos de como aplicar essas habilidades em contextos reais, e compreender que os games podem ser pontes para aprendizado e conexão quando usados com intencionalidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Exploração do valor educativo dos games como ferramentas de treino, estudo e conexão social, com foco em identificar habilidades transferíveis e construir projetos concretos onde os games servem como ponte para aprendizado e relacionamentos significativos.",
+    sugestoesPais:
+      "- Pergunte: 'Que habilidades você desenvolveu nos games que podem ser úteis na escola ou em casa?'\n- Pergunte: 'Como você pode usar o que aprendeu nos games para ajudar os outros?'\n- Pergunte: 'Qual é o seu Plano de Aplicação Pessoal?'\n- Reforce: 'Os games podem ser ferramentas poderosas de aprendizado e conexão quando usados com intenção.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar e explicar 3 habilidades transferíveis aprendidas nos games.\n- Desenvolvimento de um Plano de Aplicação Pessoal com exemplos concretos.\n- Compreensão de que os games podem ser pontes para aprendizado e conexão.\n- Sentimento de orgulho ao reconhecer o valor real de suas experiências de jogo.\n\nPais/responsáveis:\n- Compreensão prática do valor educativo do curso através de projetos concretos.\n- Observação de aplicação real de habilidades aprendidas nos games em outras áreas da vida.\n- Pontos de conversa específicos para fortalecer diálogo sobre games como ferramenta educacional.\n\nInstituição:\n- Documentação do valor educativo do curso através de projetos e registros de transferência.\n- Fortalecimento da proposta diferenciada que demonstra impacto educacional mensurável.\n- Material comprovado para marketing institucional e captação de novos alunos.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa de Ferramentas do Atleta Digital' para falar sobre habilidades transferíveis. Enfatizar que os games são ferramentas de aprendizado quando usados com intenção.\n\nMediação:\nGuiar os alunos na identificação de habilidades que talvez não reconheçam como valiosas. Celebrar cada descoberta.\n\nSensibilidade:\nObservar sinais de frustração ao articular transferências; oferecer suporte individualizado.\n\nConexão com a família:\nEnviar o Plano de Aplicação Pessoal para os responsáveis com explicação do exercício.\n\nRegistro:\nRegistrar os Planos de Aplicação Pessoal para acompanhamento.",
+    preRequisitos:
+      "- ADET3 - O que Seus Pais não Sabem que Você Já Entende\n- ADGP7 - Erro, Derrota e Aprendizado",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 habilidades transferíveis aprendidas nos games.\n- O aluno cria um Plano de Aplicação Pessoal com exemplos concretos.\n- O aluno explica como os games podem ser ferramentas de conexão e aprendizado.",
+    metodologias:
+      "- Pedagogia da transferência significativa\n- Aprendizagem por projeto\n- Metáfora da caixa de ferramentas\n- Conexão com propósito\n- Voz do aluno",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa de Ferramentas do Atleta Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao conceito: 'Cada partida que jogamos nos dá ferramentas reais para a vida'. Apresentação de conquistas do curso: 'Comuniquei com clareza mesmo sob pressão', 'Aprendi a analisar VODs para melhorar', 'Liderei meu time em momentos críticos'. Pergunta: 'Que ferramenta você já tem na sua caixa?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Habilidades",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos trabalham com a metodologia dos 3 passos: 1) Identificar - jogar mini-jogos que destacam habilidades específicas e responder: 'Que habilidade específica eu usei aqui?'; 2) Transferir - conectar cada habilidade com aplicações fora dos games (ex: 'Tomada de decisão rápida → Decidir qual problema resolver primeiro nos deveres'); 3) Articular - praticar frases para explicar habilidades a não jogadores (ex: 'Nos games, aprendo a tomar decisões rápidas com informações limitadas, igual você faz no seu trabalho').",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Desafio da Conexão",
+        duracaoMin: 20,
+        descricao:
+          "Os times criam projetos em 3 fases: 1) Preparação - escolher um desafio de conexão real (ex: 'Conectar avós e netos através de jogos simples'); 2) Execução - criar protótipo do projeto (objetivo, jogo selecionado, habilidades treinadas, como medir sucesso); 3) Compartilhamento - apresentar projeto em 60 segundos com foco na conexão gerada. Regra: 'O jogo é a ponte, não o destino final da conexão'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Plano de Aplicação Pessoal",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Plano com 3 dimensões: 1) Aplicação Escolar - 'Vou usar minha habilidade de planejamento de scrim para organizar meu tempo de estudo'; 2) Aplicação Familiar - 'Vou ensinar meu pai/mãe um jogo simples usando comunicação clara'; 3) Aplicação Comunitária - 'Posso ensinar inglês básico para colegas usando termos de games'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma habilidade que vou aplicar fora dos games esta semana é...' e 'Os games me ensinaram que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Caixa de ferramentas simbólica (ou cartões com ferramentas)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de habilidades transferíveis",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cartões com desafios de conexão",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Plano de Aplicação Pessoal",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Habilidades: Identifica pelo menos 3 habilidades transferíveis aprendidas nos games",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Plano de Aplicação: Cria um Plano de Aplicação Pessoal com exemplos concretos e realistas",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão do Valor Educativo: Explica como os games podem ser ferramentas de conexão e aprendizado",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma habilidade que vai aplicar e o que os games ensinaram",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-06",
+    tipo: 0,
+    nome: "Games nas Notícias: O que Falam de Você por Aí",
+    codigo: "ADET06",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Desenvolvimento de pensamento crítico sobre a cobertura midiática dos games, com foco em identificar vieses, generalizações e sensacionalismo em notícias sobre jogos, e construir narrativas equilibradas sobre games e e-sports.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar vieses e generalizações em notícias sobre games, analisar criticamente manchetes e reportagens, reconhecendo técnicas sensacionalistas, e construir narrativas equilibradas sobre games e e-sports, desenvolvendo a habilidade de explicar o valor educativo dos games em linguagem acessível a não jogadores, e fortalecendo a autoconfiança para dialogar sobre sua paixão com adultos e comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de pensamento crítico sobre a cobertura midiática dos games, com foco em identificar vieses, generalizações e sensacionalismo em notícias sobre jogos, e construir narrativas equilibradas sobre games e e-sports.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre como as notícias falam sobre games?'\n- Pergunte: 'Como você sabe quando uma notícia está exagerando?'\n- Pergunte: 'Como você explicaria o valor dos games para alguém que só vê notícias negativas?'\n- Reforce: 'Nem tudo que está nas notícias é verdade. Aprender a questionar é uma habilidade importante.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar pelo menos 3 técnicas comuns em notícias sensacionalistas sobre games.\n- Desenvolvimento de vocabulário para explicar de forma equilibrada o que realmente acontece nos games.\n- Redução da vergonha ou defensividade ao falar sobre games com adultos não jogadores.\n- Sentimento de empowerment ao transformar leitor passivo em analista crítico.\n\nPais/responsáveis:\n- Surpresa positiva ao ver que o curso ensina análise crítica de mídia, não apenas defesa dos games.\n- Observação concreta de mudança na capacidade do filho de explicar seus interesses de forma madura.\n- Redução de preconceitos através de contato com narrativas equilibradas criadas pelos próprios alunos.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico através de análises e criações de notícias.\n- Fortalecimento da proposta diferenciada que forma cidadãos midiaticamente alfabetizados.\n- Material concreto para demonstrar impacto social positivo em eventos institucionais.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Lupa da Verdade' para falar sobre análise crítica de notícias. Enfatizar que questionar é diferente de negar - é sobre buscar compreensão mais profunda.\n\nMediação:\nApresentar exemplos de notícias positivas e negativas sem polarização. Ensinar que a verdade geralmente está no meio termo.\n\nSensibilidade:\nObservar sinais de vergonha ou raiva ao discutir notícias negativas; enfatizar que críticas aos games não são críticas pessoais.\n\nConexão com a família:\nEnviar uma cópia do jornal criado pelos alunos para os responsáveis, com carta explicando o exercício crítico.\n\nRegistro:\nRegistrar os jornais criados para portfólio do time.",
+    preRequisitos: "- ADET5 - Games como Ferramenta de Treino, Estudo e Conexão",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 técnicas sensacionalistas em notícias sobre games.\n- O aluno cria uma notícia equilibrada sobre games e e-sports.\n- O aluno explica o valor educativo dos games em linguagem acessível.",
+    metodologias:
+      "- Pedagogia da lupa crítica\n- Aprendizagem pela criação (jornal)\n- Metáfora do filtro\n- Equilíbrio informativo\n- Vozes diversas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Lupa da Verdade",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à análise crítica de notícias: 'Nossa lupa não procura mentiras, mas ajuda a ver além das manchetes'. Apresentação de manchetes reais editadas (positivas e negativas): 'Jogos violentos transformam crianças em agressivas' vs. 'E-sports se torna fonte de renda para jovens talentos'. Pergunta: 'O que esta notícia quer que você sinta? Que informações estão faltando?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Notícias",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam notícias com a metodologia das 3 lentes: 1) Lente dos Fatos - 'O que esta notícia realmente prova com dados?'; 2) Lente das Emoções - 'Esta notícia quer me fazer sentir medo ou curiosidade?'; 3) Lente das Soluções - 'A notícia oferece soluções ou apenas problemas?'. Cada grupo compartilha uma análise.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Oficina do Repórter",
+        duracaoMin: 20,
+        descricao:
+          "Os times criam uma 'edição especial' do jornal da turma com 3 seções: 1) Fatos Reais - escolher um tema e escrever um título equilibrado; 2) Vozes Diversas - incluir depoimentos simulados de diferentes perspectivas (aluna, professor, psicóloga); 3) Soluções Práticas - propor 3 soluções concretas para os desafios identificados. Regra: nenhum extremo - nem romantizar, nem demonizar os games.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Filtro da Mídia",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Filtro com perguntas para diferentes momentos: 1) Antes de Ler/Assistir - 'Qual é o objetivo desta notícia?'; 2) Durante a Leitura - 'Que perspectivas estão faltando?'; 3) Depois do Consumo - 'Esta notícia me fez pensar ou apenas sentir algo forte?'. Cada aluno completa seu filtro pessoal.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma técnica sensacionalista que aprendi a identificar foi...' e 'Vou analisar as notícias sobre games de forma diferente a partir de hoje...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Notícias reais editadas (positivas e negativas) sobre games",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com perguntas críticas para análise de notícias",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Jornal em branco gigante (ou template digital) para criar a edição",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cartões com depoimentos simulados",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Modelo do Filtro da Mídia",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Técnicas Sensacionalistas: Identifica pelo menos 3 técnicas comuns em notícias sensacionalistas",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Criação de Notícia Equilibrada: Cria uma notícia equilibrada sobre games e e-sports",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Explicação do Valor Educativo: Explica o valor educativo dos games em linguagem acessível",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma técnica sensacionalista identificada e uma mudança na análise de notícias",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-07",
+    tipo: 0,
+    nome: "Riscos Reais do Mundo Digital + Segurança Online",
+    codigo: "ADET07",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Desenvolvimento da capacidade de identificar e responder a riscos reais do mundo digital, com foco em segurança online, privacidade, contatos seguros e proteção de dados, construindo um Escudo Digital Coletivo com protocolos de segurança.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar 3 sinais concretos de risco digital em situações reais (mensagens suspeitas, solicitações inadequadas, pressão por dados pessoais), estabelecer protocolos claros de segurança para diferentes tipos de situações, e construir um Escudo Digital Coletivo com estratégias de proteção e responsabilidade mútua, compreendendo que a segurança digital é uma responsabilidade individual e coletiva, e que pedir ajuda é sinal de coragem, não de fraqueza.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de identificar e responder a riscos reais do mundo digital, com foco em segurança online, privacidade, contatos seguros e proteção de dados, construindo um Escudo Digital Coletivo com protocolos de segurança.",
+    sugestoesPais:
+      "- Pergunte: 'Que sinais de alerta você aprendeu a identificar no mundo digital?'\n- Pergunte: 'O que você faria se alguém te pedisse informações pessoais online?'\n- Pergunte: 'Quem são os adultos de confiança que você pode procurar se algo estranho acontecer?'\n- Reforce: 'Segurança digital não é sobre ter medo, mas sobre saber navegar com cuidado e pedir ajuda quando necessário.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar 3 sinais concretos de risco digital.\n- Desenvolvimento de protocolo pessoal claro para diferentes tipos de situações de risco.\n- Redução da ansiedade sobre riscos digitais através de estratégias específicas.\n- Sentimento de segurança ao saber que pode pedir ajuda sem julgamento.\n\nPais/responsáveis:\n- Tranquilidade ao ver que o curso aborda segurança digital de forma prática.\n- Observação concreta de mudança na capacidade do filho de identificar e reportar situações suspeitas.\n- Pontos de conversa específicos para fortalecer segurança digital familiar.\n\nInstituição:\n- Documentação do desenvolvimento de competência digital segura.\n- Fortalecimento da proposta diferenciada que forma cidadãos digitais responsáveis.\n- Prevenção de problemas futuros através de educação precoce.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos de proteção em vez de medo ('sinais para observar' em vez de 'perigos a evitar'). Enfatizar que segurança não é sobre isolamento, mas sobre navegação consciente.\n\nMediação:\nCriar um ambiente seguro para discussão de temas sensíveis. Estabelecer que situações simuladas são fictícias e controladas.\n\nSensibilidade:\nObservar sinais de ansiedade ou desconforto; ter 'espaço calmo' disponível. Nunca usar exemplos reais de situações traumáticas.\n\nConexão com a família:\nEnviar um guia visual com os sinais de alerta e protocolos básicos para implementação em casa.\n\nRegistro:\nRegistrar os protocolos de segurança criados pelos alunos.",
+    preRequisitos:
+      "- ADET6 - Games nas Notícias: O que Falam de Você por Aí\n- ADGP10 - Regras, Fair Play e Confiança",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 3 sinais concretos de risco digital.\n- O aluno cria um protocolo de segurança para diferentes situações.\n- O aluno participa da construção do Escudo Digital Coletivo.",
+    metodologias:
+      "- Pedagogia da segurança sem medo\n- Aprendizagem por simulação segura\n- Metáfora do escudo\n- Sinais concretos\n- Responsabilidade compartilhada",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa dos Perigos Invisíveis",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à segurança digital: 'Nosso mapa não mostra monstros, mas sinais que nos ajudam a navegar com segurança'. Apresentação de situações comuns: 'Alguém que você não conhece pede para adicionar em redes sociais', 'Um jogador mais velho convida para jogar sozinhos', 'Alguém pede fotos pessoais ou informações sobre onde você mora'. Cada aluno recebe uma carta e a classifica com: Verde (Observar), Amarelo (Cuidado), Vermelho (Pausa Imediata).",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Sinais",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos circulam por 3 estações com a metodologia dos 3 Cs: 1) Compreender - analisar exemplos com perguntas ('O que esta mensagem realmente está pedindo?', 'Por que alguém faria este pedido?'); 2) Confirmar - praticar frases para verificar informações ('Vou perguntar para meu treinador antes de decidir'); 3) Comunicar - treinar comunicação clara sobre situações suspeitas ('Preciso de ajuda com uma situação no jogo').",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Missão Segura",
+        duracaoMin: 20,
+        descricao:
+          "Os times enfrentam 3 níveis de missão: 1) Reconhecimento - navegar pelo mundo digital identificando situações seguras e inseguras; 2) Resposta - enfrentar situações simuladas com respostas específicas (ex: 'Alguém pede sua senha' → 'Minhas senhas são só minhas'); 3) Proteção Coletiva - proteger um 'jogador vulnerável' simulado. Regra: usar o botão de chamada de ajuda sempre que sentir desconforto.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Escudo Digital Coletivo",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Escudo em 3 camadas: 1) Camada Pessoal - protocolos individuais ('Se recebo mensagem suspeita: Não respondo, salvo a conversa, chamo adulto'); 2) Camada do Time - responsabilidades mútuas ('Vigiamos uns aos outros durante partidas online'); 3) Camada da Família/Escola - pontes para adultos de confiança ('Temos lista de contatos de emergência').",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um sinal de alerta que aprendi a identificar foi...' e 'Meu protocolo de segurança para situações suspeitas é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Mapa do 'Território Digital' com sinais de alerta",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartas com situações comuns (solicitações, mensagens suspeitas)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Marcadores de alerta coloridos (Verde, Amarelo, Vermelho)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "3 estações configuradas (Compreender, Confirmar, Comunicar)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Coletes com botão de 'chamada de ajuda' simbólico",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Escudo grande de madeira ou papelão para construção coletiva",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Sinais de Risco: Identifica pelo menos 3 sinais concretos de risco digital",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Protocolo de Segurança: Cria um protocolo de segurança para diferentes situações",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Escudo Digital: Participa da construção do Escudo Digital Coletivo com contribuições específicas",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um sinal de alerta identificado e um protocolo de segurança",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-et-aula-08",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Ética e Telas: Ferramenta, Mídia e Segurança",
+    codigo: "ADET08",
+    cursoId: "c-ad",
+    grupo: "ET",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre ética e telas (games como ferramenta, análise de notícias, segurança digital) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de games como ferramenta, análise crítica de mídia e segurança digital, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a ética e a segurança são partes fundamentais da jornada do Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados sobre ética e telas (games como ferramenta, análise de notícias, segurança digital) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como os games podem ser ferramentas de aprendizado hoje?'\n- Pergunte: 'Como você se manteve seguro durante o jogo?'\n- Pergunte: 'Como você explicaria esta experiência para alguém que não entende de games?'\n- Reforce: 'Os games podem ser ferramentas poderosas quando usados com consciência e segurança.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como os games podem ser ferramentas de aprendizado e conexão.\n- Aplicação dos princípios de segurança digital durante o jogo.\n- Consciência crítica sobre a imagem dos games na mídia.\n\nPais/responsáveis:\n- Observação de que o filho está integrando conceitos de ética, ferramenta e segurança.\n- Percepção de que o curso ensina uso consciente e seguro da tecnologia.\n- Confiança no desenvolvimento de habilidades críticas e seguras.\n\nInstituição:\n- Consolidação dos conceitos de ética e telas em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como os games podem ser ferramentas de aprendizado hoje?', 'Como você está aplicando a segurança digital?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre os conceitos. Celebrar quando perceber a aplicação dos princípios.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de ética, ferramenta e segurança de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos durante a partida.",
+    preRequisitos:
+      "- ADET5 - Games como Ferramenta de Treino, Estudo e Conexão\n- ADET6 - Games nas Notícias: O que Falam de Você por Aí\n- ADET7 - Riscos Reais do Mundo Digital + Segurança Online",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como os games podem ser ferramentas de aprendizado e conexão.\n- O aluno demonstra consciência dos princípios de segurança digital durante o jogo.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Ética e Consciência",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar, mas com um convite especial: 'Hoje vocês vão jogar com consciência. Pensem em como os games podem ser ferramentas, como vocês se mantêm seguros e como explicariam esta experiência para alguém que só vê notícias negativas.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como este jogo pode ser uma ferramenta de aprendizado?', 'Como você está se mantendo seguro?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da Ética e Consciência",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém pensou em como este jogo pode ser uma ferramenta?', 'Alguém aplicou princípios de segurança?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de ética, ferramenta e segurança.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como este jogo pode ser uma ferramenta de aprendizado?', 'Como você se manteve seguro?', 'Como você explicaria esta experiência para alguém que não entende de games?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, vi os games como ferramenta quando...' ou 'Apliquei segurança digital quando...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Games como Ferramenta: Reflete sobre como os games podem ser ferramentas de aprendizado e conexão",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Consciência de Segurança Digital: Demonstra consciência dos princípios de segurança digital durante o jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Registro no Diário: Registra uma reflexão sobre ética, ferramenta ou segurança digital",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-en-aula-01",
+    tipo: 0,
+    nome: "Onde o Inglês Aparece nos Jogos? Vocabulário de Partida e Comandos",
+    codigo: "ADEN01",
+    cursoId: "c-ad",
+    grupo: "EN",
+    descricao:
+      "Exploração de onde e como o inglês aparece naturalmente nos jogos, com foco em vocabulário essencial de partida, comandos e status, desenvolvendo a percepção de que o inglês é uma ferramenta de conexão global no universo dos games, não uma barreira.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar contextos específicos onde o inglês aparece em diferentes tipos de jogos (menus, chat, tutoriais, nomes de personagens), reconhecer e utilizar pelo menos 15 termos essenciais em inglês para comunicação durante partidas (localização, ações, status, alertas), e compreender que o inglês é uma ferramenta de conexão global que amplia suas possibilidades como Atleta Digital, naturalmente presente no cotidiano de jogo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Exploração de onde e como o inglês aparece naturalmente nos jogos, com foco em vocabulário essencial de partida, comandos e status, desenvolvendo a percepção de que o inglês é uma ferramenta de conexão global no universo dos games, não uma barreira.",
+    sugestoesPais:
+      "- Pergunte: 'Que palavras em inglês você já usa sem pensar quando joga?'\n- Pergunte: 'Onde o inglês aparece nos jogos que você joga?'\n- Pergunte: 'Como o inglês pode te ajudar a se conectar com jogadores de outros países?'\n- Reforce: 'Saber algumas palavras em inglês para o jogo é o primeiro passo para se comunicar com o mundo!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar pelo menos 10 contextos diferentes onde o inglês aparece naturalmente nos jogos.\n- Desenvolvimento de confiança ao reconhecer termos que já usam intuitivamente.\n- Redução da ansiedade perante situações de comunicação em inglês.\n- Sentimento de curiosidade global ao entender que o inglês abre portas para comunidades internacionais.\n\nPais/responsáveis:\n- Surpresa positiva ao ver que o curso aborda inglês de forma integrada e não como disciplina isolada.\n- Observação concreta do interesse renovado do filho em aprender inglês através de contextos significativos.\n- Pontos de conversa específicos para fortalecer diálogo sobre comunicação global em casa.\n\nInstituição:\n- Documentação do desenvolvimento de competência global através de registros de descobertas linguísticas.\n- Fortalecimento da proposta diferenciada que integra aprendizado linguístico com habilidades técnicas.\n- Base para criação de parcerias internacionais e intercâmbios culturais.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mapa do Tesouro Linguístico' para tornar a exploração do inglês mais lúdica. Enfatizar que o inglês é uma ferramenta de conexão, não uma barreira. Valorizar o que os alunos já sabem intuitivamente.\n\nMediação:\nCriar um ambiente seguro onde errar a pronúncia é parte do processo. Celebrar tentativas, não apenas acertos. Nunca forçar participação oral pública.\n\nSensibilidade:\nObservar sinais de ansiedade linguística. Ter cartões com frases prontas para alunos mais inseguros. Reforçar que o importante é se fazer entender, não ter sotaque perfeito.\n\nConexão com a família:\nEnviar um guia visual de 'inglês do jogo' com termos essenciais para praticar em casa. Incluir dicas de pronúncia simplificada.\n\nRegistro:\nRegistrar o progresso de cada aluno na confiança e no uso de termos em inglês.",
+    preRequisitos: "- ADGP23 - Inglês In-Game I: Callouts Básicos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica contextos onde o inglês aparece em diferentes tipos de jogos.\n- O aluno reconhece e utiliza pelo menos 10 termos essenciais em inglês.\n- O aluno cria um 'Atlas do Jogador Global' com categorias de vocabulário.",
+    metodologias:
+      "- Pedagogia da descoberta contextualizada\n- Aprendizagem por exploração (caça ao tesouro)\n- Metáfora do tesouro linguístico\n- Reconhecimento do conhecimento intuitivo\n- Conexão emocional com termos",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa do Tesouro Linguístico",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à exploração do inglês nos jogos: 'Nosso mapa não mostra apenas territórios, mas tesouros linguísticos que já usamos sem perceber'. Apresentação de termos que os alunos já usam intuitivamente (GG = Good Game, Noob = Beginner, Pause = Pausa). Pergunta: 'Que palavras em inglês você já usa sem pensar?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Aparições",
+        duracaoMin: 15,
+        descricao:
+          "Três estações: 1) Estação Menus - explorar menus de jogos e identificar termos funcionais (Start, Pause, Settings, Health, Ammo); 2) Estação Chat - analisar expressões do chat (GG, Nice, Help, Thanks); 3) Estação Técnica - observar termos em tutoriais e streams (Headshot, Flank, Push, Defend). Cada grupo registra os 5 termos mais frequentes.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Caça ao Tesouro Global",
+        duracaoMin: 20,
+        descricao:
+          "Três fases de caça: 1) Exploração Inicial - encontrar 5 termos em inglês nos menus principais do jogo; 2) Comunicação em Ação - participar de uma partida curta e identificar 8 termos usados na comunicação (Alertas, Coordenação, Celebração); 3) Descoberta Pessoal - encontrar 3 termos que aparecem nos seus jogos favoritos em casa. Cada fase registra os termos encontrados e suas funções.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Atlas do Jogador Global",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Atlas com 4 regiões: 1) Região dos Menus - termos funcionais (Start, Pause, Settings, Health, Ammo); 2) Região das Comunicações - termos por tipo de interação (Hello, Thanks, Help, Retreat, Alert, GG); 3) Região dos Conhecimentos Técnicos - termos avançados (Flank, Push, Defend, Dodge, Jump); 4) Região das Conexões Globais - marcar com selos dos países onde estes termos são usados. Cada aluno completa seu Atlas com: 'Os 3 termos que mais quero aprender na próxima semana são...'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O termo em inglês que mais uso sem perceber é...' e 'O inglês me ajuda a me conectar com...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Mapa do 'Mundo dos Games' com diferentes regiões (menus, chat, tutoriais)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com termos em português e inglês",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Tablets com diferentes jogos para exploração",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Simuladores de chat com situações reais de jogo",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Modelo do Atlas do Jogador Global",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Selos de países para a Região das Conexões Globais",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Contextos: Identifica contextos onde o inglês aparece em diferentes tipos de jogos",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Vocabulário Funcional: Reconhece e utiliza pelo menos 10 termos essenciais em inglês",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Atlas do Jogador Global: Cria um Atlas com categorias de vocabulário e termos organizados",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um termo que usa sem perceber e como o inglês o conecta",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-en-aula-02",
+    tipo: 0,
+    nome: "Listening com Apoio Visual (sem Autoengano)",
+    codigo: "ADEN02",
+    cursoId: "c-ad",
+    grupo: "EN",
+    descricao:
+      "Desenvolvimento da habilidade de compreensão auditiva em inglês com suporte visual adequado, evitando a ilusão de compreensão completa e estabelecendo estratégias específicas para situações onde o áudio não é totalmente compreendido, usando contextos de jogo como ambiente de prática.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de compreender áudios em inglês em contexto de jogo com suporte visual adequado, identificar quando compreende parcialmente uma comunicação e pedir esclarecimentos específicos, e utilizar estratégias de apoio visual (gestos, imagens, contexto) para superar lacunas de compreensão, compreendendo que a escuta ativa é uma habilidade que se desenvolve com prática e que é melhor pedir ajuda do que fingir compreensão.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da habilidade de compreensão auditiva em inglês com suporte visual adequado, evitando a ilusão de compreensão completa e estabelecendo estratégias específicas para situações onde o áudio não é totalmente compreendido, usando contextos de jogo como ambiente de prática.",
+    sugestoesPais:
+      "- Pergunte: 'O que você faz quando não entende algo em inglês no jogo?'\n- Pergunte: 'Que estratégias você usa para entender melhor o que é dito?'\n- Pergunte: 'Como você pede ajuda quando não entende algo?'\n- Reforce: 'Não entender tudo é normal. O importante é saber como pedir ajuda e continuar aprendendo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar quando compreendem parcialmente uma comunicação e pedir esclarecimentos específicos.\n- Desenvolvimento de confiança na escuta através de técnicas concretas de apoio visual.\n- Redução da ansiedade em situações de comunicação auditiva.\n- Sentimento de empowerment ao transformar dificuldade em oportunidade de aprendizado.\n\nPais/responsáveis:\n- Observação concreta da mudança na postura do filho perante situações de não compreensão.\n- Pontos de conversa específicos para fortalecer escuta ativa em casa.\n- Redução de preocupações sobre exposição a conteúdos internacionais.\n\nInstituição:\n- Documentação do desenvolvimento de competência auditiva.\n- Fortalecimento da proposta diferenciada que prepara alunos para ambientes internacionais.\n- Base para parcerias com escolas de idiomas especializadas.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Rede de Compreensão' para falar sobre estratégias de listening. Enfatizar que não entender tudo é normal e que pedir ajuda é sinal de maturidade.\n\nMediação:\nCriar um ambiente onde os alunos se sintam seguros para admitir que não entenderam. Celebrar quando pedem esclarecimento.\n\nSensibilidade:\nObservar sinais de ansiedade durante atividades auditivas; ter versões mais lentas disponíveis.\n\nConexão com a família:\nEnviar um guia de 'estratégias de escuta ativa' para os pais, com sugestões de como praticar em casa.\n\nRegistro:\nRegistrar o progresso de cada aluno na compreensão auditiva.",
+    preRequisitos: "- ADEN1 - Onde o Inglês Aparece nos Jogos? Vocabulário de Partida e Comandos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica quando compreende parcialmente uma comunicação e pede esclarecimento.\n- O aluno utiliza estratégias de apoio visual para compreensão auditiva.\n- O aluno demonstra progressão entre níveis de dificuldade auditiva.",
+    metodologias:
+      "- Pedagogia da escuta consciente\n- Aprendizagem progressiva\n- Metáfora da rede de segurança\n- Escuta emocionalmente inteligente\n- Autenticidade sobre perfeição",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Rede de Compreensão",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à escuta ativa: 'Nossa rede não nos deixa cair quando não entendemos tudo - tem diferentes pontos de apoio'. Apresentação de situações de listening: 'Ouvir um comando rápido durante uma scrim', 'Receber instruções de um jogador internacional', 'Escutar um tutorial em inglês'. Pergunta: 'O que você faz quando não entende algo em inglês no jogo?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Sons",
+        duracaoMin: 15,
+        descricao:
+          "Três níveis de estações: 1) Nível 1 (Com Todo Apoio) - áudios curtos com legendas em inglês e português + imagens do contexto; 2) Nível 2 (Com Apoio Visual) - áudios moderados com ícones visuais e gestos demonstrativos; 3) Nível 3 (Com Contexto) - áudios complexos com contexto visual do jogo sem legendas. Cada grupo registra suas estratégias mais eficazes para cada nível.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Desafio da Escuta Ativa",
+        duracaoMin: 20,
+        descricao:
+          "Três desafios com condições progressivamente desafiadoras: 1) Condições Ideais - comunicar plano inicial com áudio claro; 2) Condições Reais - comunicação durante scrim com áudio parcialmente distorcido (ruído de fundo); 3) Condições Extremas - momento crítico com múltiplas vozes falando ao mesmo tempo. Regras: usar gestos pré-combinados para pedir repetição; identificar a voz do capitão e executar apenas suas instruções.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Mapa de Estratégias de Escuta",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria seu Mapa com 3 regiões: 1) Região da Calma - estratégias para situações de preparação ('Foco nos primeiros 3 segundos', 'Mapear vozes'); 2) Região da Urgência - estratégias para situações críticas ('Filtrar por palavras-chave', 'Ignorar detalhes não essenciais'); 3) Região da Confusão - estratégias para situações de sobrecarga ('Técnica do salvavidas: identificar 1 palavra que entende e construir a partir dela'). Cada aluno completa: 'Minha estratégia mais importante para momentos de urgência é...'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma situação em que minha escuta fez diferença foi...' e 'Vou praticar a estratégia de escuta...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Fones com áudios em diferentes níveis (simples, moderado, complexo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Legendas em inglês e português (para Nível 1)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Ícones visuais e gestos demonstrativos (para Nível 2)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Contexto visual do jogo (para Nível 3)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para o Desafio da Escuta Ativa",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Modelo do Mapa de Estratégias de Escuta",
+      },
+      {
+        id: "material-07",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Compreensão Parcial: Identifica quando compreende parcialmente uma comunicação e pede esclarecimento",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Uso de Estratégias de Apoio Visual: Utiliza estratégias de apoio visual para compreensão auditiva",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Progressão Auditiva: Demonstra progressão entre níveis de dificuldade auditiva",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma situação de escuta e uma estratégia que vai praticar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-en-aula-03",
+    tipo: 0,
+    nome: "Comunicação em Equipe: Calls Mínimas",
+    codigo: "ADEN03",
+    cursoId: "c-ad",
+    grupo: "EN",
+    descricao:
+      "Desenvolvimento da capacidade de comunicação em equipe em inglês com foco em calls mínimas (comunicações curtas e essenciais), compreendendo a importância da clareza e economia de palavras em momentos críticos de jogo, e integrando o inglês com a comunicação em equipe já desenvolvida.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar comunicações mínimas em inglês (calls) para coordenar ações em equipe durante a partida, escolhendo as palavras mais estratégicas e econômicas para transmitir informações críticas, compreendendo que a comunicação em equipe eficaz em inglês não é sobre falar muito, mas sobre dizer a coisa certa no momento certo, integrando com as habilidades de callouts já desenvolvidas em português.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de comunicação em equipe em inglês com foco em calls mínimas (comunicações curtas e essenciais), compreendendo a importância da clareza e economia de palavras em momentos críticos de jogo, e integrando o inglês com a comunicação em equipe já desenvolvida.",
+    sugestoesPais:
+      "- Pergunte: 'Que calls em inglês você usou hoje para se comunicar com o time?'\n- Pergunte: 'Como foi comunicar em inglês com o time?'\n- Pergunte: 'O que é mais fácil: comunicar em português ou em inglês?'\n- Reforce: 'Comunicar em inglês é uma habilidade que abre portas para jogar com pessoas do mundo todo.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de comunicar informações críticas em 5 segundos ou menos com clareza em inglês.\n- Desenvolvimento de discernimento sobre quando falar e quando calar em inglês.\n- Redução da ansiedade em situações competitivas através de calls estruturadas.\n- Conexão entre comunicação clara e resultado emocional do time.\n\nPais/responsáveis:\n- Observação concreta da mudança na capacidade do filho de comunicar-se de forma clara e concisa.\n- Pontos de conversa específicos para fortalecer comunicação familiar.\n- Redução de preocupações sobre comportamentos tóxicos online.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades comunicativas em inglês.\n- Fortalecimento da proposta diferenciada que forma atletas comunicadores globais.\n- Base para protocolos de comunicação em competições internacionais.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Orquestra da Comunicação' para falar sobre calls. Enfatizar que cada voz tem seu momento, mas juntas criam uma sinfonia. Conectar com as calls em português já aprendidas.\n\nMediação:\nModelar as calls de forma clara e em ritmo adequado. Corrigir comunicações muito longas gentilmente.\n\nSensibilidade:\nRespeitar diferentes ritmos de aprendizado na comunicação em inglês. Alunos mais tímidos podem praticar em duplas primeiro.\n\nConexão com a família:\nEnviar um guia de 'calls em inglês para jogos' para os pais.\n\nRegistro:\nRegistrar a evolução da qualidade da comunicação em inglês.",
+    preRequisitos:
+      "- ADEN1 - Onde o Inglês Aparece nos Jogos? Vocabulário de Partida e Comandos\n- ADEN2 - Listening com Apoio Visual (sem Autoengano)\n- ADGP17 - Comunicação Técnica Básica + Callouts",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 5 calls mínimas em inglês durante a simulação.\n- O aluno mantém comunicações em menos de 5 segundos em inglês.\n- O aluno demonstra compreensão de quando usar cada tipo de call.",
+    metodologias:
+      "- Pedagogia orquestral (comunicação como sinfonia)\n- Aprendizagem por restrição produtiva (tempo, número de palavras)\n- Metáfora musical\n- Comunicação emocionalmente inteligente\n- Responsabilidade coletiva",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Orquestra da Comunicação em Inglês",
+        duracaoMin: 10,
+        descricao:
+          "Introdução às calls em inglês: 'Nossa comunicação em inglês é como uma orquestra - cada voz tem seu momento'. Apresentação de calls essenciais: Alertas ('Enemy left!', 'Help!'), Coordenação ('Push now!', 'Fall back!'), Celebração ('GG!', 'Nice!'). Conexão com as calls em português da ADGP17: 'Assim como usamos calls em português, agora vamos aprender a tocá-las em inglês.' Pergunta: 'Que calls em inglês você já usa ou já ouviu?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Chamadas em Inglês",
+        duracaoMin: 15,
+        descricao:
+          "Três estações: 1) Estação Alertas - praticar calls de perigo iminente com limite de 3 palavras ('Enemy left!', 'Help now!'); 2) Estação Coordenação - praticar calls de planejamento com limite de 5 palavras ('Push left in 10!', 'Defend base now!'); 3) Estação Celebração - praticar calls de reconhecimento com limite de 3 palavras ('Good call!', 'Nice play!'). Cada grupo registra as 3 calls mais eficazes.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Sinfonia do Time em Inglês",
+        duracaoMin: 20,
+        descricao:
+          "Três movimentos: 1) Andante (Calmo) - comunicação ilimitada em inglês, mas cada palavra repetida perde pontos; 2) Allegro (Moderado) - microfones desligam automaticamente após 3 segundos; 3) Presto (Rápido) - apenas 10 palavras permitidas por jogador para toda a scrim final. Análise: 'Que tipo de comunicação gerou mais confusão?' e 'Como a comunicação em inglês afetou o resultado emocional?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Protocolo de Calls em Inglês",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu Protocolo com 3 seções: 1) Emergência - calls para situações críticas (máximo 2 palavras); 2) Estratégica - calls para planejamento (máximo 5 palavras); 3) Emocional - calls para manter moral (máximo 3 palavras). Cada aluno completa: 'Minha call mais importante sob pressão em inglês é...'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A call em inglês que mais usei foi...' e 'O inglês me ajuda a me comunicar com o time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores para simulações",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Microfones com timer automático",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cartões com situações para cada estação (Alertas, Coordenação, Celebração)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Quadro de pontuação para a Sinfonia do Time",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Modelo do Protocolo de Calls em Inglês",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Calls em Inglês: Utiliza pelo menos 5 calls mínimas em inglês durante a simulação",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Tempo de Comunicação: Mantém comunicações em menos de 5 segundos em inglês",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Clareza e Inteligibilidade: As comunicações em inglês são compreensíveis e eficazes",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma call em inglês que usou e como o inglês ajuda a comunicação",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-en-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Inglês: Vocabulário, Listening e Calls",
+    codigo: "ADEN04",
+    cursoId: "c-ad",
+    grupo: "EN",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de inglês (vocabulário, listening, calls mínimas) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, o vocabulário em inglês, as estratégias de listening e as calls mínimas, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que o inglês é uma ferramenta natural de comunicação global no universo dos games.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de inglês (vocabulário, listening, calls mínimas) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Que palavra em inglês você usou hoje no jogo?'\n- Pergunte: 'Como foi se comunicar em inglês com o time?'\n- Pergunte: 'O que você entendeu em inglês durante o jogo?'\n- Reforce: 'Usar o inglês no jogo é uma forma natural de aprender e se conectar com o mundo.'",
+    resultadosEsperados:
+      "Alunos:\n- Aplicação espontânea de vocabulário em inglês durante a partida.\n- Uso de estratégias de listening para compreensão de comunicações.\n- Utilização de calls mínimas em inglês para coordenar o time.\n- Percepção do inglês como ferramenta natural de comunicação global.\n\nPais/responsáveis:\n- Observação de que o filho está integrando o inglês à prática de jogo.\n- Percepção de que o curso ensina inglês de forma contextualizada e natural.\n- Confiança de que o curso desenvolve habilidades linguísticas práticas.\n\nInstituição:\n- Consolidação do inglês como ferramenta de comunicação global em ambiente prático.\n- Observação natural da aplicação dos conceitos linguísticos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Que palavra em inglês você usou hoje?', 'Como você entendeu a comunicação em inglês?'.\n\nMediação:\nObservar como os alunos estão aplicando o inglês. Celebrar quando perceber uso espontâneo. Não corrigir excessivamente durante o fluxo do jogo.\n\nSensibilidade:\nEstar atento a alunos que possam ter ansiedade com o uso de inglês; reforçar que a prática leva à fluência.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou o uso do inglês de forma prática.\n\nRegistro:\nRegistrar a aplicação do inglês durante a partida.",
+    preRequisitos:
+      "- ADEN1 - Onde o Inglês Aparece nos Jogos? Vocabulário de Partida e Comandos\n- ADEN2 - Listening com Apoio Visual (sem Autoengano)\n- ADEN3 - Comunicação em Equipe: Calls Mínimas",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza pelo menos 3 termos em inglês durante a partida.\n- O aluno demonstra compreensão de comunicações em inglês durante o jogo.\n- O aluno utiliza pelo menos 2 calls em inglês para coordenar o time.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo do uso do inglês",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Inglês",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar usando o inglês como ferramenta natural. Usem o vocabulário que aprenderam, pratiquem a escuta e comuniquem-se com calls em inglês. Não se preocupem com a perfeição - o importante é se fazer entender.'",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente, utilizando inglês quando possível. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Que palavra em inglês você usou?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in do Inglês",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Quem usou uma palavra em inglês?', 'Quem entendeu uma comunicação em inglês?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao: "Segundo bloco de jogo livre. Instrutor observa a aplicação do inglês.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Que palavra em inglês você usou e funcionou?', 'Como foi entender comunicações em inglês?', 'Que call em inglês ajudou o time?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, usei o inglês quando...' ou 'Uma palavra em inglês que usei e funcionou foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Vocabulário em Inglês: Utiliza pelo menos 3 termos em inglês durante a partida",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Compreensão Auditiva: Demonstra compreensão de comunicações em inglês durante o jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Calls em Inglês: Utiliza pelo menos 2 calls em inglês para coordenar o time",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro no Diário: Registra uma reflexão sobre o uso do inglês durante o jogo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-pd-aula-01",
+    tipo: 0,
+    nome: "Comunidade: Como Criar Fãs (não só seguidores)",
+    codigo: "ADPD01",
+    cursoId: "c-ad",
+    grupo: "PD",
+    descricao:
+      "Desenvolvimento da compreensão sobre a diferença entre ter seguidores e construir uma comunidade verdadeira, com foco em engajamento autêntico, relacionamento significativo com o público e estratégias para transformar espectadores em fãs e defensores do time, compreendendo que comunidade se constrói com consistência, valor e conexão humana, não apenas com números.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de compreender a diferença entre ter seguidores (números) e construir uma comunidade (relacionamentos), identificando estratégias para engajar autenticamente o público, transformando espectadores em fãs e defensores do time, através de consistência, valor entregue e conexão humana, entendendo que uma comunidade forte é o ativo mais valioso para um time de e-sports e que a construção de comunidade é um processo de longo prazo, não um resultado imediato.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da compreensão sobre a diferença entre ter seguidores e construir uma comunidade verdadeira, com foco em engajamento autêntico, relacionamento significativo com o público e estratégias para transformar espectadores em fãs e defensores do time, compreendendo que comunidade se constrói com consistência, valor e conexão humana, não apenas com números.",
+    sugestoesPais:
+      "- Pergunte: 'O que é uma comunidade? Como você pode construir uma em torno do time?'\n- Pergunte: 'O que faz alguém ser um fã de verdade, não apenas um seguidor?'\n- Pergunte: 'Como você pode cultivar relacionamentos com as pessoas que acompanham o time?'\n- Reforce: 'Uma comunidade verdadeira não se constrói com números, mas com relacionamentos e consistência.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão da diferença entre seguidores e comunidade verdadeira.\n- Identificação de estratégias para engajamento autêntico do público.\n- Desenvolvimento de abordagem para transformar espectadores em fãs do time.\n- Percepção de que comunidade se constrói com consistência, valor e conexão humana.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades sociais e de relacionamento do filho.\n- Compreensão de que o curso ensina construção de comunidade, não apenas números.\n- Pontos de conversa específicos para fortalecer diálogo sobre relacionamentos autênticos.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de construção de comunidade.\n- Fortalecimento da proposta diferenciada que forma atletas com visão de longo prazo.\n- Base para criação de estratégias de engajamento comunitário.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Jardim da Comunidade' para falar sobre construção de relacionamentos. Enfatizar que uma comunidade verdadeira é como um jardim - precisa ser cultivada com cuidado e consistência.\n\nMediação:\nGuiar os alunos na distinção entre métricas (seguidores, likes) e relacionamentos reais. Celebrar histórias de comunidades que se formaram em torno de times.\n\nSensibilidade:\nObservar alunos que possam se sentir pressionados a ter muitos seguidores; reforçar que qualidade é mais importante que quantidade.\n\nConexão com a família:\nEnviar um guia sobre 'como construir comunidade' para os pais, mostrando como os mesmos princípios se aplicam a relacionamentos familiares e sociais.\n\nRegistro:\nRegistrar os planos de construção de comunidade criados pelos alunos.",
+    preRequisitos:
+      "- ADDS9 - O que é Conteúdo e por que o Time Precisa Disso\n- ADDS11 - Objetivo do Conteúdo e Público",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno explica a diferença entre seguidores e comunidade verdadeira.\n- O aluno identifica 3 estratégias para engajamento autêntico do público.\n- O aluno cria um plano simples para transformar espectadores em fãs do time.",
+    metodologias:
+      "- Pedagogia da comunidade\n- Aprendizagem por contraste (seguidor vs. fã)\n- Metáfora do jardim\n- Estratégias de engajamento\n- Planejamento de longo prazo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Jardim da Comunidade",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à construção de comunidade: 'Uma comunidade verdadeira é como um jardim - precisa ser cultivada com cuidado e consistência'. Apresentação da diferença entre seguidores (números) e comunidade (relacionamentos). Exemplos: seguidor que nunca interage vs. fã que defende o time. Pergunta: 'O que faz alguém ser um fã de verdade do seu time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Análise de Comunidades",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam exemplos de comunidades (de times, criadores de conteúdo, marcas) e identificam: 1) O que faz uma comunidade ser forte; 2) Como os membros interagem; 3) O que mantém as pessoas engajadas. Cada grupo compartilha uma descoberta.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Plano de Comunidade",
+        duracaoMin: 20,
+        descricao:
+          "Com base na análise, cada time cria um 'Plano de Comunidade' com 4 elementos: 1) Valores da Comunidade - o que une as pessoas; 2) Canais de Conexão - onde e como se conectar; 3) Rituais de Engajamento - momentos especiais para a comunidade (ex: 'scrims abertas', 'bate-papos com o time'); 4) Como Celebrar a Comunidade - reconhecer e valorizar os fãs. Regra: o plano deve focar em relacionamentos, não em números.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Conectando com a Comunidade",
+        duracaoMin: 15,
+        descricao:
+          "Simulação onde os alunos praticam interagir com a comunidade: 1) Responder a um comentário de um fã; 2) Agradecer publicamente a um apoiador; 3) Convidar a comunidade para participar de um evento do time. Cada grupo apresenta uma interação e recebe feedback sobre autenticidade e conexão.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A diferença entre um seguidor e um fã é...' e 'Uma ideia para construir comunidade que vou levar adiante é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de comunidades fortes (times, criadores de conteúdo)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com perguntas para análise de comunidade",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo do Plano de Comunidade",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Cenários para simulação de interação com comunidade",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Compreensão da Diferença: Explica a diferença entre seguidores e comunidade verdadeira",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Estratégias de Engajamento: Identifica 3 estratégias para engajamento autêntico do público",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Plano de Comunidade: Cria um plano para transformar espectadores em fãs do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário a diferença entre seguidor e fã e uma ideia para construir comunidade",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-pd-aula-02",
+    tipo: 0,
+    nome: "Erros que Matam Times Pequenos nas Redes",
+    codigo: "ADPD02",
+    cursoId: "c-ad",
+    grupo: "PD",
+    descricao:
+      "Identificação e análise dos erros mais comuns que times pequenos cometem nas redes sociais, com foco em estratégias para evitar esses erros e construir uma presença digital autêntica, consistente e eficaz, compreendendo que a reputação digital é um ativo valioso que precisa ser construído com cuidado e intencionalidade.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar pelo menos 4 erros comuns que times pequenos cometem nas redes sociais (ex: inconsistência, falta de propósito, imitação de times grandes, negligência com a comunidade), compreender o impacto desses erros na reputação e no engajamento do time, e desenvolver estratégias para evitá-los, construindo uma presença digital autêntica, consistente e eficaz, alinhada com a identidade e os valores do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Identificação e análise dos erros mais comuns que times pequenos cometem nas redes sociais, com foco em estratégias para evitar esses erros e construir uma presença digital autêntica, consistente e eficaz, compreendendo que a reputação digital é um ativo valioso que precisa ser construído com cuidado e intencionalidade.",
+    sugestoesPais:
+      "- Pergunte: 'Que erros times pequenos cometem nas redes sociais?'\n- Pergunte: 'Como você pode evitar esses erros na presença digital do seu time?'\n- Pergunte: 'O que é mais importante: ter muitos posts ou posts com propósito?'\n- Reforce: 'Todo time comete erros nas redes. O importante é aprender com eles e melhorar continuamente.'",
+    resultadosEsperados:
+      "Alunos:\n- Identificação de pelo menos 4 erros comuns em redes sociais de times pequenos.\n- Compreensão do impacto desses erros na reputação e engajamento.\n- Desenvolvimento de estratégias para evitar esses erros.\n- Construção de uma presença digital autêntica e consistente.\n\nPais/responsáveis:\n- Observação do desenvolvimento de pensamento crítico sobre presença digital.\n- Compreensão de que o curso ensina construção de reputação digital responsável.\n- Pontos de conversa específicos para fortalecer diálogo sobre uso consciente das redes.\n\nInstituição:\n- Documentação do desenvolvimento de pensamento crítico sobre redes sociais.\n- Fortalecimento da proposta diferenciada que forma atletas com presença digital responsável.\n- Prevenção de problemas futuros (reputação negativa) através de educação precoce.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Manual do Sobrevivente Digital' para falar sobre como evitar erros. Enfatizar que todo time pequeno comete erros, mas o importante é aprender com eles.\n\nMediação:\nApresentar exemplos reais (editados) de erros comuns sem identificar times específicos. Criar um ambiente seguro para discussão.\n\nSensibilidade:\nObservar alunos que possam se sentir expostos por erros que já cometeram; reforçar que errar faz parte do aprendizado.\n\nConexão com a família:\nEnviar um guia sobre 'erros comuns nas redes' para os pais, com dicas para conversar sobre o tema em casa.\n\nRegistro:\nRegistrar os planos de correção criados pelos alunos.",
+    preRequisitos:
+      "- ADPD1 - Comunidade: Como Criar Fãs (não só seguidores)\n- ADDS6 - A Cara do Time: Marca em Linguagem Simples",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica pelo menos 4 erros comuns em redes sociais de times pequenos.\n- O aluno explica o impacto de cada erro na reputação do time.\n- O aluno cria um plano para evitar os erros mais comuns.",
+    metodologias:
+      "- Pedagogia do aprendizado com erros\n- Aprendizagem por análise de casos\n- Metáfora do manual\n- Estratégias de correção\n- Construção de reputação",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Manual do Sobrevivente Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução aos erros comuns nas redes: 'Todo time pequeno comete erros, mas aprender com eles é o que faz a diferença'. Apresentação de erros comuns: 1) Inconsistência - postar com frequência irregular; 2) Falta de Propósito - postar sem objetivo claro; 3) Imitação - copiar times grandes em vez de ser autêntico; 4) Negligência - ignorar a comunidade. Pergunta: 'Que erros você já viu times cometerem nas redes?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação dos Erros",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos analisam 4 estações com exemplos de erros: 1) Estação da Inconsistência - posts irregulares; 2) Estação da Falta de Propósito - posts sem objetivo; 3) Estação da Imitação - conteúdos copiados; 4) Estação da Negligência - comentários ignorados. Cada grupo identifica o erro, seu impacto e como poderia ser corrigido. Cada grupo compartilha uma análise.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Corrigindo Erros",
+        duracaoMin: 20,
+        descricao:
+          "Cada time recebe um 'perfil digital' com erros e deve corrigi-lo: 1) Identificar os erros no perfil; 2) Propor correções específicas; 3) Criar um exemplo de post corrigido (uma semana de posts). Exemplo: 'O time posta uma vez por semana sem propósito. Correção: postar 3 vezes por semana com um objetivo claro.' Os times apresentam suas correções.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Checklist de Sobrevivência Digital",
+        duracaoMin: 15,
+        descricao:
+          "Cada time cria um 'Checklist de Sobrevivência Digital' com 10 itens para evitar os erros mais comuns. Exemplos: 1) 'Postei com propósito esta semana?' 2) 'Minha comunidade se sentiu ouvida?' 3) 'Fui autêntico ou apenas imitei?' 4) 'Mantive consistência na minha presença?' Cada aluno escolhe 3 itens para aplicar na próxima semana.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um erro que aprendi a evitar é...' e 'Uma correção que vou aplicar na presença digital do time é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de erros comuns em redes (editados)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "4 estações configuradas com exemplos de erros",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Perfis digitais simulados para correção",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Checklist de Sobrevivência Digital",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Erros: Identifica pelo menos 4 erros comuns em redes sociais de times pequenos",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Compreensão do Impacto: Explica o impacto de cada erro na reputação do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Plano de Correção: Cria um plano para evitar os erros mais comuns",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um erro a ser evitado e uma correção a ser aplicada",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-pd-aula-03",
+    tipo: 0,
+    nome: "Presença em Vídeo: Postura, Voz e Expressão",
+    codigo: "ADPD03",
+    cursoId: "c-ad",
+    grupo: "PD",
+    descricao:
+      "Desenvolvimento da presença em vídeo para conteúdos digitais, com foco em postura corporal, expressão facial, controle da voz, e comunicação visual, compreendendo que a presença em vídeo é uma habilidade que se desenvolve com prática e autenticidade, e que a autenticidade é mais importante que a perfeição técnica.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de demonstrar presença em vídeo com postura corporal adequada (aberta e confiante), expressão facial que comunica emoção, e controle da voz (tom, volume, ritmo) para transmitir autenticidade e engajamento, compreendendo que a presença em vídeo é uma habilidade que se desenvolve com prática, que a autenticidade é mais importante que a perfeição, e que pequenos ajustes na postura, voz e expressão podem transformar a conexão com o público.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da presença em vídeo para conteúdos digitais, com foco em postura corporal, expressão facial, controle da voz, e comunicação visual, compreendendo que a presença em vídeo é uma habilidade que se desenvolve com prática e autenticidade, e que a autenticidade é mais importante que a perfeição técnica.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre presença em vídeo hoje?'\n- Pergunte: 'Como você se sentiu em frente à câmera?'\n- Pergunte: 'O que você vai praticar para melhorar sua presença em vídeo?'\n- Reforce: 'A autenticidade é mais importante que a perfeição. Quem assiste quer ver você, não uma versão perfeita.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de demonstrar postura corporal adequada para vídeo.\n- Desenvolvimento de expressão facial que comunica emoção.\n- Controle da voz (tom, volume, ritmo) para transmissão de autenticidade.\n- Compreensão de que a autenticidade é mais importante que a perfeição técnica.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de comunicação e autoconfiança.\n- Compreensão de que o curso ensina presença em vídeo como habilidade de comunicação.\n- Pontos de conversa específicos para fortalecer autoconfiança e autenticidade.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de comunicação visual.\n- Fortalecimento da proposta diferenciada que forma comunicadores autênticos.\n- Base para produção de conteúdo em vídeo do time.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Palco Digital' para falar sobre presença em vídeo. Enfatizar que a autenticidade é mais importante que a perfeição técnica.\n\nMediação:\nCriar um ambiente seguro para prática em vídeo. Celebrar o progresso, não apenas a perfeição. Oferecer feedback construtivo e gentil.\n\nSensibilidade:\nObservar alunos com ansiedade em frente à câmera; oferecer prática em duplas primeiro. Nunca forçar participação.\n\nConexão com a família:\nEnviar um guia sobre 'presença em vídeo' para os pais, com dicas para prática em casa.\n\nRegistro:\nRegistrar a evolução da presença em vídeo de cada aluno.",
+    preRequisitos:
+      "- ADPD2 - Erros que Matam Times Pequenos nas Redes\n- ADDS7 - Storytelling do Time: Construindo uma Narrativa",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno demonstra postura corporal aberta e confiante em vídeo.\n- O aluno utiliza expressão facial que comunica emoção.\n- O aluno controla voz (tom, volume, ritmo) para transmissão autêntica.",
+    metodologias:
+      "- Pedagogia da presença autêntica\n- Aprendizagem por prática em vídeo\n- Metáfora do palco digital\n- Feedback construtivo e gentil\n- Progressão gradual de confiança",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Palco Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à presença em vídeo: 'Nosso palco agora é digital - a câmera é o nosso público'. Apresentação dos 3 pilares: 1) Postura Corporal - aberta, confiante, com as mãos visíveis; 2) Expressão Facial - que comunica emoção (sorriso, seriedade, entusiasmo); 3) Voz - tom, volume e ritmo que transmitem autenticidade. Pergunta: 'O que você nota quando vê alguém com boa presença em vídeo?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação da Postura e Expressão",
+        duracaoMin: 15,
+        descricao:
+          "Em duplas, os alunos praticam: 1) Postura - sentar/ficar em pé com postura aberta, mãos visíveis, olhando para a câmera; 2) Expressão - praticar diferentes emoções (entusiasmo, calma, seriedade); 3) Movimentos - gestos naturais que reforçam a mensagem. Cada dupla filma 30 segundos e assiste junto, dando feedback construtivo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Estação da Voz",
+        duracaoMin: 15,
+        descricao:
+          "Prática de voz em vídeo: 1) Tom - praticar variação de tom para evitar monotonia; 2) Volume - praticar volume adequado para diferentes públicos; 3) Ritmo - praticar pausas e velocidade adequada para clareza. Cada aluno grava 30 segundos falando sobre o time e ouve para ajustar.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação em Vídeo",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno grava um vídeo curto (60 segundos) sobre o time, aplicando os três pilares: 1) Postura aberta; 2) Expressão autêntica; 3) Voz clara. Os vídeos são assistidos em grupo (com consentimento) e cada aluno recebe feedback sobre pontos fortes e áreas de melhoria.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma coisa que aprendi sobre presença em vídeo foi...' e 'Vou praticar ... para melhorar minha presença em vídeo.'",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Câmeras ou smartphones para gravação",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Guia de postura e expressão (visual)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cards com emoções para prática de expressão",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Gravações de exemplo (presença boa e melhorável)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Postura Corporal: Demonstra postura corporal aberta e confiante em vídeo",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Expressão Facial: Utiliza expressão facial que comunica emoção",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Controle da Voz: Controla voz (tom, volume, ritmo) para transmissão autêntica",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um aprendizado sobre presença em vídeo e uma meta de prática",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-pd-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Posicionamento Digital: Comunidade, Erros e Presença em Vídeo",
+    codigo: "ADPD04",
+    cursoId: "c-ad",
+    grupo: "PD",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de posicionamento digital (comunidade, erros nas redes, presença em vídeo) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de construção de comunidade, correção de erros nas redes e presença em vídeo, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que o posicionamento digital é uma parte fundamental da identidade do Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de posicionamento digital (comunidade, erros nas redes, presença em vídeo) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como você construiria comunidade em torno do time hoje?'\n- Pergunte: 'Que erros você evitaria na presença digital do time?'\n- Pergunte: 'Como seria a presença em vídeo do time?'\n- Reforce: 'O posicionamento digital é uma parte importante da identidade do time. Cada interação conta.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como os conceitos de posicionamento digital se aplicam na prática.\n- Aplicação dos princípios de construção de comunidade durante o jogo.\n- Consciência sobre a presença digital do time.\n\nPais/responsáveis:\n- Observação de que o filho está integrando conceitos de posicionamento digital.\n- Percepção de que o curso ensina presença digital autêntica e responsável.\n- Confiança no desenvolvimento de habilidades de comunicação e reputação.\n\nInstituição:\n- Consolidação dos conceitos de posicionamento digital em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como você construiria comunidade em torno desta partida?', 'Que erro evitaríamos na presença digital?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre posicionamento digital. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de posicionamento digital de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos durante a partida.",
+    preRequisitos:
+      "- ADPD1 - Comunidade: Como Criar Fãs (não só seguidores)\n- ADPD2 - Erros que Matam Times Pequenos nas Redes\n- ADPD3 - Presença em Vídeo: Postura, Voz e Expressão",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como construir comunidade durante o jogo.\n- O aluno demonstra consciência sobre a presença digital do time.\n- O aluno aplica princípios de autenticidade e consistência.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Posicionamento Digital",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar pensando no posicionamento digital do time. Como construir comunidade em torno desta partida? Que erros evitar? Como seria a presença em vídeo do time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como você construiria comunidade em torno desta partida?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in do Posicionamento Digital",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém pensou em como construir comunidade?', 'Alguém pensou em erros a evitar?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de posicionamento digital.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como você construiria comunidade em torno desta partida?', 'Que erros você evitaria na presença digital do time?', 'Como seria a presença em vídeo do time?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, pensei em construir comunidade quando...' ou 'Uma ideia para a presença digital do time é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Comunidade: Reflete sobre como construir comunidade em torno do time",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Consciência de Posicionamento Digital: Demonstra consciência sobre a presença digital do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Aplicação de Princípios: Aplica princípios de autenticidade e consistência",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro no Diário: Registra uma reflexão sobre posicionamento digital",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ec-aula-01",
+    tipo: 0,
+    nome: "Adaptação de Conteúdo para Cada Plataforma",
+    codigo: "ADEC01",
+    cursoId: "c-ad",
+    grupo: "EC",
+    descricao:
+      "Desenvolvimento da capacidade de adaptar conteúdo para diferentes plataformas digitais, compreendendo as características, linguagens e formatos ideais para cada canal (Instagram, TikTok, YouTube, Twitter/X, etc.), e criando estratégias para maximizar o alcance e o engajamento do time em cada plataforma, mantendo a identidade e a consistência da marca.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar as características e linguagens de diferentes plataformas digitais (Instagram, TikTok, YouTube, Twitter/X, etc.), compreendendo como adaptar o conteúdo para cada canal sem perder a identidade e a consistência da marca do time, e criar um plano simples de adaptação de conteúdo, reconhecendo que cada plataforma tem seu próprio público, formato e linguagem, e que o conteúdo eficaz é aquele que respeita essas diferenças enquanto mantém a coerência da identidade do time.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de adaptar conteúdo para diferentes plataformas digitais, compreendendo as características, linguagens e formatos ideais para cada canal (Instagram, TikTok, YouTube, Twitter/X, etc.), e criando estratégias para maximizar o alcance e o engajamento do time em cada plataforma, mantendo a identidade e a consistência da marca.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre adaptar conteúdo para diferentes plataformas?'\n- Pergunte: 'Como a mesma mensagem pode ser contada de forma diferente em cada rede social?'\n- Pergunte: 'O que é mais importante: adaptar o conteúdo ou manter a identidade do time?'\n- Reforce: 'Adaptar conteúdo não é perder identidade, é respeitar o público de cada lugar.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de identificar características de diferentes plataformas digitais.\n- Desenvolvimento de habilidade para adaptar conteúdo sem perder identidade.\n- Criação de plano simples de adaptação de conteúdo para múltiplas plataformas.\n- Compreensão de que cada plataforma tem público e linguagem próprios.\n\nPais/responsáveis:\n- Observação do desenvolvimento de pensamento estratégico sobre comunicação digital.\n- Compreensão de que o curso ensina adaptação e consistência de conteúdo.\n- Material concreto (plano de adaptação) para compartilhar com a família.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de comunicação multiplataforma.\n- Fortalecimento da proposta diferenciada que ensina estratégia de conteúdo.\n- Base para criação de conteúdo consistente em múltiplos canais.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Tradutor de Conteúdo' para falar sobre adaptação multiplataforma. Enfatizar que adaptar não é perder identidade, mas respeitar o público de cada canal.\n\nMediação:\nApresentar exemplos de conteúdos adaptados para diferentes plataformas. Guiar os alunos na identificação das características de cada canal.\n\nSensibilidade:\nObservar alunos que possam se sentir sobrecarregados com múltiplas plataformas; oferecer foco em 2-3 plataformas principais primeiro.\n\nConexão com a família:\nEnviar um guia sobre 'adaptação de conteúdo' para os pais, explicando como a mesma mensagem pode ser comunicada de formas diferentes.\n\nRegistro:\nRegistrar os planos de adaptação criados pelos alunos.",
+    preRequisitos:
+      "- ADDS11 - Objetivo do Conteúdo e Público\n- ADPD1 - Comunidade: Como Criar Fãs (não só seguidores)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica características de pelo menos 3 plataformas diferentes.\n- O aluno adapta um conteúdo para 2 plataformas diferentes mantendo identidade.\n- O aluno cria um plano de adaptação de conteúdo para o time.",
+    metodologias:
+      "- Pedagogia da adaptação consciente\n- Aprendizagem por análise de casos\n- Metáfora do tradutor\n- Criação de planos multiplataforma\n- Consistência de identidade",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Tradutor de Conteúdo",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à adaptação multiplataforma: 'Nosso conteúdo é como uma mensagem que precisa ser traduzida para diferentes públicos'. Apresentação das principais plataformas: 1) Instagram - visual, storytelling curto; 2) TikTok - rápido, criativo, jovem; 3) YouTube - profundo, educativo, longo; 4) Twitter/X - rápido, direto, conversacional. Pergunta: 'Como você conta a mesma história de forma diferente para públicos diferentes?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Plataformas",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos circulam por 4 estações: 1) Instagram - analisar exemplos de conteúdo eficaz; 2) TikTok - analisar vídeos curtos engajadores; 3) YouTube - analisar conteúdo educativo; 4) Twitter/X - analisar posts diretos e conversacionais. Cada grupo identifica: 'O que funciona nesta plataforma?', 'Que tipo de conteúdo é mais eficaz?', 'Como a identidade do time pode ser mantida?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Desafio de Adaptação",
+        duracaoMin: 20,
+        descricao:
+          "Cada time recebe um conteúdo base (ex: anúncio de scrim, conquista do time, dica técnica) e deve adaptá-lo para 3 plataformas diferentes: 1) Instagram - criar um post visual com legenda curta; 2) TikTok - criar um roteiro de vídeo de 15-30 segundos; 3) YouTube - criar um roteiro de vídeo de 1-2 minutos. Os times apresentam suas adaptações e explicam as escolhas.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Guia de Adaptação do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time cria um 'Guia de Adaptação' com 3 seções: 1) Identidade Central - o que NUNCA muda (valores, tom de voz); 2) Adaptações por Plataforma - como ajustar para cada canal (formato, linguagem, extensão); 3) Checklist de Consistência - perguntas para verificar se a identidade foi mantida (ex: 'Esta adaptação ainda parece com nosso time?'). Cada aluno recebe uma cópia.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma plataforma que aprendi a adaptar conteúdo foi...' e 'A identidade central do time que devemos manter sempre é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de conteúdo adaptado para diferentes plataformas",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "4 estações configuradas (Instagram, TikTok, YouTube, Twitter/X)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Conteúdo base para desafio de adaptação",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Guia de Adaptação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação de Plataformas: Identifica características de pelo menos 3 plataformas diferentes",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Adaptação de Conteúdo: Adapta um conteúdo para 2 plataformas diferentes mantendo identidade",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Plano de Adaptação: Cria um plano de adaptação de conteúdo para o time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma plataforma que aprendeu a adaptar e a identidade central do time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ec-aula-02",
+    tipo: 0,
+    nome: "Colaborações e Networking no Digital",
+    codigo: "ADEC02",
+    cursoId: "c-ad",
+    grupo: "EC",
+    descricao:
+      "Desenvolvimento da capacidade de estabelecer colaborações e networking no ambiente digital, compreendendo a importância de construir relacionamentos com outros times, criadores de conteúdo e influenciadores, e criando estratégias para parcerias autênticas e mutuamente benéficas que ampliem o alcance e a credibilidade do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de compreender a importância de colaborações e networking para o crescimento do time, identificando oportunidades de parceria com outros times, criadores de conteúdo e influenciadores, e criando abordagens para iniciar e manter relacionamentos profissionais autênticos e mutuamente benéficos, compreendendo que o networking digital é uma habilidade que se constrói com autenticidade, generosidade e consistência, e que as melhores colaborações nascem de relacionamentos genuínos, não de transações oportunistas.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de estabelecer colaborações e networking no ambiente digital, compreendendo a importância de construir relacionamentos com outros times, criadores de conteúdo e influenciadores, e criando estratégias para parcerias autênticas e mutuamente benéficas que ampliem o alcance e a credibilidade do time.",
+    sugestoesPais:
+      "- Pergunte: 'O que é networking digital? Como você pode construir relacionamentos online?'\n- Pergunte: 'Que parceiros seriam bons para o seu time? Por quê?'\n- Pergunte: 'Como você iniciaria uma conversa com um potencial parceiro?'\n- Reforce: 'Networking não é sobre 'usar' os outros, mas sobre construir relacionamentos genuínos e oferecer valor.'",
+    resultadosEsperados:
+      "Alunos:\n- Compreensão da importância de colaborações e networking no digital.\n- Identificação de oportunidades de parceria para o time.\n- Desenvolvimento de abordagem para iniciar e manter relacionamentos profissionais.\n- Percepção de que networking se constrói com autenticidade e generosidade.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de relacionamento e networking.\n- Compreensão de que o curso ensina construção de parcerias autênticas.\n- Pontos de conversa específicos para fortalecer diálogo sobre relações profissionais.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de networking.\n- Fortalecimento da proposta diferenciada que forma atletas com visão de parcerias.\n- Base para criação de colaborações institucionais.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Rede de Conexões' para falar sobre networking. Enfatizar que networking não é sobre 'usar' os outros, mas sobre construir relacionamentos genuínos.\n\nMediação:\nGuiar os alunos na identificação de parceiros potenciais. Celebrar a autenticidade e a generosidade nas abordagens.\n\nSensibilidade:\nObservar alunos que possam se sentir intimidados com networking; oferecer abordagens graduais.\n\nConexão com a família:\nEnviar um guia sobre 'networking para jovens' para os pais, mostrando como construir relacionamentos profissionais.\n\nRegistro:\nRegistrar as estratégias de networking criadas pelos alunos.",
+    preRequisitos:
+      "- ADPD1 - Comunidade: Como Criar Fãs (não só seguidores)\n- ADDS6 - A Cara do Time: Marca em Linguagem Simples",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno explica a importância do networking para o time.\n- O aluno identifica 3 potenciais parceiros para o time.\n- O aluno cria uma abordagem para iniciar uma colaboração autêntica.",
+    metodologias:
+      "- Pedagogia da conexão autêntica\n- Aprendizagem por identificação de oportunidades\n- Metáfora da rede de conexões\n- Simulação de abordagens de colaboração\n- Construção de relacionamentos genuínos",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Rede de Conexões",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao networking digital: 'Nossa rede de conexões é como uma teia - quanto mais forte, maior nosso alcance'. Apresentação do conceito: 1) Networking não é sobre 'usar' os outros, mas construir relacionamentos genuínos; 2) Colaborações autênticas nascem de interesses comuns e valores compartilhados; 3) A generosidade (dar valor antes de pedir) é a base do networking eficaz. Pergunta: 'Que times, criadores ou marcas seriam bons parceiros para o time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Mapeamento de Potenciais Parceiros",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos mapeiam potenciais parceiros para o time: 1) Outros times de e-sports com valores similares; 2) Criadores de conteúdo que falam sobre e-sports; 3) Marcas ou instituições que se alinham com os valores do time. Para cada parceiro, identificam: 'O que podemos oferecer?' e 'O que podemos aprender?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Simulação – Abordagem de Colaboração",
+        duracaoMin: 20,
+        descricao:
+          "Simulação onde os alunos praticam abordagens de colaboração: 1) Cenário 1 - 'Queremos colaborar com um time de e-sports que tem valores similares' (como iniciar a conversa, o que oferecer); 2) Cenário 2 - 'Queremos fazer um conteúdo com um criador de games' (como abordar, o que propor); 3) Cenário 3 - 'Queremos uma parceria com uma marca ou instituição' (como apresentar o time, que valor entregar). Cada grupo apresenta uma abordagem.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Guia de Networking do Time",
+        duracaoMin: 15,
+        descricao:
+          "Cada time cria seu 'Guia de Networking' com 3 seções: 1) Quem Somos - apresentação do time para potenciais parceiros; 2) O Que Oferecemos - valor que podemos entregar; 3) Como Abordar - frases e estratégias para iniciar conversas. Regra: a abordagem deve ser autêntica e generosa, mostrando valor antes de pedir.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Um parceiro que seria bom para o time é... porque...' e 'Minha abordagem para iniciar uma colaboração seria...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Exemplos de colaborações bem-sucedidas no mundo dos games",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com perfis de potenciais parceiros",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cenários para simulação de abordagens",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Guia de Networking",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Compreensão do Networking: Explica a importância do networking para o time",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Identificação de Parceiros: Identifica 3 potenciais parceiros para o time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Abordagem de Colaboração: Cria uma abordagem para iniciar uma colaboração autêntica",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário um parceiro potencial e uma abordagem para colaboração",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ec-aula-03",
+    tipo: 0,
+    nome: "Calendário Inteligente de Conteúdo (Anti-Aleatoriedade)",
+    codigo: "ADEC03",
+    cursoId: "c-ad",
+    grupo: "EC",
+    descricao:
+      "Desenvolvimento da capacidade de planejar conteúdo de forma estratégica e consistente, com foco na criação de um calendário inteligente de conteúdo que evita a aleatoriedade, respeita os limites de energia do time, e mantém o engajamento da comunidade com regularidade e propósito, integrando os pilares de identidade, público e objetivos do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de criar um calendário inteligente de conteúdo para o time, planejando postagens com antecedência, distribuindo responsabilidades de forma equilibrada, respeitando os limites de energia e tempo de cada membro, e mantendo a consistência e o propósito da comunicação, compreendendo que a aleatoriedade enfraquece o engajamento, que a consistência constrói confiança, e que um calendário inteligente transforma a criação de conteúdo de uma atividade estressante em um processo prazeroso e sustentável.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento da capacidade de planejar conteúdo de forma estratégica e consistente, com foco na criação de um calendário inteligente de conteúdo que evita a aleatoriedade, respeita os limites de energia do time, e mantém o engajamento da comunidade com regularidade e propósito, integrando os pilares de identidade, público e objetivos do time.",
+    sugestoesPais:
+      "- Pergunte: 'Como o time planejou o conteúdo para as próximas semanas?'\n- Pergunte: 'Como vocês dividiram as responsabilidades?'\n- Pergunte: 'Como vocês vão celebrar quando o conteúdo for publicado?'\n- Reforce: 'Planejar com antecedência transforma a criação de conteúdo de uma tarefa estressante em um processo prazeroso.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de planejar conteúdo com antecedência e propósito.\n- Desenvolvimento de calendário inteligente com distribuição equilibrada.\n- Compreensão da importância da consistência para engajamento.\n- Percepção de que planejamento transforma criação em processo sustentável.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades de planejamento e organização.\n- Compreensão de que o curso ensina consistência e sustentabilidade na criação.\n- Material concreto (calendário) para acompanhar a produção do time.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades de planejamento de conteúdo.\n- Fortalecimento da proposta diferenciada que ensina consistência e estratégia.\n- Base para criação de fluxo de conteúdo sustentável.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Calendário do Tempo Compartilhado' para falar sobre planejamento de conteúdo. Enfatizar que a consistência não é sobre quantidade, mas sobre regularidade com propósito.\n\nMediação:\nGuiar os alunos na definição de ritmo realista de criação (ex: 3 posts por semana é melhor que 7 posts por semana com burnout). Celebrar o planejamento coletivo.\n\nSensibilidade:\nObservar sinais de sobrecarga com planejamento; enfatizar flexibilidade e ajustes contínuos.\n\nConexão com a família:\nEnviar uma cópia do calendário para os pais com explicação do planejamento do time.\n\nRegistro:\nRegistrar os calendários criados para acompanhamento.",
+    preRequisitos:
+      "- ADDS11 - Objetivo do Conteúdo e Público\n- ADEC1 - Adaptação de Conteúdo para Cada Plataforma\n- ADPD1 - Comunidade: Como Criar Fãs (não só seguidores)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno cria um calendário de conteúdo para as próximas 4 semanas.\n- O calendário inclui distribuição equilibrada de responsabilidades.\n- O calendário respeita os limites de energia do time.",
+    metodologias:
+      "- Pedagogia do tempo compartilhado\n- Aprendizagem por rituais significativos\n- Metáfora do calendário vivo\n- Distribuição justa de responsabilidades\n- Celebração do processo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Calendário do Tempo Compartilhado",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao planejamento de conteúdo: 'Nosso calendário não marca apenas datas, marca momentos compartilhados onde nosso tempo se encontra'. Apresentação dos 3 pilares do calendário inteligente: 1) Consistência - regularidade com propósito; 2) Equilíbrio - respeitar a energia de cada membro; 3) Flexibilidade - ajustes quando necessário. Pergunta: 'Como podemos planejar conteúdo sem sobrecarregar o time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Mapeamento de Tempo e Energia",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos mapeiam a disponibilidade do time: 1) Dias da semana em que todos têm mais energia; 2) Momentos com mais tempo disponível; 3) Responsabilidades externas (escola, família). Cada grupo identifica os melhores dias e horários para criação de conteúdo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação do Calendário Inteligente",
+        duracaoMin: 20,
+        descricao:
+          "Com base no mapeamento, cada time cria um calendário para as próximas 4 semanas: 1) Definir tipos de conteúdo para cada dia (ex: dica técnica, conquista, interação com comunidade); 2) Distribuir responsabilidades entre os membros; 3) Incluir rituais de celebração para quando o conteúdo for publicado. Regra: a carga de trabalho deve ser equilibrada - ninguém faz mais que 2 posts por semana.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Ritual do Conteúdo Coletivo",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói seu 'Ritual do Conteúdo' com 4 elementos: 1) Ritual de Preparação - como se preparar antes de criar; 2) Ritual de Criação - como criar juntos; 3) Ritual de Celebração - como comemorar quando o conteúdo for publicado; 4) Ritual de Descanso - como recarregar energias. Cada aluno completa: 'Meu compromisso mais importante para manter nossa consistência é...'.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O calendário do time para as próximas 4 semanas inclui...' e 'Meu compromisso com a consistência é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Calendários em branco para as próximas 4 semanas",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Cartões com tipos de conteúdo",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de distribuição de responsabilidades",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Exemplos de rituais de criação",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Calendário de Conteúdo: Cria um calendário de conteúdo para as próximas 4 semanas",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Distribuição de Responsabilidades: Inclui distribuição equilibrada de responsabilidades",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Respeito aos Limites: O calendário respeita os limites de energia do time",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o calendário criado e um compromisso com a consistência",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-ec-aula-04",
+    tipo: 0,
+    nome: "CRIATIVO - Consolidação de Estratégia de Conteúdo: Adaptação, Networking e Calendário",
+    codigo: "ADEC04",
+    cursoId: "c-ad",
+    grupo: "EC",
+    descricao:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de estratégia de conteúdo (adaptação, networking, calendário) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    objetivoResultados:
+      "Proporcionar um espaço de prática livre onde os alunos possam aplicar, de forma orgânica, os conceitos de adaptação de conteúdo, networking e calendário inteligente, consolidando o aprendizado sem a pressão de avaliação formal, promovendo a percepção de que a estratégia de conteúdo é uma parte fundamental da identidade e crescimento do time no ambiente digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de gameplay recreativo intercalada para consolidação orgânica dos aprendizados de estratégia de conteúdo (adaptação, networking, calendário) através da aplicação prática em ambiente de jogo, sem pressão avaliativa.",
+    sugestoesPais:
+      "- Pergunte: 'Como você adaptaria esta partida para conteúdo digital?'\n- Pergunte: 'Que networking você faria em torno do time?'\n- Pergunte: 'Como você planejaria conteúdo sobre esta experiência?'\n- Reforce: 'A estratégia de conteúdo é uma parte importante da identidade e crescimento do time no ambiente digital.'",
+    resultadosEsperados:
+      "Alunos:\n- Reflexão sobre como os conceitos de estratégia de conteúdo se aplicam na prática.\n- Aplicação dos princípios de adaptação, networking e planejamento.\n- Consciência sobre a importância da consistência e estratégia na presença digital.\n\nPais/responsáveis:\n- Observação de que o filho está integrando conceitos de estratégia de conteúdo.\n- Percepção de que o curso ensina planejamento e consistência na comunicação digital.\n- Confiança no desenvolvimento de habilidades estratégicas.\n\nInstituição:\n- Consolidação dos conceitos de estratégia de conteúdo em ambiente prático.\n- Observação natural da aplicação dos conceitos.\n- Fortalecimento do vínculo dos alunos com a metodologia do curso.",
+    notasInstrutor:
+      "Linguagem:\nUsar termos integradores: 'Como você adaptaria esta jogada para diferentes plataformas?', 'Que networking você faria em torno desta partida?'.\n\nMediação:\nObservar como os alunos estão refletindo sobre estratégia de conteúdo. Celebrar quando perceber a aplicação dos conceitos.\n\nSensibilidade:\nEstar atento a alunos que possam ter dificuldade em aplicar os conceitos; oferecer apoio.\n\nConexão com a família:\nCompartilhar com os pais que a aula consolidou os conceitos de estratégia de conteúdo de forma prática.\n\nRegistro:\nRegistrar a aplicação dos conceitos durante a partida.",
+    preRequisitos:
+      "- ADEC1 - Adaptação de Conteúdo para Cada Plataforma\n- ADEC2 - Colaborações e Networking no Digital\n- ADEC3 - Calendário Inteligente de Conteúdo (Anti-Aleatoriedade)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre como adaptar conteúdo para diferentes plataformas.\n- O aluno identifica oportunidades de networking durante o jogo.\n- O aluno aplica princípios de planejamento e consistência.",
+    metodologias:
+      "- Aprendizagem experiencial integrada\n- Prática supervisionada não intrusiva\n- Observação participante\n- Reflexão guiada pós-jogo\n- Reforço positivo de comportamentos-alvo",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – Preparação para o Jogo com Estratégia de Conteúdo",
+        duracaoMin: 5,
+        descricao:
+          "Instrutor explica que esta é uma sessão livre para jogar e se divertir, mas com um convite especial: 'Hoje vocês vão jogar pensando na estratégia de conteúdo do time. Como adaptar esta partida para diferentes plataformas? Que networking vocês fariam? Como planejar conteúdo sobre esta experiência?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Sessão de Gameplay Livre – Bloco 1",
+        duracaoMin: 20,
+        descricao:
+          "Alunos jogam livremente. Instrutor circula, observa, mas não interfere. Pode fazer perguntas rápidas: 'Como você adaptaria este momento para diferentes plataformas?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Pausa Ativa – Check-in da Estratégia de Conteúdo",
+        duracaoMin: 5,
+        descricao:
+          "Alongamento e hidratação. Momento de compartilhar: 'Alguém pensou em como adaptar esta partida para conteúdo?', 'Alguém pensou em networking?'.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Sessão de Gameplay Livre – Bloco 2",
+        duracaoMin: 20,
+        descricao:
+          "Segundo bloco de jogo livre. Instrutor observa a aplicação dos conceitos de estratégia de conteúdo.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Roda de Conversa – O que eu levei para o jogo?",
+        duracaoMin: 15,
+        descricao:
+          "Roda de conversa descontraída. Perguntas: 'Como você adaptaria esta partida para diferentes plataformas?', 'Que networking você faria?', 'Como você planejaria conteúdo sobre esta experiência?'.",
+      },
+      {
+        id: "roteiro-06",
+        titulo: "Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Hoje, pensei em adaptar conteúdo quando...' ou 'Uma ideia de networking que surgiu foi...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Consoles/computadores com o jogo selecionado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Garrafas de água (incentivo à hidratação)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Adaptação: Reflete sobre como adaptar conteúdo para diferentes plataformas",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Identificação de Oportunidades de Networking: Identifica oportunidades de networking durante o jogo",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Planejamento e Consistência: Aplica princípios de planejamento e consistência",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro no Diário: Registra uma reflexão sobre estratégia de conteúdo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-bf-aula-01",
+    tipo: 0,
+    nome: "Jornada do Atleta Digital: Evolução, Identidade e Próximos Passos",
+    codigo: "ADBF01",
+    cursoId: "c-ad",
+    grupo: "BF",
+    descricao:
+      "Sessão de reflexão e celebração da jornada do Atleta Digital, com foco em reconhecer a evolução individual e coletiva, consolidar a identidade do time, e planejar os próximos passos na jornada de desenvolvimento, transformando conquistas em combustível para o futuro.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de refletir sobre sua jornada no curso, reconhecendo sua evolução técnica, emocional e social, consolidar sua identidade como Atleta Digital e membro do time, e planejar os próximos passos em sua jornada de desenvolvimento, compreendendo que a conclusão do curso não é o fim, mas o início de um novo capítulo, onde as habilidades e valores desenvolvidos continuarão a crescer e a se aplicar em todas as áreas da vida.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de reflexão e celebração da jornada do Atleta Digital, com foco em reconhecer a evolução individual e coletiva, consolidar a identidade do time, e planejar os próximos passos na jornada de desenvolvimento, transformando conquistas em combustível para o futuro.",
+    sugestoesPais:
+      "- Pergunte: 'Qual foi a maior conquista do seu filho no curso?'\n- Pergunte: 'Como você vê sua evolução desde o início do curso?'\n- Pergunte: 'Quais são seus próximos passos como Atleta Digital?'\n- Reforce: 'A jornada não termina aqui. As habilidades e valores que você desenvolveu continuarão a crescer.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de refletir sobre sua evolução durante o curso.\n- Reconhecimento de conquistas técnicas, emocionais e sociais.\n- Consolidação da identidade como Atleta Digital.\n- Planejamento de próximos passos e continuidade da jornada.\n\nPais/responsáveis:\n- Compreensão emocional da evolução do filho durante o curso.\n- Pontos de conversa específicos para fortalecer diálogo sobre crescimento e futuro.\n- Material significativo (registros) para celebrar a jornada do filho.\n\nInstituição:\n- Documentação da evolução individual e coletiva dos alunos.\n- Fortalecimento da imagem institucional através da celebração de conquistas.\n- Base para continuidade do programa com novos alunos.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Mapa da Jornada' para falar sobre a trajetória do curso. Enfatizar que cada passo foi importante e que a jornada continua.\n\nMediação:\nCriar um ambiente de celebração e reflexão. Validar todas as conquistas, mesmo as pequenas. Conectar conquistas individuais com o crescimento coletivo.\n\nSensibilidade:\nObservar sinais de emoção durante a reflexão; oferecer espaço para processamento. Celebrar a diversidade de jornadas.\n\nConexão com a família:\nPreparar um resumo visual da jornada do time para compartilhar com os pais no evento de encerramento.\n\nRegistro:\nRegistrar as reflexões dos alunos para compor o portfólio final.",
+    preRequisitos: "- ADDS10 - Registrando Evolução com o Diário do Atleta Digital",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno reflete sobre sua evolução e identifica conquistas significativas.\n- O aluno articula sua identidade como Atleta Digital.\n- O aluno planeja próximos passos em sua jornada de desenvolvimento.",
+    metodologias:
+      "- Pedagogia da jornada\n- Aprendizagem por reflexão guiada\n- Metáfora do mapa\n- Celebração de conquistas\n- Planejamento de futuro",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Mapa da Jornada",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à reflexão: 'Nossa jornada no curso é como um mapa - cada aula foi um passo, cada desafio uma montanha, cada conquista um marco'. Apresentação do mapa visual do curso (linha do tempo dos módulos). Pergunta: 'Quando você olha para trás, o que vê?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação da Evolução",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos refletem sobre 3 dimensões da evolução: 1) Técnica - 'Que habilidade técnica eu desenvolvi?' (ex: mira, comunicação, estratégia); 2) Emocional - 'Que habilidade emocional eu desenvolvi?' (ex: controle de tilt, resiliência, autoconfiança); 3) Social - 'Que habilidade social eu desenvolvi?' (ex: trabalho em equipe, liderança, empatia). Cada grupo compartilha uma conquista de cada dimensão.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – A Roda da Identidade",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria sua 'Roda da Identidade' com 6 segmentos: 1) O que aprendi; 2) O que superei; 3) O que mais me orgulha; 4) Como contribuí para o time; 5) Como cresci como pessoa; 6) Quem sou hoje como Atleta Digital. Os alunos compartilham em duplas e depois alguns voluntários compartilham com o grupo.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Mapa dos Próximos Passos",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno cria um 'Mapa dos Próximos Passos' com 3 destinos: 1) Curto Prazo (próximas semanas) - 'O que vou continuar praticando?'; 2) Médio Prazo (próximos meses) - 'Como vou aplicar o que aprendi?'; 3) Longo Prazo (próximo ano) - 'Quem quero ser como Atleta Digital?'. Regra: cada destino deve ter uma ação concreta. Os mapas são compartilhados em grupos.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Minha maior conquista no curso foi...' e 'Meu próximo passo como Atleta Digital é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Mapa visual da jornada do curso (linha do tempo dos módulos)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Perguntas guiadas para reflexão sobre evolução",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo da Roda da Identidade",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Mapa dos Próximos Passos",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Reflexão sobre Evolução: Reflete sobre sua evolução e identifica conquistas significativas",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Articulação da Identidade: Articula sua identidade como Atleta Digital",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Planejamento de Futuro: Planeja próximos passos em sua jornada de desenvolvimento",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro Reflexivo: Descreve no Diário sua maior conquista e seu próximo passo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-bf-aula-02",
+    tipo: 0,
+    nome: "Portfólio e Revisão",
+    codigo: "ADBF02",
+    cursoId: "c-ad",
+    grupo: "BF",
+    descricao:
+      "Sessão de organização e revisão do portfólio do Atleta Digital, com foco em selecionar os melhores trabalhos e reflexões do curso, organizar os materiais em um portfólio coerente, e revisar a jornada de aprendizado, preparando o material para o encerramento e para futuras oportunidades.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de selecionar os melhores trabalhos e reflexões do curso, organizá-los em um portfólio coerente e significativo, e revisar sua jornada de aprendizado, identificando os momentos mais importantes e os aprendizados que levará adiante, compreendendo que o portfólio é um registro tangível de sua evolução como Atleta Digital e uma ferramenta para compartilhar suas conquistas com a família e para futuras oportunidades.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Sessão de organização e revisão do portfólio do Atleta Digital, com foco em selecionar os melhores trabalhos e reflexões do curso, organizar os materiais em um portfólio coerente, e revisar a jornada de aprendizado, preparando o material para o encerramento e para futuras oportunidades.",
+    sugestoesPais:
+      "- Pergunte: 'Me mostre seu portfólio! O que cada parte representa?'\n- Pergunte: 'Qual trabalho você acha que mostra melhor sua evolução?'\n- Pergunte: 'O que você aprendeu sobre si mesmo ao organizar seu portfólio?'\n- Reforce: 'Seu portfólio é um registro das suas conquistas. Ele mostra o quanto você cresceu.'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de selecionar trabalhos e reflexões significativos.\n- Organização de portfólio coerente e pessoal.\n- Revisão da jornada de aprendizado.\n- Compreensão do portfólio como registro de evolução.\n\nPais/responsáveis:\n- Material tangível (portfólio) para compartilhar com a família e celebrar conquistas.\n- Compreensão da evolução do filho através do portfólio.\n- Pontos de conversa específicos para fortalecer diálogo sobre crescimento.\n\nInstituição:\n- Documentação do portfólio individual dos alunos.\n- Fortalecimento da imagem institucional através de portfólios significativos.\n- Base para futuras oportunidades dos alunos.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Cofre de Tesouros' para falar sobre o portfólio. Enfatizar que o portfólio é um registro das conquistas, não apenas uma coleção de trabalhos.\n\nMediação:\nGuiar os alunos na seleção de materiais com base em significado, não apenas em qualidade técnica. Celebrar a diversidade de conquistas.\n\nSensibilidade:\nObservar alunos que possam se sentir inseguros sobre seus trabalhos; reforçar que cada conquista tem valor.\n\nConexão com a família:\nPreparar uma versão do portfólio para compartilhar com os pais no evento de encerramento.\n\nRegistro:\nRegistrar os portfólios criados para o arquivo do time.",
+    preRequisitos:
+      "- ADDS10 - Registrando Evolução com o Diário do Atleta Digital\n- ADBF1 - Jornada do Atleta Digital: Evolução, Identidade e Próximos Passos",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno seleciona pelo menos 3 trabalhos/reflexões significativos.\n- O aluno organiza um portfólio coerente e pessoal.\n- O aluno revisa sua jornada e identifica aprendizados-chave.",
+    metodologias:
+      "- Pedagogia do portfólio significativo\n- Aprendizagem por seleção e organização\n- Metáfora do cofre de tesouros\n- Revisão guiada da jornada\n- Preparação para compartilhamento",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Cofre de Tesouros",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao portfólio: 'Nosso portfólio é como um cofre de tesouros - guarda os momentos mais importantes da nossa jornada'. Apresentação do que é um portfólio e para que serve: 1) Registro da evolução; 2) Ferramenta de reflexão; 3) Material para compartilhar com a família e futuras oportunidades. Pergunta: 'Que trabalhos e reflexões representam melhor sua jornada?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Seleção de Materiais",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos revisam todos os materiais do curso (Diário, trabalhos de design, roteiros, reflexões) e selecionam: 1) 1 trabalho técnico que mostra evolução; 2) 1 reflexão emocional significativa; 3) 1 contribuição para o time. Cada grupo compartilha os critérios de seleção.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Organização do Portfólio",
+        duracaoMin: 20,
+        descricao:
+          "Cada aluno organiza seu portfólio com 3 seções: 1) Técnica - trabalhos que mostram habilidades desenvolvidas; 2) Emocional/Social - reflexões sobre crescimento pessoal e em equipe; 3) Identidade - materiais que representam quem o aluno se tornou como Atleta Digital. Regra: cada seção deve ter uma introdução explicando o que foi aprendido.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Compartilhamento do Portfólio",
+        duracaoMin: 15,
+        descricao:
+          "Simulação onde os alunos compartilham seu portfólio em duplas: 1) Apresentar o portfólio (2 minutos); 2) Explicar a escolha dos materiais; 3) Receber feedback positivo de um colega. Cada dupla pratica a apresentação para o evento de encerramento.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O material que mais representa minha evolução é...' e 'O portfólio me ajuda a ver que...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Todos os trabalhos e reflexões do curso (Diário, designs, roteiros)",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Pastas ou templates para organização do portfólio",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de organização do portfólio (3 seções)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Guia para apresentação do portfólio",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Seleção de Materiais: Seleciona pelo menos 3 trabalhos/reflexões significativos",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Organização do Portfólio: Organiza um portfólio coerente e pessoal",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Revisão da Jornada: Revisa sua jornada e identifica aprendizados-chave",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o material que mais representa sua evolução",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-bf-aula-03",
+    tipo: 0,
+    nome: "Preparação para Encerramento",
+    codigo: "ADBF03",
+    cursoId: "c-ad",
+    grupo: "BF",
+    descricao:
+      "Preparação prática e emocional para a Cerimônia de Encerramento, com foco em ensaiar apresentações, organizar o espaço físico, definir papéis e responsabilidades, e preparar a equipe para celebrar as conquistas com as famílias, garantindo que cada aluno se sinta confiante e orgulhoso para compartilhar sua jornada.",
+    objetivoResultados:
+      "Ao final, o aluno deve estar preparado emocional e logisticamente para a Cerimônia de Encerramento, tendo ensaiado sua apresentação, organizado os materiais do portfólio, definido papéis e responsabilidades com o time, e preparado rituais de celebração, compreendendo que o encerramento é uma oportunidade de celebrar conquistas, agradecer a quem apoiou a jornada, e marcar a transição para o próximo capítulo da vida como Atleta Digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Preparação prática e emocional para a Cerimônia de Encerramento, com foco em ensaiar apresentações, organizar o espaço físico, definir papéis e responsabilidades, e preparar a equipe para celebrar as conquistas com as famílias, garantindo que cada aluno se sinta confiante e orgulhoso para compartilhar sua jornada.",
+    sugestoesPais:
+      "- Pergunte: 'Como está a preparação para o encerramento?'\n- Pergunte: 'O que você vai apresentar no evento?'\n- Pergunte: 'O que você quer agradecer no encerramento?'\n- Reforce: 'O encerramento é uma celebração de tudo o que você conquistou. Aproveite cada momento.'",
+    resultadosEsperados:
+      "Alunos:\n- Preparação prática para a Cerimônia de Encerramento.\n- Ensaio de apresentações e organização do espaço.\n- Definição de papéis e responsabilidades no evento.\n- Preparação emocional para celebrar conquistas e agradecer.\n\nPais/responsáveis:\n- Expectativa positiva para o evento de encerramento.\n- Compreensão do significado do encerramento para o filho.\n- Material visual (espaço organizado, apresentações) para celebrar.\n\nInstituição:\n- Preparação logística para o evento de encerramento.\n- Fortalecimento da imagem institucional através de evento bem organizado.\n- Base para continuidade do programa com novas turmas.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Palco da Celebração' para falar sobre o encerramento. Enfatizar que o encerramento é uma celebração, não uma despedida.\n\nMediação:\nGuiar os alunos na preparação prática e emocional. Celebrar a colaboração na organização. Oferecer suporte para alunos mais ansiosos.\n\nSensibilidade:\nObservar sinais de ansiedade sobre apresentações; oferecer prática extra. Celebrar a diversidade de formas de participação.\n\nConexão com a família:\nEnviar um convite especial para os pais, com detalhes sobre o evento e o que esperar.\n\nRegistro:\nRegistrar a preparação para o encerramento como parte do portfólio do time.",
+    preRequisitos: "- ADBF2 - Portfólio e Revisão",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno ensaia sua apresentação para o encerramento.\n- O time define papéis e responsabilidades para o evento.\n- O aluno prepara rituais de celebração e agradecimento.",
+    metodologias:
+      "- Pedagogia da preparação\n- Aprendizagem por ensaio prático\n- Metáfora do palco\n- Organização colaborativa\n- Preparação emocional",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Palco da Celebração",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à preparação: 'O encerramento é o nosso palco para celebrar tudo o que conquistamos'. Apresentação do formato do evento: 1) Momento de celebração; 2) Apresentação dos portfólios; 3) Rituais de agradecimento e transição. Pergunta: 'O que você quer celebrar no encerramento?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Ensaio das Apresentações",
+        duracaoMin: 20,
+        descricao:
+          "Em grupos, os alunos ensaiam suas apresentações: 1) Cada aluno apresenta seu portfólio em 2 minutos; 2) O grupo dá feedback sobre clareza e confiança; 3) Cada aluno ajusta sua apresentação com base no feedback. Regra: o foco é na autenticidade, não na perfeição.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Organização do Espaço",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos organizam o espaço físico para o evento: 1) Definir áreas de apresentação; 2) Organizar os portfólios para exibição; 3) Preparar elementos de celebração (ex: balões, cartazes, música). Cada aluno contribui com uma tarefa específica.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Rituais de Celebração e Agradecimento",
+        duracaoMin: 15,
+        descricao:
+          "Cada time constrói rituais para o encerramento: 1) Momento de Agradecimento - como agradecer aos pais, instrutores e colegas; 2) Momento de Compromisso - como marcar a transição para o próximo capítulo; 3) Momento de Celebração - como comemorar as conquistas coletivas. Cada aluno contribui com uma sugestão.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que estou mais ansioso para celebrar no encerramento é...' e 'O que quero agradecer é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Roteiro do evento de encerramento",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Materiais para organização do espaço (cartazes, balões, etc.)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelo de apresentação do portfólio",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Guia para rituais de celebração e agradecimento",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Ensaio de Apresentação: Ensaiou sua apresentação para o encerramento",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Organização do Espaço: Contribuiu para a organização do espaço do evento",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Rituais de Celebração: Preparou rituais de celebração e agradecimento",
+      },
+      {
+        id: "rubrica-04",
+        descricao: "Registro Reflexivo: Descreve no Diário o que quer celebrar e agradecer",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-bf-aula-04",
+    tipo: 0,
+    nome: "Cerimônia de Encerramento",
+    codigo: "ADBF04",
+    cursoId: "c-ad",
+    grupo: "BF",
+    descricao:
+      "Cerimônia de Encerramento do curso Atleta Digital, com foco em celebrar conquistas, compartilhar portfólios com as famílias, agradecer a todos que apoiaram a jornada, e marcar a transição para o próximo capítulo da vida dos alunos como Atletas Digitais, consolidando a identidade e o orgulho de pertencer a essa comunidade.",
+    objetivoResultados:
+      "Ao final da Cerimônia de Encerramento, o aluno deve ter celebrado suas conquistas e as do time, compartilhado seu portfólio com a família e a comunidade, agradecido a todos que apoiaram sua jornada, e marcado a transição para o próximo capítulo de sua vida como Atleta Digital, consolidando sua identidade e orgulho de pertencer a esta comunidade, e compreendendo que o curso é apenas o começo de uma jornada contínua de desenvolvimento e conexão.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Cerimônia de Encerramento do curso Atleta Digital, com foco em celebrar conquistas, compartilhar portfólios com as famílias, agradecer a todos que apoiaram a jornada, e marcar a transição para o próximo capítulo da vida dos alunos como Atletas Digitais, consolidando a identidade e o orgulho de pertencer a essa comunidade.",
+    sugestoesPais:
+      "- Pergunte: 'O que você mais gostou na cerimônia de encerramento?'\n- Pergunte: 'Como você se sente ao ver tudo o que seu filho conquistou?'\n- Pergunte: 'O que você vai levar desta experiência como família?'\n- Reforce: 'O encerramento é uma celebração, não uma despedida. A jornada continua!'",
+    resultadosEsperados:
+      "Alunos:\n- Celebração de conquistas individuais e coletivas.\n- Compartilhamento do portfólio com a família e comunidade.\n- Agradecimento a quem apoiou a jornada.\n- Marcação da transição para o próximo capítulo.\n- Consolidação da identidade como Atleta Digital.\n\nPais/responsáveis:\n- Orgulho e satisfação com a evolução do filho.\n- Compreensão do valor educativo do curso.\n- Momento de celebração e conexão com a comunidade do curso.\n- Material significativo (portfólio) para recordar a jornada.\n\nInstituição:\n- Fortalecimento da imagem institucional através do evento.\n- Celebração do impacto do curso na vida dos alunos.\n- Base para continuidade do programa com novas turmas.\n- Registro do sucesso do programa para futuras parcerias.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Jornada da Estrela' para marcar a transição. Enfatizar que o encerramento é um marco e que a jornada continua.\n\nMediação:\nConduzir a cerimônia com sensibilidade e celebração. Garantir que todos os alunos tenham seu momento de brilho. Criar um ambiente acolhedor e significativo.\n\nSensibilidade:\nEstar atento a emoções durante a cerimônia. Oferecer suporte para alunos mais emocionados. Celebrar a diversidade de jornadas.\n\nConexão com a família:\nEnvolver as famílias na cerimônia, garantindo que se sintam parte da celebração.\n\nRegistro:\nRegistrar a cerimônia em fotos e vídeos (com consentimento) para o arquivo do time.",
+    preRequisitos: "- ADBF3 - Preparação para Encerramento",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno participa ativamente da Cerimônia de Encerramento.\n- O aluno compartilha seu portfólio com a família.\n- O aluno expressa gratidão a quem apoiou sua jornada.\n- A cerimônia é realizada com sucesso e significado.",
+    metodologias:
+      "- Pedagogia da celebração\n- Aprendizagem por ritual significativo\n- Metáfora da jornada da estrela\n- Compartilhamento comunitário\n- Transição simbólica",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Abertura – Boas-vindas e Contexto",
+        duracaoMin: 10,
+        descricao:
+          "Instrutor dá as boas-vindas às famílias e convidados. Apresentação do propósito da cerimônia: celebrar a jornada, compartilhar conquistas e marcar a transição. Breve retrospectiva do curso.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Apresentações dos Alunos",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno ou grupo apresenta seu portfólio (2-3 minutos cada). As apresentações destacam: 1) Evolução técnica; 2) Crescimento emocional e social; 3) Contribuições para o time; 4) Próximos passos. As famílias e convidados assistem e celebram as conquistas.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Momento de Agradecimento",
+        duracaoMin: 10,
+        descricao:
+          "Alunos, instrutores e família compartilham agradecimentos: 1) Alunos agradecem aos pais e instrutores; 2) Instrutores agradecem aos alunos e famílias; 3) Famílias podem compartilhar palavras de apoio. Momento de conexão e gratidão.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Ritual de Transição – A Jornada da Estrela",
+        duracaoMin: 10,
+        descricao:
+          "Ritual simbólico para marcar a transição: 1) Cada aluno recebe um 'Certificado do Atleta Digital' e um 'Selo da Jornada'; 2) Momento de compromisso: cada aluno completa a frase: 'Como Atleta Digital, prometo continuar...'; 3) Momento de celebração: todos se unem em uma saudação do time.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Encerramento – Celebração Final",
+        duracaoMin: 10,
+        descricao:
+          "Instrutor faz o encerramento com palavras finais sobre a jornada e o futuro. Momento de celebração com fotos, confraternização e entrega dos portfólios físicos às famílias.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Espaço preparado para a cerimônia",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Portfólios dos alunos para apresentação",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Certificados do Atleta Digital",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Selos da Jornada",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Câmera para fotos e vídeos (com consentimento)",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Elementos de celebração (música, decoração)",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao: "Participação na Cerimônia: Participa ativamente da Cerimônia de Encerramento",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Compartilhamento do Portfólio: Compartilha seu portfólio com a família e a comunidade",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Expressão de Gratidão: Expressa gratidão a quem apoiou sua jornada",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Transição Simbólica: Participa do ritual de transição marcando o próximo capítulo",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-01",
+    tipo: 0,
+    nome: "Ferramentas e Layout Adobe (Introdução ao Ecossistema)",
+    codigo: "ADTO01",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Introdução ao ecossistema Adobe, compreendendo as funções e aplicações de cada ferramenta (Photoshop, Illustrator, Premiere, After Effects) no contexto de criação de conteúdo para e-sports, com foco em entender qual ferramenta usar para cada tipo de projeto e como elas se complementam.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de identificar as principais ferramentas do ecossistema Adobe (Photoshop, Illustrator, Premiere, After Effects), compreender para que cada uma serve e em quais situações utilizar cada ferramenta, reconhecendo que o ecossistema Adobe é um conjunto de ferramentas complementares que, quando usadas em conjunto, potencializam a criação de conteúdo de alta qualidade para e-sports, e que a escolha da ferramenta certa para cada tarefa é uma habilidade fundamental para o criador de conteúdo digital.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Introdução ao ecossistema Adobe, compreendendo as funções e aplicações de cada ferramenta (Photoshop, Illustrator, Premiere, After Effects) no contexto de criação de conteúdo para e-sports, com foco em entender qual ferramenta usar para cada tipo de projeto e como elas se complementam.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu sobre as ferramentas Adobe hoje?'\n- Pergunte: 'Qual ferramenta você quer aprender primeiro? Por quê?'\n- Pergunte: 'Que tipo de conteúdo você quer criar com essas ferramentas?'\n- Reforce: 'As ferramentas Adobe são usadas por profissionais do mundo todo. Aprender a usá-las é um grande passo!'",
+    resultadosEsperados:
+      "Alunos:\n- Identificação das principais ferramentas do ecossistema Adobe.\n- Compreensão da função e aplicação de cada ferramenta no contexto de e-sports.\n- Capacidade de escolher a ferramenta certa para cada tipo de projeto.\n- Visão integrada de como as ferramentas se complementam.\n\nPais/responsáveis:\n- Compreensão de que o curso ensina ferramentas profissionais de criação de conteúdo.\n- Observação do desenvolvimento de habilidades técnicas e criativas.\n- Material concreto (primeiros projetos) para compartilhar com a família.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades técnicas em ferramentas Adobe.\n- Fortalecimento da proposta diferenciada que ensina ferramentas profissionais.\n- Base para criação de conteúdo de alta qualidade institucional.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Caixa de Ferramentas do Criador' para falar sobre o ecossistema Adobe. Enfatizar que cada ferramenta tem sua função e que juntas formam um conjunto poderoso.\n\nMediação:\nDemonstrar exemplos práticos de projetos completos usando múltiplas ferramentas. Conectar com os projetos que os alunos já fizeram no curso.\n\nSensibilidade:\nObservar alunos que possam se sentir intimidados por ferramentas profissionais; reforçar que o aprendizado é gradual.\n\nConexão com a família:\nEnviar um guia sobre o ecossistema Adobe para os pais, explicando o que cada ferramenta faz.\n\nRegistro:\nRegistrar a compreensão inicial de cada aluno sobre as ferramentas.",
+    preRequisitos:
+      "- ADDS2 - Layout em Tela (Overlay) e Composição\n- ADDS3 - Cor, Emoção e Legibilidade",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno identifica corretamente a função de cada ferramenta Adobe.\n- O aluno escolhe a ferramenta adequada para diferentes tipos de projeto.\n- O aluno explica como as ferramentas se complementam no ecossistema.",
+    metodologias:
+      "- Pedagogia da caixa de ferramentas\n- Aprendizagem por demonstração\n- Metáfora do ecossistema\n- Análise de casos\n- Escolha da ferramenta certa",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Caixa de Ferramentas do Criador",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao ecossistema Adobe: 'Assim como um marceneiro tem diferentes ferramentas para diferentes tarefas, o criador de conteúdo tem diferentes ferramentas Adobe'. Apresentação das 4 ferramentas principais: 1) Photoshop - edição e criação de imagens; 2) Illustrator - criação de vetores e logos; 3) Premiere - edição de vídeo; 4) After Effects - efeitos e animações. Pergunta: 'Que tipo de conteúdo você já criou ou gostaria de criar?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Atividade – Estação das Ferramentas",
+        duracaoMin: 20,
+        descricao:
+          "Em grupos, os alunos circulam por 4 estações: 1) Photoshop - demonstração de edição de imagem e criação de thumbnail; 2) Illustrator - demonstração de criação de logo e vetores; 3) Premiere - demonstração de edição de vídeo curto; 4) After Effects - demonstração de animação simples. Cada estação mostra um exemplo prático relacionado a e-sports. Os alunos registram: 'Para que serve esta ferramenta?' e 'Que tipo de conteúdo posso criar com ela?'.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Mapeamento de Projetos",
+        duracaoMin: 15,
+        descricao:
+          "Em grupos, os alunos recebem cartões com diferentes projetos (ex: criar um thumbnail para YouTube, editar um highlight de scrim, criar um logo para o time, animar uma intro para vídeo) e devem escolher qual ferramenta Adobe usar para cada um. Cada grupo justifica suas escolhas.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Construção – Mapa do Ecossistema",
+        duracaoMin: 15,
+        descricao:
+          "Cada aluno cria um 'Mapa do Ecossistema Adobe' com 4 seções: 1) Photoshop - o que faz, quando usar; 2) Illustrator - o que faz, quando usar; 3) Premiere - o que faz, quando usar; 4) After Effects - o que faz, quando usar. Cada seção inclui um exemplo de uso no contexto do time.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'A ferramenta Adobe que mais quero aprender é... porque...' e 'Um projeto que quero criar com as ferramentas Adobe é...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com as ferramentas Adobe instaladas",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Exemplos de projetos em cada ferramenta (relacionados a e-sports)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Cartões com diferentes tipos de projeto",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelo do Mapa do Ecossistema Adobe",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Identificação das Ferramentas: Identifica corretamente a função de cada ferramenta Adobe",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Escolha da Ferramenta Adequada: Escolhe a ferramenta adequada para diferentes tipos de projeto",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Compreensão do Ecossistema: Explica como as ferramentas se complementam no ecossistema",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário a ferramenta que mais quer aprender e um projeto que quer criar",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-02",
+    tipo: 0,
+    nome: "Photoshop: Do Básico ao Intermediário",
+    codigo: "ADTO02",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Photoshop, com foco em edição de imagens, criação de thumbnails, composição de layouts para redes sociais e aplicação da identidade visual do time, compreendendo o Photoshop como ferramenta fundamental para a criação de conteúdo visual de impacto.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar o Adobe Photoshop para editar imagens, criar thumbnails para vídeos, compor layouts para redes sociais, e aplicar a identidade visual do time (cores, símbolo, tipografia) em materiais visuais, compreendendo que o Photoshop é uma ferramenta fundamental para a criação de conteúdo visual de impacto, e que a prática consistente é o caminho para o domínio técnico e criativo.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Photoshop, com foco em edição de imagens, criação de thumbnails, composição de layouts para redes sociais e aplicação da identidade visual do time, compreendendo o Photoshop como ferramenta fundamental para a criação de conteúdo visual de impacto.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu no Photoshop hoje?'\n- Pergunte: 'Me mostre o thumbnail que você criou! O que ele representa?'\n- Pergunte: 'Como você aplicou a identidade do time no seu trabalho?'\n- Reforce: 'O Photoshop é uma ferramenta poderosa para criar imagens que contam histórias. Continue praticando!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar ferramentas básicas do Photoshop (seleção, camadas, ajustes).\n- Criação de thumbnails para vídeos e conteúdo do time.\n- Aplicação da identidade visual do time em materiais visuais.\n- Compreensão do Photoshop como ferramenta fundamental para criação visual.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades técnicas em edição de imagem.\n- Material visual (thumbnails, posts) para compartilhar com a família.\n- Compreensão de que o curso ensina ferramentas profissionais de criação.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades em Photoshop.\n- Fortalecimento da proposta diferenciada que ensina ferramentas profissionais.\n- Base para criação de conteúdo visual de qualidade institucional.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Tela Digital' para falar sobre o Photoshop. Enfatizar que o Photoshop é uma ferramenta de expressão criativa, não apenas técnica.\n\nMediação:\nDemonstrar passo a passo cada técnica. Oferecer tutoriais escritos para consulta. Celebrar a criatividade e a aplicação da identidade do time.\n\nSensibilidade:\nObservar alunos que possam se sentir frustrados com a ferramenta; oferecer suporte individualizado.\n\nConexão com a família:\nEnviar os thumbnails ou posts criados para os pais, com explicação do processo.\n\nRegistro:\nRegistrar os projetos criados no Photoshop para o portfólio do time.",
+    preRequisitos:
+      "- ADTO1 - Ferramentas e Layout Adobe (Introdução ao Ecossistema)\n- ADDS3 - Cor, Emoção e Legibilidade",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza ferramentas básicas do Photoshop (camadas, seleção, ajustes).\n- O aluno cria um thumbnail para um conteúdo do time.\n- O aluno aplica a identidade visual do time em um material visual.",
+    metodologias:
+      "- Pedagogia da tela digital\n- Aprendizagem por demonstração e prática\n- Projetos guiados passo a passo\n- Aplicação prática da identidade visual\n- Feedback imediato",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Tela Digital",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao Photoshop: 'O Photoshop é a nossa tela digital para criar imagens que contam histórias'. Apresentação da interface e das ferramentas básicas: 1) Camadas - a base do Photoshop; 2) Seleção - como isolar elementos; 3) Ajustes - como corrigir cores e tons. Pergunta: 'Que tipo de imagem você gostaria de criar para o time?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Ferramentas Básicas do Photoshop",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Como criar um novo documento; 2) Como usar camadas (adicionar, duplicar, organizar); 3) Como usar ferramentas de seleção; 4) Como aplicar ajustes de cor e brilho. Os alunos acompanham e praticam cada passo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Thumbnail",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno cria um thumbnail para um vídeo do time (ex: anúncio de scrim, highlight, dica técnica). Passos: 1) Definir o tema e o propósito; 2) Aplicar as cores e o símbolo do time; 3) Adicionar texto legível; 4) Ajustar contraste e nitidez. Regra: o thumbnail deve ser atraente e refletir a identidade do time.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação dos Thumbnails",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos apresentam seus thumbnails para o grupo, explicando: 1) O propósito do conteúdo; 2) Como aplicaram a identidade do time; 3) As escolhas criativas feitas. O grupo dá feedback sobre clareza e impacto visual.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma técnica do Photoshop que aprendi foi...' e 'O thumbnail que criei representa o time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com Adobe Photoshop instalado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Guia rápido do Photoshop (atalhos, ferramentas básicas)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelos de thumbnail (opcional)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Arquivos da identidade visual do time (cores, símbolo)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Ferramentas Básicas: Utiliza ferramentas básicas do Photoshop (camadas, seleção, ajustes)",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Criação de Thumbnail: Cria um thumbnail para um conteúdo do time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Aplicação da Identidade Visual: Aplica a identidade visual do time em um material visual",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma técnica aprendida e como o thumbnail representa o time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-03",
+    tipo: 0,
+    nome: "Illustrator: Do Básico ao Intermediário",
+    codigo: "ADTO03",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Illustrator, com foco em criação de logos, vetores, elementos gráficos para a identidade visual do time, e ilustrações para conteúdo digital, compreendendo o Illustrator como ferramenta essencial para a criação de elementos visuais escaláveis e de alta qualidade.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar o Adobe Illustrator para criar logos, vetores, elementos gráficos e ilustrações para a identidade visual do time e para conteúdo digital, compreendendo que o Illustrator é uma ferramenta essencial para a criação de elementos visuais escaláveis (que podem ser redimensionados sem perder qualidade), e que a criação de vetores é uma habilidade fundamental para a construção de uma identidade visual profissional e consistente.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Illustrator, com foco em criação de logos, vetores, elementos gráficos para a identidade visual do time, e ilustrações para conteúdo digital, compreendendo o Illustrator como ferramenta essencial para a criação de elementos visuais escaláveis e de alta qualidade.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu no Illustrator hoje?'\n- Pergunte: 'Me mostre o logo ou elemento que você criou! O que ele representa?'\n- Pergunte: 'Como você aplicou a identidade do time no seu trabalho?'\n- Reforce: 'O Illustrator é uma ferramenta poderosa para criar logos e elementos que podem ser usados em qualquer tamanho. Continue praticando!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar ferramentas básicas do Illustrator (formas, caneta, texto).\n- Criação de logos e elementos gráficos para o time.\n- Compreensão da diferença entre imagem vetorial e rasterizada.\n- Aplicação da identidade visual do time em elementos vetoriais.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades técnicas em criação vetorial.\n- Material visual (logos, elementos) para compartilhar com a família.\n- Compreensão de que o curso ensina ferramentas profissionais de design.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades em Illustrator.\n- Fortalecimento da identidade visual institucional através de elementos vetoriais.\n- Base para criação de materiais de branding do time.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Fábrica de Vetores' para falar sobre o Illustrator. Enfatizar que vetores são elementos que podem crescer infinitamente sem perder qualidade.\n\nMediação:\nDemonstrar passo a passo cada técnica. Oferecer tutoriais escritos para consulta. Celebrar a criatividade e a precisão.\n\nSensibilidade:\nObservar alunos que possam se sentir frustrados com a ferramenta; oferecer suporte individualizado.\n\nConexão com a família:\nEnviar os logos ou elementos criados para os pais, com explicação do processo.\n\nRegistro:\nRegistrar os projetos criados no Illustrator para o portfólio do time.",
+    preRequisitos:
+      "- ADTO1 - Ferramentas e Layout Adobe (Introdução ao Ecossistema)\n- ADDS1 - Nome, Símbolo e Avatar (Aplicação para Perfil)\n- ADDS3 - Cor, Emoção e Legibilidade",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza ferramentas básicas do Illustrator (formas, caneta, texto).\n- O aluno cria um logo ou elemento gráfico para o time.\n- O aluno aplica a identidade visual do time em um elemento vetorial.",
+    metodologias:
+      "- Pedagogia do vetor\n- Aprendizagem por demonstração e prática\n- Projetos guiados passo a passo\n- Criação de elementos de identidade visual\n- Feedback imediato",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Fábrica de Vetores",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao Illustrator: 'O Illustrator é a nossa fábrica de vetores - elementos que podem crescer infinitamente sem perder qualidade'. Apresentação da interface e das ferramentas básicas: 1) Formas - a base dos vetores; 2) Caneta - para criar formas personalizadas; 3) Texto - para criar tipografia vetorial. Pergunta: 'Que elementos visuais nosso time precisa?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Ferramentas Básicas do Illustrator",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Como criar um novo documento; 2) Como usar formas básicas (retângulo, círculo, polígono); 3) Como usar a ferramenta Caneta para criar formas personalizadas; 4) Como adicionar e editar texto. Os alunos acompanham e praticam cada passo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Logo ou Elemento Gráfico",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno cria um logo ou elemento gráfico para o time (ex: versão simplificada do símbolo, elemento decorativo, mascote simplificado). Passos: 1) Definir o conceito; 2) Esboçar formas básicas; 3) Aplicar as cores do time; 4) Refinar e finalizar. Regra: o elemento deve ser vetorial e escalável (funcionar em diferentes tamanhos).",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação dos Elementos Gráficos",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos apresentam seus elementos gráficos para o grupo, explicando: 1) O conceito por trás do design; 2) Como aplicaram as cores e a identidade do time; 3) Como o elemento pode ser usado em diferentes contextos. O grupo dá feedback sobre a eficácia do design.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma técnica do Illustrator que aprendi foi...' e 'O elemento gráfico que criei representa o time porque...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com Adobe Illustrator instalado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Guia rápido do Illustrator (atalhos, ferramentas básicas)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelos de logo (opcional)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Arquivos da identidade visual do time (cores, símbolo)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Ferramentas Básicas: Utiliza ferramentas básicas do Illustrator (formas, caneta, texto)",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Criação de Elemento Gráfico: Cria um logo ou elemento gráfico para o time",
+      },
+      {
+        id: "rubrica-03",
+        descricao:
+          "Aplicação da Identidade Visual: Aplica a identidade visual do time em um elemento vetorial",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma técnica aprendida e como o elemento representa o time",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-04",
+    tipo: 0,
+    nome: "Premiere: Edição de Vídeo do Básico ao Intermediário",
+    codigo: "ADTO04",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Premiere, com foco em edição de vídeo, criação de highlights, cortes, transições e exportação para diferentes plataformas, compreendendo o Premiere como ferramenta essencial para a produção de conteúdo em vídeo para e-sports.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar o Adobe Premiere para editar vídeos, criar highlights de partidas, aplicar cortes e transições, ajustar áudio, e exportar o conteúdo para diferentes plataformas (YouTube, TikTok, Instagram), compreendendo que o Premiere é a ferramenta fundamental para a produção de conteúdo em vídeo para e-sports, e que a edição de vídeo é uma habilidade essencial para comunicar a história e as conquistas do time de forma envolvente e profissional.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades básicas a intermediárias no Adobe Premiere, com foco em edição de vídeo, criação de highlights, cortes, transições e exportação para diferentes plataformas, compreendendo o Premiere como ferramenta essencial para a produção de conteúdo em vídeo para e-sports.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu no Premiere hoje?'\n- Pergunte: 'Me mostre o highlight que você criou! Que história ele conta?'\n- Pergunte: 'Como você escolheu os melhores momentos?'\n- Reforce: 'O Premiere é uma ferramenta poderosa para contar histórias em vídeo. Continue praticando!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar ferramentas básicas do Premiere (cortes, transições).\n- Criação de highlights de partidas e momentos importantes.\n- Aplicação de transições e ajustes de áudio.\n- Exportação de vídeo para diferentes plataformas.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades técnicas em edição de vídeo.\n- Material visual (videos) para compartilhar com a família.\n- Compreensão de que o curso ensina ferramentas profissionais de criação.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades em Premiere.\n- Fortalecimento da proposta diferenciada que ensina ferramentas profissionais.\n- Base para criação de conteúdo em vídeo institucional.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Oficina de Edição' para falar sobre o Premiere. Enfatizar que a edição é onde a história ganha forma.\n\nMediação:\nDemonstrar passo a passo cada técnica. Oferecer tutoriais escritos para consulta. Celebrar a criatividade e a capacidade de contar histórias.\n\nSensibilidade:\nObservar alunos que possam se sentir frustrados com a ferramenta; oferecer suporte individualizado.\n\nConexão com a família:\nEnviar os vídeos editados para os pais, com explicação do processo.\n\nRegistro:\nRegistrar os vídeos editados para o portfólio do time.",
+    preRequisitos: "- ADTO1 - Ferramentas e Layout Adobe (Introdução ao Ecossistema)",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza ferramentas básicas do Premiere (cortes, transições).\n- O aluno cria um highlight de uma partida ou momento importante.\n- O aluno exporta o vídeo para uma plataforma específica.",
+    metodologias:
+      "- Pedagogia da oficina de edição\n- Aprendizagem por demonstração e prática\n- Projetos guiados passo a passo\n- Criação de highlights\n- Exportação para múltiplas plataformas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Oficina de Edição",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao Premiere: 'O Premiere é a nossa oficina de edição - onde os momentos se transformam em histórias'. Apresentação da interface e das ferramentas básicas: 1) Linha do tempo - onde a mágica acontece; 2) Cortes - como selecionar os melhores momentos; 3) Transições - como conectar cenas; 4) Áudio - como ajustar o som. Pergunta: 'Que história você quer contar com seus vídeos?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Ferramentas Básicas do Premiere",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Como importar vídeos e criar uma sequência; 2) Como fazer cortes (entrada e saída); 3) Como adicionar transições; 4) Como ajustar áudio; 5) Como exportar o vídeo. Os alunos acompanham e praticam cada passo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Highlight",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno cria um highlight de 15-30 segundos de uma partida ou momento importante (pode ser um VOD gravado ou material fornecido). Passos: 1) Selecionar os melhores momentos; 2) Aplicar cortes e transições; 3) Ajustar áudio; 4) Adicionar título com o nome do time. Regra: o highlight deve contar uma história curta e ser envolvente.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação dos Highlights",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos apresentam seus highlights para o grupo, explicando: 1) A história que quiseram contar; 2) As escolhas de edição feitas; 3) Como o vídeo pode ser usado para o time. O grupo dá feedback sobre a narrativa e a qualidade técnica.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma técnica do Premiere que aprendi foi...' e 'O highlight que criei conta a história...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com Adobe Premiere instalado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "VODs de partidas ou material fornecido para edição",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Guia rápido do Premiere (atalhos, ferramentas básicas)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelos de projeto (opcional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Ferramentas Básicas: Utiliza ferramentas básicas do Premiere (cortes, transições)",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Criação de Highlight: Cria um highlight de uma partida ou momento importante",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Exportação: Exporta o vídeo para uma plataforma específica",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma técnica aprendida e a história contada pelo highlight",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-05",
+    tipo: 0,
+    nome: "After Effects: Efeitos e Animações",
+    codigo: "ADTO05",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Desenvolvimento de habilidades básicas no Adobe After Effects, com foco em criação de efeitos visuais, animações de texto, motion graphics simples e elementos de overlay para vídeos e streams, compreendendo o After Effects como ferramenta essencial para adicionar impacto visual ao conteúdo do time.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de utilizar o Adobe After Effects para criar efeitos visuais simples, animações de texto, motion graphics básicos e elementos de overlay para vídeos e streams, compreendendo que o After Effects é a ferramenta que dá vida e impacto visual ao conteúdo do time, e que pequenas animações podem transformar um vídeo comum em uma experiência memorável para a comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Desenvolvimento de habilidades básicas no Adobe After Effects, com foco em criação de efeitos visuais, animações de texto, motion graphics simples e elementos de overlay para vídeos e streams, compreendendo o After Effects como ferramenta essencial para adicionar impacto visual ao conteúdo do time.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu no After Effects hoje?'\n- Pergunte: 'Me mostre a animação ou overlay que você criou! O que ela faz?'\n- Pergunte: 'Como essa animação pode tornar o conteúdo do time mais impactante?'\n- Reforce: 'O After Effects é uma ferramenta poderosa para dar vida ao conteúdo. Continue praticando!'",
+    resultadosEsperados:
+      "Alunos:\n- Capacidade de utilizar ferramentas básicas do After Effects (camadas, keyframes).\n- Criação de animações de texto e motion graphics simples.\n- Criação de elementos de overlay para vídeos e streams.\n- Compreensão do After Effects como ferramenta de impacto visual.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades técnicas em efeitos visuais.\n- Material visual (animações, overlays) para compartilhar com a família.\n- Compreensão de que o curso ensina ferramentas profissionais de criação.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades em After Effects.\n- Fortalecimento da proposta diferenciada que ensina ferramentas profissionais.\n- Base para criação de conteúdo visual impactante.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora do 'Laboratório de Efeitos' para falar sobre o After Effects. Enfatizar que pequenas animações podem transformar um conteúdo comum em algo memorável.\n\nMediação:\nDemonstrar passo a passo cada técnica. Oferecer tutoriais escritos para consulta. Celebrar a criatividade e o impacto visual.\n\nSensibilidade:\nObservar alunos que possam se sentir frustrados com a ferramenta; oferecer suporte individualizado.\n\nConexão com a família:\nEnviar as animações ou overlays criados para os pais, com explicação do processo.\n\nRegistro:\nRegistrar os projetos criados no After Effects para o portfólio do time.",
+    preRequisitos:
+      "- ADTO1 - Ferramentas e Layout Adobe (Introdução ao Ecossistema)\n- ADTO2 - Photoshop: Do Básico ao Intermediário",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno utiliza ferramentas básicas do After Effects (camadas, keyframes).\n- O aluno cria uma animação de texto ou motion graphic simples.\n- O aluno cria um elemento de overlay para vídeo ou stream.",
+    metodologias:
+      "- Pedagogia do laboratório de efeitos\n- Aprendizagem por demonstração e prática\n- Projetos guiados passo a passo\n- Criação de animações e overlays\n- Feedback imediato",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – O Laboratório de Efeitos",
+        duracaoMin: 10,
+        descricao:
+          "Introdução ao After Effects: 'O After Effects é o nosso laboratório de efeitos - onde a criatividade ganha movimento'. Apresentação da interface e das ferramentas básicas: 1) Camadas - a base das animações; 2) Keyframes - como criar movimento; 3) Efeitos - como adicionar impacto visual. Pergunta: 'Que tipo de animação ou efeito tornaria o conteúdo do time mais impactante?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Ferramentas Básicas do After Effects",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática: 1) Como criar uma composição; 2) Como adicionar e organizar camadas; 3) Como usar keyframes para animar posição, escala e rotação; 4) Como aplicar efeitos simples (brilho, sombra, cor). Os alunos acompanham e praticam cada passo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Animação ou Overlay",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno cria uma animação de texto (ex: nome do time aparecendo) ou um elemento de overlay (ex: borda animada para stream). Passos: 1) Definir o propósito; 2) Criar os elementos visuais; 3) Aplicar keyframes para animação; 4) Adicionar efeitos para impacto. Regra: a animação deve ser sutil e profissional (não exagerada).",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação das Animações",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos apresentam suas animações ou overlays para o grupo, explicando: 1) O propósito da animação; 2) As técnicas utilizadas; 3) Como o elemento pode ser usado no conteúdo do time. O grupo dá feedback sobre o impacto visual.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'Uma técnica do After Effects que aprendi foi...' e 'A animação que criei pode ser usada para...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com Adobe After Effects instalado",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "Guia rápido do After Effects (atalhos, ferramentas básicas)",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Modelos de animação (opcional)",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Arquivos da identidade visual do time (cores, símbolo)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Uso de Ferramentas Básicas: Utiliza ferramentas básicas do After Effects (camadas, keyframes)",
+      },
+      {
+        id: "rubrica-02",
+        descricao: "Criação de Animação: Cria uma animação de texto ou motion graphic simples",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Criação de Overlay: Cria um elemento de overlay para vídeo ou stream",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário uma técnica aprendida e o propósito da animação",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+  {
+    id: "at-ad-to-aula-06",
+    tipo: 0,
+    nome: "Criação de Highlights: After Effects + Premiere",
+    codigo: "ADTO06",
+    cursoId: "c-ad",
+    grupo: "TO",
+    descricao:
+      "Integração de Premiere e After Effects para a criação de highlights de alta qualidade, com foco em edição de vídeo, aplicação de efeitos visuais, animações de introdução e finalização, e exportação para diferentes plataformas, compreendendo que a combinação das duas ferramentas potencializa a criação de conteúdo impactante e profissional.",
+    objetivoResultados:
+      "Ao final, o aluno deve ser capaz de integrar o Premiere e o After Effects para criar highlights de alta qualidade, aplicando edição de vídeo no Premiere, efeitos visuais e animações no After Effects, e combinando os dois programas para produzir conteúdo profissional e impactante, compreendendo que a integração entre as ferramentas Adobe é o que permite a criação de conteúdo de nível profissional e que a combinação de edição precisa e efeitos visuais transforma um highlight comum em uma experiência memorável para a comunidade.",
+    prazo: "2026-12-31",
+    criadoPor: "Admin",
+    professor: "",
+    habilidadeIds: [],
+    descricaoConteudo:
+      "Integração de Premiere e After Effects para a criação de highlights de alta qualidade, com foco em edição de vídeo, aplicação de efeitos visuais, animações de introdução e finalização, e exportação para diferentes plataformas, compreendendo que a combinação das duas ferramentas potencializa a criação de conteúdo impactante e profissional.",
+    sugestoesPais:
+      "- Pergunte: 'O que você aprendeu integrando Premiere e After Effects hoje?'\n- Pergunte: 'Me mostre o highlight completo que você criou! Que história ele conta?'\n- Pergunte: 'Como você usou as duas ferramentas juntas?'\n- Reforce: 'A integração entre ferramentas é o que permite criar conteúdo profissional. Você já está no caminho certo!'",
+    resultadosEsperados:
+      "Alunos:\n- Integração de Premiere e After Effects em um projeto único.\n- Criação de highlight completo com edição, efeitos e animações.\n- Exportação do highlight para diferentes plataformas.\n- Compreensão da integração como ferramenta para conteúdo profissional.\n\nPais/responsáveis:\n- Observação do desenvolvimento de habilidades técnicas integradas.\n- Material visual (highlights completos) para compartilhar com a família.\n- Compreensão de que o curso ensina ferramentas profissionais e sua integração.\n\nInstituição:\n- Documentação do desenvolvimento de habilidades integradas em Premiere e After Effects.\n- Fortalecimento da proposta diferenciada que ensina fluxo de trabalho profissional.\n- Base para criação de conteúdo de alta qualidade institucional.",
+    notasInstrutor:
+      "Linguagem:\nUsar a metáfora da 'Linha de Produção' para falar sobre a integração de Premiere e After Effects. Enfatizar que cada ferramenta tem seu papel no processo de criação.\n\nMediação:\nDemonstrar o fluxo completo de produção, do Premiere para o After Effects e de volta. Celebrar a qualidade do resultado final.\n\nSensibilidade:\nObservar alunos que possam se sentir sobrecarregados com a integração; oferecer suporte passo a passo.\n\nConexão com a família:\nEnviar os highlights finais para os pais, com explicação do processo integrado.\n\nRegistro:\nRegistrar os highlights completos para o portfólio do time.",
+    preRequisitos:
+      "- ADTO4 - Premiere: Edição de Vídeo do Básico ao Intermediário\n- ADTO5 - After Effects: Efeitos e Animações",
+    niveisAlvo: [],
+    criteriosSucesso:
+      "- O aluno integra Premiere e After Effects em um projeto.\n- O aluno cria um highlight completo com edição, efeitos e animações.\n- O aluno exporta o highlight para uma plataforma específica.",
+    metodologias:
+      "- Pedagogia da integração\n- Aprendizagem por fluxo de trabalho\n- Metáfora da linha de produção\n- Projeto completo guiado\n- Exportação para múltiplas plataformas",
+    roteiro: [
+      {
+        id: "roteiro-01",
+        titulo: "Briefing – A Linha de Produção",
+        duracaoMin: 10,
+        descricao:
+          "Introdução à integração: 'Premiere e After Effects trabalham juntos como uma linha de produção - cada um com sua função, juntos criando algo maior'. Apresentação do fluxo: 1) Editar no Premiere; 2) Enviar para After Effects para efeitos; 3) Retornar ao Premiere para finalização; 4) Exportar. Pergunta: 'Que tipo de highlight você quer criar?'.",
+      },
+      {
+        id: "roteiro-02",
+        titulo: "Demonstração – Fluxo Integrado",
+        duracaoMin: 15,
+        descricao:
+          "Demonstração prática do fluxo: 1) Editar clipe no Premiere (cortes, transições); 2) Criar uma composição no After Effects com animação de texto; 3) Integrar a composição no Premiere; 4) Aplicar ajustes finais; 5) Exportar. Os alunos acompanham cada passo.",
+      },
+      {
+        id: "roteiro-03",
+        titulo: "Atividade – Criação de Highlight Completo",
+        duracaoMin: 25,
+        descricao:
+          "Cada aluno cria um highlight completo de 15-30 segundos: 1) Editar o vídeo no Premiere (seleção de momentos, cortes, transições); 2) Criar uma animação de introdução ou título no After Effects; 3) Integrar a animação no Premiere; 4) Aplicar ajustes finais; 5) Exportar para uma plataforma (ex: YouTube, TikTok). Regra: o highlight deve ser profissional e refletir a identidade do time.",
+      },
+      {
+        id: "roteiro-04",
+        titulo: "Simulação – Apresentação dos Highlights",
+        duracaoMin: 15,
+        descricao:
+          "Os alunos apresentam seus highlights completos para o grupo, explicando: 1) A história contada; 2) O processo de criação (Premiere + After Effects); 3) Como o highlight pode ser usado pelo time. O grupo dá feedback sobre a qualidade e o impacto.",
+      },
+      {
+        id: "roteiro-05",
+        titulo: "Meta e Registro no Diário",
+        duracaoMin: 10,
+        descricao:
+          "Cada aluno registra no Diário do Atleta Digital: 'O que aprendi integrando Premiere e After Effects foi...' e 'O highlight que criei mostra o time como...'.",
+      },
+    ],
+    materiais: [
+      {
+        id: "material-01",
+        tipo: "fisico",
+        titulo: "Computadores com Adobe Premiere e After Effects instalados",
+      },
+      {
+        id: "material-02",
+        tipo: "fisico",
+        titulo: "VODs de partidas ou material fornecido",
+      },
+      {
+        id: "material-03",
+        tipo: "fisico",
+        titulo: "Guia do fluxo integrado Premiere + After Effects",
+      },
+      {
+        id: "material-04",
+        tipo: "fisico",
+        titulo: "Modelos de projeto integrado (opcional)",
+      },
+      {
+        id: "material-05",
+        tipo: "fisico",
+        titulo: "Arquivos da identidade visual do time",
+      },
+      {
+        id: "material-06",
+        tipo: "fisico",
+        titulo: "Diário do Atleta Digital",
+      },
+    ],
+    referencias: "",
+    formularios: {
+      relatorioProfessor: true,
+      autoavaliacaoAluno: true,
+      diagnosticoPre: false,
+      diagnosticoPos: false,
+      perfilAluno: false,
+    },
+    rubricas: [
+      {
+        id: "rubrica-01",
+        descricao:
+          "Integração das Ferramentas: Integra Premiere e After Effects em um projeto único",
+      },
+      {
+        id: "rubrica-02",
+        descricao:
+          "Criação de Highlight Completo: Cria um highlight completo com edição, efeitos e animações",
+      },
+      {
+        id: "rubrica-03",
+        descricao: "Exportação: Exporta o highlight para uma plataforma específica",
+      },
+      {
+        id: "rubrica-04",
+        descricao:
+          "Registro Reflexivo: Descreve no Diário o que aprendeu integrando as ferramentas e o que o highlight mostra",
+      },
+    ],
+    cargaHorariaMin: 75,
+  },
+];
