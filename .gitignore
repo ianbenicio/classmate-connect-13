@@ -26,6 +26,14 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Supabase CLI local state (generated — never commit; vaza pooler-url/project-ref)
+supabase/.temp/
+
+# Local DB binaries (ruvector / sqlite)
+*.db
+*.db-shm
+*.db-wal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
