@@ -57,7 +57,7 @@ import {
 import { notificacoesStore } from "@/lib/notificacoes-store";
 import { useGruposByCursoCod } from "@/lib/grupos-store";
 import { alunosStore } from "@/lib/alunos-store";
-import { useUsersByRole } from "@/lib/users-store";
+import { useUsersByRole, type UserRow } from "@/lib/users-store";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { useAuth } from "@/lib/auth";
 import { QuadroAulasPicker } from "./QuadroAulasPicker";
@@ -182,7 +182,20 @@ export function AgendarAtividadeDialog({
   const isProfessorOnly = hasRole("professor") && !hasRole("admin") && !hasRole("coordenacao");
   const duracaoAulaMin = getDuracaoAulaMin(curso);
   // Professores são usuários com role "professor" (Fase 8 — fonte única).
-  const professores = useUsersByRole("professor");
+  // Professor comum não precisa carregar a lista administrativa de usuários.
+  const professoresDoBanco = useUsersByRole("professor", { enabled: open && !isProfessorOnly });
+  const professorLogado = useMemo<UserRow | null>(() => {
+    if (!isProfessorOnly || !authUser?.id) return null;
+    return {
+      userId: authUser.id,
+      displayName: displayName || authUser.email || "Professor",
+      email: authUser.email ?? null,
+      roles: ["professor"],
+      criadoEm: "",
+      ativo: true,
+    };
+  }, [authUser?.email, authUser?.id, displayName, isProfessorOnly]);
+  const professores = isProfessorOnly && professorLogado ? [professorLogado] : professoresDoBanco;
   // Habilidades do curso (fallback: todas) para o seletor de habilidades.
   const todasHabilidades = useHabilidades();
   const habilidadesDoCurso = useMemo(() => {
@@ -194,7 +207,11 @@ export function AgendarAtividadeDialog({
   const professorSelecionado = selectedProfessorUserId
     ? professores.find((p) => p.userId === selectedProfessorUserId)
     : undefined;
-  const professorNomeSelecionado = professorSelecionado?.displayName || displayName || undefined;
+  const professorNomeSelecionado =
+    professorSelecionado?.displayName ||
+    (isProfessorOnly && selectedProfessorUserId === authUser?.id
+      ? displayName || authUser?.email || undefined
+      : undefined);
 
   // ---------- Reset ao abrir ----------
   // ⚠️ Não dependa de `turmas` (prop array) aqui — chamadores frequentemente
@@ -210,7 +227,9 @@ export function AgendarAtividadeDialog({
     setDate(defaultData ? parse(defaultData, "yyyy-MM-dd", new Date()) : undefined);
     setSlotIdx("");
     setObservacao("");
-    setSelectedProfessorUserId(defaultProfessorUserId ?? defaultProfessorId ?? "");
+    setSelectedProfessorUserId(
+      defaultProfessorUserId ?? defaultProfessorId ?? (isProfessorOnly ? (authUser?.id ?? "") : ""),
+    );
     setHabilidadeIds([]);
     setAssignments({});
     setEditingBloco(null);
@@ -230,6 +249,8 @@ export function AgendarAtividadeDialog({
     defaultProfessorId,
     defaultProfessorUserId,
     fallbackTurmaId,
+    isProfessorOnly,
+    authUser?.id,
   ]);
 
   // Memoizado para estabilizar referência — evita disparar useEffects em loop
@@ -675,7 +696,7 @@ export function AgendarAtividadeDialog({
       const ativIds = [assign.aulaId, assign.tarefaId].filter(Boolean) as string[];
       // Fase 8: professor é apenas um User com role "professor".
       // selectedProfessorUserId === userId; nome vai p/ campo `professor` (legado).
-      const professor = professorSelecionado?.displayName || undefined;
+      const professor = professorNomeSelecionado || undefined;
       const professorUserId = selectedProfessorUserId || defaultProfessorUserId || undefined;
       return {
         id: crypto.randomUUID(),

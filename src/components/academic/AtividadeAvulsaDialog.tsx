@@ -38,7 +38,7 @@ import { atividadesStore } from "@/lib/atividades-store";
 import { useAuth } from "@/lib/auth";
 import { useHabilidades } from "@/lib/habilidades-store";
 import { notificacoesStore } from "@/lib/notificacoes-store";
-import { useUsersByRole } from "@/lib/users-store";
+import { useUsersByRole, type UserRow } from "@/lib/users-store";
 
 interface Props {
   open: boolean;
@@ -96,11 +96,26 @@ function formatDataLabel(data: string): string {
 
 export function AtividadeAvulsaDialog({ open, onOpenChange, cursos, turmas, agendamentos }: Props) {
   const { user, displayName, hasRole } = useAuth();
-  const professores = useUsersByRole("professor");
-  const firstProfessorUserId = professores[0]?.userId ?? "";
   const habilidades = useHabilidades();
   const canCreate = hasRole("admin") || hasRole("coordenacao") || hasRole("professor");
   const professorOnly = hasRole("professor") && !hasRole("admin") && !hasRole("coordenacao");
+  const professoresDoBanco = useUsersByRole("professor", { enabled: open && !professorOnly });
+  const professorLogado = useMemo<UserRow | null>(() => {
+    if (!professorOnly || !user?.id) return null;
+    return {
+      userId: user.id,
+      displayName: displayName || user.email || "Professor",
+      email: user.email ?? null,
+      roles: ["professor"],
+      criadoEm: "",
+      ativo: true,
+    };
+  }, [displayName, professorOnly, user?.email, user?.id]);
+  const professores = useMemo(
+    () => (professorOnly && professorLogado ? [professorLogado] : professoresDoBanco),
+    [professorLogado, professorOnly, professoresDoBanco],
+  );
+  const firstProfessorUserId = professores[0]?.userId ?? "";
   const today = toLocalIsoDate(new Date());
 
   const [cursoId, setCursoId] = useState("");

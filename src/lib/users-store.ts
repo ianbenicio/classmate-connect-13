@@ -343,15 +343,22 @@ export const usersStore = {
   ensureInit,
 };
 
-export function useUsers(): UserRow[] {
+interface UseUsersOptions {
+  enabled?: boolean;
+}
+
+export function useUsers(options: UseUsersOptions = {}): UserRow[] {
+  const { enabled = true } = options;
   const [snap, setSnap] = useState<UserRow[]>(usersStore.getAll());
   useEffect(() => {
-    void ensureInit();
+    if (!enabled) return;
+    setSnap([...usersStore.getAll()]);
+    void ensureInit().then(() => setSnap([...usersStore.getAll()]));
     const unsub = usersStore.subscribe(() => setSnap([...usersStore.getAll()]));
     return () => {
       unsub();
     };
-  }, []);
+  }, [enabled]);
   return snap;
 }
 
@@ -363,8 +370,8 @@ export function useUsers(): UserRow[] {
  * const professores = useUsersByRole("professor");
  * const admins = useUsersByRole("admin");
  */
-export function useUsersByRole(role: AppRole): UserRow[] {
-  const all = useUsers();
+export function useUsersByRole(role: AppRole, options: UseUsersOptions = {}): UserRow[] {
+  const all = useUsers(options);
   return all.filter((u) => u.roles.includes(role));
 }
 

@@ -23,8 +23,6 @@ export function AuthMenu() {
   const navigate = useNavigate();
   const [perfilOpen, setPerfilOpen] = useState(false);
   const [relatoriosOpen, setRelatoriosOpen] = useState(false);
-  const projetos = useProjetos();
-  const [override, setOverride] = useState<string | null>(getSuperAdminOverride());
 
   if (loading) return null;
 
@@ -58,33 +56,7 @@ export function AuthMenu() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {isSuperAdmin() && projetos.length > 0 && (
-            <>
-              <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground">
-                Projeto-alvo (super)
-              </DropdownMenuLabel>
-              {projetos.map((p) => {
-                const active = override === p.id;
-                return (
-                  <DropdownMenuItem
-                    key={p.id}
-                    onClick={() => {
-                      const next = active ? null : p.id;
-                      setSuperAdminOverride(next);
-                      setOverride(next);
-                      // Reload para re-stampar stores com novo project_id.
-                      window.location.reload();
-                    }}
-                  >
-                    <Building2 className="h-4 w-4 mr-2" />
-                    <span className="flex-1 truncate">{p.nome}</span>
-                    {active && <Check className="h-3.5 w-3.5 text-primary" />}
-                  </DropdownMenuItem>
-                );
-              })}
-              <DropdownMenuSeparator />
-            </>
-          )}
+          {isSuperAdmin() && <SuperAdminProjectItems />}
           <DropdownMenuItem onClick={() => setPerfilOpen(true)}>
             <User className="h-4 w-4 mr-2" />
             Meu perfil
@@ -110,8 +82,8 @@ export function AuthMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />
-      {isProfessor && (
+      {perfilOpen && <MeuPerfilProfessorDialog open={perfilOpen} onOpenChange={setPerfilOpen} />}
+      {isProfessor && relatoriosOpen && (
         <>
           <MeusRelatoriosDialog
             open={relatoriosOpen}
@@ -120,6 +92,41 @@ export function AuthMenu() {
           />
         </>
       )}
+    </>
+  );
+}
+
+function SuperAdminProjectItems() {
+  const projetos = useProjetos();
+  const [override, setOverride] = useState<string | null>(getSuperAdminOverride());
+
+  if (projetos.length === 0) return null;
+
+  return (
+    <>
+      <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground">
+        Projeto-alvo (super)
+      </DropdownMenuLabel>
+      {projetos.map((p) => {
+        const active = override === p.id;
+        return (
+          <DropdownMenuItem
+            key={p.id}
+            onClick={() => {
+              const next = active ? null : p.id;
+              setSuperAdminOverride(next);
+              setOverride(next);
+              // Reload para re-stampar stores com novo project_id.
+              window.location.reload();
+            }}
+          >
+            <Building2 className="h-4 w-4 mr-2" />
+            <span className="flex-1 truncate">{p.nome}</span>
+            {active && <Check className="h-3.5 w-3.5 text-primary" />}
+          </DropdownMenuItem>
+        );
+      })}
+      <DropdownMenuSeparator />
     </>
   );
 }

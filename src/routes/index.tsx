@@ -57,6 +57,8 @@ export const Route = createFileRoute("/")({
   component: DashboardPage,
 });
 
+const professorNameKey = (value?: string | null) => (value ?? "").trim().toLowerCase();
+
 function DashboardPage() {
   const cursos = useCursos();
   const turmas = useTurmas();
@@ -105,6 +107,7 @@ function DashboardPage() {
   // Calcula se o usuário é professor (fora do useMemo para evitar issue de dependência)
   const isProfessor = hasRole("professor");
   const canCreateAtividadeAvulsa = hasRole("admin") || hasRole("coordenacao") || isProfessor;
+  const currentProfessorNameKey = professorNameKey(displayName || authUser?.email);
 
   const proximas = useMemo(() => {
     const hoje = new Date().toISOString().slice(0, 10);
@@ -114,14 +117,18 @@ function DashboardPage() {
       .filter((a) => {
         // Se o usuário é professor, filtra apenas suas atividades
         if (isProfessor) {
-          return a.professorUserId === currentUserId || a.professor === displayName;
+          if (currentUserId && a.professorUserId === currentUserId) return true;
+          if (a.professorUserId) return false;
+          return (
+            !!currentProfessorNameKey && professorNameKey(a.professor) === currentProfessorNameKey
+          );
         }
         // Caso contrário, mostra todas as atividades
         return true;
       })
       .sort((a, b) => a.prazo.localeCompare(b.prazo))
       .slice(0, 8);
-  }, [atividades, isProfessor, currentUserId, displayName]);
+  }, [atividades, isProfessor, currentUserId, currentProfessorNameKey]);
 
   // Aluno acessou /? Redireciona pra área dele.
   if (hasRole("aluno") && !isStaff()) {
@@ -199,7 +206,7 @@ function DashboardPage() {
             <MinhasAtividadesTable onAbrirRelatorio={(info) => setRelatorioCtx(info)} />
           </section>
         )}
-        {isProfessor && (
+        {isProfessor && meusRelatoriosOpen && (
           <MeusRelatoriosDialog
             open={meusRelatoriosOpen}
             onOpenChange={setMeusRelatoriosOpen}
@@ -458,33 +465,37 @@ function DashboardPage() {
         />
       )}
 
-      <AtividadeAvulsaDialog
-        open={atividadeAvulsaOpen}
-        onOpenChange={setAtividadeAvulsaOpen}
-        cursos={cursos}
-        turmas={turmas}
-        agendamentos={agendamentos}
-      />
+      {atividadeAvulsaOpen && (
+        <AtividadeAvulsaDialog
+          open={atividadeAvulsaOpen}
+          onOpenChange={setAtividadeAvulsaOpen}
+          cursos={cursos}
+          turmas={turmas}
+          agendamentos={agendamentos}
+        />
+      )}
 
-      <RelatorioProfessorDialog
-        open={!!relatorioCtx}
-        onOpenChange={(o) => !o && setRelatorioCtx(null)}
-        agendamento={relatorioCtx?.agendamento ?? null}
-        turma={relatorioCtx?.turma}
-        curso={relatorioCtx?.curso}
-        onSaved={({ agendamento, turma, curso, alunosPresentes }) => {
-          if (alunosPresentes.length === 0) {
-            toast.info("Sem alunos presentes para checklist individual.");
-            return;
-          }
-          setChecklistQueue({
-            agendamento,
-            turma,
-            curso,
-            alunos: alunosPresentes,
-          });
-        }}
-      />
+      {relatorioCtx && (
+        <RelatorioProfessorDialog
+          open
+          onOpenChange={(o) => !o && setRelatorioCtx(null)}
+          agendamento={relatorioCtx.agendamento}
+          turma={relatorioCtx.turma}
+          curso={relatorioCtx.curso}
+          onSaved={({ agendamento, turma, curso, alunosPresentes }) => {
+            if (alunosPresentes.length === 0) {
+              toast.info("Sem alunos presentes para checklist individual.");
+              return;
+            }
+            setChecklistQueue({
+              agendamento,
+              turma,
+              curso,
+              alunos: alunosPresentes,
+            });
+          }}
+        />
+      )}
 
       <ChecklistQueueRunner
         ctx={checklistQueue}
