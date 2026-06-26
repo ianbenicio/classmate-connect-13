@@ -14,7 +14,6 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
 import { SkillsManagerDialog } from "@/components/academic/SkillsManagerDialog";
 import { TagsManagerDialog } from "@/components/academic/TagsManagerDialog";
-import { useAgendamentoScanner } from "@/lib/agendamento-scanner";
 import { AuthProvider, useAuth } from "@/lib/auth";
 
 import appCss from "../styles.css?url";
@@ -108,7 +107,8 @@ function isPublicPath(path: string): boolean {
 }
 
 function AppShell() {
-  useAgendamentoScanner();
+  // F2: scanner-write removido — pendências agora são derivadas on-demand
+  // (NotificationsBell via usePendenciasDerivadas). Ver docs/design/notificacoes-arquitetura.md.
   const {
     hasRole,
     isStaff: isStaffFn,
