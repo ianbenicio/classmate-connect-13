@@ -208,17 +208,14 @@ function buildPresencaMap(
   return presByAluno;
 }
 
+// Carrega alunos primeiro (rápido) e DEFERE as presenças para segundo plano.
+// Presenças (paginadas, pesadas) saem do burst de boot; `aluno.aulas` é
+// populado logo depois, com novo emit (consumidores re-renderizam via subscribe).
 async function loadFromDb() {
-  const [{ data, error }, { data: presData, error: presErr }] = await Promise.all([
-    supabase.from("alunos").select("*").order("nome"),
-    fetchAllPresencas(),
-  ]);
+  const { data, error } = await supabase.from("alunos").select("*").order("nome");
   if (error) {
     console.error("[alunos] load error", error);
     return;
-  }
-  if (presErr) {
-    console.error("[presencas] load error", presErr);
   }
   let alunosRows = (data ?? []) as AlunoRow[];
   const existingIds = new Set(alunosRows.map((r) => r.id));
@@ -228,12 +225,24 @@ async function loadFromDb() {
     if (err2) console.error("[alunos] reload error", err2);
     alunosRows = (data2 ?? []) as AlunoRow[];
   }
-  const presByAluno = buildPresencaMap(presData);
   alunos = alunosRows.map((r) => {
     const a = rowToAluno(r);
-    a.aulas = presByAluno.get(r.id) ?? [];
+    a.aulas = [];
     return a;
   });
+  // Presenças fora do caminho crítico do boot — popula `aulas` quando chegar.
+  void loadPresencasBackground();
+}
+
+async function loadPresencasBackground() {
+  const { data: presData, error } = await fetchAllPresencas();
+  if (error) {
+    console.error("[presencas] load error", error);
+    return;
+  }
+  const presByAluno = buildPresencaMap(presData);
+  alunos = alunos.map((a) => ({ ...a, aulas: presByAluno.get(a.id) ?? [] }));
+  emit();
 }
 
 async function ensureInit(): Promise<void> {
