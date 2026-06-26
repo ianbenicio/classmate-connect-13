@@ -10,8 +10,10 @@ import type {
 import { agendamentoDispensaRequisitos, isAtividadeAvulsa } from "./academic-types";
 import type { AulaEvidencia } from "./aula-evidencias";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
+import { gerarResumoCriticasProfessores, type ResumoCriticasProfessor } from "./professor-criticas";
 import type {
   ChecklistAlunoDados,
+  Nota1a5,
   RelatorioAlunoDados,
   RelatorioProfessorDados,
 } from "./formularios-types";
@@ -99,6 +101,8 @@ export interface ProfessorConsolidado {
   checklistsAluno: number;
   notificacoes: number;
   notificacoesNaoLidas: number;
+  pontosCritica: number;
+  punicoes: number;
   mediaAvaliacaoAlunos: number | null;
   mediaAvaliacaoDireta: number | null;
 }
@@ -173,6 +177,8 @@ export interface RelatorioSemanalCoordenacaoPayload {
     faltas: number;
     notificacoes: number;
     notificacoesNaoLidas: number;
+    pontosCritica: number;
+    punicoes: number;
     professoresComAula: number;
     cursos: number;
     turmas: number;
@@ -246,6 +252,15 @@ export function gerarRelatorioSemanalCoordenacao({
   const aulasComRequisitos = aulasFinalizadas.filter(
     (agendamento) => !agendamentoDispensaRequisitos(agendamento),
   );
+  const criticasProfessores = gerarResumoCriticasProfessores({
+    agendamentos: agendamentosPeriodo,
+    atividades,
+    evidencias,
+    avaliacoes,
+    dataInicio: periodo.inicio,
+    dataFim: periodo.fim,
+    now: new Date(geradoEm),
+  });
 
   const aulas = aulasFinalizadas.map((agendamento) =>
     consolidarAula({
@@ -271,6 +286,7 @@ export function gerarRelatorioSemanalCoordenacao({
     professorAvaliacoes: professorAvaliacoes.filter((avaliacao) =>
       inPeriodo(toIsoDateFromDateTime(avaliacao.criadoEm), periodo),
     ),
+    criticasProfessores,
   });
 
   const cursosOut = cursos
@@ -312,6 +328,8 @@ export function gerarRelatorioSemanalCoordenacao({
       (notificacao) =>
         !notificacao.lida && inPeriodo(toIsoDateFromDateTime(notificacao.criadoEm), periodo),
     ).length,
+    pontosCritica: sum(criticasProfessores, (professor) => professor.pontosCritica),
+    punicoes: sum(criticasProfessores, (professor) => professor.punicoes),
     professoresComAula: professoresOut.filter((professor) => professor.aulasDadas > 0).length,
     cursos: cursosOut.length,
     turmas: cursosOut.reduce((acc, curso) => acc + curso.turmas.length, 0),
@@ -414,6 +432,7 @@ function consolidarProfessores({
   avaliacoes,
   notificacoes,
   professorAvaliacoes,
+  criticasProfessores,
 }: {
   professores: ProfessorRelatorioInput[];
   aulas: AulaConsolidada[];
@@ -421,6 +440,7 @@ function consolidarProfessores({
   avaliacoes: AvaliacaoRecord[];
   notificacoes: Notificacao[];
   professorAvaliacoes: ProfessorAvaliacao[];
+  criticasProfessores: ResumoCriticasProfessor[];
 }): ProfessorConsolidado[] {
   const professoresMap = new Map<string, ProfessorRelatorioInput>();
   for (const professor of professores) professoresMap.set(professor.userId, professor);
@@ -431,6 +451,19 @@ function consolidarProfessores({
       displayName: aula.professorNome,
     });
   }
+  for (const critica of criticasProfessores) {
+    if (!critica.professorUserId || professoresMap.has(critica.professorUserId)) continue;
+    professoresMap.set(critica.professorUserId, {
+      userId: critica.professorUserId,
+      displayName: critica.professorNome,
+    });
+  }
+  const criticasByProfessor = new Map(
+    criticasProfessores.map((critica) => [
+      critica.professorUserId ?? critica.professorKey,
+      critica,
+    ]),
+  );
 
   return Array.from(professoresMap.values())
     .map((professor) => {
@@ -468,6 +501,7 @@ function consolidarProfessores({
       const avaliacoesDiretas = professorAvaliacoes.filter(
         (avaliacao) => avaliacao.professorUserId === professor.userId,
       );
+      const resumoCritica = criticasByProfessor.get(professor.userId);
 
       return {
         professorUserId: professor.userId,
@@ -485,6 +519,8 @@ function consolidarProfessores({
         notificacoes: notificacoesProfessor.length,
         notificacoesNaoLidas: notificacoesProfessor.filter((notificacao) => !notificacao.lida)
           .length,
+        pontosCritica: resumoCritica?.pontosCritica ?? 0,
+        punicoes: resumoCritica?.punicoes ?? 0,
         mediaAvaliacaoAlunos: mediaRelatoriosAlunoProfessor(relatoriosAluno),
         mediaAvaliacaoDireta: mediaProfessorAvaliacoes(avaliacoesDiretas),
       };
@@ -493,6 +529,7 @@ function consolidarProfessores({
       (professor) =>
         professor.aulasDadas > 0 ||
         professor.notificacoes > 0 ||
+        professor.pontosCritica > 0 ||
         professor.mediaAvaliacaoDireta !== null,
     )
     .sort((a, b) => b.horasMin - a.horasMin || a.professorNome.localeCompare(b.professorNome));
@@ -679,7 +716,7 @@ function mediaRelatoriosAlunoProfessor(avaliacoes: AvaliacaoRecord[]): number | 
       dados?.professor?.explicaBem,
       dados?.professor?.ajudaQuandoTrava,
       dados?.professor?.respeito,
-    ].filter((value): value is number => typeof value === "number");
+    ].filter((value): value is Nota1a5 => typeof value === "number");
   });
   return media(values);
 }

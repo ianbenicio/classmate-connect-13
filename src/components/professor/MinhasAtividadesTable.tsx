@@ -27,6 +27,7 @@ import {
   RefreshCw,
   Loader2,
   FileCheck2,
+  CircleAlert,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -63,7 +64,12 @@ import {
   type AulaEvidenciaContext,
 } from "@/lib/aula-evidencias";
 import { useAuth } from "@/lib/auth";
-import type { Agendamento, Curso, Turma } from "@/lib/academic-types";
+import {
+  agendamentoDispensaRequisitos,
+  type Agendamento,
+  type Curso,
+  type Turma,
+} from "@/lib/academic-types";
 import { cn } from "@/lib/utils";
 import { AulaEvidenciasDialog } from "@/components/academic/AulaEvidenciasDialog";
 
@@ -262,14 +268,18 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
     const chamada = getEvidenciaPorTipo(evs, "chamada_arquivo");
     const planoOk = evidenciaEstaValida(plano);
     const chamadaOk = evidenciaEstaValida(chamada);
+    const temAula = ag.atividadeIds.some((atividadeId) => ativMap.get(atividadeId)?.tipo === 0);
+    const exigePlano = temAula && !agendamentoDispensaRequisitos(ag);
     let planoAtrasado = false;
-    if (turma && curso) {
+    if (exigePlano && turma && curso) {
       const ctx: AulaEvidenciaContext = { curso, turma, agendamento: ag, atividades };
       planoAtrasado = !planoOk && isPlanoAulaAtrasado(ctx);
     }
     return {
       planoOk,
       chamadaOk,
+      planoPendente: exigePlano && !planoOk,
+      planoCritico: planoAtrasado,
       planoAtrasado,
       totalOk: Number(planoOk) + Number(chamadaOk),
       turma,
@@ -548,7 +558,22 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
                     </TableCell>
                     <TableCell className="font-mono text-[10px] truncate">{codigos}</TableCell>
                     <TableCell className="text-xs truncate max-w-[280px]">
-                      <span title={nomes}>{nomes}</span>
+                      <span className="inline-flex max-w-full items-center gap-1" title={nomes}>
+                        <span className="truncate">{nomes}</span>
+                        {evidStatus.planoPendente && (
+                          <CircleAlert
+                            className={cn(
+                              "h-3.5 w-3.5 shrink-0",
+                              evidStatus.planoCritico ? "text-destructive" : "text-amber-600",
+                            )}
+                            aria-label={
+                              evidStatus.planoCritico
+                                ? "Plano ausente com critica"
+                                : "Plano pendente"
+                            }
+                          />
+                        )}
+                      </span>
                       <div className="text-[10px] text-muted-foreground inline-flex items-center gap-0.5 ml-1">
                         <Clock className="h-2.5 w-2.5" /> {ag.inicio}
                       </div>
@@ -559,7 +584,8 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
                         variant={evidStatus.totalOk === 2 ? "ghost" : "outline"}
                         className={cn(
                           "h-6 text-[10px] px-2",
-                          evidStatus.planoAtrasado && "border-amber-500 text-amber-700",
+                          evidStatus.planoPendente && "border-amber-500 text-amber-700",
+                          evidStatus.planoCritico && "border-destructive text-destructive",
                         )}
                         disabled={!evidStatus.turma || !evidStatus.curso}
                         onClick={() => {

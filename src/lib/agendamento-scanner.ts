@@ -92,11 +92,6 @@ function buildNotifs(a: Agendamento, opts: BuildOpts): Notificacao[] {
   return out;
 }
 
-function planoDeadline(a: Agendamento) {
-  const start = new Date(`${a.data}T${a.inicio}:00`);
-  return new Date(start.getTime() - 2 * 60 * 60 * 1000);
-}
-
 function buildPlanoPendenteNotif(a: Agendamento): Notificacao[] {
   const turma = turmasStore.getAll().find((t) => t.id === a.turmaId);
   if (!turma) return [];
@@ -115,7 +110,7 @@ function buildPlanoPendenteNotif(a: Agendamento): Notificacao[] {
       destinatarioId: a.professorUserId ?? a.professor ?? "",
       destinatarioUserId: a.professorUserId,
       titulo: "Plano de aula pendente",
-      mensagem: `${ctx} — submeta o plano de aula. O prazo de 2h antes da aula ja passou.`,
+      mensagem: `${ctx} - submeta o plano de aula ate o dia da aula para evitar uma critica.`,
       cursoId: turma.cursoId,
       turmaId: turma.id,
       data: a.data,
@@ -141,7 +136,7 @@ export function runScanner(now: Date = new Date()) {
     if (a.status === "concluido") continue;
     const evs = evidencias.filter((e) => e.agendamentoId === a.id);
     const plano = getEvidenciaPorTipo(evs, "plano_aula");
-    if (!evidenciaEstaValida(plano) && now > planoDeadline(a)) {
+    if (!evidenciaEstaValida(plano)) {
       novas.push(...buildPlanoPendenteNotif(a));
     }
 

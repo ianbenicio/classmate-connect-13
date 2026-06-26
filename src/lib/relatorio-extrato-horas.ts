@@ -8,9 +8,15 @@
 // Saída: estrutura para renderização em tabela e PDF
 
 import { agendamentoDispensaRequisitos } from "./academic-types";
-import type { Agendamento } from "./academic-types";
+import type { Agendamento, Atividade } from "./academic-types";
+import type { AulaEvidencia } from "./aula-evidencias";
 import type { UserRow } from "./users-store";
 import type { AvaliacaoRecord } from "./avaliacoes-types";
+import {
+  gerarResumoCriticasProfessores,
+  getProfessorCriticaKey,
+  type CriticaProfessor,
+} from "./professor-criticas";
 
 /**
  * Registro de uma aula individual no relatório.
@@ -40,6 +46,10 @@ export interface RelatorioProfessor {
   classesAvaliadas: number;
   classesAvaliadas_: number; // sem avaliacao (for verification)
   classes: ClassRecord[];
+  pontosCritica: number;
+  punicoes: number;
+  saldoCriticas: number;
+  criticas: CriticaProfessor[];
 }
 
 /**
@@ -52,7 +62,15 @@ export interface ExtratoHorasPayload {
   totalProfessores: number;
   totalClasses: number;
   totalHoras: number;
+  totalCriticas: number;
+  totalPunicoes: number;
   professores: RelatorioProfessor[];
+}
+
+export interface GerarExtratoHorasOptions {
+  atividades?: Atividade[];
+  evidencias?: AulaEvidencia[];
+  now?: Date;
 }
 
 /**
@@ -86,6 +104,7 @@ export function gerarExtratoHoras(
   professores: UserRow[],
   dataInicio?: string,
   dataFim?: string,
+  options: GerarExtratoHorasOptions = {},
 ): ExtratoHorasPayload {
   // Monta set de agendamentos com relatório do professor para lookup rápido.
   // Considera "avaliado" apenas quando o professor enviou o relatorio_prof —
@@ -112,6 +131,17 @@ export function gerarExtratoHoras(
   for (const u of professores) {
     usersByUserId.set(u.userId, u);
   }
+
+  const criticas = gerarResumoCriticasProfessores({
+    agendamentos,
+    atividades: options.atividades ?? [],
+    evidencias: options.evidencias ?? [],
+    avaliacoes,
+    dataInicio,
+    dataFim,
+    now: options.now,
+  });
+  const criticasByProfessor = new Map(criticas.map((resumo) => [resumo.professorKey, resumo]));
 
   // Agrupa classes por professor
   const posProfessor = new Map<string, ClassRecord[]>();
@@ -172,20 +202,52 @@ export function gerarExtratoHoras(
   )) {
     const totalClasses = classes.length;
     const totalHoras = classes.reduce((sum, c) => sum + c.duracaoHoras, 0);
+    const professorNome = classes[0].professorNome;
+    const professorUserId = classes[0].professorUserId;
+    const chaveCritica = getProfessorCriticaKey(professorUserId, professorNome);
+    const resumoCritica = criticasByProfessor.get(chaveCritica);
 
     relatorioProfessores.push({
-      professorNome: classes[0].professorNome,
-      professorUserId: classes[0].professorUserId,
+      professorNome,
+      professorUserId,
       totalClasses,
       totalHoras: Math.round(totalHoras * 100) / 100, // Round to 2 decimals
       classesAvaliadas: classes.filter((c) => c.avaliacaoStatus === "com_avaliacao").length,
       classesAvaliadas_: classes.filter((c) => c.avaliacaoStatus === "sem_avaliacao").length,
       classes: classes.sort((a, b) => a.data.localeCompare(b.data)), // Sort by date
+      pontosCritica: resumoCritica?.pontosCritica ?? 0,
+      punicoes: resumoCritica?.punicoes ?? 0,
+      saldoCriticas: resumoCritica?.saldoCriticas ?? 0,
+      criticas: resumoCritica?.criticas ?? [],
     });
 
     totalHorasGeral += totalHoras;
     totalClassesGeral += totalClasses;
   }
+
+  const professoresJaIncluidos = new Set(
+    relatorioProfessores.map((professor) =>
+      getProfessorCriticaKey(professor.professorUserId, professor.professorNome),
+    ),
+  );
+  for (const resumoCritica of criticas) {
+    if (professoresJaIncluidos.has(resumoCritica.professorKey)) continue;
+    relatorioProfessores.push({
+      professorNome: resumoCritica.professorNome,
+      professorUserId: resumoCritica.professorUserId,
+      totalClasses: 0,
+      totalHoras: 0,
+      classesAvaliadas: 0,
+      classesAvaliadas_: 0,
+      classes: [],
+      pontosCritica: resumoCritica.pontosCritica,
+      punicoes: resumoCritica.punicoes,
+      saldoCriticas: resumoCritica.saldoCriticas,
+      criticas: resumoCritica.criticas,
+    });
+  }
+
+  relatorioProfessores.sort((a, b) => a.professorNome.localeCompare(b.professorNome));
 
   return {
     geradoEm: new Date().toISOString(),
@@ -194,6 +256,11 @@ export function gerarExtratoHoras(
     totalProfessores: relatorioProfessores.length,
     totalClasses: totalClassesGeral,
     totalHoras: Math.round(totalHorasGeral * 100) / 100,
+    totalCriticas: relatorioProfessores.reduce(
+      (sum, professor) => sum + professor.pontosCritica,
+      0,
+    ),
+    totalPunicoes: relatorioProfessores.reduce((sum, professor) => sum + professor.punicoes, 0),
     professores: relatorioProfessores,
   };
 }
