@@ -14,7 +14,15 @@ import { useCursos } from "@/lib/cursos-store";
 import { useAuth } from "@/lib/auth";
 import { AvaliacaoAulaDialog } from "@/components/academic/AvaliacaoAulaDialog";
 import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfessorDialog";
+import { usePendenciasDerivadas, type PendenciaDerivada } from "@/lib/pendencias-derivadas";
 import type { Notificacao } from "@/lib/academic-types";
+
+const KINDS_PENDENCIA = new Set(["plano_pendente", "atrasado", "expirado"]);
+const TITULO_PENDENCIA: Record<string, string> = {
+  plano_pendente: "Plano de aula pendente",
+  atrasado: "Relatório pendente",
+  expirado: "Prazo de relatório expirado",
+};
 
 export function NotificationsBell() {
   const allNotifs = useNotificacoes();
@@ -53,14 +61,51 @@ export function NotificationsBell() {
     return [];
   }, [allNotifs, displayName, user?.id, hasRole]);
 
-  const naoLidas = notifs.filter((n) => !n.lida).length;
-
-  // Stores necessários para resolver o contexto da notificação ao abrir
-  // o dialog de avaliação do aluno.
+  // Stores p/ contexto + computar as pendências derivadas.
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
   const turmas = useTurmas();
   const cursos = useCursos();
+
+  // F2: pendências (plano/atrasado/expirado) são DERIVADAS on-demand (RPC + fallback),
+  // não persistidas. Eventos reais (kind=agendado etc.) seguem no store.
+  const { pendencias: derivadas, resumo } = usePendenciasDerivadas();
+
+  // Eventos persistidos = notifs do papel SEM as kinds de pendência (agora derivadas).
+  const eventos = useMemo(
+    () => notifs.filter((n) => !n.kind || !KINDS_PENDENCIA.has(n.kind)),
+    [notifs],
+  );
+
+  // Pendências derivadas como itens de exibição (informativos, não acionáveis).
+  // Já vêm com escopo de papel da RPC — não passam pelo filtro de papel acima.
+  const itensDerivados = useMemo<Notificacao[]>(() => {
+    return derivadas.map((p: PendenciaDerivada) => {
+      const ag = agendamentos.find((a) => a.id === p.agendamentoId);
+      const turma = ag ? turmas.find((t) => t.id === ag.turmaId) : undefined;
+      const curso = turma ? cursos.find((c) => c.id === turma.cursoId) : undefined;
+      const ctx = [curso?.nome, turma?.nome, `${p.data} ${p.inicio}-${p.fim}`]
+        .filter(Boolean)
+        .join(" · ");
+      return {
+        id: `pend:${p.agendamentoId}:${p.kind}`,
+        destinatarioTipo: "professor",
+        destinatarioId: "",
+        titulo: TITULO_PENDENCIA[p.kind] ?? "Pendência",
+        mensagem: ctx,
+        kind: p.kind as Notificacao["kind"],
+        agendamentoId: p.agendamentoId,
+        data: p.data,
+        inicio: p.inicio,
+        fim: p.fim,
+        criadoEm: new Date().toISOString(),
+        lida: true,
+      } as Notificacao;
+    });
+  }, [derivadas, agendamentos, turmas, cursos]);
+
+  const itens = useMemo(() => [...itensDerivados, ...eventos], [itensDerivados, eventos]);
+  const naoLidas = eventos.filter((n) => !n.lida).length + resumo.urgent + resumo.critical;
 
   // Notificação ativa cujo dialog está aberto.
   const [avaliacaoCtx, setAvaliacaoCtx] = useState<Notificacao | null>(null);
@@ -84,7 +129,8 @@ export function NotificationsBell() {
     isAvaliacaoAlunoActionable(n) || isRelatorioProfActionable(n);
 
   const handleNotifClick = (n: Notificacao) => {
-    notificacoesStore.marcarLida(n.id);
+    // Derivadas (id "pend:...") não persistem — não marcar lida.
+    if (!n.id.startsWith("pend:")) notificacoesStore.marcarLida(n.id);
     if (isAvaliacaoAlunoActionable(n)) {
       setAvaliacaoCtx(n);
     } else if (isRelatorioProfActionable(n)) {
@@ -133,7 +179,7 @@ export function NotificationsBell() {
       <PopoverContent align="end" className="w-96 p-0">
         <div className="flex items-center justify-between px-3 py-2 border-b">
           <div className="font-semibold text-sm">Notificações</div>
-          {notifs.length > 0 && (
+          {eventos.length > 0 && (
             <Button
               size="sm"
               variant="ghost"
@@ -145,13 +191,13 @@ export function NotificationsBell() {
           )}
         </div>
         <div className="max-h-[420px] overflow-y-auto">
-          {notifs.length === 0 ? (
+          {itens.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
               Nenhuma notificação ainda.
             </div>
           ) : (
             <ul className="divide-y">
-              {notifs.map((n) => {
+              {itens.map((n) => {
                 const actionable = isAnyActionable(n);
                 const isProf = isRelatorioProfActionable(n);
                 return (
