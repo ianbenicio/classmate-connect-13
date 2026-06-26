@@ -61,7 +61,10 @@ export function TurmaDetailDialog({
   const [quadroOpen, setQuadroOpen] = useState(false);
   const allAgendamentos = useAgendamentos();
   const todasHabilidades = useHabilidades();
-  const alunosDaTurma = turma ? alunos.filter((a) => a.turmaId === turma.id) : [];
+  const alunosDaTurma = useMemo(
+    () => (turma ? alunos.filter((a) => a.turmaId === turma.id) : []),
+    [alunos, turma],
+  );
 
   // Habilidades do curso.
   const habilidadesDoCurso = useMemo(() => {

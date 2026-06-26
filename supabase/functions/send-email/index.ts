@@ -29,6 +29,21 @@ interface RenderedEmail {
   html: string;
 }
 
+type QueryBuilder = {
+  select(columns: string): QueryBuilder;
+  eq(column: string, value: unknown): QueryBuilder;
+  maybeSingle(): Promise<{ data: unknown; error: unknown }>;
+  insert(values: unknown): Promise<{ data?: unknown; error?: unknown }>;
+};
+
+type ClientWithFrom = {
+  from(table: string): QueryBuilder;
+};
+
+function fromTable(client: unknown, table: string): QueryBuilder {
+  return (client as ClientWithFrom).from(table);
+}
+
 // Escapa texto interpolado em HTML (nomes de aluno/responsável, descrições, etc.)
 function escHtml(s: string): string {
   return s
@@ -234,8 +249,7 @@ async function logAudit(
   },
 ) {
   try {
-    // deno-lint-ignore no-explicit-any
-    await (supabase as any).from("audit_events").insert({
+    await fromTable(supabase, "audit_events").insert({
       action: opts.action,
       entity_type: opts.entity_type,
       entity_id: opts.entity_id ?? null,
@@ -291,15 +305,14 @@ serve(async (req: Request) => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
-    let { subject, html } = renderTemplate(template_id, vars);
+    const { subject, html: renderedHtml } = renderTemplate(template_id, vars);
+    let html = renderedHtml;
 
     // Resolve {{unsubscribe_url}} placeholder — lookup token from responsaveis by email.
     if (html.includes("{{unsubscribe_url}}")) {
       let unsubUrl = `${APP_URL}/preferencias`;
       try {
-        // deno-lint-ignore no-explicit-any
-        const { data: resp } = (await (supabase as any)
-          .from("responsaveis")
+        const { data: resp } = (await fromTable(supabase, "responsaveis")
           .select("unsubscribe_token")
           .eq("email", to)
           .maybeSingle()) as { data: { unsubscribe_token: string } | null };

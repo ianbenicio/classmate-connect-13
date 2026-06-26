@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLocalStorage } from "@/lib/use-local-storage";
 import { Badge } from "@/components/ui/badge";
@@ -68,10 +68,13 @@ function AtividadesPage() {
     null,
   );
   const selectedCurso = selectedCursoState;
-  const setSelectedCurso = (c: Curso | null) => {
-    setSelectedCursoState(c);
-    setPersistedCursoId(c?.id ?? null);
-  };
+  const setSelectedCurso = useCallback(
+    (c: Curso | null) => {
+      setSelectedCursoState(c);
+      setPersistedCursoId(c?.id ?? null);
+    },
+    [setPersistedCursoId],
+  );
   const [confirmDelete, setConfirmDelete] = useState<Atividade | null>(null);
   const [pendentesOpen, setPendentesOpen] = useState(false);
   const [gruposOpen, setGruposOpen] = useState(false);
@@ -103,7 +106,7 @@ function AtividadesPage() {
     if (nextCurso.id !== selectedCurso.id) {
       setSelectedCurso(nextCurso);
     }
-  }, [cursos, selectedCurso]);
+  }, [cursos, selectedCurso, setSelectedCurso]);
 
   const totalAulas = porCurso.reduce((acc, p) => acc + p.aulas.length, 0);
   const totalTarefas = porCurso.reduce((acc, p) => acc + p.tarefas.length, 0);

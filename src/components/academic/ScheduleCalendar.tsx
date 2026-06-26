@@ -222,10 +222,7 @@ function cursoHue(curso: { id: string; cod?: string } | undefined, fallbackId: s
 }
 
 /** Estilos inline para chip de turma — base do curso + variação por turma. */
-export function turmaColor(
-  turma: { id: string; cursoId: string },
-  curso?: { id: string; cod?: string },
-) {
+function turmaColor(turma: { id: string; cursoId: string }, curso?: { id: string; cod?: string }) {
   const hue = cursoHue(curso, turma.cursoId);
   const h = hashStr(turma.id);
   const dh = (h % 25) - 12; // -12..+12 matiz

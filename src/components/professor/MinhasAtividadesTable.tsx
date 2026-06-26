@@ -245,7 +245,7 @@ export function MinhasAtividadesTable({ professorUserId, professorNome, onAbrirR
       .map((id) => turmas.find((t) => t.id === id))
       .filter((t): t is Turma => !!t)
       .sort((a, b) => a.cod.localeCompare(b.cod));
-  }, [agendamentos, turmas, pertenceAoProfessor, targetUserId]);
+  }, [agendamentos, turmas, pertenceAoProfessor, targetNomeKey, targetUserId]);
 
   // Opções mês — derivadas dos agendamentos + mês atual
   const mesesOpcoes = useMemo(() => {

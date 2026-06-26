@@ -20,6 +20,21 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type QueryBuilder = {
+  select(columns: string): QueryBuilder;
+  eq(column: string, value: unknown): QueryBuilder;
+  maybeSingle(): Promise<{ data: unknown; error: unknown }>;
+  insert(values: unknown): Promise<{ data?: unknown; error?: unknown }>;
+};
+
+type ClientWithFrom = {
+  from(table: string): QueryBuilder;
+};
+
+function fromTable(client: unknown, table: string): QueryBuilder {
+  return (client as ClientWithFrom).from(table);
+}
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: CORS_HEADERS });
@@ -81,9 +96,7 @@ serve(async (req: Request) => {
   const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   // Busca dados do target antes de deletar (para log).
-  // deno-lint-ignore no-explicit-any
-  const { data: targetProfile } = (await (adminClient as any)
-    .from("profiles")
+  const { data: targetProfile } = (await fromTable(adminClient, "profiles")
     .select("display_name, email, project_id")
     .eq("user_id", targetUserId)
     .maybeSingle()) as {
@@ -100,8 +113,7 @@ serve(async (req: Request) => {
 
   // Log de auditoria. Falha silenciosa — não reverter delete já feito.
   try {
-    // deno-lint-ignore no-explicit-any
-    await (adminClient as any).from("audit_events").insert({
+    await fromTable(adminClient, "audit_events").insert({
       actor_id: callerUser.id,
       project_id: targetProfile?.project_id ?? null,
       action: "delete",

@@ -27,6 +27,23 @@ interface QueueItem {
   tentativas: number;
 }
 
+type QueryBuilder = {
+  select(columns: string): QueryBuilder;
+  update(values: Record<string, unknown>): QueryBuilder;
+  eq(column: string, value: unknown): QueryBuilder;
+  lt(column: string, value: unknown): QueryBuilder;
+  order(column: string, options?: { ascending?: boolean }): QueryBuilder;
+  limit(count: number): Promise<{ data: unknown; error: unknown }>;
+};
+
+type ClientWithFrom = {
+  from(table: string): QueryBuilder;
+};
+
+function fromTable(client: unknown, table: string): QueryBuilder {
+  return (client as ClientWithFrom).from(table);
+}
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -45,9 +62,7 @@ serve(async (req: Request) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-  // deno-lint-ignore no-explicit-any
-  const { data: items, error: fetchErr } = (await (supabase as any)
-    .from("email_queue")
+  const { data: items, error: fetchErr } = (await fromTable(supabase, "email_queue")
     .select("id, project_id, template_id, to_email, vars_json, tentativas")
     .eq("state", "pending")
     .lt("tentativas", MAX_TENTATIVAS)
@@ -80,9 +95,7 @@ serve(async (req: Request) => {
       });
 
       if (res.ok) {
-        // deno-lint-ignore no-explicit-any
-        await (supabase as any)
-          .from("email_queue")
+        await fromTable(supabase, "email_queue")
           .update({
             state: "sent",
             enviado_em: new Date().toISOString(),
@@ -93,9 +106,7 @@ serve(async (req: Request) => {
       } else {
         const errBody = await res.text();
         const newState = item.tentativas + 1 >= MAX_TENTATIVAS ? "failed" : "pending";
-        // deno-lint-ignore no-explicit-any
-        await (supabase as any)
-          .from("email_queue")
+        await fromTable(supabase, "email_queue")
           .update({
             state: newState,
             tentativas: item.tentativas + 1,
@@ -107,9 +118,7 @@ serve(async (req: Request) => {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       const newState = item.tentativas + 1 >= MAX_TENTATIVAS ? "failed" : "pending";
-      // deno-lint-ignore no-explicit-any
-      await (supabase as any)
-        .from("email_queue")
+      await fromTable(supabase, "email_queue")
         .update({
           state: newState,
           tentativas: item.tentativas + 1,

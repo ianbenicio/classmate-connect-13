@@ -74,20 +74,33 @@ export function RelatoriosCoordenacaoDialog({ open, onOpenChange }: Props) {
     return list.slice().sort((a, b) => a.nome.localeCompare(b.nome));
   }, [alunos, cursoId, turmaId]);
 
-  const filtros: LoteFiltros = {
-    cursoId: cursoId === ANY ? undefined : cursoId,
-    turmaId: turmaId === ANY ? undefined : turmaId,
-    alunoId: alunoId === ANY ? undefined : alunoId,
-    professorUserId: professorUserId === ANY ? undefined : professorUserId,
-    professorNome:
-      professorUserId === ANY
-        ? undefined
-        : professores.find((p) => p.userId === professorUserId)?.displayName,
-    dataInicio: dataInicio || undefined,
-    dataFim: dataFim || undefined,
-    incluirRelatorioProf: incluirProf,
-    incluirRelatorioAluno: incluirAluno,
-  };
+  const filtros = useMemo<LoteFiltros>(
+    () => ({
+      cursoId: cursoId === ANY ? undefined : cursoId,
+      turmaId: turmaId === ANY ? undefined : turmaId,
+      alunoId: alunoId === ANY ? undefined : alunoId,
+      professorUserId: professorUserId === ANY ? undefined : professorUserId,
+      professorNome:
+        professorUserId === ANY
+          ? undefined
+          : professores.find((p) => p.userId === professorUserId)?.displayName,
+      dataInicio: dataInicio || undefined,
+      dataFim: dataFim || undefined,
+      incluirRelatorioProf: incluirProf,
+      incluirRelatorioAluno: incluirAluno,
+    }),
+    [
+      alunoId,
+      cursoId,
+      dataFim,
+      dataInicio,
+      incluirAluno,
+      incluirProf,
+      professorUserId,
+      professores,
+      turmaId,
+    ],
+  );
 
   const preview = useMemo(
     () =>
@@ -114,7 +127,7 @@ export function RelatoriosCoordenacaoDialog({ open, onOpenChange }: Props) {
     }
     setGerando(true);
     try {
-      let titulo = "Relatórios de Aula";
+      const titulo = "Relatórios de Aula";
       const subParts: string[] = [];
       if (cursoId !== ANY) {
         const c = cursos.find((x) => x.id === cursoId);

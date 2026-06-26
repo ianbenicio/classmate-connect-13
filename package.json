@@ -10,9 +10,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:rls": "cross-env SUPABASE_TEST=1 vitest run src/test/rls-smoke",
+    "test": "vitest run --config vitest.config.mjs",
+    "test:watch": "vitest --config vitest.config.mjs",
+    "test:rls": "cross-env SUPABASE_TEST=1 vitest run --config vitest.config.mjs src/test/rls-smoke",
     "gen:test-jwts": "node scripts/gen-rls-test-jwts.mjs"
   },
   "dependencies": {

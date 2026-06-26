@@ -1,16 +1,23 @@
 // Vitest config standalone. Keep tests isolated from Vite/TanStack Start
 // build plugins so unit tests stay fast and deterministic.
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@": path.resolve(rootDir, "src"),
+    },
+  },
   test: {
     environment: "happy-dom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
-    // RLS smoke tests hit real Supabase — skip in unit run unless SUPABASE_TEST=1
+    // RLS smoke tests hit real Supabase; skip in unit run unless SUPABASE_TEST=1.
     // Run with: SUPABASE_TEST=1 npx vitest run src/test/rls-smoke
     exclude: process.env.SUPABASE_TEST
       ? ["**/node_modules/**"]

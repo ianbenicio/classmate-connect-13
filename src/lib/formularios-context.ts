@@ -3,6 +3,8 @@
  * Metadados invisíveis que rastreiam quando e como um formulário foi preenchido
  */
 
+import type { Agendamento, Curso, Turma } from "./academic-types";
+
 export interface ContextoFormulario {
   /** ID único da aplicação deste formulário */
   id: string;
@@ -130,11 +132,18 @@ export class ContextoFormularioBuilder {
 /**
  * Função auxiliar para extrair contexto de um agendamento
  */
+type AgendamentoContexto = Pick<Agendamento, "id" | "turmaId"> & { cursoId?: string };
+type TurmaContexto = Pick<Turma, "id" | "cursoId" | "cod"> & {
+  codigo?: string;
+  local?: string;
+};
+type CursoContexto = Pick<Curso, "id" | "cod" | "nome">;
+
 export async function extrairContextoDeAgendamento(
   agendamentoId: string,
-  agendamentos: any[],
-  turmas: any[],
-  cursos: any[],
+  agendamentos: AgendamentoContexto[],
+  turmas: TurmaContexto[],
+  cursos: CursoContexto[],
 ): Promise<Partial<ContextoFormulario>> {
   const ag = agendamentos.find((a) => a.id === agendamentoId);
   if (!ag) return {};
@@ -148,7 +157,7 @@ export async function extrairContextoDeAgendamento(
     cursoCodigo: curso?.cod,
     cursoNome: curso?.nome,
     turmaId: ag.turmaId,
-    turmaCodigo: turma?.codigo,
+    turmaCodigo: turma?.codigo ?? turma?.cod,
     local: turma?.local || "—",
   };
 }
