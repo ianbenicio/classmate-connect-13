@@ -25,6 +25,28 @@ const TITULO_PENDENCIA: Record<string, string> = {
 };
 
 export function NotificationsBell() {
+  const [open, setOpen] = useState(false);
+  const { resumo } = usePendenciasDerivadas({ listar: false });
+  const naoLidas = resumo.urgent + resumo.critical;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label="Notificações" className="relative">
+          <Bell className="h-5 w-5" />
+          {naoLidas > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold">
+              {naoLidas}
+            </span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      {open && <NotificationsBellPanel />}
+    </Popover>
+  );
+}
+
+function NotificationsBellPanel() {
   const allNotifs = useNotificacoes();
   const { user, displayName, hasRole } = useAuth();
 
@@ -69,7 +91,7 @@ export function NotificationsBell() {
 
   // F2: pendências (plano/atrasado/expirado) são DERIVADAS on-demand (RPC + fallback),
   // não persistidas. Eventos reais (kind=agendado etc.) seguem no store.
-  const { pendencias: derivadas, resumo } = usePendenciasDerivadas();
+  const { pendencias: derivadas } = usePendenciasDerivadas({ listar: true });
 
   // Eventos persistidos = notifs do papel SEM as kinds de pendência (agora derivadas).
   const eventos = useMemo(
@@ -105,7 +127,6 @@ export function NotificationsBell() {
   }, [derivadas, agendamentos, turmas, cursos]);
 
   const itens = useMemo(() => [...itensDerivados, ...eventos], [itensDerivados, eventos]);
-  const naoLidas = eventos.filter((n) => !n.lida).length + resumo.urgent + resumo.critical;
 
   // Notificação ativa cujo dialog está aberto.
   const [avaliacaoCtx, setAvaliacaoCtx] = useState<Notificacao | null>(null);
@@ -165,17 +186,7 @@ export function NotificationsBell() {
   })();
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Notificações" className="relative">
-          <Bell className="h-5 w-5" />
-          {naoLidas > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-4 h-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold">
-              {naoLidas}
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
+    <>
       <PopoverContent align="end" className="w-96 p-0">
         <div className="flex items-center justify-between px-3 py-2 border-b">
           <div className="font-semibold text-sm">Notificações</div>
@@ -265,6 +276,6 @@ export function NotificationsBell() {
           curso={relatorioFromNotif.curso}
         />
       )}
-    </Popover>
+    </>
   );
 }

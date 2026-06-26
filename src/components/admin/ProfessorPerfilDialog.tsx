@@ -354,7 +354,10 @@ function ProfessorPerfilDialogContent({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <MinhasAtividadesTable professorUserId={professor.userId} />
+              <MinhasAtividadesTable
+                professorUserId={professor.userId}
+                professorNome={professor.nome}
+              />
             </CardContent>
           </Card>
 

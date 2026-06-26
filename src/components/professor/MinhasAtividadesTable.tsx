@@ -13,7 +13,7 @@
 //
 // Filtros: mês/ano + turma. 1 linha por agendamento (resposta A).
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { endOfWeek, format, parseISO, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -76,6 +76,8 @@ import { AulaEvidenciasDialog } from "@/components/academic/AulaEvidenciasDialog
 interface Props {
   /** Professor cujas aulas listar. Default: usuário logado. */
   professorUserId?: string;
+  /** Nome legado do professor, usado para aulas antigas sem professorUserId. */
+  professorNome?: string;
   /** Callback ao clicar em "Lançar relatório" — pai abre RelatorioProfessorDialog. */
   onAbrirRelatorio?: (info: { agendamento: Agendamento; turma: Turma; curso: Curso }) => void;
 }
@@ -105,8 +107,8 @@ const sortAgendamentosDesc = (a: Agendamento, b: Agendamento) => sortAgendamento
 
 const isAgendamentoConcluido = (ag: Agendamento) => ag.status === "concluido";
 
-export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Props) {
-  const { user, hasRole } = useAuth();
+export function MinhasAtividadesTable({ professorUserId, professorNome, onAbrirRelatorio }: Props) {
+  const { user, hasRole, displayName } = useAuth();
   const agendamentos = useAgendamentos();
   const turmas = useTurmas();
   const cursos = useCursos();
@@ -116,6 +118,19 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   const evidencias = useAulaEvidencias();
 
   const targetUserId = professorUserId ?? user?.id ?? null;
+  const targetNomeKey = useMemo(() => {
+    const nome = professorNome ?? (!professorUserId ? displayName || user?.email : "");
+    return nome.trim().toLowerCase();
+  }, [displayName, professorNome, professorUserId, user?.email]);
+
+  const pertenceAoProfessor = useCallback(
+    (ag: Agendamento) => {
+      if (targetUserId && ag.professorUserId === targetUserId) return true;
+      if (ag.professorUserId) return false;
+      return !!targetNomeKey && (ag.professor ?? "").trim().toLowerCase() === targetNomeKey;
+    },
+    [targetNomeKey, targetUserId],
+  );
   const [evidenciaCtx, setEvidenciaCtx] = useState<{
     agendamento: Agendamento;
     turma: Turma;
@@ -150,12 +165,12 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
   const agoraKey = `${hojeIso} ${format(hoje, "HH:mm")}`;
 
   const linhasDoProfessor = useMemo(() => {
-    if (!targetUserId) return [];
+    if (!targetUserId && !targetNomeKey) return [];
     return agendamentos
-      .filter((ag) => ag.professorUserId === targetUserId)
+      .filter(pertenceAoProfessor)
       .filter((ag) => turmaFiltro === "__all__" || ag.turmaId === turmaFiltro)
       .sort(sortAgendamentosAsc);
-  }, [agendamentos, targetUserId, turmaFiltro]);
+  }, [agendamentos, pertenceAoProfessor, targetNomeKey, targetUserId, turmaFiltro]);
 
   const linhasMes = useMemo(() => {
     const [ano, mes] = mesAno.split("-").map(Number);
@@ -221,29 +236,29 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
 
   // Turmas distintas do professor
   const turmasDoProfessor = useMemo(() => {
-    if (!targetUserId) return [];
+    if (!targetUserId && !targetNomeKey) return [];
     const ids = new Set<string>();
     for (const ag of agendamentos) {
-      if (ag.professorUserId === targetUserId) ids.add(ag.turmaId);
+      if (pertenceAoProfessor(ag)) ids.add(ag.turmaId);
     }
     return Array.from(ids)
       .map((id) => turmas.find((t) => t.id === id))
       .filter((t): t is Turma => !!t)
       .sort((a, b) => a.cod.localeCompare(b.cod));
-  }, [agendamentos, turmas, targetUserId]);
+  }, [agendamentos, turmas, pertenceAoProfessor, targetUserId]);
 
   // Opções mês — derivadas dos agendamentos + mês atual
   const mesesOpcoes = useMemo(() => {
     const set = new Set<string>();
-    if (targetUserId) {
+    if (targetUserId || targetNomeKey) {
       for (const ag of agendamentos) {
-        if (ag.professorUserId !== targetUserId) continue;
+        if (!pertenceAoProfessor(ag)) continue;
         set.add(ag.data.slice(0, 7));
       }
     }
     set.add(mesAno);
     return Array.from(set).sort().reverse();
-  }, [agendamentos, targetUserId, mesAno]);
+  }, [agendamentos, targetNomeKey, targetUserId, mesAno, pertenceAoProfessor]);
 
   const statusFor = (ag: Agendamento) => {
     const de = avaliacoes.some((a) => a.tipo === "relatorio_prof" && a.agendamentoId === ag.id);
@@ -257,7 +272,7 @@ export function MinhasAtividadesTable({ professorUserId, onAbrirRelatorio }: Pro
 
   const podeEditar = (ag: Agendamento) => {
     if (hasRole("admin") || hasRole("coordenacao")) return true;
-    return ag.professorUserId === user?.id;
+    return pertenceAoProfessor(ag);
   };
 
   const statusEvidencias = (ag: Agendamento) => {

@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAgendamentos } from "./agendamentos-store";
-import { useAulaEvidencias } from "./aula-evidencias-store";
-import { calcularPendencias, type Pendencia, type PendenciaKind } from "./pendencias";
+import type { PendenciaKind } from "./pendencias";
 
 export type Severidade = "critical" | "urgent" | "warning" | "info";
 
@@ -33,50 +31,76 @@ interface RpcRow {
   professor: string | null;
 }
 
-// Mapa de severidade — espelha a migration F3 (get_pendencias).
-function severidadeDe(p: Pendencia, now: Date): Severidade {
-  if (p.kind === "expirado") return "critical";
-  if (p.kind === "atrasado") return "urgent";
-  // plano_pendente: urgent quando o dia da aula já chegou (BRT), senão warning.
-  const diaAula = new Date(`${p.agendamento.data}T00:00:00-03:00`);
-  return now >= diaAula ? "urgent" : "warning";
-}
-
 function vazio(): ResumoPendencias {
   return { critical: 0, urgent: 0, warning: 0, info: 0 };
+}
+
+function normalizarResumo(raw: unknown): ResumoPendencias {
+  if (!raw || typeof raw !== "object") return vazio();
+  const obj = raw as Record<string, unknown>;
+  return {
+    critical: Number(obj.critical ?? 0),
+    urgent: Number(obj.urgent ?? 0),
+    warning: Number(obj.warning ?? 0),
+    info: Number(obj.info ?? 0),
+  };
+}
+
+interface UsePendenciasDerivadasOptions {
+  enabled?: boolean;
+  listar?: boolean;
 }
 
 /**
  * Pendências derivadas do usuário, sem persistência.
  * Fonte primária: RPC `get_pendencias` (server-truth, RLS multi-tenant).
- * Fallback: `calcularPendencias` client-side (stores já carregados) se a RPC
- * falhar. Sem polling — refaz no mount e ao focar a aba.
+ * O badge usa apenas `get_pendencias_resumo`; a lista completa só é buscada
+ * quando `listar=true`. Não há fallback client-side aqui: carregar stores
+ * inteiros no header reabre o problema de 503 por excesso de consultas.
  * Ver docs/design/notificacoes-arquitetura.md.
  */
-export function usePendenciasDerivadas(): {
+export function usePendenciasDerivadas(options: UsePendenciasDerivadasOptions = {}): {
   pendencias: PendenciaDerivada[];
   resumo: ResumoPendencias;
   loading: boolean;
   fonte: "rpc" | "client";
 } {
-  const agendamentos = useAgendamentos();
-  const evidencias = useAulaEvidencias();
-  const [rpc, setRpc] = useState<PendenciaDerivada[] | null>(null);
+  const { enabled = true, listar = true } = options;
+  const [pendencias, setPendencias] = useState<PendenciaDerivada[]>([]);
+  const [resumo, setResumo] = useState<ResumoPendencias>(vazio);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      setPendencias([]);
+      setResumo(vazio());
+      return;
+    }
+
     let cancel = false;
     const fetchRpc = async () => {
-      // O nome da RPC ainda não está nos tipos gerados do Supabase (regenerar
-      // com `supabase gen types` após o merge da migration F3).
-      const { data, error } = await supabase.rpc("get_pendencias" as never);
+      setLoading(true);
+      // Os nomes das RPCs ainda não estão nos tipos gerados do Supabase.
+      const [resumoResp, listaResp] = await Promise.all([
+        supabase.rpc("get_pendencias_resumo" as never),
+        listar ? supabase.rpc("get_pendencias" as never) : Promise.resolve(null),
+      ]);
       if (cancel) return;
-      const rows = (data as unknown as RpcRow[] | null) ?? null;
-      if (error || !rows) {
-        setRpc(null); // cai pro fallback client
+
+      if (resumoResp.error) {
+        console.error("[pendencias] resumo rpc error", resumoResp.error);
+        setResumo(vazio());
       } else {
-        setRpc(
-          rows.map((r) => ({
+        setResumo(normalizarResumo(resumoResp.data));
+      }
+
+      if (listar && listaResp) {
+        if (listaResp.error) {
+          console.error("[pendencias] lista rpc error", listaResp.error);
+          setPendencias([]);
+        } else {
+          const rows = ((listaResp.data as unknown as RpcRow[] | null) ?? []).map((r) => ({
             agendamentoId: r.agendamento_id,
             kind: r.kind as PendenciaKind,
             severidade: r.severidade as Severidade,
@@ -84,8 +108,11 @@ export function usePendenciasDerivadas(): {
             inicio: r.inicio,
             fim: r.fim,
             professor: r.professor,
-          })),
-        );
+          }));
+          setPendencias(rows);
+        }
+      } else {
+        setPendencias([]);
       }
       setLoading(false);
     };
@@ -96,30 +123,7 @@ export function usePendenciasDerivadas(): {
       cancel = true;
       window.removeEventListener("focus", onFocus);
     };
-  }, []);
+  }, [enabled, listar]);
 
-  // Fallback client (best-effort; a RPC é a fonte autoritativa de escopo).
-  const fallback = useMemo<PendenciaDerivada[]>(() => {
-    const now = new Date();
-    return calcularPendencias({ agendamentos, evidencias, now }).map((p) => ({
-      agendamentoId: p.agendamentoId,
-      kind: p.kind,
-      severidade: severidadeDe(p, now),
-      data: p.agendamento.data,
-      inicio: p.agendamento.inicio,
-      fim: p.agendamento.fim,
-      professor: p.agendamento.professor ?? null,
-    }));
-  }, [agendamentos, evidencias]);
-
-  const pendencias = rpc ?? fallback;
-  const fonte: "rpc" | "client" = rpc ? "rpc" : "client";
-
-  const resumo = useMemo<ResumoPendencias>(() => {
-    const r = vazio();
-    for (const p of pendencias) r[p.severidade]++;
-    return r;
-  }, [pendencias]);
-
-  return { pendencias, resumo, loading, fonte };
+  return { pendencias, resumo, loading, fonte: "rpc" };
 }
