@@ -89,7 +89,6 @@ export const notificacoesStore = {
     base.set([...itemsLimpos, ...all]);
     base.emit();
 
-    // Insert no banco — linha por linha pra absorver dedup (23505).
     const rows = itemsLimpos.map((n) => ({
       id: n.id,
       destinatario_user_id: n.destinatarioUserId ?? null,
@@ -109,22 +108,44 @@ export const notificacoesStore = {
       agendamento_id: n.agendamentoId ?? null,
       project_id: requireProjectIdForWrite() ?? undefined,
     }));
-    const results = await Promise.all(
-      rows.map(async (row) => {
-        const { error } = await supabase.from("notificacoes").insert(row);
-        return error;
-      }),
-    );
-    const erros = results.filter((e): e is NonNullable<typeof e> => e !== null);
-    const fatais = erros.filter((e) => e.code !== "23505");
-    if (erros.length > fatais.length) {
-      console.debug(
-        `[notificacoes] ${erros.length - fatais.length} dedup(s) absorvidos pelo índice único.`,
+
+    // Dedup AUTORITATIVO contra o banco antes de inserir.
+    // O store local pode estar vazio (ex.: o load falhou sob carga / 503), e aí
+    // o dedup local acima não filtra nada. O código antigo reinseria tudo,
+    // linha por linha em Promise.all, abrindo centenas de conexões concorrentes
+    // que esgotavam o pool do projeto e devolviam 503 em todo o app a cada 60s.
+    // Agora: 1 SELECT das notificações já existentes destes agendamentos + 1
+    // INSERT em lote só das novas (nunca N requisições concorrentes).
+    const agIds = [...new Set(rows.map((r) => r.agendamento_id).filter((v): v is string => !!v))];
+    let jaExiste = new Set<string>();
+    if (agIds.length > 0) {
+      const { data: existentes } = await supabase
+        .from("notificacoes")
+        .select("destinatario_ref, agendamento_id, kind")
+        .in("agendamento_id", agIds);
+      jaExiste = new Set(
+        (
+          (existentes ?? []) as Array<{
+            destinatario_ref: string | null;
+            agendamento_id: string | null;
+            kind: string | null;
+          }>
+        ).map((r) => `${r.destinatario_ref}|${r.agendamento_id}|${r.kind}`),
       );
     }
-    if (fatais.length > 0) {
-      console.error("[notificacoes] insert errors", fatais);
-      toast.error(`Erro ao registrar notificações: ${fatais[0].message}`);
+    const rowsNovas = rows.filter(
+      (r) =>
+        !r.agendamento_id ||
+        !r.kind ||
+        !jaExiste.has(`${r.destinatario_ref}|${r.agendamento_id}|${r.kind}`),
+    );
+    if (rowsNovas.length === 0) return;
+
+    const { error } = await supabase.from("notificacoes").insert(rowsNovas);
+    // 23505 = corrida rara entre clientes; o índice único garante idempotência.
+    if (error && error.code !== "23505") {
+      console.error("[notificacoes] insert error", error);
+      toast.error(`Erro ao registrar notificações: ${error.message}`);
     }
   },
   async marcarLida(id: string) {
