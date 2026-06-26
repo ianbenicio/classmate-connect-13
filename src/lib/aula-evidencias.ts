@@ -186,7 +186,8 @@ export function getNomeArquivoChamadaUpload(
 }
 
 export function getPrazoPlanoAula(ctx: AulaEvidenciaContext): Date {
-  const start = new Date(`${ctx.agendamento.data}T${ctx.agendamento.inicio}:00`);
+  // Fuso fixo da escola (BRT -03:00, sem DST) p/ não depender do TZ do runtime.
+  const start = new Date(`${ctx.agendamento.data}T${ctx.agendamento.inicio}:00-03:00`);
   return new Date(start.getTime() - 2 * 60 * 60 * 1000);
 }
 

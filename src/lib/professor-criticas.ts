@@ -55,7 +55,8 @@ export function getProfessorCriticaKey(
 }
 
 export function getInicioDiaAula(agendamento: Pick<Agendamento, "data">): Date {
-  return new Date(`${agendamento.data}T00:00:00`);
+  // Fuso fixo da escola (BRT -03:00, sem DST) p/ não depender do TZ do runtime.
+  return new Date(`${agendamento.data}T00:00:00-03:00`);
 }
 
 export function gerarResumoCriticasProfessores({
