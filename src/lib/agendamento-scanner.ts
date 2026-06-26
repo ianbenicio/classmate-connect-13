@@ -16,17 +16,12 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { agendamentosStore } from "./agendamentos-store";
 import { notificacoesStore } from "./notificacoes-store";
-import {
-  agendamentoDispensaRequisitos,
-  computeSlotEstado,
-  type Agendamento,
-  type Notificacao,
-} from "./academic-types";
+import { type Agendamento, type Notificacao } from "./academic-types";
+import { calcularPendencias } from "./pendencias";
 import { alunosStore } from "./alunos-store";
 import { cursosStore } from "./cursos-store";
 import { turmasStore } from "./turmas-store";
 import { aulaEvidenciasStore } from "./aula-evidencias-store";
-import { evidenciaEstaValida, getEvidenciaPorTipo } from "./aula-evidencias";
 
 interface BuildOpts {
   kind: NonNullable<Notificacao["kind"]>;
@@ -131,18 +126,11 @@ export function runScanner(now: Date = new Date()) {
   const evidencias = aulaEvidenciasStore.getAll();
   const novas: Notificacao[] = [];
 
-  for (const a of ags) {
-    if (agendamentoDispensaRequisitos(a)) continue;
-    if (a.status === "concluido") continue;
-    const evs = evidencias.filter((e) => e.agendamentoId === a.id);
-    const plano = getEvidenciaPorTipo(evs, "plano_aula");
-    if (!evidenciaEstaValida(plano)) {
+  for (const p of calcularPendencias({ agendamentos: ags, evidencias, now })) {
+    const a = p.agendamento;
+    if (p.kind === "plano_pendente") {
       novas.push(...buildPlanoPendenteNotif(a));
-    }
-
-    const estado = computeSlotEstado(a.data, a.fim, a, now);
-
-    if (estado === "atrasado") {
+    } else if (p.kind === "atrasado") {
       novas.push(
         ...buildNotifs(a, {
           kind: "atrasado",
@@ -152,7 +140,7 @@ export function runScanner(now: Date = new Date()) {
           mensagemAluno: "como foi a aula? Sua avaliação ajuda a melhorar.",
         }),
       );
-    } else if (estado === "expirado") {
+    } else if (p.kind === "expirado") {
       novas.push(
         ...buildNotifs(a, {
           kind: "expirado",
