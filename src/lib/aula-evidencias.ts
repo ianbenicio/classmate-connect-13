@@ -191,7 +191,7 @@ export function getPrazoPlanoAula(ctx: AulaEvidenciaContext): Date {
 }
 
 export function isPlanoAulaAtrasado(ctx: AulaEvidenciaContext, now: Date = new Date()): boolean {
-  return now > getPrazoPlanoAula(ctx);
+  return now >= getPrazoPlanoAula(ctx);
 }
 
 export function validarArquivoEvidencia(

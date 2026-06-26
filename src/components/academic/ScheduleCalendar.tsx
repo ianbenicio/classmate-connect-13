@@ -14,7 +14,7 @@ import {
   subWeeks,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, FileText, Send } from "lucide-react";
+import { ChevronLeft, ChevronRight, CircleAlert, FileText, Send } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,10 +24,12 @@ import {
   getDuracaoAulaMin,
   MS_PER_HOUR,
   REPORT_DEADLINE_HOURS,
+  agendamentoDispensaRequisitos,
   slotBlocosCount,
   blocoInicio,
   blocoFim,
   type Agendamento,
+  type Atividade,
   type Curso,
   type DiaSemana,
   type SlotEstado,
@@ -35,6 +37,12 @@ import {
 } from "@/lib/academic-types";
 import { useAuth } from "@/lib/auth";
 import { canDeleteAgendamento, canManageAgendamento } from "@/lib/agendamento-permissions";
+import {
+  evidenciaEstaValida,
+  getEvidenciaPorTipo,
+  type AulaEvidencia,
+} from "@/lib/aula-evidencias";
+import { getInicioDiaAula } from "@/lib/professor-criticas";
 import { cn } from "@/lib/utils";
 
 interface SlotClickPayload {
@@ -60,6 +68,8 @@ interface Props {
   turmas: Turma[];
   cursos: Curso[];
   agendamentos: Agendamento[];
+  evidencias?: AulaEvidencia[];
+  atividades?: Atividade[];
   onSlotClick?: (payload: SlotClickPayload) => void;
   onRegistrarRelatorio?: (agendamento: Agendamento, turma: Turma) => void;
   onCellHeaderClick?: (payload: CellHeaderClickPayload) => void;
@@ -98,6 +108,8 @@ export function ScheduleCalendar({
   turmas,
   cursos,
   agendamentos,
+  evidencias = [],
+  atividades = [],
   onSlotClick,
   onRegistrarRelatorio,
   onCellHeaderClick,
@@ -107,6 +119,19 @@ export function ScheduleCalendar({
   const [activeTab, setActiveTab] = useState<"mes" | "semana">("semana");
 
   const cursoMap = useMemo(() => new Map(cursos.map((c) => [c.id, c])), [cursos]);
+  const atividadeById = useMemo(
+    () => new Map(atividades.map((atividade) => [atividade.id, atividade])),
+    [atividades],
+  );
+  const evidenciasByAgendamento = useMemo(() => {
+    const map = new Map<string, AulaEvidencia[]>();
+    for (const evidencia of evidencias) {
+      const list = map.get(evidencia.agendamentoId) ?? [];
+      list.push(evidencia);
+      map.set(evidencia.agendamentoId, list);
+    }
+    return map;
+  }, [evidencias]);
 
   const handlePrev = () =>
     setRefDate((d) => (activeTab === "semana" ? subWeeks(d, 1) : subMonths(d, 1)));
@@ -143,6 +168,8 @@ export function ScheduleCalendar({
           turmas={turmas}
           cursoMap={cursoMap}
           agendamentos={agendamentos}
+          evidenciasByAgendamento={evidenciasByAgendamento}
+          atividadeById={atividadeById}
           onDayClick={(d) => setRefDate(d)}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
@@ -157,6 +184,8 @@ export function ScheduleCalendar({
           turmas={turmas}
           cursoMap={cursoMap}
           agendamentos={agendamentos}
+          evidenciasByAgendamento={evidenciasByAgendamento}
+          atividadeById={atividadeById}
           onSlotClick={onSlotClick}
           onRegistrarRelatorio={onRegistrarRelatorio}
           onCellHeaderClick={onCellHeaderClick}
@@ -280,6 +309,19 @@ function isClickable(estado: SlotEstado) {
   return estado !== "expirado" && estado !== "vazio_passado";
 }
 
+function isPlanoPendenteNoCalendario(
+  agendamento: Agendamento,
+  evidencias: AulaEvidencia[],
+  atividadeById: Map<string, Atividade>,
+) {
+  if (agendamentoDispensaRequisitos(agendamento)) return false;
+  const temAula = agendamento.atividadeIds.some(
+    (atividadeId) => atividadeById.get(atividadeId)?.tipo === 0,
+  );
+  if (!temAula) return false;
+  return !evidenciaEstaValida(getEvidenciaPorTipo(evidencias, "plano_aula"));
+}
+
 function Legend() {
   return (
     <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-muted-foreground">
@@ -302,6 +344,10 @@ function Legend() {
       <span className="inline-flex items-center gap-1.5">
         <FileText className="h-3 w-3 text-emerald-600" />
         Relatório registrado
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <CircleAlert className="h-3 w-3 text-amber-600" />
+        Plano pendente
       </span>
     </div>
   );
@@ -331,6 +377,8 @@ function SlotChip({
   slotFim,
   diaSemana,
   agsDoSlot,
+  evidenciasByAgendamento,
+  atividadeById,
   compact = false,
   onSlotClick,
   onRegistrarRelatorio,
@@ -344,6 +392,8 @@ function SlotChip({
   slotFim: string;
   diaSemana: DiaSemana;
   agsDoSlot: Agendamento[];
+  evidenciasByAgendamento: Map<string, AulaEvidencia[]>;
+  atividadeById: Map<string, Atividade>;
   compact?: boolean;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
@@ -449,6 +499,12 @@ function SlotChip({
             const profLabel = profFullName.trim().split(/\s+/)[0] || profFullName;
             // Código resumido da 1ª atividade
             const codigoAula = ag.atividadeIds[0]?.slice(0, 8) ?? "";
+            const planoPendente = isPlanoPendenteNoCalendario(
+              ag,
+              evidenciasByAgendamento.get(ag.id) ?? [],
+              atividadeById,
+            );
+            const planoCritico = planoPendente && now >= getInicioDiaAula(ag);
 
             return (
               <div
@@ -500,6 +556,15 @@ function SlotChip({
                   >
                     {profLabel}
                   </span>
+                  {planoPendente && (
+                    <CircleAlert
+                      className={cn(
+                        "h-3 w-3 shrink-0",
+                        planoCritico ? "text-destructive" : "text-amber-600",
+                      )}
+                      aria-label={planoCritico ? "Plano ausente com critica" : "Plano pendente"}
+                    />
+                  )}
                 </button>
                 {!compact && codigoAula && (
                   <span className="text-[9px] font-mono text-muted-foreground truncate px-0.5">
@@ -591,6 +656,8 @@ function MonthView({
   turmas,
   cursoMap,
   agendamentos,
+  evidenciasByAgendamento,
+  atividadeById,
   onDayClick,
   onSlotClick,
   onRegistrarRelatorio,
@@ -601,6 +668,8 @@ function MonthView({
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
+  evidenciasByAgendamento: Map<string, AulaEvidencia[]>;
+  atividadeById: Map<string, Atividade>;
   onDayClick: (d: Date) => void;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
@@ -673,6 +742,8 @@ function MonthView({
                       slotFim={it.fim}
                       diaSemana={diaSemanaFromDate(d)}
                       agsDoSlot={ags}
+                      evidenciasByAgendamento={evidenciasByAgendamento}
+                      atividadeById={atividadeById}
                       compact
                       onSlotClick={onSlotClick}
                       onRegistrarRelatorio={onRegistrarRelatorio}
@@ -708,6 +779,8 @@ function WeekView({
   turmas,
   cursoMap,
   agendamentos,
+  evidenciasByAgendamento,
+  atividadeById,
   onSlotClick,
   onRegistrarRelatorio,
   onCellHeaderClick,
@@ -717,6 +790,8 @@ function WeekView({
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
+  evidenciasByAgendamento: Map<string, AulaEvidencia[]>;
+  atividadeById: Map<string, Atividade>;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
   onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
@@ -794,6 +869,8 @@ function WeekView({
               turmas={turmas}
               cursoMap={cursoMap}
               agendamentos={agendamentos}
+              evidenciasByAgendamento={evidenciasByAgendamento}
+              atividadeById={atividadeById}
               onSlotClick={onSlotClick}
               onRegistrarRelatorio={onRegistrarRelatorio}
               onCellHeaderClick={onCellHeaderClick}
@@ -812,6 +889,8 @@ function FragmentRow({
   turmas,
   cursoMap,
   agendamentos,
+  evidenciasByAgendamento,
+  atividadeById,
   onSlotClick,
   onRegistrarRelatorio,
   onCellHeaderClick,
@@ -822,6 +901,8 @@ function FragmentRow({
   turmas: Turma[];
   cursoMap: Map<string, Curso>;
   agendamentos: Agendamento[];
+  evidenciasByAgendamento: Map<string, AulaEvidencia[]>;
+  atividadeById: Map<string, Atividade>;
   onSlotClick?: (p: SlotClickPayload) => void;
   onRegistrarRelatorio?: (a: Agendamento, t: Turma) => void;
   onCellHeaderClick?: (p: CellHeaderClickPayload) => void;
@@ -854,6 +935,8 @@ function FragmentRow({
                   slotFim={it.fim}
                   diaSemana={d.value}
                   agsDoSlot={ags}
+                  evidenciasByAgendamento={evidenciasByAgendamento}
+                  atividadeById={atividadeById}
                   onSlotClick={onSlotClick}
                   onRegistrarRelatorio={onRegistrarRelatorio}
                   onCellHeaderClick={onCellHeaderClick}

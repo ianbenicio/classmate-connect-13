@@ -6,6 +6,7 @@ import {
   Download,
   FileCheck2,
   GraduationCap,
+  AlertTriangle,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -226,7 +227,7 @@ export function RelatorioSemanalCoordenacaoReport() {
         </CardContent>
       </Card>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         <ResumoCard
           label="Aulas finalizadas"
           value={payload.resumo.aulasFinalizadas}
@@ -246,6 +247,16 @@ export function RelatorioSemanalCoordenacaoReport() {
           label="Notificacoes"
           value={`${payload.resumo.notificacoesNaoLidas}/${payload.resumo.notificacoes}`}
           icon={<Bell className="h-4 w-4" />}
+        />
+        <ResumoCard
+          label="Criticas"
+          value={payload.resumo.pontosCritica}
+          icon={<AlertTriangle className="h-4 w-4" />}
+        />
+        <ResumoCard
+          label="Punicoes"
+          value={payload.resumo.punicoes}
+          icon={<AlertTriangle className="h-4 w-4" />}
         />
       </section>
 
@@ -341,13 +352,15 @@ export function RelatorioSemanalCoordenacaoReport() {
                   <TableHead>Avaliacao alunos</TableHead>
                   <TableHead>Avaliacao direta</TableHead>
                   <TableHead>Notificacoes</TableHead>
+                  <TableHead>Criticas</TableHead>
+                  <TableHead>Punicoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {payload.professores.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={7}
+                      colSpan={9}
                       className="py-8 text-center text-sm text-muted-foreground"
                     >
                       Nenhum professor com movimento no periodo.
@@ -367,6 +380,8 @@ export function RelatorioSemanalCoordenacaoReport() {
                       <TableCell>
                         {professor.notificacoesNaoLidas}/{professor.notificacoes}
                       </TableCell>
+                      <TableCell>{professor.pontosCritica}</TableCell>
+                      <TableCell>{professor.punicoes}</TableCell>
                     </TableRow>
                   ))
                 )}

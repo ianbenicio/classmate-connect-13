@@ -600,6 +600,7 @@ export function AgendarAtividadeDialog({
 
   const salvarPlanosDosAgendamentos = async (novos: Agendamento[]) => {
     if (!turmaSelecionada) return;
+    if (!planoSubmetido || camposPlanoFaltando(planoDados).length > 0) return;
     const aulaIds = new Set(
       atividades.filter((atividade) => atividade.tipo === 0).map((atividade) => atividade.id),
     );
@@ -665,11 +666,6 @@ export function AgendarAtividadeDialog({
       toast.error("Selecione ao menos uma habilidade antes de preencher o plano.");
       return;
     }
-    if (possuiAula && (!planoSubmetido || camposPlanoFaltando(planoDados).length > 0)) {
-      toast.error("Preencha e salve o plano de aula antes de agendar.");
-      openPlanoDialog();
-      return;
-    }
 
     const dataIso = format(date, "yyyy-MM-dd");
     const criadoEm = new Date().toISOString();
@@ -729,6 +725,10 @@ export function AgendarAtividadeDialog({
     });
     const criadoEm = new Date().toISOString();
     const allNotifs: Notificacao[] = [];
+    const aulaIds = new Set(
+      atividades.filter((atividade) => atividade.tipo === 0).map((atividade) => atividade.id),
+    );
+    const planoPendente = !planoSubmetido || camposPlanoFaltando(planoDados).length > 0;
 
     // Por agendamento → notificação individual para cada aluno
     for (const ag of novos) {
@@ -771,6 +771,22 @@ export function AgendarAtividadeDialog({
           destinatarioTipo: "aluno" as const,
           destinatarioId: al.id,
           destinatarioUserId: al.userId,
+        });
+      }
+      if (
+        planoPendente &&
+        ag.professorUserId &&
+        ag.atividadeIds.some((atividadeId) => aulaIds.has(atividadeId))
+      ) {
+        allNotifs.push({
+          ...base,
+          id: crypto.randomUUID(),
+          destinatarioTipo: "professor" as const,
+          destinatarioId: ag.professorUserId,
+          destinatarioUserId: ag.professorUserId,
+          titulo: "Plano de aula pendente",
+          mensagem: `${mensagem} - o agendamento foi salvo sem plano. Envie ate o dia da aula para evitar critica.`,
+          kind: "plano_pendente" as const,
         });
       }
     }
@@ -1172,8 +1188,8 @@ export function AgendarAtividadeDialog({
                 <div className="space-y-1">
                   <Label>Plano de aula</Label>
                   <p className="text-xs text-muted-foreground">
-                    Preencha o plano depois de selecionar as habilidades. A ementa e a sugestao aos
-                    pais sao herdadas da aula escolhida.
+                    Opcional no agendamento. Se ficar pendente, o professor recebe notificacao e
+                    deve enviar ate o dia da aula.
                   </p>
                 </div>
                 <Badge variant={planoSubmetido ? "secondary" : "outline"}>
@@ -1183,7 +1199,7 @@ export function AgendarAtividadeDialog({
                       ? "Atribua uma aula"
                       : habilidadeIds.length === 0
                         ? "Selecione habilidades"
-                        : "Obrigatorio"}
+                        : "Pode enviar depois"}
                 </Badge>
               </div>
               <Button
@@ -1193,7 +1209,7 @@ export function AgendarAtividadeDialog({
                 disabled={!planoPodeAbrir}
               >
                 <FileCheck2 className="h-4 w-4 mr-1" />
-                {planoSubmetido ? "Editar plano" : "Preencher plano de aula"}
+                {planoSubmetido ? "Editar plano" : "Preencher agora"}
               </Button>
             </div>
 
@@ -1323,7 +1339,8 @@ function AgendamentoPlanoDialog({
         <DialogHeader>
           <DialogTitle>Plano de aula</DialogTitle>
           <DialogDescription>
-            Documento de estudo vinculado ao agendamento antes da aula ser criada.
+            Documento de estudo vinculado ao agendamento. Pode ser enviado agora ou ate o dia da
+            aula.
           </DialogDescription>
         </DialogHeader>
 

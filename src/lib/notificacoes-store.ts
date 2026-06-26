@@ -75,17 +75,22 @@ export const notificacoesStore = {
 
     // Dedup LOCAL — remove duplicatas dentro do batch.
     const seen = new Set<string>();
+    const all = base.get();
+    const existing = new Set(
+      all
+        .filter((n) => n.agendamentoId && n.kind)
+        .map((n) => `${n.destinatarioId}|${n.agendamentoId}|${n.kind}`),
+    );
     const itemsLimpos = items.filter((n) => {
       if (!n.agendamentoId || !n.kind) return true;
       const key = `${n.destinatarioId}|${n.agendamentoId}|${n.kind}`;
-      if (seen.has(key)) return false;
+      if (seen.has(key) || existing.has(key)) return false;
       seen.add(key);
       return true;
     });
     if (itemsLimpos.length === 0) return;
 
     // Optimistic — IDs runtime já são UUIDs, sem toUuid.
-    const all = base.get();
     base.set([...itemsLimpos, ...all]);
     base.emit();
 

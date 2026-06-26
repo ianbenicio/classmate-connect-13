@@ -18,8 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Calendar } from "lucide-react";
+import { AlertTriangle, Download, RefreshCw, Calendar } from "lucide-react";
 import { useAgendamentos } from "@/lib/agendamentos-store";
+import { useAtividades } from "@/lib/atividades-store";
+import { useAulaEvidencias } from "@/lib/aula-evidencias-store";
 import { useAvaliacoes } from "@/lib/avaliacoes-store";
 import { useUsersByRole } from "@/lib/users-store";
 import {
@@ -31,19 +33,24 @@ import { toast } from "sonner";
 
 export function ExtratoHorasProfessoresReport() {
   const agendamentos = useAgendamentos();
+  const atividades = useAtividades();
+  const evidencias = useAulaEvidencias();
   const avaliacoes = useAvaliacoes();
   const professores = useUsersByRole("professor");
 
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFim, setDataFim] = useState<string>("");
   const [filterNome, setFilterNome] = useState("");
-  const [sortBy, setSortBy] = useState<"nome" | "horas" | "classes">("nome");
+  const [sortBy, setSortBy] = useState<"nome" | "horas" | "classes" | "criticas">("nome");
   const [descending, setDescending] = useState(false);
 
   // Gera relatório baseado em filtros
   const relatorio = useMemo(() => {
-    return gerarExtratoHoras(agendamentos, avaliacoes, professores, dataInicio, dataFim);
-  }, [agendamentos, avaliacoes, professores, dataInicio, dataFim]);
+    return gerarExtratoHoras(agendamentos, avaliacoes, professores, dataInicio, dataFim, {
+      atividades,
+      evidencias,
+    });
+  }, [agendamentos, avaliacoes, professores, dataInicio, dataFim, atividades, evidencias]);
 
   // Filtra e ordena professores
   const professoresFiltrados = useMemo(() => {
@@ -64,6 +71,8 @@ export function ExtratoHorasProfessoresReport() {
         cmp = a.totalHoras - b.totalHoras;
       } else if (sortBy === "classes") {
         cmp = a.totalClasses - b.totalClasses;
+      } else if (sortBy === "criticas") {
+        cmp = a.pontosCritica - b.pontosCritica;
       }
       return descending ? -cmp : cmp;
     });
@@ -135,8 +144,8 @@ export function ExtratoHorasProfessoresReport() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Extrato de Horas - Professores</h1>
         <p className="text-sm text-muted-foreground">
-          Relatório de aulas concluídas e avaliadas por professor. Apenas aulas com pelo menos uma
-          avaliação são incluídas no total.
+          Relatorio de aulas concluidas e avaliadas por professor, com criticas e punicoes para
+          composicao do pagamento.
         </p>
       </div>
 
@@ -204,7 +213,7 @@ export function ExtratoHorasProfessoresReport() {
       </Card>
 
       {/* Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{relatorio.totalProfessores}</div>
@@ -224,8 +233,24 @@ export function ExtratoHorasProfessoresReport() {
           </CardContent>
         </Card>
         <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-amber-700">{relatorio.totalCriticas}</div>
+            <p className="text-xs text-muted-foreground">Criticas</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-destructive">{relatorio.totalPunicoes}</div>
+            <p className="text-xs text-muted-foreground">Punicoes salariais</p>
+          </CardContent>
+        </Card>
+        <Card>
           <CardContent className="pt-6 flex gap-2">
-            <Button size="sm" onClick={handleExportPDF} disabled={relatorio.totalClasses === 0}>
+            <Button
+              size="sm"
+              onClick={handleExportPDF}
+              disabled={relatorio.totalClasses === 0 && relatorio.totalCriticas === 0}
+            >
               <Download className="h-3.5 w-3.5" />
               PDF
             </Button>
@@ -267,6 +292,14 @@ export function ExtratoHorasProfessoresReport() {
                         <p className="text-2xl font-bold">{prof.totalClasses}</p>
                         <p className="text-xs text-muted-foreground">Aulas</p>
                       </div>
+                      <div>
+                        <p className="text-2xl font-bold text-amber-700">{prof.pontosCritica}</p>
+                        <p className="text-xs text-muted-foreground">Criticas</p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-destructive">{prof.punicoes}</p>
+                        <p className="text-xs text-muted-foreground">Punicoes</p>
+                      </div>
                     </div>
                   </div>
 
@@ -282,32 +315,67 @@ export function ExtratoHorasProfessoresReport() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {prof.classes.map((cls) => (
-                          <TableRow key={cls.agendamentoId} className="text-xs">
-                            <TableCell>{cls.data}</TableCell>
-                            <TableCell>
-                              {cls.inicio} - {cls.fim}
-                            </TableCell>
-                            <TableCell className="font-mono">
-                              {formatarHoras(cls.duracaoHoras)}
-                            </TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  cls.avaliacaoStatus === "com_avaliacao" ? "default" : "secondary"
-                                }
-                                className="text-[10px]"
-                              >
-                                {cls.avaliacaoStatus === "com_avaliacao"
-                                  ? "✓ Avaliada"
-                                  : "○ Pendente"}
-                              </Badge>
+                        {prof.classes.length === 0 ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={4}
+                              className="py-3 text-center text-muted-foreground"
+                            >
+                              Sem aulas avaliadas no periodo.
                             </TableCell>
                           </TableRow>
-                        ))}
+                        ) : (
+                          prof.classes.map((cls) => (
+                            <TableRow key={cls.agendamentoId} className="text-xs">
+                              <TableCell>{cls.data}</TableCell>
+                              <TableCell>
+                                {cls.inicio} - {cls.fim}
+                              </TableCell>
+                              <TableCell className="font-mono">
+                                {formatarHoras(cls.duracaoHoras)}
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    cls.avaliacaoStatus === "com_avaliacao"
+                                      ? "default"
+                                      : "secondary"
+                                  }
+                                  className="text-[10px]"
+                                >
+                                  {cls.avaliacaoStatus === "com_avaliacao"
+                                    ? "✓ Avaliada"
+                                    : "○ Pendente"}
+                                </Badge>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
                       </TableBody>
                     </Table>
                   </div>
+                  {prof.criticas.length > 0 && (
+                    <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3">
+                      <div className="mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-amber-800">
+                        <AlertTriangle className="h-3.5 w-3.5" />
+                        Pontos de critica
+                      </div>
+                      <div className="space-y-1">
+                        {prof.criticas.map((critica) => (
+                          <div
+                            key={critica.id}
+                            className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"
+                          >
+                            <Badge variant="outline" className="border-amber-500/40">
+                              {critica.data} {critica.inicio}-{critica.fim}
+                            </Badge>
+                            <span className="font-medium text-foreground">{critica.titulo}</span>
+                            <span>{critica.descricao}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -330,6 +398,8 @@ export function ExtratoHorasProfessoresReport() {
                 <th className="border border-gray-300 p-2 text-left">Professor</th>
                 <th className="border border-gray-300 p-2 text-right">Aulas</th>
                 <th className="border border-gray-300 p-2 text-right">Horas</th>
+                <th className="border border-gray-300 p-2 text-right">Criticas</th>
+                <th className="border border-gray-300 p-2 text-right">Punicoes</th>
               </tr>
             </thead>
             <tbody>
@@ -338,12 +408,16 @@ export function ExtratoHorasProfessoresReport() {
                   <td className="border border-gray-300 p-2">{prof.professorNome}</td>
                   <td className="border border-gray-300 p-2 text-right">{prof.totalClasses}</td>
                   <td className="border border-gray-300 p-2 text-right">{prof.totalHoras}</td>
+                  <td className="border border-gray-300 p-2 text-right">{prof.pontosCritica}</td>
+                  <td className="border border-gray-300 p-2 text-right">{prof.punicoes}</td>
                 </tr>
               ))}
               <tr className="font-bold bg-gray-50">
                 <td className="border border-gray-300 p-2">TOTAL</td>
                 <td className="border border-gray-300 p-2 text-right">{relatorio.totalClasses}</td>
                 <td className="border border-gray-300 p-2 text-right">{relatorio.totalHoras}</td>
+                <td className="border border-gray-300 p-2 text-right">{relatorio.totalCriticas}</td>
+                <td className="border border-gray-300 p-2 text-right">{relatorio.totalPunicoes}</td>
               </tr>
             </tbody>
           </table>

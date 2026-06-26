@@ -26,6 +26,7 @@ import { RelatorioProfessorDialog } from "@/components/academic/RelatorioProfess
 import { ChecklistAlunoDialog } from "@/components/academic/ChecklistAlunoDialog";
 import { TurmaDiaDetailDialog } from "@/components/academic/TurmaDiaDetailDialog";
 import { agendamentosStore, useAgendamentos } from "@/lib/agendamentos-store";
+import { useAulaEvidencias } from "@/lib/aula-evidencias-store";
 import { useAuth } from "@/lib/auth";
 import { canDeleteAgendamento, canManageAgendamento } from "@/lib/agendamento-permissions";
 import {
@@ -62,6 +63,7 @@ function DashboardPage() {
   const atividades = useAtividades();
   const alunos = useAlunos();
   const agendamentos = useAgendamentos();
+  const evidencias = useAulaEvidencias();
   const { user: authUser, hasRole, displayName, isStaff } = useAuth();
   const isAdmin = hasRole("admin");
   const currentUserId = authUser?.id ?? null;
@@ -231,6 +233,8 @@ function DashboardPage() {
             turmas={turmas}
             cursos={cursos}
             agendamentos={agendamentos}
+            evidencias={evidencias}
+            atividades={atividades}
             onCellHeaderClick={({ turma, date, inicio, fim, diaSemana }) => {
               const curso = cursoMap.get(turma.cursoId);
               if (!curso) return;
