@@ -26,7 +26,8 @@ export interface Relatorio {
   formato: "json";
   sizeBytes: number;
   filename: string;
-  conteudo: string;
+  /** Carregado sob demanda no download — fora da listagem p/ não inflar o load. */
+  conteudo?: string;
 }
 
 type Row = {
@@ -39,7 +40,7 @@ type Row = {
   formato: string;
   size_bytes: number;
   filename: string;
-  conteudo: string;
+  conteudo?: string;
 };
 
 function rowTo(r: Row): Relatorio {
@@ -78,7 +79,9 @@ function toRow(r: Relatorio) {
 const base = createStoreBase<Relatorio[]>(async (set) => {
   const { data, error } = await supabase
     .from("relatorios_exportados")
-    .select("*")
+    .select(
+      "id, tipo, titulo, gerado_em, gerado_por_user_id, gerado_por_nome, formato, size_bytes, filename",
+    )
     .order("gerado_em", { ascending: false });
   if (error) {
     console.error("[relatorios] load error", error);
@@ -146,9 +149,24 @@ export function useRelatorios(): Relatorio[] {
   return snap;
 }
 
-/** Faz o download de um relatório já registrado. */
-export function downloadRelatorio(r: Relatorio) {
-  const blob = new Blob([r.conteudo], { type: "application/json" });
+/** Faz o download de um relatório já registrado. Busca o conteúdo sob demanda
+ * quando ele não está em memória (a listagem não carrega o JSON completo). */
+export async function downloadRelatorio(r: Relatorio) {
+  let conteudo = r.conteudo;
+  if (conteudo == null) {
+    const { data, error } = await supabase
+      .from("relatorios_exportados")
+      .select("conteudo")
+      .eq("id", r.id)
+      .maybeSingle();
+    if (error || !data) {
+      console.error("[relatorios] download fetch error", error);
+      toast.error("Erro ao baixar relatório.");
+      return;
+    }
+    conteudo = (data as { conteudo: string }).conteudo;
+  }
+  const blob = new Blob([conteudo], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
