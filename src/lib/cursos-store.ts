@@ -7,7 +7,7 @@ import type { Curso } from "./academic-types";
 import { SEED_CURSOS, SEED_GRUPOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -137,7 +137,8 @@ async function loadFromDb() {
   const rows = (data ?? []) as CursoRow[];
   const existingIds = new Set(rows.map((r) => r.id));
   const existingCods = new Set(rows.map((r) => r.cod));
-  const inserted = await topUpCursos(existingIds, existingCods);
+  const canTopUp = canBootstrapSeedData();
+  const inserted = canTopUp ? await topUpCursos(existingIds, existingCods) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase.from("cursos").select("*").order("cod");
     if (err2) console.error("[cursos] reload error", err2);
@@ -147,7 +148,7 @@ async function loadFromDb() {
   }
   // Top-up de grupos depende dos cursos já carregados (precisa do curso.id
   // real do banco, que pode ser UUID arbitrário).
-  await topUpGrupos(cursos);
+  if (canTopUp) await topUpGrupos(cursos);
 }
 
 async function ensureInit(): Promise<void> {

@@ -296,6 +296,7 @@ export function AtividadeAvulsaDialog({ open, onOpenChange, cursos, turmas, agen
         .getAll()
         .filter((aluno) => aluno.turmaId === turmaSelecionada.id);
       const created: Array<{ atividade: Atividade; agendamento: Agendamento }> = [];
+      let failures = 0;
 
       for (const data of datas) {
         const atividadeId = crypto.randomUUID();
@@ -345,8 +346,18 @@ export function AtividadeAvulsaDialog({ open, onOpenChange, cursos, turmas, agen
         };
 
         await atividadesStore.upsert(atividade);
-        await agendamentosStore.add(agendamento);
+        const saved = await agendamentosStore.add(agendamento);
+        if (!saved) {
+          failures += 1;
+          await atividadesStore.remove(atividadeId);
+          continue;
+        }
         created.push({ atividade, agendamento });
+      }
+
+      if (created.length === 0) {
+        toast.error("Nenhuma atividade avulsa foi agendada.");
+        return;
       }
 
       const notificacoes: Notificacao[] = [];
@@ -396,6 +407,9 @@ export function AtividadeAvulsaDialog({ open, onOpenChange, cursos, turmas, agen
       }
       await notificacoesStore.addMany(notificacoes);
 
+      if (failures > 0) {
+        toast.warning(`${failures} atividade(s) avulsa(s) falharam ao salvar.`);
+      }
       toast.success(
         created.length === 1
           ? "Atividade avulsa agendada."

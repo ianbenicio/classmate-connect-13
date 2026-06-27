@@ -18,10 +18,19 @@ import { toast } from "sonner";
 
 const LS_KEY = "javis:super_project_override";
 
+export type CurrentUserRole =
+  | "super_admin"
+  | "admin"
+  | "coordenacao"
+  | "professor"
+  | "aluno"
+  | "viewer";
+
 let _currentProjectId: string | null = null;
 let _superOverride: string | null =
   typeof localStorage !== "undefined" ? localStorage.getItem(LS_KEY) : null;
 let _isSuperAdmin = false;
+let _currentRoles = new Set<CurrentUserRole>();
 
 export function setCurrentProjectId(id: string | null): void {
   _currentProjectId = id;
@@ -29,6 +38,10 @@ export function setCurrentProjectId(id: string | null): void {
 
 export function setIsSuperAdmin(v: boolean): void {
   _isSuperAdmin = v;
+}
+
+export function setCurrentUserRoles(roles: CurrentUserRole[]): void {
+  _currentRoles = new Set(roles);
 }
 
 /** Define o projeto que o super_admin escolheu manipular (persistido). */
@@ -62,5 +75,23 @@ export function requireProjectIdForWrite(): string | null {
       "Super-admin: escolha um projeto-alvo antes de gravar (header → seletor de projeto).",
     );
   }
+  if (!id && !_isSuperAdmin) {
+    toast.error(
+      "Sua conta nao esta vinculada a um projeto. Peca ao administrador para corrigir o cadastro.",
+    );
+  }
   return id;
+}
+
+/**
+ * Client-side seed/top-up writes are a bootstrap concern. Running them during
+ * professor/aluno boot adds latency and can hit RLS before the user works.
+ */
+export function canBootstrapSeedData(): boolean {
+  if (!getCurrentProjectId()) return false;
+  return (
+    _currentRoles.has("super_admin") ||
+    _currentRoles.has("admin") ||
+    _currentRoles.has("coordenacao")
+  );
 }

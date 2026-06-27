@@ -107,11 +107,12 @@ describe("requireProjectIdForWrite", () => {
     expect(String(toastErrorSpy.mock.calls[0][0])).toMatch(/super-admin/i);
   });
 
-  it("non-super-admin without project: returns null silently (no toast)", async () => {
+  it("non-super-admin without project: returns null and warns about missing project", async () => {
     const m = await loadModule();
     m.setCurrentProjectId(null);
     const id = m.requireProjectIdForWrite();
     expect(id).toBeNull();
-    expect(toastErrorSpy).not.toHaveBeenCalled();
+    expect(toastErrorSpy).toHaveBeenCalledTimes(1);
+    expect(String(toastErrorSpy.mock.calls[0][0])).toMatch(/projeto/i);
   });
 });

@@ -4,7 +4,7 @@ import type { HorarioSlot, Turma } from "./academic-types";
 import { SEED_TURMAS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { alunosStore } from "./alunos-store";
 import { devInfo } from "./dev-log";
@@ -103,7 +103,7 @@ async function loadFromDb() {
   const rows = (data ?? []) as TurmaRow[];
   const existingIds = new Set(rows.map((r) => r.id));
   const existingCods = new Set(rows.map((r) => r.cod));
-  const inserted = await topUpTurmas(existingIds, existingCods);
+  const inserted = canBootstrapSeedData() ? await topUpTurmas(existingIds, existingCods) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase.from("turmas").select("*").order("cod");
     if (err2) console.error("[turmas] reload error", err2);

@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { setCurrentProjectId, setIsSuperAdmin } from "./current-project";
+import { setCurrentProjectId, setCurrentUserRoles, setIsSuperAdmin } from "./current-project";
 import { toast } from "sonner";
 
 export type AppRole = "super_admin" | "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
@@ -95,6 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const parsedRoles = (roleRows ?? []).map((r) => r.role as AppRole);
       setRoles(parsedRoles);
       setIsSuperAdmin(parsedRoles.includes("super_admin"));
+      setCurrentUserRoles(parsedRoles);
 
       // Alerta quando usuário autenticado não tem nenhum papel atribuído.
       // Indica cadastro incompleto — admin precisa atribuir role.
@@ -138,6 +139,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setCurrentProject(null);
         setCurrentProjectId(null);
+        if (parsedRoles.length > 0 && !parsedRoles.includes("super_admin")) {
+          console.warn("[auth] user sem project_id:", uid);
+          toast.warning(
+            "Sua conta nao esta vinculada a um projeto. Algumas informacoes podem nao carregar.",
+            { duration: 10_000 },
+          );
+        }
       }
     } catch (err) {
       if (gen !== loadGenRef.current || lastUidRef.current !== uid) return;
@@ -168,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setCurrentProject(null);
         setCurrentProjectId(null);
         setIsSuperAdmin(false);
+        setCurrentUserRoles([]);
         setLoading(false);
       }
     });

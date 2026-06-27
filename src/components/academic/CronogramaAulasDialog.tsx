@@ -196,7 +196,7 @@ export function CronogramaAulasDialog({ open, onOpenChange }: Props) {
           await liberarAulaDoAgendamento(extra, aula.id);
         }
       } else {
-        await agendamentosStore.add(
+        const saved = await agendamentosStore.add(
           buildAgendamentoCoordenacao({
             atividade: aula,
             turma: turmaSelecionada,
@@ -204,6 +204,7 @@ export function CronogramaAulasDialog({ open, onOpenChange }: Props) {
             actor,
           }),
         );
+        if (!saved) return;
       }
       toast.success(`Aula ${aula.codigo} marcada como ${STATUS_LABEL[status].toLowerCase()}.`);
     } finally {

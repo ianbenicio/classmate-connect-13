@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SEED_FORMULARIOS } from "./academic-seed";
 import { toUuid } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { devInfo } from "./dev-log";
 
 export type FormularioDestinatario = "professor" | "aluno";
@@ -100,6 +100,11 @@ async function loadFromDb() {
   }
   const rows = (data as Row[] | null) ?? [];
   const existingSlugs = new Set(rows.map((r) => r.slug));
+  // Seed sync is an admin/coordenacao bootstrap step, not professor/aluno boot work.
+  if (!canBootstrapSeedData()) {
+    registros = rows.map(rowTo);
+    return;
+  }
   // Sempre sincroniza o seed (insere novos + atualiza existentes do sistema)
   await topUpFormularios(existingSlugs);
   const { data: data2, error: err2 } = await supabase

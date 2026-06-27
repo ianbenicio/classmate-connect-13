@@ -5,7 +5,7 @@ import { SEED_ALUNOS } from "./academic-seed";
 import { devInfo } from "./dev-log";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 
 let alunos: Aluno[] = [];
@@ -219,7 +219,7 @@ async function loadFromDb() {
   }
   let alunosRows = (data ?? []) as AlunoRow[];
   const existingIds = new Set(alunosRows.map((r) => r.id));
-  const inserted = await topUpAlunos(existingIds);
+  const inserted = canBootstrapSeedData() ? await topUpAlunos(existingIds) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase.from("alunos").select("*").order("nome");
     if (err2) console.error("[alunos] reload error", err2);

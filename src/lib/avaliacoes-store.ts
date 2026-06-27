@@ -12,7 +12,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import type { AvaliacaoAula, AvaliacaoRecord } from "./avaliacoes-types";
 import type {
@@ -105,7 +105,7 @@ async function loadFromDb() {
   }
   const rows = (data as Row[] | null) ?? [];
   const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpAvaliacoes(existingIds);
+  const inserted = canBootstrapSeedData() ? await topUpAvaliacoes(existingIds) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase
       .from("avaliacoes")

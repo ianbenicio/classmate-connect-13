@@ -12,7 +12,7 @@ import type {
 import { SEED_ATIVIDADES } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -181,7 +181,7 @@ async function loadFromDb() {
   const rows = (data ?? []) as AtividadeRow[];
   const existingIds = new Set(rows.map((r) => r.id));
   const existingCodigos = new Set(rows.map((r) => r.codigo));
-  const inserted = await topUpSeed(existingIds, existingCodigos);
+  const inserted = canBootstrapSeedData() ? await topUpSeed(existingIds, existingCodigos) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase
       .from("atividades")

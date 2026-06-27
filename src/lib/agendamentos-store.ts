@@ -6,7 +6,7 @@ import type { Agendamento, DiaSemana, StatusAgendamento } from "./academic-types
 import { SEED_AGENDAMENTOS } from "./academic-seed";
 import { supabase } from "@/integrations/supabase/client";
 import { toUuid, toUuidArray } from "./db-mapping";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 import { notificacoesStore } from "./notificacoes-store";
@@ -182,7 +182,7 @@ async function loadFromDb() {
   }
   const rows = (data ?? []) as unknown as AgendamentoRow[];
   const existingIds = new Set(rows.map((r) => r.id));
-  const inserted = await topUpAgendamentos(existingIds);
+  const inserted = canBootstrapSeedData() ? await topUpAgendamentos(existingIds) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase
       .from("agendamentos")
@@ -210,8 +210,10 @@ export const agendamentosStore = {
   getAll(): Agendamento[] {
     return agendamentos;
   },
-  async add(a: Agendamento) {
+  async add(a: Agendamento): Promise<boolean> {
     // IDs runtime já são UUIDs — não passar por toUuid (double-hash).
+    const projectId = requireProjectIdForWrite();
+    if (!projectId) return false;
     const meta = agendamentoToMeta(a);
     const row = {
       id: a.id,
@@ -234,7 +236,7 @@ export const agendamentosStore = {
       recursos_entregues_em: a.recursosEntreguesEm ?? null,
       recursos_drive_path: a.recursosDrivePath ?? null,
       pais_notificados_em: a.paisNotificadosEm ?? null,
-      project_id: requireProjectIdForWrite() ?? undefined,
+      project_id: projectId,
     };
     const local: Agendamento = { ...a };
     const snap = agendamentos;
@@ -246,7 +248,9 @@ export const agendamentosStore = {
       emit();
       console.error("[agendamentos] add error", error);
       toast.error(`Erro ao salvar agendamento: ${error.message}`);
+      return false;
     }
+    return true;
   },
   async update(id: string, patch: Partial<Agendamento>) {
     // IDs runtime já são UUIDs — usar direto.

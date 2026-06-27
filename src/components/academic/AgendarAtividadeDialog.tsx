@@ -722,8 +722,8 @@ export function AgendarAtividadeDialog({
     });
 
     // Persistir agendamentos
-    const results = await Promise.allSettled(novos.map((n) => agendamentosStore.add(n)));
-    const failures = results.filter((r) => r.status === "rejected").length;
+    const results = await Promise.all(novos.map((n) => agendamentosStore.add(n)));
+    const failures = results.filter((ok) => !ok).length;
 
     if (failures > 0) {
       toast.error(`${failures} de ${novos.length} agendamento(s) falharam ao salvar.`);

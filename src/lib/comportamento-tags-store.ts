@@ -3,7 +3,7 @@
 // Fonte de verdade: tabela `public.comportamento_tags` no Supabase.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { requireProjectIdForWrite } from "./current-project";
+import { canBootstrapSeedData, requireProjectIdForWrite } from "./current-project";
 import { toast } from "sonner";
 import { devInfo } from "./dev-log";
 
@@ -147,7 +147,7 @@ async function loadFromDb() {
   }
   const rows = (data ?? []) as unknown as TagRow[];
   const existingValues = new Set(rows.map((r) => r.value));
-  const inserted = await topUpSeed(existingValues);
+  const inserted = canBootstrapSeedData() ? await topUpSeed(existingValues) : false;
   if (inserted) {
     const { data: data2, error: err2 } = await supabase
       .from("comportamento_tags")
