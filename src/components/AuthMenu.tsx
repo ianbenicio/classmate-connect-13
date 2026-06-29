@@ -11,15 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, FileText, Building2, Check } from "lucide-react";
+import { LogOut, User, FileText } from "lucide-react";
 import { MeuPerfilProfessorDialog } from "@/components/MeuPerfilProfessorDialog";
 import { MeusRelatoriosDialog } from "@/components/MeusRelatoriosDialog";
-import { useProjetos } from "@/lib/projetos-store";
-import { getSuperAdminOverride, setSuperAdminOverride } from "@/lib/current-project";
 
 export function AuthMenu() {
-  const { user, displayName, roles, isAuthenticated, hasRole, isSuperAdmin, signOut, loading } =
-    useAuth();
+  const { user, displayName, roles, isAuthenticated, hasRole, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const [perfilOpen, setPerfilOpen] = useState(false);
   const [relatoriosOpen, setRelatoriosOpen] = useState(false);
@@ -56,7 +53,6 @@ export function AuthMenu() {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {isSuperAdmin() && <SuperAdminProjectItems />}
           <DropdownMenuItem onClick={() => setPerfilOpen(true)}>
             <User className="h-4 w-4 mr-2" />
             Meu perfil
@@ -92,41 +88,6 @@ export function AuthMenu() {
           />
         </>
       )}
-    </>
-  );
-}
-
-function SuperAdminProjectItems() {
-  const projetos = useProjetos();
-  const [override, setOverride] = useState<string | null>(getSuperAdminOverride());
-
-  if (projetos.length === 0) return null;
-
-  return (
-    <>
-      <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground">
-        Projeto-alvo (super)
-      </DropdownMenuLabel>
-      {projetos.map((p) => {
-        const active = override === p.id;
-        return (
-          <DropdownMenuItem
-            key={p.id}
-            onClick={() => {
-              const next = active ? null : p.id;
-              setSuperAdminOverride(next);
-              setOverride(next);
-              // Reload para re-stampar stores com novo project_id.
-              window.location.reload();
-            }}
-          >
-            <Building2 className="h-4 w-4 mr-2" />
-            <span className="flex-1 truncate">{p.nome}</span>
-            {active && <Check className="h-3.5 w-3.5 text-primary" />}
-          </DropdownMenuItem>
-        );
-      })}
-      <DropdownMenuSeparator />
     </>
   );
 }

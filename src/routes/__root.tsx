@@ -12,6 +12,7 @@ import { Sparkles, SmilePlus, GraduationCap } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { AuthMenu } from "@/components/AuthMenu";
+import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { SkillsManagerDialog } from "@/components/academic/SkillsManagerDialog";
 import { TagsManagerDialog } from "@/components/academic/TagsManagerDialog";
 import { AuthProvider, useAuth } from "@/lib/auth";
@@ -266,6 +267,7 @@ function AppShell() {
               </Link>
             )}
           </nav>
+          <ProjectSwitcher />
           <NotificationsBell />
           <AuthMenu />
         </div>

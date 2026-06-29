@@ -2,7 +2,12 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { setCurrentProjectId, setCurrentUserRoles, setIsSuperAdmin } from "./current-project";
+import {
+  getSuperAdminOverride,
+  setCurrentProjectId,
+  setCurrentUserRoles,
+  setIsSuperAdmin,
+} from "./current-project";
 import { toast } from "sonner";
 
 export type AppRole = "super_admin" | "admin" | "coordenacao" | "professor" | "aluno" | "viewer";
@@ -107,7 +112,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         );
       }
 
-      const projectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
+      const isSuper = parsedRoles.includes("super_admin");
+      const ownProjectId = (profile as { project_id?: string | null } | null)?.project_id ?? null;
+      // Super-admin é cross-projeto: usa o projeto-alvo escolhido (override
+      // persistido em localStorage) quando não tem vínculo próprio. Demais
+      // usuários usam o project_id do cadastro.
+      const projectId = isSuper ? (getSuperAdminOverride() ?? ownProjectId) : ownProjectId;
       if (projectId) {
         const { data: proj, error: projErr } = await supabase
           .from("projetos")
