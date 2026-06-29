@@ -81,6 +81,30 @@ describe("createRetryFetch", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("timeout: aborta GET pendurada e re-tenta", async () => {
+    const fetchMock = vi
+      .fn()
+      // 1a tentativa: nunca resolve sozinha; rejeita quando o signal aborta.
+      .mockImplementationOnce(
+        (_input: RequestInfo | URL, init?: RequestInit) =>
+          new Promise<Response>((_res, rej) => {
+            init?.signal?.addEventListener("abort", () =>
+              rej(new DOMException("aborted", "AbortError")),
+            );
+          }),
+      )
+      .mockResolvedValueOnce(resp(200));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const rf = createRetryFetch(2, 5000, 5, 1000); // timeout 1s
+    const p = rf("url");
+    await vi.runAllTimersAsync();
+    const res = await p;
+
+    expect(res.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it("semaforo: limita requisicoes in-flight; excedente enfileira", async () => {
     vi.useRealTimers();
     // fetch que só resolve quando chamarmos o resolver capturado.

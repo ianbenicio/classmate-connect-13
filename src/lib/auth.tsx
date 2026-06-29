@@ -192,6 +192,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Watchdog: nunca deixar o app preso em "Carregando…". Se profile/roles/
+  // projeto travarem (Supabase pendente, pooler saturado), libera o shell
+  // após um teto de tempo — a UI atualiza reativamente quando os dados chegam.
+  useEffect(() => {
+    if (!loading) return;
+    const t = setTimeout(() => {
+      console.warn("[auth] watchdog: loading excedeu o teto; liberando shell");
+      setLoading(false);
+    }, 8000);
+    return () => clearTimeout(t);
+  }, [loading]);
+
   const value: AuthState = {
     user,
     session,

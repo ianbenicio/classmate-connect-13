@@ -1,15 +1,21 @@
-// fetch com retry + backoff exponencial (com jitter), circuit breaker e
-// limite de concorrência. Absorve 503/timeout transitório do Supabase
-// free-tier sem virar retry-storm no app (ver incidente de saturação de
-// compute). Só re-tenta requisições idempotentes (GET/HEAD) — mutations
-// NUNCA são re-tentadas (risco de aplicar duas vezes). Após uma falha
-// terminal, abre um breaker de fail-fast por alguns segundos para não
-// empilhar carga durante um outage sustentado.
+// fetch com retry + backoff exponencial (com jitter), circuit breaker, limite
+// de concorrência e timeout/abort por tentativa. Absorve 503/timeout
+// transitório do Supabase free-tier sem virar retry-storm no app (ver
+// incidente de saturação de compute). Só re-tenta requisições idempotentes
+// (GET/HEAD) — mutations NUNCA são re-tentadas (risco de aplicar duas vezes).
+// Após uma falha terminal, abre um breaker de fail-fast por alguns segundos
+// para não empilhar carga durante um outage sustentado.
 //
 // Limite de concorrência: no boot, várias stores + o auth disparam queries
 // quase simultâneas. No free-tier isso estoura o pool/compute e dispara 503
 // → breaker abre → dados parciais. O semáforo segura o pico (default 5
 // in-flight); o excedente enfileira e entra assim que abre uma vaga.
+//
+// Timeout/abort: sem um deadline, uma request que o PostgREST/pooler deixa
+// "pendente" trava pra sempre — e o AuthProvider fica preso em "Carregando…".
+// Cada tentativa tem um AbortController com prazo (default 12s); estourou,
+// aborta → vira erro → re-tenta (idempotente) ou falha. Combina com o signal
+// do caller (supabase-js) para não vazar o abort externo.
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -46,6 +52,7 @@ export function createRetryFetch(
   maxRetries = 2,
   breakerCooldownMs = 5000,
   maxConcurrent = 5,
+  timeoutMs = 12000,
 ): typeof fetch {
   // Estado do breaker por instância (a fonte é o client singleton).
   let breakerOpenUntil = 0;
@@ -61,8 +68,17 @@ export function createRetryFetch(
     try {
       let ultimoErro: unknown;
       for (let attempt = 0; attempt <= tentativas; attempt++) {
+        // Deadline por tentativa: aborta a request se passar de timeoutMs.
+        const ctrl = new AbortController();
+        const parent = init?.signal;
+        const onParentAbort = () => ctrl.abort();
+        if (parent) {
+          if (parent.aborted) ctrl.abort();
+          else parent.addEventListener("abort", onParentAbort, { once: true });
+        }
+        const timer = setTimeout(() => ctrl.abort(), timeoutMs);
         try {
-          const res = await globalThis.fetch(input, init);
+          const res = await globalThis.fetch(input, { ...init, signal: ctrl.signal });
           if (res.status === 503 && attempt < tentativas) {
             await sleep(backoffMs(attempt));
             continue;
@@ -81,6 +97,9 @@ export function createRetryFetch(
             breakerOpenUntil = Date.now() + breakerCooldownMs;
           }
           throw err;
+        } finally {
+          clearTimeout(timer);
+          if (parent) parent.removeEventListener("abort", onParentAbort);
         }
       }
       throw ultimoErro;
