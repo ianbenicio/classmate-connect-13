@@ -80,4 +80,33 @@ describe("createRetryFetch", () => {
     expect(res2.status).toBe(503);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("semaforo: limita requisicoes in-flight; excedente enfileira", async () => {
+    vi.useRealTimers();
+    // fetch que só resolve quando chamarmos o resolver capturado.
+    const resolvers: Array<() => void> = [];
+    const fetchMock = vi.fn(
+      () => new Promise<Response>((res) => resolvers.push(() => res(resp(200)))),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const rf = createRetryFetch(0, 5000, 2); // maxConcurrent = 2
+    const p1 = rf("a");
+    const p2 = rf("b");
+    const p3 = rf("c"); // deve enfileirar
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(2); // só 2 in-flight
+
+    resolvers[0](); // libera a 1a -> abre vaga p/ a 3a
+    await p1;
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    resolvers[1]();
+    resolvers[2]();
+    await Promise.all([p2, p3]);
+  });
 });
