@@ -1,6 +1,6 @@
 # Runbook: Deploy, Supabase e Operacao
 
-Atualizado em: 2026-06-19
+Atualizado em: 2026-06-29
 
 Registro externo no Engram:
 
@@ -150,6 +150,71 @@ supabase db push --include-all --password "$SUPABASE_DB_PASSWORD"
 
 Nao reintroduza esse workflow temporario para o fluxo normal. Use somente em
 novo reparo deliberado de historico.
+
+## Incidente 2026-06-29: PostgREST travado (504) + RLS perf
+
+Ver story: `docs/stories/2026-06-29-perf-rls-resiliencia-boot-e-multitenant.md`.
+Engram: `classmate-connect-13-504-loading-infinito-zumbis-idle-in-tx`,
+`classmate-connect-13-fix-de-performance-rls-initplan-multipl`.
+
+### Sintoma
+
+App preso em "Carregando…"; toda chamada REST (`profiles`, `user_roles`,
+`cursos`, etc.) retornando `504`, inclusive `GET /rest/v1/` (raiz). Auth e
+Storage respondiam `200`. DB saudável (queries diretas em ms).
+
+### Diagnóstico
+
+PostgREST/pooler travado: conexões `authenticator` presas em
+`idle in transaction` por ~3 dias (transações abandonadas de INSERT em
+`notificacoes`). O pooler esgotou; PostgREST não recuperou o pool sozinho.
+
+Checagem útil:
+
+```sql
+select usename, application_name, state, count(*),
+  max(extract(epoch from now()-state_change))::int as oldest_state_s
+from pg_stat_activity where datname=current_database()
+group by 1,2,3 order by 4 desc;
+```
+
+### Recuperação (ordem)
+
+1. Preventivo permanente (sobrevive a restart — é role GUC):
+
+```sql
+alter role authenticator  set idle_in_transaction_session_timeout = '20000';
+alter role authenticated  set idle_in_transaction_session_timeout = '20000';
+```
+
+2. Matar transações abandonadas:
+
+```sql
+select pg_terminate_backend(pid) from pg_stat_activity
+where datname=current_database() and pid<>pg_backend_pid()
+  and state ilike 'idle in transaction%'
+  and xact_start < now() - interval '1 minute';
+```
+
+3. Se o REST seguir em 504 (PostgREST não reconecta), **reiniciar o serviço**.
+   Sem botão de restart direto via MCP: usar `pause_project` → aguardar
+   `INACTIVE` → `restore_project` → aguardar `ACTIVE_HEALTHY`. Restart pelo
+   dashboard (Settings → General) é equivalente e mais leve quando disponível.
+
+4. Validar:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -H "apikey: <ANON>" \
+  "https://pbzkbwkzexhtdfuyaqiv.supabase.co/rest/v1/cursos?select=cod&limit=1"
+```
+
+### Perf de RLS aplicada
+
+Duas migrations otimizaram RLS (sem mudar semântica):
+`20260628090000_rls_initplan_perf.sql` (wrap `auth.uid()` em `(select ...)`)
+e `20260629090000_rls_consolidate_permissive.sql` (consolida policies
+permissivas). Conferir com Supabase advisors (performance): `auth_rls_initplan`
+e `multiple_permissive_policies` devem ficar em 0.
 
 ## Edge Functions e APP_URL
 
